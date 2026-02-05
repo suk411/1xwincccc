@@ -10,6 +10,7 @@ import eventsActive from "@/assets/icons/events-active.png";
 import eventsInactive from "@/assets/icons/events-inactive.png";
 import navBg from "@/assets/nav-bg.png";
 import navCenterPlatform from "@/assets/nav-center-platform.png";
+import giftBox from "@/assets/gift-box.png";
 
 interface NavItem {
   path: string;
