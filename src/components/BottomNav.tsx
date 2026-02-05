@@ -36,7 +36,7 @@ const BottomNav = () => {
         <img 
           src={navBg} 
           alt="" 
-          className="w-full h-auto"
+          className="w-full h-auto relative z-20 pointer-events-none"
         />
         
         {/* Nav items overlay */}
