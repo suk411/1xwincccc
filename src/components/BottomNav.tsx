@@ -68,28 +68,44 @@ const BottomNav = () => {
             );
           })}
 
-          {/* Center promo button with platform */}
-          <Link
-            to="/promo"
-            className="relative flex flex-col items-center"
-            style={{ marginTop: "-3.5rem" }}
+          {/* Spacer for center */}
+          <div className="w-20" />
+        </div>
+        
+        {/* Center promo button - absolute positioned to float above nav */}
+        <Link
+          to="/promo"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
+          style={{ bottom: "1.5rem" }}
+        >
+          {/* Platform background - curved base under gift */}
+          <img 
+            src={navCenterPlatform} 
+            alt="" 
+            className="absolute left-1/2 -translate-x-1/2 w-[6rem] h-auto"
+            style={{ bottom: "-0.25rem" }}
+          />
+          {/* Gift box image - floating above, larger than nav icons */}
+          <img 
+            src={giftBox} 
+            alt="GET ₹2000" 
+            className="w-[4.5rem] h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+          />
+          {/* Text below with exact font specs */}
+          <span 
+            className="relative z-10"
+            style={{
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", MIUI, "Hiragino Sans GB", "Microsoft Yahei", sans-serif',
+              fontSize: '0.9rem',
+              fontWeight: 700,
+              lineHeight: '1.35rem',
+              color: 'rgb(255, 111, 111)',
+              textShadow: '0 0 0.625rem rgba(255, 111, 111, 0.5)'
+            }}
           >
-            {/* Platform background - positioned to show half behind gift */}
-            <img 
-              src={navCenterPlatform} 
-              alt="" 
-              className="absolute left-1/2 -translate-x-1/2 w-24 h-auto"
-              style={{ bottom: "0.5rem" }}
-            />
-            {/* Gift box image - floating above */}
-            <img 
-              src={giftBox} 
-              alt="GET ₹2000" 
-              className="w-16 h-16 object-contain relative z-10 transition-transform duration-200 hover:scale-110"
-            />
-            {/* Text below */}
-            <span className="text-sm font-bold text-accent text-glow relative z-10">GET ₹2000</span>
-          </Link>
+            GET ₹2000
+          </span>
+        </Link>
 
           {/* Right nav items */}
           {navItems.slice(2, 4).map((item) => {
