@@ -53,12 +53,12 @@ const BottomNav = () => {
                 <img
                   src={isActive ? item.activeIcon : item.inactiveIcon}
                   alt={item.label}
-                  className={`w-7 h-7 object-contain transition-all duration-200 ${
+                  className={`w-[1.75rem] h-[1.75rem] object-contain transition-all duration-200 ${
                     isActive ? "nav-glow scale-110" : "opacity-70"
                   }`}
                 />
                 <span
-                  className={`text-xs transition-colors duration-200 ${
+                  className={`text-[0.75rem] transition-colors duration-200 ${
                     isActive ? "text-primary text-glow" : "text-muted-foreground"
                   }`}
                 >
@@ -68,22 +68,49 @@ const BottomNav = () => {
             );
           })}
 
-          {/* Spacer for center */}
-          <div className="w-20" />
+          {/* Spacer for center gift */}
+          <div className="w-[5rem]" />
+
+          {/* Right nav items */}
+          {navItems.slice(2, 4).map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="flex flex-col items-center gap-0.5 py-1.5 px-3 min-w-[4rem] transition-all duration-200"
+              >
+                <img
+                  src={isActive ? item.activeIcon : item.inactiveIcon}
+                  alt={item.label}
+                  className={`w-[1.75rem] h-[1.75rem] object-contain transition-all duration-200 ${
+                    isActive ? "nav-glow scale-110" : "opacity-70"
+                  }`}
+                />
+                <span
+                  className={`text-[0.75rem] transition-colors duration-200 ${
+                    isActive ? "text-primary text-glow" : "text-muted-foreground"
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
         
         {/* Center promo button - absolute positioned to float above nav */}
         <Link
           to="/promo"
           className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
-          style={{ bottom: "1.5rem" }}
+          style={{ bottom: "1.25rem" }}
         >
           {/* Platform background - curved base under gift */}
           <img 
             src={navCenterPlatform} 
             alt="" 
             className="absolute left-1/2 -translate-x-1/2 w-[6rem] h-auto"
-            style={{ bottom: "-0.25rem" }}
+            style={{ bottom: "-0.5rem" }}
           />
           {/* Gift box image - floating above, larger than nav icons */}
           <img 
@@ -106,34 +133,6 @@ const BottomNav = () => {
             GET ₹2000
           </span>
         </Link>
-
-          {/* Right nav items */}
-          {navItems.slice(2, 4).map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className="flex flex-col items-center gap-0.5 py-1.5 px-3 min-w-[4rem] transition-all duration-200"
-              >
-                <img
-                  src={isActive ? item.activeIcon : item.inactiveIcon}
-                  alt={item.label}
-                  className={`w-7 h-7 object-contain transition-all duration-200 ${
-                    isActive ? "nav-glow scale-110" : "opacity-70"
-                  }`}
-                />
-                <span
-                  className={`text-xs transition-colors duration-200 ${
-                    isActive ? "text-primary text-glow" : "text-muted-foreground"
-                  }`}
-                >
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
       </div>
     </nav>
   );
