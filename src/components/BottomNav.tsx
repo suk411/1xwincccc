@@ -31,9 +31,8 @@ const BottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Wrapper with overflow hidden to clip the platform bottom half */}
-      <div className="relative overflow-hidden">
-        {/* Nav background image */}
+      {/* Nav background image */}
+      <div className="relative">
         <img 
           src={navBg} 
           alt="" 
@@ -69,28 +68,12 @@ const BottomNav = () => {
             );
           })}
 
-          {/* Center promo button - positioned at center, gift extends above */}
+          {/* Center spacer - just for text, gift is positioned separately */}
           <Link
             to="/promo"
-            className="relative flex flex-col items-center min-w-[5rem]"
+            className="flex flex-col items-center min-w-[5rem] pt-[1rem]"
           >
-            {/* Platform background - positioned so bottom half is clipped by overflow:hidden */}
-            <img 
-              src={navCenterPlatform} 
-              alt="" 
-              className="absolute left-1/2 -translate-x-1/2 w-[6rem] h-auto z-0"
-              style={{ top: "-0.75rem" }}
-            />
-            {/* Gift box image - extends above nav bar */}
-            <img 
-              src={giftBox} 
-              alt="GET ₹2000" 
-              className="w-[3.5rem] h-[3.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
-              style={{ marginTop: "-2rem" }}
-            />
-            {/* Text below with exact font specs */}
             <span 
-              className="relative z-10"
               style={{
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", MIUI, "Hiragino Sans GB", "Microsoft Yahei", sans-serif',
                 fontSize: '0.9rem',
@@ -131,20 +114,28 @@ const BottomNav = () => {
             );
           })}
         </div>
+        
+        {/* Center gift + platform - positioned to overlap top edge of nav */}
+        <Link
+          to="/promo"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
+          style={{ top: "-1.75rem" }}
+        >
+          {/* Platform background - bottom half hidden behind nav bar top edge */}
+          <img 
+            src={navCenterPlatform} 
+            alt="" 
+            className="absolute left-1/2 -translate-x-1/2 w-[7rem] h-auto z-0"
+            style={{ bottom: "-2rem" }}
+          />
+          {/* Gift box image - larger, sits on top */}
+          <img 
+            src={giftBox} 
+            alt="GET ₹2000" 
+            className="w-[4.5rem] h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+          />
+        </Link>
       </div>
-      
-      {/* Gift that extends BEYOND nav bar - positioned outside overflow:hidden container */}
-      <Link
-        to="/promo"
-        className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none z-30"
-        style={{ bottom: "2.5rem" }}
-      >
-        <img 
-          src={giftBox} 
-          alt="" 
-          className="w-[3.5rem] h-[3.5rem] object-contain pointer-events-auto transition-transform duration-200 hover:scale-110"
-        />
-      </Link>
     </nav>
   );
 };
