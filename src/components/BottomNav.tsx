@@ -53,12 +53,12 @@ const BottomNav = () => {
                 <img
                   src={isActive ? item.activeIcon : item.inactiveIcon}
                   alt={item.label}
-                  className={`w-7 h-7 object-contain transition-all duration-200 ${
+                  className={`w-[1.75rem] h-[1.75rem] object-contain transition-all duration-200 ${
                     isActive ? "nav-glow scale-110" : "opacity-70"
                   }`}
                 />
                 <span
-                  className={`text-xs transition-colors duration-200 ${
+                  className={`text-[0.75rem] transition-colors duration-200 ${
                     isActive ? "text-primary text-glow" : "text-muted-foreground"
                   }`}
                 >
@@ -68,28 +68,8 @@ const BottomNav = () => {
             );
           })}
 
-          {/* Center promo button with platform */}
-          <Link
-            to="/promo"
-            className="relative flex flex-col items-center"
-            style={{ marginTop: "-3.5rem" }}
-          >
-            {/* Platform background - positioned to show half behind gift */}
-            <img 
-              src={navCenterPlatform} 
-              alt="" 
-              className="absolute left-1/2 -translate-x-1/2 w-24 h-auto"
-              style={{ bottom: "0.5rem" }}
-            />
-            {/* Gift box image - floating above */}
-            <img 
-              src={giftBox} 
-              alt="GET ₹2000" 
-              className="w-16 h-16 object-contain relative z-10 transition-transform duration-200 hover:scale-110"
-            />
-            {/* Text below */}
-            <span className="text-sm font-bold text-accent text-glow relative z-10">GET ₹2000</span>
-          </Link>
+          {/* Spacer for center gift */}
+          <div className="w-[5rem]" />
 
           {/* Right nav items */}
           {navItems.slice(2, 4).map((item) => {
@@ -103,12 +83,12 @@ const BottomNav = () => {
                 <img
                   src={isActive ? item.activeIcon : item.inactiveIcon}
                   alt={item.label}
-                  className={`w-7 h-7 object-contain transition-all duration-200 ${
+                  className={`w-[1.75rem] h-[1.75rem] object-contain transition-all duration-200 ${
                     isActive ? "nav-glow scale-110" : "opacity-70"
                   }`}
                 />
                 <span
-                  className={`text-xs transition-colors duration-200 ${
+                  className={`text-[0.75rem] transition-colors duration-200 ${
                     isActive ? "text-primary text-glow" : "text-muted-foreground"
                   }`}
                 >
@@ -118,6 +98,41 @@ const BottomNav = () => {
             );
           })}
         </div>
+        
+        {/* Center promo button - absolute positioned to float above nav */}
+        <Link
+          to="/promo"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
+          style={{ bottom: "1.25rem" }}
+        >
+          {/* Platform background - curved base under gift */}
+          <img 
+            src={navCenterPlatform} 
+            alt="" 
+            className="absolute left-1/2 -translate-x-1/2 w-[6rem] h-auto"
+            style={{ bottom: "-0.5rem" }}
+          />
+          {/* Gift box image - floating above, larger than nav icons */}
+          <img 
+            src={giftBox} 
+            alt="GET ₹2000" 
+            className="w-[4.5rem] h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+          />
+          {/* Text below with exact font specs */}
+          <span 
+            className="relative z-10"
+            style={{
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", MIUI, "Hiragino Sans GB", "Microsoft Yahei", sans-serif',
+              fontSize: '0.9rem',
+              fontWeight: 700,
+              lineHeight: '1.35rem',
+              color: 'rgb(255, 111, 111)',
+              textShadow: '0 0 0.625rem rgba(255, 111, 111, 0.5)'
+            }}
+          >
+            GET ₹2000
+          </span>
+        </Link>
       </div>
     </nav>
   );
