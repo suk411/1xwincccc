@@ -1,15 +1,15 @@
 import PageLayout from "@/components/PageLayout";
 
-const Index = () => {
+const Earn = () => {
   return (
-    <PageLayout title="Home">
+    <PageLayout title="Earn">
       <div className="flex-1 flex items-center justify-center">
         <p className="text-muted-foreground text-center">
-          Welcome to the app
+          Earn page content
         </p>
       </div>
     </PageLayout>
   );
 };
 
-export default Index;
+export default Earn;
