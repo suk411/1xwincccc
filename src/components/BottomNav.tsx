@@ -8,6 +8,8 @@ import bankActive from "@/assets/icons/bank-active.png";
 import bankInactive from "@/assets/icons/bank-inactive.png";
 import eventsActive from "@/assets/icons/events-active.png";
 import eventsInactive from "@/assets/icons/events-inactive.png";
+import navBg from "@/assets/nav-bg.png";
+import navCenterPlatform from "@/assets/nav-center-platform.png";
 
 interface NavItem {
   path: string;
