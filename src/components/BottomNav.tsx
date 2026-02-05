@@ -118,7 +118,7 @@ const BottomNav = () => {
         {/* Center gift + platform - positioned to overlap top edge of nav */}
         <Link
           to="/promo"
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10"
           style={{ top: "-1.75rem" }}
         >
           {/* Platform background - bottom half hidden behind nav bar top edge */}
