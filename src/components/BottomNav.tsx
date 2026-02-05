@@ -40,7 +40,7 @@ const BottomNav = () => {
         />
         
         {/* Nav items overlay */}
-        <div className="absolute inset-0 flex items-center justify-around px-1 max-w-screen-lg mx-auto">
+        <div className="absolute inset-0 z-30 flex items-center justify-around px-1 max-w-screen-lg mx-auto">
           {/* Left nav items */}
           {navItems.slice(0, 2).map((item) => {
             const isActive = location.pathname === item.path;
