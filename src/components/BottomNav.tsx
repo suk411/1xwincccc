@@ -10,6 +10,7 @@ import eventsActive from "@/assets/icons/events-active.png";
 import eventsInactive from "@/assets/icons/events-inactive.png";
 import navBg from "@/assets/nav-bg.png";
 import navCenterPlatform from "@/assets/nav-center-platform.png";
+import giftBox from "@/assets/gift-box.png";
 
 interface NavItem {
   path: string;
@@ -70,18 +71,22 @@ const BottomNav = () => {
           {/* Center promo button with platform */}
           <Link
             to="/promo"
-            className="relative flex flex-col items-center -mt-8"
+            className="relative flex flex-col items-center -mt-10"
           >
+            {/* Gift box image */}
+            <img 
+              src={giftBox} 
+              alt="GET ₹2000" 
+              className="w-14 h-14 object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+            />
             {/* Platform background */}
             <img 
               src={navCenterPlatform} 
               alt="" 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/4 w-24 h-auto"
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2 w-20 h-auto -z-10"
             />
-            {/* Gift box content */}
-            <div className="relative z-10 text-center">
-              <span className="block text-lg font-bold text-accent text-glow">GET ₹2000</span>
-            </div>
+            {/* Text below */}
+            <span className="text-sm font-bold text-accent text-glow mt-1">GET ₹2000</span>
           </Link>
 
           {/* Right nav items */}
