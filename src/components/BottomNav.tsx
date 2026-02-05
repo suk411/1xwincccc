@@ -71,22 +71,24 @@ const BottomNav = () => {
           {/* Center promo button with platform */}
           <Link
             to="/promo"
-            className="relative flex flex-col items-center -mt-10"
+            className="relative flex flex-col items-center"
+            style={{ marginTop: "-3.5rem" }}
           >
-            {/* Gift box image */}
-            <img 
-              src={giftBox} 
-              alt="GET ₹2000" 
-              className="w-14 h-14 object-contain relative z-10 transition-transform duration-200 hover:scale-110"
-            />
-            {/* Platform background */}
+            {/* Platform background - positioned to show half behind gift */}
             <img 
               src={navCenterPlatform} 
               alt="" 
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2 w-20 h-auto -z-10"
+              className="absolute left-1/2 -translate-x-1/2 w-24 h-auto"
+              style={{ bottom: "0.5rem" }}
+            />
+            {/* Gift box image - floating above */}
+            <img 
+              src={giftBox} 
+              alt="GET ₹2000" 
+              className="w-16 h-16 object-contain relative z-10 transition-transform duration-200 hover:scale-110"
             />
             {/* Text below */}
-            <span className="text-sm font-bold text-accent text-glow mt-1">GET ₹2000</span>
+            <span className="text-sm font-bold text-accent text-glow relative z-10">GET ₹2000</span>
           </Link>
 
           {/* Right nav items */}
