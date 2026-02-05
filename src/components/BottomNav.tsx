@@ -36,11 +36,11 @@ const BottomNav = () => {
         <img 
           src={navBg} 
           alt="" 
-          className="w-full h-auto"
+          className="w-full h-auto relative z-20 pointer-events-none"
         />
         
         {/* Nav items overlay */}
-        <div className="absolute inset-0 flex items-center justify-around px-1 max-w-screen-lg mx-auto">
+        <div className="absolute inset-0 z-30 flex items-center justify-around px-1 max-w-screen-lg mx-auto">
           {/* Left nav items */}
           {navItems.slice(0, 2).map((item) => {
             const isActive = location.pathname === item.path;
@@ -118,7 +118,7 @@ const BottomNav = () => {
         {/* Center gift + platform - positioned to overlap top edge of nav */}
         <Link
           to="/promo"
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10"
           style={{ top: "-1.75rem" }}
         >
           {/* Platform background - bottom half hidden behind nav bar top edge */}
