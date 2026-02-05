@@ -99,28 +99,28 @@ const BottomNav = () => {
           })}
         </div>
         
-        {/* Center promo button - absolute positioned to float above nav */}
+        {/* Center promo button - absolute positioned to float ABOVE nav */}
         <Link
           to="/promo"
           className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
-          style={{ bottom: "1.25rem" }}
+          style={{ top: "-2.5rem" }}
         >
-          {/* Platform background - curved base under gift */}
+          {/* Platform background - half hidden behind nav bar, half visible */}
           <img 
             src={navCenterPlatform} 
             alt="" 
-            className="absolute left-1/2 -translate-x-1/2 w-[6rem] h-auto"
-            style={{ bottom: "-0.5rem" }}
+            className="absolute left-1/2 -translate-x-1/2 w-[7rem] h-auto z-0"
+            style={{ bottom: "-1.5rem" }}
           />
           {/* Gift box image - floating above, larger than nav icons */}
           <img 
             src={giftBox} 
             alt="GET ₹2000" 
-            className="w-[4.5rem] h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+            className="w-[4rem] h-[4rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
           />
           {/* Text below with exact font specs */}
           <span 
-            className="relative z-10"
+            className="relative z-10 mt-[0.25rem]"
             style={{
               fontFamily: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", MIUI, "Hiragino Sans GB", "Microsoft Yahei", sans-serif',
               fontSize: '0.9rem',
