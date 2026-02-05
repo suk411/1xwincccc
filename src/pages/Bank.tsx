@@ -1,15 +1,15 @@
 import PageLayout from "@/components/PageLayout";
 
-const Index = () => {
+const Bank = () => {
   return (
-    <PageLayout title="Home">
+    <PageLayout title="Bank">
       <div className="flex-1 flex items-center justify-center">
         <p className="text-muted-foreground text-center">
-          Welcome to the app
+          Bank page content
         </p>
       </div>
     </PageLayout>
   );
 };
 
-export default Index;
+export default Bank;
