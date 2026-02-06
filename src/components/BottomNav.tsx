@@ -73,16 +73,7 @@ const BottomNav = () => {
             to="/promo"
             className="flex flex-col items-center min-w-[5rem] pt-[1rem]"
           >
-            <span 
-              style={{
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", MIUI, "Hiragino Sans GB", "Microsoft Yahei", sans-serif',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                lineHeight: '1.35rem',
-                color: 'rgb(255, 111, 111)',
-                textShadow: '0 0 0.625rem rgba(255, 111, 111, 0.5)'
-              }}
-            >
+            <span className="text-[0.9rem] leading-[1.35rem] text-primary text-glow">
               GET ₹2000
             </span>
           </Link>
