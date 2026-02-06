@@ -30,9 +30,9 @@ const BottomNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Nav background image */}
-      <div className="relative">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center">
+      {/* Nav container - constrained width */}
+      <div className="relative w-full max-w-md">
         <img 
           src={navBg} 
           alt="" 
@@ -40,7 +40,7 @@ const BottomNav = () => {
         />
         
         {/* Nav items overlay */}
-        <div className="absolute inset-0 z-30 flex items-center justify-around px-1 max-w-screen-lg mx-auto">
+        <div className="absolute inset-0 z-30 flex items-center justify-around px-1">
           {/* Left nav items */}
           {navItems.slice(0, 2).map((item) => {
             const isActive = location.pathname === item.path;
@@ -109,19 +109,19 @@ const BottomNav = () => {
         {/* Center gift + platform - positioned to overlap top edge of nav */}
         <Link
           to="/promo"
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10 top-[-1.5rem] sm:top-[-1.75rem] md:top-[-2rem]"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10 top-[-1.5rem]"
         >
-          {/* Platform background - bottom half hidden behind nav bar top edge */}
+          {/* Platform background */}
           <img 
             src={navCenterPlatform} 
             alt="" 
-            className="absolute left-1/2 -translate-x-1/2 w-[18rem] sm:w-[12rem] md:w-[16rem] h-auto z-0 bottom-[-0.5rem] sm:bottom-[-1.75rem] md:bottom-[-2rem]"
+            className="absolute left-1/2 -translate-x-1/2 w-[7rem] h-auto z-0 bottom-[-1.25rem]"
           />
-          {/* Gift box image - responsive sizing */}
+          {/* Gift box image */}
           <img 
             src={giftBox} 
             alt="GET ₹200" 
-            className="w-[10.5rem] h-[5rem] sm:w-[4rem] sm:h-[6rem] md:w-[6] md:h-[6rem] object-contain relative z-10 transition-transform duration-100 hover:scale-110"
+            className="w-[4rem] h-[4rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
           />
         </Link>
       </div>
