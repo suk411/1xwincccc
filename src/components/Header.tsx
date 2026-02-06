@@ -9,15 +9,11 @@ const Header = () => {
   return (
     <header className="relative z-10">
       {/* Main header content */}
-      <div className="flex items-center justify-between px-4 py-3">
-        {/* Bottom glow effect */}
-      <div className="absolute bottom-0 left-0 right-0 h-2 translate-y-full pointer-events-none">
-        <img 
-          src={headerGlow} 
-          alt="" 
-          className="w-full h-full object-cover"
-        />
-      </div>
+      <div className="flex items-center justify-between bg-[#141011] px-4 py-2 ">
+       
+       
+        
+
         {/* Logo */}
         <div className="flex-shrink-0">
           <img src={logo} alt="Logo" className="h-7 w-auto" />
