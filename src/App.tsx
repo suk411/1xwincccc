@@ -28,6 +28,8 @@ const App = () => (
           {/* Overlay for better readability */}
           <div className="fixed inset-0 bg-background/60 pointer-events-none" />
           
+          <Header />
+          
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/earn" element={<Earn />} />
