@@ -11,7 +11,7 @@ const Header = () => {
       {/* Main header content */}
       <div className="flex items-center justify-between px-4 py-3">
         {/* Bottom glow effect */}
-      <div className="absolute bottom-0 left-0 right-0 h-3 translate-y-full pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 h-2 translate-y-full pointer-events-none">
         <img 
           src={headerGlow} 
           alt="" 
