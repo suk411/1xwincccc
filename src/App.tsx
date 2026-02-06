@@ -9,6 +9,8 @@ import Bank from "./pages/Bank";
 import Events from "./pages/Events";
 import Promo from "./pages/Promo";
 import NotFound from "./pages/NotFound";
+import BottomNav from "./components/BottomNav";
+import bgMain from "@/assets/bg-main.jpg";
 
 const queryClient = new QueryClient();
 
@@ -18,14 +20,24 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/earn" element={<Earn />} />
-          <Route path="/bank" element={<Bank />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/promo" element={<Promo />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div 
+          className="min-h-screen min-h-dvh flex flex-col bg-background bg-cover bg-center bg-no-repeat bg-fixed"
+          style={{ backgroundImage: `url(${bgMain})` }}
+        >
+          {/* Overlay for better readability */}
+          <div className="fixed inset-0 bg-background/60 pointer-events-none" />
+          
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/earn" element={<Earn />} />
+            <Route path="/bank" element={<Bank />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/promo" element={<Promo />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          
+          <BottomNav />
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
