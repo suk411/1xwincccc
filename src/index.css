@@ -70,6 +70,10 @@
     color: hsl(var(--primary));
     min-height: 100vh;
     min-height: 100dvh;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 }
 
