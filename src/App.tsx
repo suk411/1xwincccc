@@ -11,6 +11,7 @@ import Promo from "./pages/Promo";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
+import DownloadBanner from "./components/DownloadBanner";
 import bgMain from "@/assets/bg-main.jpg";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           {/* Overlay for better readability */}
           <div className="fixed inset-0 bg-background/60 pointer-events-none" />
           
+          <DownloadBanner />
           <Header />
           
           <Routes>
