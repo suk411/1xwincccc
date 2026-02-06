@@ -109,19 +109,19 @@ const BottomNav = () => {
         {/* Center gift + platform - positioned to overlap top edge of nav */}
         <Link
           to="/promo"
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10 top-[-1.5rem]"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10 top-[-0.75rem]"
         >
           {/* Platform background */}
           <img 
             src={navCenterPlatform} 
             alt="" 
-            className="absolute left-1/2 -translate-x-1/2 w-[7rem] h-auto z-0 bottom-[-1.25rem]"
+            className="absolute left-1/2 -translate-x-1/2 w-[8rem] h-auto z-0 bottom-[-1.5rem]"
           />
           {/* Gift box image */}
           <img 
             src={giftBox} 
             alt="GET ₹200" 
-            className="w-[4rem] h-[4rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+            className="w-[4.5rem] h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
           />
         </Link>
       </div>
