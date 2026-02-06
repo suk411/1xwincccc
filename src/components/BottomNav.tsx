@@ -74,7 +74,7 @@ const BottomNav = () => {
             className="flex flex-col items-center min-w-[5rem] pt-[1rem]"
           >
             <span className="text-[0.9rem] leading-[1.35rem] text-primary text-glow">
-              GET ₹2000
+              GET ₹200
             </span>
           </Link>
 
@@ -115,13 +115,13 @@ const BottomNav = () => {
           <img 
             src={navCenterPlatform} 
             alt="" 
-            className="absolute left-1/2 -translate-x-1/2 w-[5.5rem] sm:w-[6rem] md:w-[7rem] h-auto z-0 bottom-[-1.5rem] sm:bottom-[-1.75rem] md:bottom-[-2rem]"
+            className="absolute left-1/2 -translate-x-1/2 w-[18rem] sm:w-[12rem] md:w-[16rem] h-auto z-0 bottom-[-0.5rem] sm:bottom-[-1.75rem] md:bottom-[-2rem]"
           />
           {/* Gift box image - responsive sizing */}
           <img 
             src={giftBox} 
-            alt="GET ₹2000" 
-            className="w-[3.5rem] h-[3.5rem] sm:w-[4rem] sm:h-[4rem] md:w-[4.5rem] md:h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+            alt="GET ₹200" 
+            className="w-[10.5rem] h-[5rem] sm:w-[4rem] sm:h-[6rem] md:w-[6] md:h-[6rem] object-contain relative z-10 transition-transform duration-100 hover:scale-110"
           />
         </Link>
       </div>
