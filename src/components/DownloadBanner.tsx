@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/pwalogo.png";
 import downloadBtn from "@/assets/download-btn.gif";
 import closeIcon from "@/assets/icons/close-icon.png";
 
