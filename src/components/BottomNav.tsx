@@ -76,8 +76,6 @@ const BottomNav = () => {
             <span className="text-[0.9rem] leading-[1.35rem] text-primary text-glow">
               GET ₹2000
             </span>
-              GET ₹2000
-            </span>
           </Link>
 
           {/* Right nav items */}
