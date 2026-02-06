@@ -115,7 +115,7 @@ const BottomNav = () => {
           <img 
             src={navCenterPlatform} 
             alt="" 
-            className="absolute left-1/2 -translate-x-1/2 w-[8rem] h-auto z-0 bottom-[-1.5rem]"
+            className="absolute left-1/2 -translate-x-1/2 w-[16rem] h-auto z-0 bottom-[-1.5rem]"
           />
           {/* Gift box image */}
           <img 
