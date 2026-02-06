@@ -10,6 +10,7 @@ import Events from "./pages/Events";
 import Promo from "./pages/Promo";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
+import Header from "./components/Header";
 import bgMain from "@/assets/bg-main.jpg";
 
 const queryClient = new QueryClient();
