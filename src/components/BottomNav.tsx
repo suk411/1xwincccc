@@ -118,21 +118,19 @@ const BottomNav = () => {
         {/* Center gift + platform - positioned to overlap top edge of nav */}
         <Link
           to="/promo"
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10"
-          style={{ top: "-1.75rem" }}
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10 top-[-1.5rem] sm:top-[-1.75rem] md:top-[-2rem]"
         >
           {/* Platform background - bottom half hidden behind nav bar top edge */}
           <img 
             src={navCenterPlatform} 
             alt="" 
-            className="absolute left-1/2 -translate-x-1/2 w-[7rem] h-auto z-0"
-            style={{ bottom: "-2rem" }}
+            className="absolute left-1/2 -translate-x-1/2 w-[5.5rem] sm:w-[6rem] md:w-[7rem] h-auto z-0 bottom-[-1.5rem] sm:bottom-[-1.75rem] md:bottom-[-2rem]"
           />
-          {/* Gift box image - larger, sits on top */}
+          {/* Gift box image - responsive sizing */}
           <img 
             src={giftBox} 
             alt="GET ₹2000" 
-            className="w-[4.5rem] h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+            className="w-[3.5rem] h-[3.5rem] sm:w-[4rem] sm:h-[4rem] md:w-[4.5rem] md:h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
           />
         </Link>
       </div>
