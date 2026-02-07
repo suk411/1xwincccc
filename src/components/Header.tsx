@@ -1,11 +1,13 @@
+import { useState } from "react";
 import logo from "@/assets/logo.png";
-import headerGlow from "@/assets/header-glow.png";
 import supportIcon from "@/assets/icons/support.png";
 import mailIcon from "@/assets/icons/mail.png";
 import menuBg from "@/assets/icons/menu.png";
-
+import ProfileDrawer from "./ProfileDrawer";
 
 const Header = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   return (
     <header className="relative z-10">
       {/* Main header content */}
@@ -42,18 +44,20 @@ const Header = () => {
           </button>
 
           {/* Menu icon */}
-          <button className="relative w-7 h-7 flex items-center justify-center">
+          <button 
+            className="relative w-7 h-7 flex items-center justify-center"
+            onClick={() => setIsProfileOpen(true)}
+          >
             <img 
               src={menuBg} 
-              alt="" 
+              alt="Menu" 
               className="absolute inset-0 w-full h-full object-contain"
             />
-          
           </button>
         </div>
       </div>
 
-      
+      <ProfileDrawer open={isProfileOpen} onOpenChange={setIsProfileOpen} />
     </header>
   );
 };
