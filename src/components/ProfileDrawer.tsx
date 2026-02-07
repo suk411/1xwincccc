@@ -23,7 +23,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         {/* Top Profile Section with PNG background */}
         <div 
           className="relative p-4 pt-6"
-          style={{ backgroundImage: `url(${profileBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '120%', backgroundPosition: 'center' }}
         >
           {/* Close button */}
           <SheetClose className="absolute right-4 top-4 z-10">
