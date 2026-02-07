@@ -30,11 +30,11 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
         side="left" 
-        className="w-[90%] p-0 border-none bg-[#470211] overflow-hidden"
+        className="w-[90%] p-0 border-none bg-[#470211] overflow-hidden flex flex-col h-full"
       >
-        {/* Top Profile Section with PNG background */}
+        {/* Top Profile Section with PNG background - Fixed */}
         <div 
-          className="relative p-4 pt-6"
+          className="relative p-4 pt-6 flex-shrink-0"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
@@ -68,8 +68,9 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
           </div>
         </div>
-        {/* Rest of drawer with solid bg */}
-        <div className="flex-1 p-4 bg-[#470211]">
+
+        {/* Scrollable content area with hidden scrollbar */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide p-4 bg-[#470211]">
           {/* Balance and VIP Row */}
           <div className="flex items-center justify-between mb-4">
             <div className="text-white">
@@ -99,9 +100,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
           </div>
 
-          {/* Menu items will go here later */}
+          {/* Menu items */}
           <div className="mt-4 space-y-1">
-            {/* Menu Item Component */}
             {[
               { icon: depositIcon, label: "Deposit History" },
               { icon: historyIcon, label: "Withdrawal History" },
