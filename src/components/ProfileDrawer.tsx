@@ -19,17 +19,19 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
       <SheetContent 
         side="left" 
         className="w-[90%] p-0 border-none bg-[#470211] overflow-hidden"
-        style={{ backgroundImage: `url(${profileBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
-        {/* Close button */}
-        <SheetClose className="absolute right-4 top-4 z-10">
-          <div className="w-8 h-8 rounded-full bg-[#8B0000]/80 flex items-center justify-center">
-            <X className="h-5 w-5 text-yellow-400" />
-          </div>
-        </SheetClose>
+        {/* Top Profile Section with PNG background */}
+        <div 
+          className="relative p-4 pt-6"
+          style={{ backgroundImage: `url(${profileBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        >
+          {/* Close button */}
+          <SheetClose className="absolute right-4 top-4 z-10">
+            <div className="w-8 h-8 rounded-full bg-[#8B0000]/80 flex items-center justify-center">
+              <X className="h-5 w-5 text-yellow-400" />
+            </div>
+          </SheetClose>
 
-        {/* Top Profile Section */}
-        <div className="p-4 pt-6">
           {/* Avatar and User Info */}
           <div className="flex items-start gap-3 mb-4">
             {/* Avatar with status */}
@@ -55,7 +57,9 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               </div>
             </div>
           </div>
-
+        </div>
+        {/* Rest of drawer with solid bg */}
+        <div className="flex-1 p-4 bg-[#470211]">
           {/* Balance and VIP Row */}
           <div className="flex items-center justify-between mb-4">
             <div className="text-white">
@@ -84,11 +88,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               <img src={rupeeGold} alt="Add Money" className="w-8 h-8" />
             </div>
           </div>
-        </div>
 
-        {/* Menu items will go here later */}
-        <div className="flex-1">
-          {/* Placeholder for menu items - to be added later */}
+          {/* Menu items will go here later */}
         </div>
       </SheetContent>
     </Sheet>
