@@ -2,7 +2,7 @@ import logo from "@/assets/logo.png";
 import headerGlow from "@/assets/header-glow.png";
 import supportIcon from "@/assets/icons/support.png";
 import mailIcon from "@/assets/icons/mail.png";
-import menuBg from "@/assets/icons/menu-bg.png";
+import menuBg from "@/assets/icons/menu.png";
 
 
 const Header = () => {
