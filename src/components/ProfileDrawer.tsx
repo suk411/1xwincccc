@@ -34,7 +34,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
       >
         {/* Top Profile Section with PNG background - Fixed */}
         <div 
-          className="relative p-2 pt-6 flex-shrink-0"
+          className="relative p-2 pt-6 flex-shrink-0 z-10"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
