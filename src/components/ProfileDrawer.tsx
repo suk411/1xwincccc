@@ -10,15 +10,16 @@ import statusIcon from "@/assets/profile/status-icon.png";
 import pencilIcon from "@/assets/profile/pencil-icon.png";
 
 // Menu icons
-import depositIcon from "@/assets/profile/deposit-icon.png";
+import logout from "@/assets/profile/logout.png";
 import historyIcon from "@/assets/profile/history-icon.png";
 import gameIcon from "@/assets/profile/game-icon.png";
 import inviteIcon from "@/assets/profile/invite-icon.png";
-import telegramIcon from "@/assets/profile/telegram-icon.png";
+import accountIcon from "@/assets/profile/account.png";
 import languageIcon from "@/assets/profile/language-icon.png";
 import supportIcon from "@/assets/profile/support-icon.png";
-import walletIcon from "@/assets/profile/wallet-icon.png";
+import mailicon from "@/assets/profile/mail-icon.png";
 import backArrow from "@/assets/icons/back-arrow.png";
+import { LogOut } from "lucide-react";
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -103,14 +104,14 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           {/* Menu items */}
           <div className="mt-4 space-y-1">
             {[
-              { icon: depositIcon, label: "Deposit History" },
+              { icon: logout, label: "Deposit History" },
               { icon: historyIcon, label: "Withdrawal History" },
               { icon: gameIcon, label: "Game Records" },
               { icon: inviteIcon, label: "Invitation Records" },
-              { icon: telegramIcon, label: "Mail" },
+              { icon: mailicon, label: "Mail" },
               { icon: languageIcon, label: "Language", value: "English" },
-              { icon: supportIcon, label: "Account Settings" },
-              { icon: walletIcon, label: "Logout" },
+              { icon: accountIcon, label: "Account Settings" },
+              { icon: logout, label: "Logout" },
             ].map((item, index) => (
               <button
                 key={index}
