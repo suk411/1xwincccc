@@ -6,7 +6,7 @@ import vipBadge from "@/assets/profile/vip-badge.png";
 import withdraw from "@/assets/profile/withdrawal.png";
 
 import avatar from "@/assets/profile/avatar.png";
-import statusIcon from "@/assets/profile/status-icon.png";
+import avatarChange from "@/assets/profile/avatar-change.png";
 import pencilIcon from "@/assets/profile/pencil-icon.png";
 
 // Menu icons
@@ -16,10 +16,9 @@ import gameIcon from "@/assets/profile/game-icon.png";
 import inviteIcon from "@/assets/profile/invite-icon.png";
 import accountIcon from "@/assets/profile/account.png";
 import languageIcon from "@/assets/profile/language-icon.png";
-import supportIcon from "@/assets/profile/support-icon.png";
+
 import mailicon from "@/assets/profile/mail-icon.png";
 import backArrow from "@/assets/icons/back-arrow.png";
-import { LogOut } from "lucide-react";
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -31,11 +30,11 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
         side="left" 
-        className="w-[90%] p-0 border-none bg-[#470211] overflow-hidden flex flex-col h-full"
+        className="w-[90%] p-0 border-none  overflow-hidden flex flex-col h-full"
       >
         {/* Top Profile Section with PNG background - Fixed */}
         <div 
-          className="relative p-4 pt-6 flex-shrink-0"
+          className="relative p-2 pt-6 flex-shrink-0"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
@@ -50,9 +49,9 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-yellow-500/50">
                 <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
               </div>
-              {/* Online status */}
+              {/* avatar change icon */}
               <div className="absolute -bottom-1 right-0 w-5 h-5">
-                <img src={statusIcon} alt="Status" className="w-full h-full object-contain" />
+                <img src={avatarChange} alt="Status" className="w-full h-full object-contain" />
               </div>
             </div>
 
@@ -71,7 +70,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         </div>
 
         {/* Scrollable content area with hidden scrollbar */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide p-4 bg-[#470211]">
+        <div className="flex-1 overflow-y-auto scrollbar-hide p-4 pb-12 bg-[#470211]">
           {/* Balance and VIP Row */}
           <div className="flex items-center justify-between mb-4">
             <div className="text-white">
