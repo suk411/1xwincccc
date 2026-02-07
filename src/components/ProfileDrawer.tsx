@@ -1,4 +1,4 @@
-import { X, Pencil } from "lucide-react";
+import { X } from "lucide-react";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
@@ -7,6 +7,8 @@ import vipBadge from "@/assets/profile/vip-badge.png";
 import rupeeGold from "@/assets/profile/rupee-gold.png";
 import coins from "@/assets/profile/coins.png";
 import avatar from "@/assets/profile/avatar.png";
+import statusIcon from "@/assets/profile/status-icon.png";
+import pencilIcon from "@/assets/profile/pencil-icon.png";
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -23,7 +25,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         {/* Top Profile Section with PNG background */}
         <div 
           className="relative p-4 pt-6"
-          style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'center' }}
+          style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
           <SheetClose className="absolute right-4 top-4 z-10">
@@ -40,8 +42,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
               </div>
               {/* Online status */}
-              <div className="absolute -bottom-1 right-0 w-5 h-5 rounded-full bg-green-500 border-2 border-[#470211] flex items-center justify-center">
-                <span className="text-white text-xs">✓</span>
+              <div className="absolute -bottom-1 right-0 w-5 h-5">
+                <img src={statusIcon} alt="Status" className="w-full h-full object-contain" />
               </div>
             </div>
 
@@ -49,7 +51,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-white font-semibold text-lg">1xwin37859</span>
-                <Pencil className="w-4 h-4 text-yellow-400" />
+                <img src={pencilIcon} alt="Edit" className="w-4 h-4" />
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-gray-300 text-sm">ID:37859</span>
