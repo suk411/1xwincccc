@@ -1,11 +1,11 @@
-import { X } from "lucide-react";
+
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCircle from "@/assets/profile/rupee-circle.png";
 import vipBadge from "@/assets/profile/vip-badge.png";
 import rupeeGold from "@/assets/profile/rupee-gold.png";
-import coins from "@/assets/profile/coins.png";
+
 import avatar from "@/assets/profile/avatar.png";
 import statusIcon from "@/assets/profile/status-icon.png";
 import pencilIcon from "@/assets/profile/pencil-icon.png";
@@ -29,9 +29,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         >
           {/* Close button */}
           <SheetClose className="absolute right-4 top-4 z-10">
-            <div className="w-8 h-8 rounded-full bg-[#8B0000]/80 flex items-center justify-center">
-              <X className="h-5 w-5 text-yellow-400" />
-            </div>
+            
           </SheetClose>
 
           {/* Avatar and User Info */}
@@ -86,7 +84,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               <span className="text-[#470211] font-bold text-xl">20</span>
             </div>
             <div className="flex items-center gap-3">
-              <img src={coins} alt="Coins" className="w-8 h-8" />
+             
               <img src={rupeeGold} alt="Add Money" className="w-8 h-8" />
             </div>
           </div>
