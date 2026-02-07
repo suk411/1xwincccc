@@ -2,9 +2,9 @@
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
-import rupeeCircle from "@/assets/profile/rupee-circle.png";
+import rupeeCoin from "@/assets/profile/coin-rupee.png";
 import vipBadge from "@/assets/profile/vip-badge.png";
-import rupeeGold from "@/assets/profile/rupee-gold.png";
+import withdraw from "@/assets/profile/withdrawal.png";
 
 import avatar from "@/assets/profile/avatar.png";
 import statusIcon from "@/assets/profile/status-icon.png";
@@ -80,12 +80,12 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             style={{ backgroundImage: `url(${goldBar})`, backgroundSize: 'cover' }}
           >
             <div className="flex items-center gap-2 flex-1">
-              <img src={rupeeCircle} alt="Rupee" className="w-8 h-8" />
+              <img src={rupeeCoin} alt="Rupee" className="w-8 h-8" />
               <span className="text-[#470211] font-bold text-xl">20</span>
             </div>
             <div className="flex items-center gap-3">
              
-              <img src={rupeeGold} alt="Add Money" className="w-8 h-8" />
+              <img src={withdraw} alt="Bank" className="w-8 h-8" />
             </div>
           </div>
 
