@@ -1,4 +1,3 @@
-
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
@@ -9,6 +8,17 @@ import withdraw from "@/assets/profile/withdrawal.png";
 import avatar from "@/assets/profile/avatar.png";
 import statusIcon from "@/assets/profile/status-icon.png";
 import pencilIcon from "@/assets/profile/pencil-icon.png";
+
+// Menu icons
+import depositIcon from "@/assets/profile/deposit-icon.png";
+import historyIcon from "@/assets/profile/history-icon.png";
+import gameIcon from "@/assets/profile/game-icon.png";
+import inviteIcon from "@/assets/profile/invite-icon.png";
+import telegramIcon from "@/assets/profile/telegram-icon.png";
+import languageIcon from "@/assets/profile/language-icon.png";
+import supportIcon from "@/assets/profile/support-icon.png";
+import walletIcon from "@/assets/profile/wallet-icon.png";
+import backArrow from "@/assets/icons/back-arrow.png";
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -90,6 +100,35 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           </div>
 
           {/* Menu items will go here later */}
+          <div className="mt-4 space-y-1">
+            {/* Menu Item Component */}
+            {[
+              { icon: depositIcon, label: "Deposit History" },
+              { icon: historyIcon, label: "Withdrawal History" },
+              { icon: gameIcon, label: "Game Records" },
+              { icon: inviteIcon, label: "Invitation Records" },
+              { icon: telegramIcon, label: "Mail" },
+              { icon: languageIcon, label: "Language", value: "English" },
+              { icon: supportIcon, label: "Account Settings" },
+              { icon: walletIcon, label: "Logout" },
+            ].map((item, index) => (
+              <button
+                key={index}
+                className="w-full flex items-center justify-between py-3 px-2 hover:bg-white/5 rounded-lg transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <img src={item.icon} alt={item.label} className="w-8 h-8 object-contain" />
+                  <span className="text-white text-sm">{item.label}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {item.value && (
+                    <span className="text-gray-400 text-sm">{item.value}</span>
+                  )}
+                  <img src={backArrow} alt="Arrow" className="w-4 h-4 object-contain rotate-180" />
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </SheetContent>
     </Sheet>
