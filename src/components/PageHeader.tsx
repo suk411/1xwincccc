@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import pageHeaderBg from "@/assets/page-header-bg.png";
-import backArrow from "@/assets/icons/back-arrow.png";
+import backArrow from "@/assets/icons/close-icon.png";
 
 interface PageHeaderProps {
   title: string;
@@ -23,9 +23,9 @@ const PageHeader = ({ title, showBack = true }: PageHeaderProps) => {
       {showBack && (
         <button
           onClick={() => navigate(-1)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center justify-center"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center  justify-center"
         >
-          <img src={backArrow} alt="Back" className="w-4 h-4 object-contain" />
+          <img src={backArrow} alt="Back" className="w-6 h-6 object-contain" />
         </button>
       )}
 

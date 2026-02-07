@@ -22,7 +22,7 @@ const Header = () => {
         {/* Right icons */}
         <div className="flex items-center gap-4">
           {/* Support icon */}
-          <button className="relative w-6 h-6 flex items-center justify-center">
+          <button className="relative w-7 h-7 flex items-center justify-center">
          
             <img 
               src={supportIcon} 
@@ -32,7 +32,7 @@ const Header = () => {
           </button>
 
           {/* Mail icon */}
-          <button className="relative w-6 h-6 flex items-center justify-center">
+          <button className="relative w-7 h-7 flex items-center justify-center">
           
             <img 
               src={mailIcon} 
@@ -42,7 +42,7 @@ const Header = () => {
           </button>
 
           {/* Menu icon */}
-          <button className="relative w-6 h-6 flex items-center justify-center">
+          <button className="relative w-7 h-7 flex items-center justify-center">
             <img 
               src={menuBg} 
               alt="" 
