@@ -124,7 +124,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   {item.value && (
                     <span className="text-gray-400 text-sm">{item.value}</span>
                   )}
-                  <img src={backArrow} alt="Arrow" className="w-4 h-4 object-contain rotate-180" />
+                  <img src={backArrow} alt="Arrow" className="w-6 h-6 object-contain " />
                 </div>
               </button>
             ))}
