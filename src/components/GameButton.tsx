@@ -23,8 +23,8 @@ export interface GameButtonProps
 const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
   ({ className, variant = "green", size = "lg", children, ...props }, ref) => {
     const sizeClasses = {
-      sm: "h-10 min-w-[120px] text-sm",
-      lg: "h-14 min-w-[160px] text-base",
+      sm: "h-8 px-4 text-xs",
+      lg: "h-10 px-6 text-sm",
     };
 
     return (
