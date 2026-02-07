@@ -30,7 +30,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
         side="left" 
-        className="w-[90%] p-0 border-none  overflow-hidden flex flex-col h-full"
+        className="w-[90%] p-0 border-none overflow-hidden flex flex-col h-full bg-[#470211]"
       >
         {/* Top Profile Section with PNG background - Fixed */}
         <div 
