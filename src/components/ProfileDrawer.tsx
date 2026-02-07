@@ -30,11 +30,11 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
         side="left" 
-        className="w-[90%] p-0 border-none overflow-hidden flex flex-col h-full bg-[#470211]"
+        className="w-[90%] p-0 border-none  overflow-hidden flex flex-col h-full"
       >
         {/* Top Profile Section with PNG background - Fixed */}
         <div 
-          className="relative p-2 pt-6 flex-shrink-0 z-10"
+          className="relative p-2 pt-6 flex-shrink-0"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
