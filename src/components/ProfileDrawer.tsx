@@ -70,7 +70,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         </div>
 
         {/* Scrollable content area with hidden scrollbar */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide p-4 pb-12 bg-[#470211]">
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-0 pb-12 bg-[#470211] -mt-2">
           {/* Balance and VIP Row */}
           <div className="flex items-center justify-between mb-4">
             <div className="text-white">
