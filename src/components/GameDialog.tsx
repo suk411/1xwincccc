@@ -85,12 +85,10 @@ const GameDialogBody = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex-1 overflow-y-auto p-4 scrollbar-hide flex flex-col justify-center", className)}
+    className={cn("flex-1 overflow-y-auto p-4 scrollbar-hide flex flex-col items-center", className)}
     {...props}
   >
-    <div className="w-full">
-      {children}
-    </div>
+    {children}
   </div>
 );
 GameDialogBody.displayName = "GameDialogBody";
@@ -111,7 +109,7 @@ const GameDialogFooter = ({
   ...props
 }: GameDialogFooterProps) => (
   <div
-    className={cn("flex-shrink-0 flex gap-3 px-4 pb-4 pt-2", className)}
+    className={cn("flex gap-3 w-full pt-4", className)}
     {...props}
   >
     <GameButton
