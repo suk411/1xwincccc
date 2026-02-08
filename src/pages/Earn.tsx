@@ -23,23 +23,17 @@ const Earn = () => {
           </GameDialogTrigger>
           <GameDialogContent title="Profile Info">
             <GameDialogBody>
-              {/* Demo content to test scrolling */}
-              <div className="text-white space-y-4">
+              {/* Demo content */}
+              <div className="text-white space-y-4 w-full">
                 <p>Dialog content goes here</p>
                 <p>More content...</p>
                 <p>Even more content...</p>
-                <p>Scroll test content...</p>
-                <p>Additional content...</p>
-                <p>More scrollable content...</p>
-                <p>Keep scrolling...</p>
-                <p>Almost there...</p>
-                <p>Final content item</p>
               </div>
+              <GameDialogFooter
+                onCancel={() => setOpen(false)}
+                onConfirm={() => setOpen(false)}
+              />
             </GameDialogBody>
-            <GameDialogFooter
-              onCancel={() => setOpen(false)}
-              onConfirm={() => setOpen(false)}
-            />
           </GameDialogContent>
         </GameDialog>
       </div>
