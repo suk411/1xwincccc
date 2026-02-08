@@ -63,7 +63,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               </div>
               <div className="flex items-center mt-1">
                 <span className="text-gray-300 text-sm">ID:37859</span>
-                <img src={vipBadge} alt="VIP" className="h-5 ml-1" />
+                <img src={vipBadge} alt="VIP" className="h-5 ml-2" />
+                <span className="text-gray-400 text-xs ml-0.5">VIP0</span>
               </div>
             </div>
           </div>
