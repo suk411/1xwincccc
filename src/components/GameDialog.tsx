@@ -100,7 +100,7 @@ const GameDialogFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex gap-3 w-full pt-4", className)}
+    className={cn("flex-shrink-0 flex gap-3 w-full px-4 pb-4 pt-2", className)}
     {...props}
   >
     {children}

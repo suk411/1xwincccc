@@ -29,15 +29,15 @@ const Earn = () => {
                 <p>More content...</p>
                 <p>Even more content...</p>
               </div>
-              <GameDialogFooter>
-                <GameButton variant="black" size="lg" className="flex-1" onClick={() => setOpen(false)}>
-                  Cancel
-                </GameButton>
-                <GameButton variant="gold" size="lg" className="flex-1" onClick={() => setOpen(false)}>
-                  Confirm
-                </GameButton>
-              </GameDialogFooter>
             </GameDialogBody>
+            <GameDialogFooter>
+              <GameButton variant="black" size="lg" className="flex-1" onClick={() => setOpen(false)}>
+                Cancel
+              </GameButton>
+              <GameButton variant="gold" size="lg" className="flex-1" onClick={() => setOpen(false)}>
+                Confirm
+              </GameButton>
+            </GameDialogFooter>
           </GameDialogContent>
         </GameDialog>
       </div>
