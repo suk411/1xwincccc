@@ -21,6 +21,15 @@ const Bank = () => {
             <GameButton variant="purple" size="lg">
               Bonus
             </GameButton>
+            <GameButton variant="gold" size="lg">
+              Gold
+            </GameButton>
+            <GameButton variant="darkgold" size="lg" >
+              Dark Gold
+            </GameButton>
+            <GameButton variant="darkred" size="lg">
+              Dark Red
+            </GameButton>
           </div>
         </div>
 
@@ -28,7 +37,7 @@ const Bank = () => {
         <div className="space-y-3">
           <h2 className="text-white text-lg font-bold">Small Buttons</h2>
           <div className="flex flex-wrap gap-4">
-            <GameButton variant="green" size="sm">
+            <GameButton variant="green" size="sm" className="w-20">
               Deposit
             </GameButton>
             <GameButton variant="black" size="sm">
@@ -39,6 +48,15 @@ const Bank = () => {
             </GameButton>
             <GameButton variant="purple" size="sm">
               Bonus
+            </GameButton>
+            <GameButton variant="gold" size="sm">
+              Gold
+            </GameButton>
+            <GameButton variant="darkgold" size="sm">
+              Dark Gold
+            </GameButton>
+            <GameButton variant="darkred" size="sm">
+              Dark Red
             </GameButton>
           </div>
         </div>
