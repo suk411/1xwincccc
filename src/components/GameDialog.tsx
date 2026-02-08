@@ -3,7 +3,6 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cn } from "@/lib/utils";
 import headerBg from "@/assets/dailog/headbg.jpg";
 import closeIcon from "@/assets/icons/close-icon.png";
-import { GameButton } from "./GameButton";
 
 const GameDialog = DialogPrimitive.Root;
 const GameDialogTrigger = DialogPrimitive.Trigger;
@@ -85,49 +84,26 @@ const GameDialogBody = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex-1 overflow-y-auto p-4 scrollbar-hide flex flex-col items-center", className)}
+    className={cn("flex-1 overflow-y-auto px-4 py-4 scrollbar-hide", className)}
     {...props}
   >
-    {children}
+    <div className="w-full">
+      {children}
+    </div>
   </div>
 );
 GameDialogBody.displayName = "GameDialogBody";
 
-interface GameDialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
-  onCancel?: () => void;
-  onConfirm?: () => void;
-  cancelText?: string;
-  confirmText?: string;
-}
-
 const GameDialogFooter = ({
   className,
-  onCancel,
-  onConfirm,
-  cancelText = "Cancel",
-  confirmText = "Confirm",
+  children,
   ...props
-}: GameDialogFooterProps) => (
+}: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn("flex gap-3 w-full pt-4", className)}
     {...props}
   >
-    <GameButton
-      variant="black"
-      size="lg"
-      className="flex-1"
-      onClick={onCancel}
-    >
-      {cancelText}
-    </GameButton>
-    <GameButton
-      variant="gold"
-      size="lg"
-      className="flex-1"
-      onClick={onConfirm}
-    >
-      {confirmText}
-    </GameButton>
+    {children}
   </div>
 );
 GameDialogFooter.displayName = "GameDialogFooter";

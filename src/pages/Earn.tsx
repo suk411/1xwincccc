@@ -24,15 +24,19 @@ const Earn = () => {
           <GameDialogContent title="Profile Info">
             <GameDialogBody>
               {/* Demo content */}
-              <div className="text-white space-y-4 w-full">
+              <div className="text-white space-y-4">
                 <p>Dialog content goes here</p>
                 <p>More content...</p>
                 <p>Even more content...</p>
               </div>
-              <GameDialogFooter
-                onCancel={() => setOpen(false)}
-                onConfirm={() => setOpen(false)}
-              />
+              <GameDialogFooter>
+                <GameButton variant="black" size="lg" className="flex-1" onClick={() => setOpen(false)}>
+                  Cancel
+                </GameButton>
+                <GameButton variant="gold" size="lg" className="flex-1" onClick={() => setOpen(false)}>
+                  Confirm
+                </GameButton>
+              </GameDialogFooter>
             </GameDialogBody>
           </GameDialogContent>
         </GameDialog>
