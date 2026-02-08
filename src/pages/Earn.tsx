@@ -24,10 +24,10 @@ const Earn = () => {
           <GameDialogContent title="Profile Info">
             <GameDialogBody>
               {/* Demo content */}
-              <div className="text-white space-y-4">
-                <p>Dialog content goes here</p>
-                <p>More content...</p>
-                <p>Even more content...</p>
+              <div className="text-white space-y-4 px-3">
+             idiot i want content have same margin on both side
+              </div><div className="text-white space-y-4 px-3">
+             idiot i want content have same margin on both side
               </div>
             </GameDialogBody>
             <GameDialogFooter>

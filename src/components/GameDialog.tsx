@@ -39,13 +39,13 @@ const GameDialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 w-[90%] max-w-sm max-h-[70vh] translate-x-[-50%] translate-y-[-50%] rounded-xl overflow-hidden shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] flex flex-col",
+        "fixed left-[50%] top-[50%] z-50 w-[90%] max-w-sm max-h-[70vh] translate-x-[-50%] translate-y-[-50%] rounded-xl shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] flex flex-col overflow-hidden",
         className
       )}
       style={{ backgroundColor: "#330914" }}
       {...props}
     >
-      {/* Header with background image - fixed */}
+      {/* Header with background image */}
       <div className="relative h-12 flex-shrink-0 flex items-center justify-center">
         <img
           src={headerBg}
@@ -84,10 +84,13 @@ const GameDialogBody = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex-1 overflow-y-auto px-4 py-4 scrollbar-hide", className)}
+    className={cn(
+      "flex-1 overflow-y-auto px-4 py-4 scrollbar-hide flex flex-col items-center text-center", 
+      className
+    )}
     {...props}
   >
-    <div className="w-full">
+    <div className="w-full max-w-[90%]">
       {children}
     </div>
   </div>
@@ -100,7 +103,7 @@ const GameDialogFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex-shrink-0 flex gap-3 w-full px-4 pb-4 pt-2", className)}
+    className={cn("flex-shrink-0 flex gap-3 w-full px-4 pb-4 pt-2 justify-center", className)}
     {...props}
   >
     {children}
