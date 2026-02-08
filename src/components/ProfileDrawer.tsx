@@ -1,4 +1,5 @@
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
+import { GameButton } from "./GameButton";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
@@ -26,21 +27,22 @@ interface ProfileDrawerProps {
 }
 
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
+  // Example: you can make VIP level dynamic later
+  const vipLevel = "VIP0";
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
         side="left" 
-        className="w-[90%] p-0 border-none  overflow-hidden flex flex-col h-full"
+        className="w-[90%] p-0 border-none flex flex-col h-full"
       >
-        {/* Top Profile Section with PNG background - Fixed */}
+        {/* Top Profile Section */}
         <div 
           className="relative p-2 pt-6 flex-shrink-0"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
-          <SheetClose className="absolute right-4 top-4 z-10">
-            
-          </SheetClose>
+          <SheetClose className="absolute right-4 top-4 z-10" />
 
           {/* Avatar and User Info */}
           <div className="flex items-start gap-3 mb-4">
@@ -51,7 +53,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               </div>
               {/* avatar change icon */}
               <div className="absolute -bottom-1 right-0 w-5 h-5">
-                <img src={avatarChange} alt="Status" className="w-full h-full object-contain" />
+                <img src={avatarChange} alt="Change" className="w-full h-full object-contain" />
               </div>
             </div>
 
@@ -63,16 +65,20 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               </div>
               <div className="flex items-center mt-1">
                 <span className="text-gray-300 text-sm">ID:37859</span>
-                <div className="flex items-center ml-2 bg-black/40 rounded-full px-1.5 py-0.5">
-                  <img src={vipBadge} alt="VIP" className="h-4" />
-                  <span className="text-gray-300 text-xs ml-0.5">VIP0</span>
+
+                {/* VIP badge with level text overlay */}
+                <div className="relative ml-2 w-16 h-6">
+                  <img src={vipBadge} alt="VIP" className="w-full h-full  object-contain" />
+                  <span className="absolute inset-0 flex items-center justify-center pl-3 text-[10px] font-bold text-yellow-300">
+                    {vipLevel}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Scrollable content area with hidden scrollbar */}
+        {/* Scrollable content area */}
         <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-12 bg-[#470211] ">
           {/* Balance and VIP Row */}
           <div className="flex items-center justify-between mb-4">
@@ -82,15 +88,13 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-white font-medium">VIP1</span>
-              <button className="px-3 py-1 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-medium">
-                Upgrade
-              </button>
+               <GameButton variant="darkred" size="sm" className="w-20 text-[10px] ">Upgrade</GameButton>
             </div>
           </div>
 
           {/* Gold Balance Bar */}
           <div 
-            className="relative h-12 rounded-lg overflow-hidden flex items-center px-4"
+            className="relative h-12 rounded-lg flex items-center px-4"
             style={{ backgroundImage: `url(${goldBar})`, backgroundSize: 'cover' }}
           >
             <div className="flex items-center gap-2 flex-1">
@@ -98,7 +102,6 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               <span className="text-[#470211] font-bold text-xl">20</span>
             </div>
             <div className="flex items-center gap-3">
-                
               <img src={withdraw} alt="Bank" className="w-8 h-8" />
             </div>
           </div>
@@ -127,7 +130,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   {item.value && (
                     <span className="text-gray-400 text-sm">{item.value}</span>
                   )}
-                  <img src={backArrow} alt="Arrow" className="w-6 h-6 object-contain " />
+                  <img src={backArrow} alt="Arrow" className="w-6 h-6 object-contain" />
                 </div>
               </button>
             ))}
