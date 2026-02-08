@@ -40,14 +40,14 @@ const GameDialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 w-[90%] max-w-sm translate-x-[-50%] translate-y-[-50%] rounded-xl overflow-hidden shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+        "fixed left-[50%] top-[50%] z-50 w-[90%] max-w-sm max-h-[70vh] translate-x-[-50%] translate-y-[-50%] rounded-xl overflow-hidden shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] flex flex-col",
         className
       )}
       style={{ backgroundColor: "#330914" }}
       {...props}
     >
-      {/* Header with background image */}
-      <div className="relative h-12 flex items-center justify-center">
+      {/* Header with background image - fixed */}
+      <div className="relative h-12 flex-shrink-0 flex items-center justify-center">
         <img
           src={headerBg}
           alt=""
@@ -72,14 +72,26 @@ const GameDialogContent = React.forwardRef<
         )}
       </div>
 
-      {/* Content area */}
-      <div className="p-4">
-        {children}
-      </div>
+      {/* Content wrapper */}
+      {children}
     </DialogPrimitive.Content>
   </GameDialogPortal>
 ));
 GameDialogContent.displayName = "GameDialogContent";
+
+const GameDialogBody = ({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn("flex-1 overflow-y-auto p-4", className)}
+    {...props}
+  >
+    {children}
+  </div>
+);
+GameDialogBody.displayName = "GameDialogBody";
 
 interface GameDialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
   onCancel?: () => void;
@@ -97,7 +109,7 @@ const GameDialogFooter = ({
   ...props
 }: GameDialogFooterProps) => (
   <div
-    className={cn("flex gap-3 px-4 pb-4", className)}
+    className={cn("flex-shrink-0 flex gap-3 px-4 pb-4 pt-2", className)}
     {...props}
   >
     <GameButton
@@ -127,5 +139,6 @@ export {
   GameDialogClose,
   GameDialogTrigger,
   GameDialogContent,
+  GameDialogBody,
   GameDialogFooter,
 };

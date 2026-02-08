@@ -5,6 +5,7 @@ import {
   GameDialog,
   GameDialogTrigger,
   GameDialogContent,
+  GameDialogBody,
   GameDialogFooter,
 } from "@/components/GameDialog";
 
@@ -21,9 +22,20 @@ const Earn = () => {
             </GameButton>
           </GameDialogTrigger>
           <GameDialogContent title="Profile Info">
-            <div className="text-white text-center py-8">
-              Dialog content goes here
-            </div>
+            <GameDialogBody>
+              {/* Demo content to test scrolling */}
+              <div className="text-white space-y-4">
+                <p>Dialog content goes here</p>
+                <p>More content...</p>
+                <p>Even more content...</p>
+                <p>Scroll test content...</p>
+                <p>Additional content...</p>
+                <p>More scrollable content...</p>
+                <p>Keep scrolling...</p>
+                <p>Almost there...</p>
+                <p>Final content item</p>
+              </div>
+            </GameDialogBody>
             <GameDialogFooter
               onCancel={() => setOpen(false)}
               onConfirm={() => setOpen(false)}
