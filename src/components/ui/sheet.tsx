@@ -57,7 +57,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
       <SheetOverlay />
       <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
         {children}
-        <SheetPrimitive.Close className="absolute w-8 h-8 right-5 top-5 rounded-sm transition-transform duration-150  active:scale-90  ">
+        <SheetPrimitive.Close className="absolute w-6 h-6 sm:w-8 sm:h-8 right-3 top-3 sm:right-5 sm:top-5 rounded-sm transition-transform duration-150 active:scale-90">
           <img 
               src={closeIcon} 
               alt="Close" 
