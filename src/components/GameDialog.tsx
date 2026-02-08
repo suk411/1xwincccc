@@ -85,11 +85,12 @@ const GameDialogBody = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex-1 overflow-y-auto p-4 scrollbar-hide", className)}
-    {...props}
+    className={cn("flex-1 overflow-y-auto p-4 scrollbar-hide flex flex-col justify-center", className)}
     {...props}
   >
-    {children}
+    <div className="w-full">
+      {children}
+    </div>
   </div>
 );
 GameDialogBody.displayName = "GameDialogBody";
