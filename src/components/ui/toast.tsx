@@ -23,7 +23,7 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex flex-col items-center justify-center " +
+  "group pointer-events-auto relative flex flex-col items-stretch justify-center " +
     "rounded-lg px-6 py-3 shadow-lg transition-all text-center " +
     "w-[320px] max-w-[90vw] break-words " +
     // enter animation
@@ -97,7 +97,7 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Title
     ref={ref}
-    className={cn("text-sm font-medium text-white text-center break-words", className)}
+    className={cn("w-full max-w-full whitespace-normal break-all text-sm font-medium text-white text-center", className)}
     {...props}
   />
 ));
@@ -109,7 +109,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn("text-sm text-white/90 text-center break-words", className)}
+    className={cn("w-full max-w-full whitespace-normal break-all text-sm text-white/90 text-center", className)}
     {...props}
   />
 ));
