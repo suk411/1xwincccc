@@ -5,7 +5,7 @@ import { toast } from "@/hooks/use-toast";
 const Index = () => {
   const handleToast = () => {
     toast({
-      title: "Copy successful",
+      title: "Copy sdfsdfasdfsdfsdfsdfasdfasfdsucfsdfsdfblasdhgfkjasdfasdfcessful",
     });
   };
 
