@@ -1,7 +1,14 @@
 import PageLayout from "@/components/PageLayout";
 import { GameButton } from "@/components/GameButton";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const handleToast = () => {
+    toast({
+      title: "Copy successful",
+    });
+  };
+
   return (
     <PageLayout title="Home">
       <div className="flex-1 flex flex-col items-center justify-center gap-4">
@@ -9,7 +16,7 @@ const Index = () => {
           <GameButton variant="red" size="lg">
             Save QR
           </GameButton>
-          <GameButton variant="gold" size="lg">
+          <GameButton variant="gold" size="lg" onClick={handleToast}>
             Copy link
           </GameButton>
         </div>
