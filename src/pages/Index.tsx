@@ -1,12 +1,18 @@
 import PageLayout from "@/components/PageLayout";
+import { GameButton } from "@/components/GameButton";
 
 const Index = () => {
   return (
     <PageLayout title="Home">
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-muted-foreground text-center">
-          Welcome to the app
-        </p>
+        <div className="flex gap-3">
+          <GameButton variant="gradient-red" size="lg">
+            Save QR
+          </GameButton>
+          <GameButton variant="gradient-gold" size="lg">
+            Copy link
+          </GameButton>
+        </div>
       </div>
     </PageLayout>
   );
