@@ -88,7 +88,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-white font-medium">VIP1</span>
-               <GameButton variant="darkred" size="sm" className="w-20 text-[10px] ">Upgrade</GameButton>
+               <GameButton variant="red" size="sm" className="w-20 text-[10px] ">Upgrade</GameButton>
             </div>
           </div>
 
