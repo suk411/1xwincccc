@@ -58,19 +58,19 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             {/* User details */}
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-white font-semibold text-lg">1xwin37859</span>
+                <span className="text-white font-semibold text-lg">1xking37859</span>
                 <img src={pencilIcon} alt="Edit" className="w-4 h-4" />
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-gray-300 text-sm">ID:37859</span>
-                <img src={vipBadge} alt="VIP" className="h-5" />
+                <img src={vipBadge} alt="VIP" className=" z-10 h-5" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Scrollable content area with hidden scrollbar */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-0 pb-12 bg-[#470211] -mt-2">
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-12 bg-[#470211] -mt-3.5">
           {/* Balance and VIP Row */}
           <div className="flex items-center justify-between mb-4">
             <div className="text-white">
@@ -79,7 +79,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-white font-medium">VIP1</span>
-              <button className="px-4 py-1 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-medium">
+              <button className="px-3 py-1 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-medium">
                 Upgrade
               </button>
             </div>
@@ -87,7 +87,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
 
           {/* Gold Balance Bar */}
           <div 
-            className="relative h-14 rounded-lg overflow-hidden flex items-center px-4"
+            className="relative h-12 rounded-lg overflow-hidden flex items-center px-4"
             style={{ backgroundImage: `url(${goldBar})`, backgroundSize: 'cover' }}
           >
             <div className="flex items-center gap-2 flex-1">
@@ -95,7 +95,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               <span className="text-[#470211] font-bold text-xl">20</span>
             </div>
             <div className="flex items-center gap-3">
-             
+                
               <img src={withdraw} alt="Bank" className="w-8 h-8" />
             </div>
           </div>
