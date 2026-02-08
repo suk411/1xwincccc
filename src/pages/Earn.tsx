@@ -17,8 +17,8 @@ const Earn = () => {
       <div className="flex-1 flex items-center justify-center">
         <GameDialog open={open} onOpenChange={setOpen}>
           <GameDialogTrigger asChild>
-            <GameButton variant="gold" size="lg">
-              Open Dialog
+            <GameButton variant="gold" size="sm" className=" ">
+              sdfgsdf
             </GameButton>
           </GameDialogTrigger>
           <GameDialogContent title="Profile Info">
