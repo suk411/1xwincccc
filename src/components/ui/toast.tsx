@@ -24,9 +24,11 @@ ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
   "group pointer-events-auto relative flex flex-col items-center justify-center " +
-    "overflow-hidden rounded-lg px-6 py-3 shadow-lg transition-all text-center " +
+    "rounded-lg px-6 py-3 shadow-lg transition-all text-center " +
     "w-[320px] max-w-[90vw] break-words " +
+    // enter animation
     "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-2 " +
+    // exit animation (fade only, no slide)
     "data-[state=closed]:animate-out data-[state=closed]:fade-out-80",
   {
     variants: {
