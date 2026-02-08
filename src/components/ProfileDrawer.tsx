@@ -67,9 +67,9 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 <span className="text-gray-300 text-sm">ID:37859</span>
 
                 {/* VIP badge with level text overlay */}
-                <div className="relative ml-2 w-16 h-6">
+                <div className="relative ml-2 w-20 h-8">
                   <img src={vipBadge} alt="VIP" className="w-full h-full  object-contain" />
-                  <span className="absolute inset-0 flex items-center justify-center pl-3 text-[10px] font-bold text-yellow-300">
+                  <span className="absolute inset-0 flex items-center justify-center pl-4 text-[12px] font-bold text-yellow-300">
                     {vipLevel}
                   </span>
                 </div>
