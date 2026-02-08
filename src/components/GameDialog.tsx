@@ -85,7 +85,8 @@ const GameDialogBody = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex-1 overflow-y-auto p-4", className)}
+    className={cn("flex-1 overflow-y-auto p-4 scrollbar-hide", className)}
+    {...props}
     {...props}
   >
     {children}
