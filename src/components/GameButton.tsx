@@ -1,6 +1,5 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { playClickSound } from "@/hooks/useClickSound";
 
 const gradientStyles = {
   red: "linear-gradient(0deg, rgb(150, 29, 42) 2%, rgb(99, 10, 23) 14%, rgb(89, 12, 24) 25%, rgb(166, 26, 48) 69%, rgb(255, 74, 102) 100%)",
