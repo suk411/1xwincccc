@@ -33,10 +33,6 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
         )}
         style={{ backgroundImage: gradientStyles[variant] }}
         {...props}
-        onClick={(e) => {
-          playClickSound();
-          props.onClick?.(e);
-        }}
       >
         {/* Subtle highlight overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
