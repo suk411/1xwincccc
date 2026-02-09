@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { playClickSound } from "@/hooks/useClickSound";
 
 const gradientStyles = {
   red: "linear-gradient(0deg, rgb(150, 29, 42) 2%, rgb(99, 10, 23) 14%, rgb(89, 12, 24) 25%, rgb(166, 26, 48) 69%, rgb(255, 74, 102) 100%)",
@@ -33,6 +34,10 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
         )}
         style={{ backgroundImage: gradientStyles[variant] }}
         {...props}
+        onClick={(e) => {
+          playClickSound();
+          props.onClick?.(e);
+        }}
       >
         {/* Subtle highlight overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
