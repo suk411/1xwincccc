@@ -4,60 +4,74 @@ import supportIcon from "@/assets/icons/support.png";
 import mailIcon from "@/assets/icons/mail.png";
 import menuBg from "@/assets/icons/menu.png";
 import ProfileDrawer from "./ProfileDrawer";
+import LoginDialog from "./LoginDialog";
+import RegisterDialog from "./RegisterDialog";
+import { GameButton } from "./GameButton";
 
 const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
+
+  const handleLogin = (phone: string, _password: string) => {
+    setIsLoggedIn(true);
+    console.log("Login:", phone);
+  };
+
+  const handleRegister = (phone: string, _password: string, inviteCode?: string) => {
+    setIsLoggedIn(true);
+    console.log("Register:", phone, inviteCode);
+  };
 
   return (
     <header className="relative z-10">
-      {/* Main header content */}
-      <div className="flex items-center justify-between bg-[#141011] px-4 py-2 ">
-       
-       
-        
-
+      <div className="flex items-center justify-between bg-[#141011] px-4 py-2">
         {/* Logo */}
         <div className="flex-shrink-0">
           <img src={logo} alt="Logo" className="h-10 w-auto" />
         </div>
 
-        {/* Right icons */}
-        <div className="flex items-center gap-4">
-          {/* Support icon */}
-          <button className="relative w-7 h-7 flex items-center justify-center">
-         
-            <img 
-              src={supportIcon} 
-              alt="Support" 
-              className="absolute inset-0 w-full h-full object-contain"
-            />
-          </button>
-
-          {/* Mail icon */}
-          <button className="relative w-7 h-7 flex items-center justify-center">
-          
-            <img 
-              src={mailIcon} 
-              alt="Mail" 
-              className="absolute inset-0 w-full h-full object-contain"
-            />
-          </button>
-
-          {/* Menu icon */}
-          <button 
-            className="relative w-7 h-7 flex items-center justify-center"
-            onClick={() => setIsProfileOpen(true)}
-          >
-            <img 
-              src={menuBg} 
-              alt="Menu" 
-              className="absolute inset-0 w-full h-full object-contain"
-            />
-          </button>
+        {/* Right side */}
+        <div className="flex items-center gap-3">
+          {isLoggedIn ? (
+            <>
+              <button className="relative w-7 h-7 flex items-center justify-center">
+                <img src={supportIcon} alt="Support" className="absolute inset-0 w-full h-full object-contain" />
+              </button>
+              <button className="relative w-7 h-7 flex items-center justify-center">
+                <img src={mailIcon} alt="Mail" className="absolute inset-0 w-full h-full object-contain" />
+              </button>
+              <button className="relative w-7 h-7 flex items-center justify-center" onClick={() => setIsProfileOpen(true)}>
+                <img src={menuBg} alt="Menu" className="absolute inset-0 w-full h-full object-contain" />
+              </button>
+            </>
+          ) : (
+            <>
+              <GameButton variant="red" size="sm" onClick={() => setLoginOpen(true)}>
+                Login
+              </GameButton>
+              <GameButton variant="gold" size="sm" onClick={() => setRegisterOpen(true)}>
+                Register
+              </GameButton>
+            </>
+          )}
         </div>
       </div>
 
       <ProfileDrawer open={isProfileOpen} onOpenChange={setIsProfileOpen} />
+      <LoginDialog
+        open={loginOpen}
+        onOpenChange={setLoginOpen}
+        onSwitchToRegister={() => setRegisterOpen(true)}
+        onLogin={handleLogin}
+      />
+      <RegisterDialog
+        open={registerOpen}
+        onOpenChange={setRegisterOpen}
+        onSwitchToLogin={() => setLoginOpen(true)}
+        onRegister={handleRegister}
+      />
     </header>
   );
 };
