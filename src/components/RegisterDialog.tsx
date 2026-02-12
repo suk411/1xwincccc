@@ -57,7 +57,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
         <GameDialogBody>
           <div className="w-full flex flex-col gap-3">
             <GameInput
-              icon={<><Phone size={18} /><span className="text-[#e37681] text-xs font-bold ml-1">+91</span></>}
+              icon={<Phone size={18} />}
               placeholder="Enter phone number"
               hint={phoneError ? "Enter valid 10-digit number" : "10-digit phone number"}
               error={phoneError}
