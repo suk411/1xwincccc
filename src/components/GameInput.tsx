@@ -17,7 +17,7 @@ const GameInput = React.forwardRef<HTMLInputElement, GameInputProps>(
       <div className="w-full">
         <div
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 h-12 border",
+            "flex items-center gap-3 rounded-lg px-3 h-10 border",
             error ? "border-[#e37681]" : "border-transparent",
             className
           )}
@@ -36,7 +36,7 @@ const GameInput = React.forwardRef<HTMLInputElement, GameInputProps>(
             <button
               type="button"
               onClick={onClear}
-              className="flex-shrink-0 w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-white/60 text-xs"
+              className="flex-shrink-0 w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-white/60 text-xs"
             >
               ✕
             </button>
