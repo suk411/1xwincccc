@@ -7,32 +7,25 @@ import ProfileDrawer from "./ProfileDrawer";
 import LoginDialog from "./LoginDialog";
 import RegisterDialog from "./RegisterDialog";
 import { GameButton } from "./GameButton";
+import { authService } from "@/services/authService";
 
 const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(authService.isLoggedIn());
   const [loginOpen, setLoginOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
 
-  const handleLogin = (phone: string, _password: string) => {
+  const handleAuthSuccess = () => {
     setIsLoggedIn(true);
-    console.log("Login:", phone);
-  };
-
-  const handleRegister = (phone: string, _password: string, inviteCode?: string) => {
-    setIsLoggedIn(true);
-    console.log("Register:", phone, inviteCode);
   };
 
   return (
     <header className="relative z-10">
       <div className="flex items-center justify-between bg-[#141011] px-4 py-2">
-        {/* Logo */}
         <div className="flex-shrink-0">
           <img src={logo} alt="Logo" className="h-10 w-auto" />
         </div>
 
-        {/* Right side */}
         <div className="flex items-center gap-3">
           {isLoggedIn ? (
             <>
@@ -64,13 +57,13 @@ const Header = () => {
         open={loginOpen}
         onOpenChange={setLoginOpen}
         onSwitchToRegister={() => setRegisterOpen(true)}
-        onLogin={handleLogin}
+        onLoginSuccess={handleAuthSuccess}
       />
       <RegisterDialog
         open={registerOpen}
         onOpenChange={setRegisterOpen}
         onSwitchToLogin={() => setLoginOpen(true)}
-        onRegister={handleRegister}
+        onRegisterSuccess={handleAuthSuccess}
       />
     </header>
   );
