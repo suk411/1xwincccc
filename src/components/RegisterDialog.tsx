@@ -8,29 +8,41 @@ import {
 } from "./GameDialog";
 import { GameInput } from "./GameInput";
 import { GameButton } from "./GameButton";
+import { authService } from "@/services/authService";
+import { toast } from "@/hooks/use-toast";
 
 interface RegisterDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSwitchToLogin: () => void;
-  onRegister: (phone: string, password: string, inviteCode?: string) => void;
+  onRegisterSuccess: () => void;
 }
 
-const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegister }: RegisterDialogProps) => {
+const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess }: RegisterDialogProps) => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [phoneError, setPhoneError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const isPhoneValid = /^\d{10}$/.test(phone);
     const isPasswordValid = password.length >= 6;
     setPhoneError(!isPhoneValid);
     setPasswordError(!isPasswordValid);
-    if (isPhoneValid && isPasswordValid) {
-      onRegister(phone, password, inviteCode || undefined);
+    if (!isPhoneValid || !isPasswordValid) return;
+
+    setLoading(true);
+    try {
+      await authService.register(phone, password, inviteCode || undefined);
+      toast({ title: "Registration successful" });
       onOpenChange(false);
+      onRegisterSuccess();
+    } catch (err: any) {
+      toast({ title: "Registration Failed", description: err.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,7 +57,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegister }: Reg
         <GameDialogBody>
           <div className="w-full flex flex-col gap-3">
             <GameInput
-              icon={<Phone size={18} />}
+              icon={<><Phone size={18} /><span className="text-[#e37681] text-xs font-bold ml-1">+91</span></>}
               placeholder="Enter phone number"
               hint={phoneError ? "Enter valid 10-digit number" : "10-digit phone number"}
               error={phoneError}
@@ -91,8 +103,8 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegister }: Reg
           <GameButton variant="red" size="lg" onClick={() => onOpenChange(false)} className="flex-1">
             Cancel
           </GameButton>
-          <GameButton variant="gold" size="lg" onClick={handleRegister} className="flex-1">
-            Register
+          <GameButton variant="gold" size="lg" onClick={handleRegister} className="flex-1" disabled={loading}>
+            {loading ? "..." : "Register"}
           </GameButton>
         </GameDialogFooter>
       </GameDialogContent>

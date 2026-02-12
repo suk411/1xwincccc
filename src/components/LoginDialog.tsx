@@ -8,28 +8,40 @@ import {
 } from "./GameDialog";
 import { GameInput } from "./GameInput";
 import { GameButton } from "./GameButton";
+import { authService } from "@/services/authService";
+import { toast } from "@/hooks/use-toast";
 
 interface LoginDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSwitchToRegister: () => void;
-  onLogin: (phone: string, password: string) => void;
+  onLoginSuccess: () => void;
 }
 
-const LoginDialog = ({ open, onOpenChange, onSwitchToRegister, onLogin }: LoginDialogProps) => {
+const LoginDialog = ({ open, onOpenChange, onSwitchToRegister, onLoginSuccess }: LoginDialogProps) => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [phoneError, setPhoneError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const isPhoneValid = /^\d{10}$/.test(phone);
     const isPasswordValid = password.length >= 6;
     setPhoneError(!isPhoneValid);
     setPasswordError(!isPasswordValid);
-    if (isPhoneValid && isPasswordValid) {
-      onLogin(phone, password);
+    if (!isPhoneValid || !isPasswordValid) return;
+
+    setLoading(true);
+    try {
+      await authService.login(phone, password);
+      toast({ title: "Login successful" });
       onOpenChange(false);
+      onLoginSuccess();
+    } catch (err: any) {
+      toast({ title: "Login Failed", description: err.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,7 +56,7 @@ const LoginDialog = ({ open, onOpenChange, onSwitchToRegister, onLogin }: LoginD
         <GameDialogBody>
           <div className="w-full flex flex-col gap-3">
             <GameInput
-              icon={<Phone size={18} />}
+              icon={<><Phone size={18} /><span className="text-[#e37681] text-xs font-bold ml-1">+91</span></>}
               placeholder="Enter phone number"
               hint={phoneError ? "Enter valid 10-digit number" : "10-digit phone number"}
               error={phoneError}
@@ -83,8 +95,8 @@ const LoginDialog = ({ open, onOpenChange, onSwitchToRegister, onLogin }: LoginD
           <GameButton variant="red" size="lg" onClick={() => onOpenChange(false)} className="flex-1">
             Cancel
           </GameButton>
-          <GameButton variant="gold" size="lg" onClick={handleLogin} className="flex-1">
-            Login
+          <GameButton variant="gold" size="lg" onClick={handleLogin} className="flex-1" disabled={loading}>
+            {loading ? "..." : "Login"}
           </GameButton>
         </GameDialogFooter>
       </GameDialogContent>
