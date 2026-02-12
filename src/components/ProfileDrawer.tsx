@@ -60,14 +60,14 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             {/* User details */}
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-white font-semibold text-lg">1xwin37859</span>
+                <span className="text-white font-semibold text-lg">1xking37859</span>
                 <img src={pencilIcon} alt="Edit" className="w-4 h-4" />
               </div>
               <div className="flex items-center mt-1">
                 <span className="text-gray-300 text-sm">ID:37859</span>
 
                 {/* VIP badge with level text overlay */}
-                <div className="relative ml-2 w-20 h-8">
+                <div className="relative ml-2 w-16 h-6">
                   <img src={vipBadge} alt="VIP" className="w-full h-full  object-contain" />
                   <span className="absolute inset-0 flex items-center justify-center pl-4 text-[12px] font-bold text-yellow-300">
                     {vipLevel}
@@ -88,7 +88,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-white font-medium">VIP1</span>
-               <GameButton variant="red" size="sm" className="w-20 text-[10px] ">Upgrade</GameButton>
+               <GameButton variant="red" size="sm" className="w-20 h-6 text-[10px] ">Upgrade</GameButton>
             </div>
           </div>
 
