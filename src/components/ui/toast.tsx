@@ -14,7 +14,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] flex flex-col items-center justify-center",
+      "fixed top-[10%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] flex flex-col items-center justify-center",
       className,
     )}
     {...props}
@@ -24,17 +24,17 @@ ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
   "group pointer-events-auto relative flex flex-col items-stretch justify-center " +
-    "rounded-lg px-6 py-3 shadow-lg transition-all text-center " +
+    "rounded-lg px-3 py-2 shadow-lg transition-all text-center " +
     "w-[320px] max-w-[90vw] break-words " +
     // enter animation
-    "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-2 " +
+    "data-[state=open]:animate-in data-[state=open]:fade-in-20 data-[state=open]:slide-in-from-top-6 " +
     // exit animation (fade only, no slide)
-    "data-[state=closed]:animate-out data-[state=closed]:fade-out-80",
+    "data-[state=closed]:animate-out data-[state=closed]:fade-out-20",
   {
     variants: {
       variant: {
-        default: "bg-black/50 text-white border-none",
-        destructive: "bg-red-900/70 text-white border-none",
+        default: "bg-black text-white border-none",
+        destructive: "bg-black text-white border-none",
       },
     },
     defaultVariants: {
