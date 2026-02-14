@@ -19,10 +19,14 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
   return (
     <div
       className={cn(
-        "flex items-center overflow-x-auto scrollbar-hide",
+        "flex items-center overflow-x-auto scrollbar-hide space-x-2 px-2",
         className
       )}
-      style={{ backgroundColor: "#1a0a10", touchAction: "pan-x", WebkitOverflowScrolling: "touch" }}
+      style={{
+        backgroundColor: "#1a0a10",
+        touchAction: "pan-x",
+        WebkitOverflowScrolling: "touch",
+      }}
     >
       {tabs.map((tab) => {
         const isActive = tab.value === value;
@@ -44,7 +48,11 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
               />
             )}
 
-            {tab.icon && <span className="relative z-10 w-4 h-4 flex items-center justify-center">{tab.icon}</span>}
+            {tab.icon && (
+              <span className="relative z-10 w-4 h-4 flex items-center justify-center">
+                {tab.icon}
+              </span>
+            )}
             <span className="relative z-10">{tab.label}</span>
           </button>
         );
