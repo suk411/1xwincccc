@@ -19,7 +19,7 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
   return (
     <div
       className={cn(
-        "flex items-center rounded-lg overflow-hidden",
+        "flex items-center rounded-[1%] overflow-hidden",
         className
       )}
       style={{ backgroundColor: "#1a0a10" }}
@@ -31,7 +31,7 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
             key={tab.value}
             onClick={() => onChange(tab.value)}
             className={cn(
-              "relative flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 text-xs font-medium transition-colors",
+              "relative flex-1 flex items-center justify-center gap-1.5 py-1 px-3 text-sm font-medium transition-colors",
               isActive ? "text-white" : "text-muted-foreground"
             )}
           >

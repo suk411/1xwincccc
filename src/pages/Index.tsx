@@ -27,6 +27,8 @@ const Index = () => {
               { label: "Recent", value: "recent", icon: <Clock size={14} /> },
               { label: "Slots", value: "slots", icon: <Gamepad2 size={14} /> },
               { label: "Casino", value: "casino", icon: <Dice5 size={14} /> },
+                    { label: "cars", value: "cars", icon: <Gamepad2 size={14} /> },
+              { label: "Casino", value: "casino", icon: <Dice5 size={14} /> },
             ]}
             value={activeTab}
             onChange={setActiveTab}
