@@ -1,84 +1,78 @@
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import tabGlow from "@/assets/tab-active-glow.png";
+import PageLayout from "@/components/PageLayout";
+import { GameButton } from "@/components/GameButton";
+import { GameInput } from "@/components/GameInput";
+import { GameTabs } from "@/components/GameTabs";
+import { toast } from "@/hooks/use-toast";
+import { CreditCard, User, LayoutGrid, Clock, Gamepad2, Dice5 } from "lucide-react";
+import { useState } from "react";
 
-export interface GameTab {
-  label: string;
-  value: string;
-  icon?: React.ReactNode;
-}
+const Index = () => {
+  const [account, setAccount] = useState("");
+  const [ifsc, setIfsc] = useState("");
+  const [name, setName] = useState("Sukfeg");
+  const [activeTab, setActiveTab] = useState("all");
 
-interface GameTabsProps {
-  tabs: GameTab[];
-  value: string;
-  onChange: (value: string) => void;
-  className?: string;
-}
-
-const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className }) => {
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-
-  // Convert vertical mouse wheel into horizontal scroll
-  React.useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-        el.scrollLeft += e.deltaY;
-      }
-    };
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, []);
+  const handleToast = () => {
+    toast({ title: "Copy successful" });
+  };
 
   return (
-    <div
-      ref={scrollRef}
-      className={cn(
-        "overflow-x-auto scrollbar-hide bg-[#1a0a10] px-2",
-        className
-      )}
-      style={{
-        touchAction: "pan-x",
-        WebkitOverflowScrolling: "touch", // smooth flick scrolling on iOS
-      }}
-    >
-      <div className="flex space-x-2">
-        {tabs.map((tab) => {
-          const isActive = tab.value === value;
-          return (
-            <button
-              key={tab.value}
-              onClick={() => onChange(tab.value)}
-              className={cn(
-                "relative flex-shrink-0 items-center justify-center gap-1.5 py-1 px-4 text-sm font-medium transition-colors min-w-[120px]",
-                isActive ? "text-white" : "text-muted-foreground"
-              )}
-            >
-              {isActive && (
-                <img
-                  src={tabGlow}
-                  alt=""
-                  className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom z-0 pointer-events-none"
-                />
-              )}
-              {tab.icon && (
-                <span className="relative z-10 w-4 h-4 flex items-center justify-center">
-                  {tab.icon}
-                </span>
-              )}
-              <span className="relative z-10">{tab.label}</span>
-            </button>
-          );
-        })}
+    <PageLayout title="Home">
+      <div className="flex-1 flex flex-col items-center justify-start gap-4 px-4 pt-6">
+        {/* GameTabs demo */}
+        <div className="w-full overflow-hidden">
+          <GameTabs
+            tabs={[
+              { label: "All", value: "all", icon: <LayoutGrid size={14} /> },
+              { label: "Recent", value: "recent", icon: <Clock size={14} /> },
+              { label: "Slots", value: "slots", icon: <Gamepad2 size={14} /> },
+              { label: "Casino", value: "casino", icon: <Dice5 size={14} /> },
+              { label: "Cars", value: "cars", icon: <Gamepad2 size={14} /> },
+              { label: "Sports", value: "sports", icon: <Dice5 size={14} /> },
+            ]}
+            value={activeTab}
+            onChange={setActiveTab}
+          />
+        </div>
+
+        {/* GameInput demo */}
+        <div className="w-full max-w-sm flex flex-col gap-3">
+          <GameInput
+            icon={<CreditCard size={18} />}
+            placeholder="Enter account number"
+            hint="Enter 16 or 18-digit account"
+            value={account}
+            onChange={(e) => setAccount(e.target.value)}
+          />
+          <GameInput
+            icon={<CreditCard size={18} />}
+            placeholder="Enter IFSC code"
+            hint="Please enter 11 digits"
+            error
+            value={ifsc}
+            onChange={(e) => setIfsc(e.target.value)}
+            onClear={() => setIfsc("")}
+          />
+          <GameInput
+            icon={<User size={18} />}
+            placeholder="Enter name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        {/* Existing buttons */}
+        <div className="flex gap-3 mt-4">
+          <GameButton variant="red" size="lg">Save QR</GameButton>
+          <GameButton variant="gold" size="lg" onClick={handleToast}>Copy link</GameButton>
+        </div>
+        <div className="flex gap-3">
+          <GameButton variant="red" size="sm">Small Red</GameButton>
+          <GameButton variant="gold" size="sm">Small Gold</GameButton>
+        </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
-GameTabs.displayName = "GameTabs";
-
-export { GameTabs };
+export default Index;
