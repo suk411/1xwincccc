@@ -31,7 +31,7 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
             key={tab.value}
             onClick={() => onChange(tab.value)}
             className={cn(
-              "relative flex-1 flex items-center justify-center gap-1.5 py-1 px-3 text-sm font-medium transition-colors",
+              "relative flex-shrink-0 flex items-center justify-center gap-1.5 py-1 px-3 text-sm font-medium transition-colors whitespace-nowrap",
               isActive ? "text-white" : "text-muted-foreground"
             )}
           >
