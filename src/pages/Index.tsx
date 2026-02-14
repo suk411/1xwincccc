@@ -3,6 +3,7 @@ import { GameButton } from "@/components/GameButton";
 import { GameInput } from "@/components/GameInput";
 import { GameTabs } from "@/components/GameTabs";
 import { toast } from "@/hooks/use-toast";
+import { GameCard } from "@/components/GameCard";
 import { CreditCard, User, LayoutGrid, Clock, Gamepad2, Dice5 } from "lucide-react";
 import { useState } from "react";
 
@@ -18,7 +19,7 @@ const Index = () => {
 
   return (
     <PageLayout title="Home">
-      <div className="flex-1 flex flex-col items-center justify-start gap-4 px-4 pt-6">
+      <div className="flex-1 flex flex-col items-center justify-start gap-4 mb-10 px-4 pt-6">
         {/* GameTabs demo */}
         <div className="w-full">
           <GameTabs
@@ -70,6 +71,16 @@ const Index = () => {
           <GameButton variant="red" size="sm">Small Red</GameButton>
           <GameButton variant="gold" size="sm">Small Gold</GameButton>
         </div>
+        <GameCard className="p-3 h-24 w-[95%]">
+  <GameCard variant="inner" className="p-3 mx-10">
+    Content here
+    sdfsdfsfsdf
+    sdfsdfsdf
+
+    sdfssdfsdf
+  </GameCard>
+</GameCard>
+
       </div>
     </PageLayout>
   );
