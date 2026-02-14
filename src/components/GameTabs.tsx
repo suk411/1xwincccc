@@ -35,17 +35,17 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
               isActive ? "text-white" : "text-muted-foreground"
             )}
           >
-            {tab.icon && <span className="w-4 h-4 flex items-center justify-center">{tab.icon}</span>}
-            <span>{tab.label}</span>
-
-            {/* Active glow indicator */}
+            {/* Glow image behind everything */}
             {isActive && (
               <img
                 src={tabGlow}
                 alt=""
-                className="absolute bottom-0 left-0 w-full h-[3px] object-cover"
+                className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom z-0 pointer-events-none"
               />
             )}
+
+            {tab.icon && <span className="relative z-10 w-4 h-4 flex items-center justify-center">{tab.icon}</span>}
+            <span className="relative z-10">{tab.label}</span>
           </button>
         );
       })}
