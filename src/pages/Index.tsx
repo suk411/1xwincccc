@@ -20,7 +20,7 @@ const Index = () => {
     <PageLayout title="Home">
       <div className="flex-1 flex flex-col items-center justify-start gap-4 px-4 pt-6">
         {/* GameTabs demo */}
-        <div className="w-full overflow-hidden">
+        <div className="w-full">
           <GameTabs
             tabs={[
               { label: "All", value: "all", icon: <LayoutGrid size={14} /> },
