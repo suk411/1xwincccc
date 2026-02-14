@@ -19,7 +19,7 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
   return (
     <div
       className={cn(
-        "flex items-center rounded-lg overflow-hidden",
+        "flex items-center rounded-lg overflow-x-auto scrollbar-hide",
         className
       )}
       style={{ backgroundColor: "#1a0a10" }}
