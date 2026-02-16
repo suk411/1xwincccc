@@ -3,6 +3,7 @@ import { GameCard } from "@/components/GameCard";
 import headerBg from "@/assets/bank/header-bg.png";
 import bankIcon from "@/assets/bank/bank-icon.png";
 import backArrow from "@/assets/icons/back-arrow.png";
+import depositBadge from "@/assets/bank/deposit-badge.png";
 import { useState } from "react";
 import { Info, ChevronRight } from "lucide-react";
 
@@ -89,6 +90,45 @@ const Bank = () => {
             </span>
           </div>
           <ChevronRight size={18} className="text-primary" />
+        </GameCard>
+
+        {/* Choose Deposit Amount */}
+        <GameCard className="p-3 flex flex-col gap-2">
+          <span className="text-white font-bold text-sm">Choose Deposit Amount</span>
+          <div className="grid grid-cols-3 gap-2">
+            {[200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000].map((amount) => {
+              const isActive = amount === 200;
+              return (
+                <div
+                  key={amount}
+                  className="relative rounded-md overflow-hidden flex flex-col"
+                  style={{
+                    backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
+                  }}
+                >
+                  {/* Badge */}
+                  <img
+                    src={depositBadge}
+                    alt=""
+                    className="absolute top-0 left-0 w-8 h-5 object-contain"
+                  />
+                  <span className="absolute top-0.5 left-1 text-white text-[8px] font-bold">1st</span>
+                  {/* Amount */}
+                  <span className="text-white font-bold text-base text-center pt-4 pb-0.5">{amount.toLocaleString()}</span>
+                  {/* Bonus strip */}
+                  <div
+                    className="text-center text-[11px] font-bold py-0.5 rounded-b-md"
+                    style={{
+                      backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
+                      color: "#5a2d0a",
+                    }}
+                  >
+                    +1.4
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </GameCard>
 
         {/* Back arrow row */}
