@@ -10,7 +10,7 @@ import upayLogo from "@/assets/bank/upay-logo.png";
 import giftBox from "@/assets/bank/gift-box-small.png";
 import eventBg from "@/assets/bank/event-bg.png";
 import { useState } from "react";
-import { Info, ChevronRight, Check } from "lucide-react";
+import { Info,ClipboardCheck, ChevronRight, Check } from "lucide-react";
 
 const AMOUNTS = [200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 
@@ -46,27 +46,17 @@ const Bank = () => {
         </div>
         {/* Right: records & help icons */}
         <div className="relative z-10 flex items-center gap-3">
-          <button className="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <path d="M3 9h18M9 3v18" />
-            </svg>
-          </button>
-          <button className="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
-            </svg>
-          </button>
+          <ClipboardCheck size={24} className="text-white cursor-pointer mr-4" onClick={() => navigate("/bank/records")} />
+        
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 px-4 pt-4">
+      <div className="flex flex-col gap-2 px-2 pt-2">
         {/* Deposit / Withdraw tabs */}
-        <GameCard className="p-1.5 flex gap-2">
+        <GameCard className="p-1.5 flex gap-1">
           <button
             onClick={() => setActiveTab("deposit")}
-            className="flex-1 h-9 rounded-md text-sm font-bold transition-all"
+            className="flex-1 h-9 rounded-sm  text-sm font-bold transition-all"
             style={
               activeTab === "deposit"
                 ? {
@@ -101,9 +91,7 @@ const Bank = () => {
           <div className="flex items-center gap-2">
             <Info size={16} className="text-primary" />
             <span className="text-white text-xs">You have 1 pending orders</span>
-            <span className="bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-              1
-            </span>
+          
           </div>
           <ChevronRight size={18} className="text-primary" />
         </GameCard>
