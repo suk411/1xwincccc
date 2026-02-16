@@ -4,12 +4,25 @@ import headerBg from "@/assets/bank/header-bg.png";
 import bankIcon from "@/assets/bank/bank-icon.png";
 import backArrow from "@/assets/icons/back-arrow.png";
 import depositBadge from "@/assets/bank/deposit-badge.png";
+import upiLogo from "@/assets/bank/upi-logo.png";
+import usdtLogo from "@/assets/bank/usdt-logo.png";
+import upayLogo from "@/assets/bank/upay-logo.png";
+import giftBox from "@/assets/bank/gift-box-small.png";
+import eventBg from "@/assets/bank/event-bg.png";
 import { useState } from "react";
-import { Info, ChevronRight } from "lucide-react";
+import { Info, ChevronRight, Check } from "lucide-react";
 
 const Bank = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
+
+  const [activeChannel, setActiveChannel] = useState("upi");
+
+  const channels = [
+    { id: "upi", label: "UPI", icon: upiLogo },
+    { id: "usdt", label: "USDT", icon: usdtLogo },
+    { id: "upay", label: "UPAY", icon: upayLogo },
+  ];
 
   return (
     <main className="relative flex-1 flex flex-col pb-20 max-w-screen-lg mx-auto w-full">
@@ -128,6 +141,50 @@ const Bank = () => {
                 </div>
               );
             })}
+          </div>
+        </GameCard>
+
+        {/* Payment Channel */}
+        <GameCard className="p-3 flex flex-col gap-2">
+          <span className="text-white font-bold text-sm">Payment channel</span>
+          <div className="flex gap-2">
+            {channels.map((ch) => {
+              const isActive = activeChannel === ch.id;
+              return (
+                <button
+                  key={ch.id}
+                  onClick={() => setActiveChannel(ch.id)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all border"
+                  style={{
+                    backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
+                    borderColor: isActive ? "rgb(200, 60, 90)" : "transparent",
+                    color: "white",
+                  }}
+                >
+                  <img src={ch.icon} alt={ch.label} className="w-5 h-5 object-contain rounded" />
+                  {ch.label}
+                </button>
+              );
+            })}
+          </div>
+        </GameCard>
+
+        {/* Deposit Event */}
+        <GameCard className="p-3 flex flex-col gap-2">
+          <span className="text-white font-bold text-sm">Deposit Event</span>
+          <div
+            className="relative rounded-lg overflow-hidden flex items-center gap-3 px-3 py-3"
+            style={{ backgroundImage: `url(${eventBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
+          >
+            <img src={giftBox} alt="Gift" className="w-10 h-10 object-contain" />
+            <div className="flex flex-col flex-1">
+              <span className="text-green-400 text-[10px] font-bold">First Deposit</span>
+              <span className="text-white font-bold text-sm">100% Deposit Match Bonus</span>
+              <span className="text-white/60 text-[10px]">3x Turnover required on total amount</span>
+            </div>
+            <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+              <Check size={12} className="text-white" />
+            </div>
           </div>
         </GameCard>
 
