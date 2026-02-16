@@ -12,9 +12,12 @@ import eventBg from "@/assets/bank/event-bg.png";
 import { useState } from "react";
 import { Info, ChevronRight, Check } from "lucide-react";
 
+const AMOUNTS = [200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
+
 const Bank = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
+  const [selectedAmount, setSelectedAmount] = useState(200);
 
   const [activeChannel, setActiveChannel] = useState("upi");
 
@@ -25,7 +28,7 @@ const Bank = () => {
   ];
 
   return (
-    <main className="relative flex-1 flex flex-col pb-20 max-w-screen-lg mx-auto w-full">
+    <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
       {/* Top Header with red bg */}
       <div className="relative w-full h-14 flex items-center justify-between px-4">
         <img
@@ -109,12 +112,13 @@ const Bank = () => {
         <GameCard className="p-3 flex flex-col gap-2">
           <span className="text-white font-bold text-sm">Choose Deposit Amount</span>
           <div className="grid grid-cols-3 gap-2">
-            {[200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000].map((amount) => {
-              const isActive = amount === 200;
+            {AMOUNTS.map((amount) => {
+              const isActive = selectedAmount === amount;
               return (
                 <div
                   key={amount}
-                  className="relative rounded-md overflow-hidden flex flex-col"
+                  onClick={() => setSelectedAmount(amount)}
+                  className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
                   style={{
                     backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
                   }}
@@ -188,13 +192,36 @@ const Bank = () => {
           </div>
         </GameCard>
 
-        {/* Back arrow row */}
-        <div className="flex items-center gap-2 mt-1">
-          <button onClick={() => navigate(-1)} className="w-6 h-6">
-            <img src={backArrow} alt="Back" className="w-full h-full object-contain" />
-          </button>
-          <span className="text-white/70 text-sm">Back</span>
+      </div>
+
+      {/* Fixed bottom payment bar */}
+      <div
+        className="fixed bottom-16 left-0 right-0 z-30 px-4 py-3 flex items-center justify-between"
+        style={{
+          backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
+        }}
+      >
+        <div className="flex flex-col">
+          <div className="flex items-center gap-1">
+            <span className="text-white/70 text-xs">Payment</span>
+            <span className="text-white font-bold text-sm">₹{selectedAmount.toLocaleString()}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-white/50 text-[10px]">Received</span>
+            <span className="text-green-400 text-[10px] font-bold">₹{(selectedAmount + 1.4).toLocaleString()}</span>
+            <span className="text-white/50 text-[10px]">Bonus</span>
+            <span className="text-primary text-[10px] font-bold">₹1.4</span>
+          </div>
         </div>
+        <button
+          className="px-8 py-2 rounded-md font-bold text-sm"
+          style={{
+            backgroundImage: "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)",
+            color: "#5a2d0a",
+          }}
+        >
+          Pay
+        </button>
       </div>
     </main>
   );
