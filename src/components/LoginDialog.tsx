@@ -65,7 +65,7 @@ icon={<Phone size={18} />}
                 setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
                 setPhoneError(false);
               }}
-              onClear={() => setPhone("")}
+              
               type="tel"
               inputMode="numeric"
             />
@@ -79,7 +79,7 @@ icon={<Phone size={18} />}
                 setPassword(e.target.value);
                 setPasswordError(false);
               }}
-              onClear={() => setPassword("")}
+              
               type="password"
             />
           </div>

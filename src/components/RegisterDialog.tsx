@@ -66,7 +66,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
                 setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
                 setPhoneError(false);
               }}
-              onClear={() => setPhone("")}
+              
               type="tel"
               inputMode="numeric"
             />
@@ -80,7 +80,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
                 setPassword(e.target.value);
                 setPasswordError(false);
               }}
-              onClear={() => setPassword("")}
+              
               type="password"
             />
             <GameInput
@@ -88,7 +88,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
               placeholder="Invite code (optional)"
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
-              onClear={() => setInviteCode("")}
+              
             />
           </div>
           <button
