@@ -12,6 +12,7 @@ import eventBg from "@/assets/bank/event-bg.png";
 import { useState } from "react";
 import { Info, ClipboardCheck, ChevronRight, Check, PlusCircle, Wallet, CreditCard, CheckCircle } from "lucide-react";
 import AddAccountDialog, { type BankAccount } from "@/components/bank/AddAccountDialog";
+import { GameButton } from "@/components/GameButton";
 
 const DEPOSIT_AMOUNTS = [200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
@@ -35,7 +36,7 @@ const Bank = () => {
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
       {/* Top Header with red bg */}
-      <div className="relative w-full h-14 flex items-center justify-between px-4">
+      <div className="relative w-full h-12 flex items-center justify-between px-4">
         <img
           src={headerBg}
           alt=""
@@ -51,17 +52,17 @@ const Bank = () => {
         </div>
         {/* Right: records & help icons */}
         <div className="relative z-10 flex items-center gap-3">
-          <ClipboardCheck size={24} className="text-white cursor-pointer mr-4" onClick={() => navigate("/bank/records")} />
+          <ClipboardCheck size={20} className="text-white cursor-pointer mr-4" onClick={() => navigate("/bank/records")} />
         
         </div>
       </div>
 
       <div className="flex flex-col gap-2 px-2 pt-2">
         {/* Deposit / Withdraw tabs */}
-        <GameCard className="p-1.5 flex gap-1">
+        <GameCard className="flex gap-1">
           <button
             onClick={() => setActiveTab("deposit")}
-            className="flex-1 h-9 rounded-sm  text-sm font-bold transition-all"
+            className="flex-1 h-8 rounded-sm  text-sm transition-all"
             style={
               activeTab === "deposit"
                 ? {
@@ -76,7 +77,7 @@ const Bank = () => {
           </button>
           <button
             onClick={() => setActiveTab("withdraw")}
-            className="flex-1 h-9 rounded-md text-sm font-bold transition-all"
+            className="flex-1 h-8 rounded-md text-sm  transition-all"
             style={
               activeTab === "withdraw"
                 ? {
@@ -96,15 +97,15 @@ const Bank = () => {
             {/* Pending orders */}
             <GameCard className="px-3 py-2.5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Info size={16} className="text-primary" />
+                <Info size={16} className="text-red-600" />
                 <span className="text-white text-xs">You have 1 pending orders</span>
               </div>
-              <ChevronRight size={18} className="text-primary" />
+              <ChevronRight size={18} className="text-white" />
             </GameCard>
 
             {/* Choose Deposit Amount */}
-            <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white font-bold text-sm">Choose Deposit Amount</span>
+            <GameCard className="p-2 flex flex-col gap-2">
+              <span className="text-white  text-sm">Choose Deposit Amount</span>
               <div className="grid grid-cols-3 gap-2">
                 {DEPOSIT_AMOUNTS.map((amount) => {
                   const isActive = selectedAmount === amount;
@@ -117,11 +118,11 @@ const Bank = () => {
                         backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
                       }}
                     >
-                      <img src={depositBadge} alt="" className="absolute top-0 left-0 w-8 h-5 object-contain" />
-                      <span className="absolute top-0.5 left-1 text-white text-[8px] font-bold">1st</span>
-                      <span className="text-white font-bold text-base text-center pt-4 pb-0.5">{amount.toLocaleString()}</span>
+                      <img src={depositBadge} alt="" className="absolute top-0left-0 w-12 h-5 object-contain" />
+                      <span className="absolute top-0  left-4 text-white text-[8px] font-bold">1st</span>
+                      <span className="text-white text-base text-center pt-2.5  pb-0.5">{amount.toLocaleString()}</span>
                       <div
-                        className="text-center text-[11px] font-bold py-0.5 rounded-b-md"
+                        className="text-center text-[11px] font-bold  rounded-b-md"
                         style={{
                           backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
                           color: "#5a2d0a",
@@ -278,7 +279,7 @@ const Bank = () => {
 
       {/* Fixed bottom payment bar */}
       <div
-        className="fixed bottom-16 left-0 right-0 z-30 px-4 py-3 flex items-center justify-between"
+        className="fixed bottom-10 pb-12  left-0 right-0 z-30 px-4  py-3 flex items-center justify-between"
         style={{
           backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
         }}
@@ -305,15 +306,11 @@ const Bank = () => {
             </div>
           )}
         </div>
-        <button
-          className="px-8 py-2 rounded-md font-bold text-sm"
-          style={{
-            backgroundImage: "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)",
-            color: "#5a2d0a",
-          }}
-        >
+        <GameButton className="px-8 mx-2 rounded-md font-bold text-sm" size="lg" variant="gold">
           {activeTab === "deposit" ? "Pay" : "Withdraw"}
-        </button>
+        </GameButton>
+          
+
       </div>
 
       <AddAccountDialog

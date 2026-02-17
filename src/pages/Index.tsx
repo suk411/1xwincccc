@@ -72,12 +72,9 @@ const Index = () => {
           <GameButton variant="gold" size="sm">Small Gold</GameButton>
         </div>
         <GameCard className="p-3 h-24 w-[95%]">
-  <GameCard variant="inner" className="p-3 mx-10">
+  <GameCard variant="inner" className="p-3 flex-1 text-center justify-center items-center">
     Content here
-    sdfsdfsfsdf
-    sdfsdfsdf
-
-    sdfssdfsdf
+   
   </GameCard>
 </GameCard>
 
