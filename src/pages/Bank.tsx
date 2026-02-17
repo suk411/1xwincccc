@@ -237,14 +237,14 @@ const Bank = () => {
                   }}
                 >
                   <div className="flex items-center gap-2">
-                    <CreditCard size={18} className="text-white" />
+                    <CreditCard size={18} className="text-primary" />
                     <div className="flex flex-col">
                       <span className="text-white text-sm ">{acc.name}</span>
                       <span className="text-white text-xs">{acc.accountNumber}</span>
                     </div>
                   </div>
                   {selectedAccountIdx === idx && (
-                    <CheckCircle size={20} className="text-primary" />
+                    <CheckCircle size={20} className="text-green-500" />
                   )}
                 </div>
               ))}
@@ -255,16 +255,17 @@ const Bank = () => {
                 style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
               >
                 <div className="flex items-center gap-2">
-                  <Wallet size={18} className="text-red-500" />
+                  <Wallet size={18} className="text-primary" />
                   <span className="text-yellow-400 text-sm ">Add Account</span>
                 </div>
                 <PlusCircle size={20} className="text-white" />
               </div>
             </GameCard>
+           
 
             {/* Withdrawal Fee */}
-            <GameCard className="px-3 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <GameCard className="px-5 py-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 ">
                 <Wallet size={16} className="text-white" />
                 <span className="text-white text-sm ">Withdrawal Fee</span>
               </div>
