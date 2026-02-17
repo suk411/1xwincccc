@@ -10,7 +10,8 @@ import upayLogo from "@/assets/bank/upay-logo.png";
 import giftBox from "@/assets/bank/gift-box-small.png";
 import eventBg from "@/assets/bank/event-bg.png";
 import { useState } from "react";
-import { Info, ClipboardCheck, ChevronRight, Check, PlusCircle, Wallet } from "lucide-react";
+import { Info, ClipboardCheck, ChevronRight, Check, PlusCircle, Wallet, CreditCard, CheckCircle } from "lucide-react";
+import AddAccountDialog, { type BankAccount } from "@/components/bank/AddAccountDialog";
 
 const DEPOSIT_AMOUNTS = [200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
@@ -21,6 +22,9 @@ const Bank = () => {
   const [selectedAmount, setSelectedAmount] = useState(200);
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
+  const [showAddAccount, setShowAddAccount] = useState(false);
+  const [savedAccounts, setSavedAccounts] = useState<BankAccount[]>([]);
+  const [selectedAccountIdx, setSelectedAccountIdx] = useState<number>(0);
 
   const channels = [
     { id: "upi", label: "UPI", icon: upiLogo },
@@ -223,7 +227,31 @@ const Bank = () => {
             {/* Withdrawal Account */}
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white font-bold text-sm">Withdrawal Account</span>
+
+              {savedAccounts.map((acc, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setSelectedAccountIdx(idx)}
+                  className="flex items-center justify-between rounded-md px-3 py-2.5 cursor-pointer"
+                  style={{
+                    backgroundColor: selectedAccountIdx === idx ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <CreditCard size={18} className="text-white/70" />
+                    <div className="flex flex-col">
+                      <span className="text-white text-sm font-bold">{acc.name}</span>
+                      <span className="text-white/60 text-xs">{acc.accountNumber}</span>
+                    </div>
+                  </div>
+                  {selectedAccountIdx === idx && (
+                    <CheckCircle size={20} className="text-primary" />
+                  )}
+                </div>
+              ))}
+
               <div
+                onClick={() => setShowAddAccount(true)}
                 className="flex items-center justify-between rounded-md px-3 py-2.5 cursor-pointer"
                 style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
               >
@@ -287,6 +315,16 @@ const Bank = () => {
           {activeTab === "deposit" ? "Pay" : "Withdraw"}
         </button>
       </div>
+
+      <AddAccountDialog
+        open={showAddAccount}
+        onClose={() => setShowAddAccount(false)}
+        onConfirm={(account) => {
+          setSavedAccounts((prev) => [...prev, account]);
+          setSelectedAccountIdx(savedAccounts.length);
+          setShowAddAccount(false);
+        }}
+      />
     </main>
   );
 };
