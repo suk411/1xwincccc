@@ -17,8 +17,8 @@ const GameInput = React.forwardRef<HTMLInputElement, GameInputProps>(
       <div className="w-full">
         <div
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 h-10 border",
-            error ? "border-[#e37681]" : "border-transparent",
+            "flex items-center gap-3 rounded-lg px-3 h-10 border transition-all duration-300",
+            error ? "border-[#e37681] scale-[1.03]" : "border-transparent",
             className
           )}
           style={{ backgroundColor: "#541324" }}
@@ -43,7 +43,7 @@ const GameInput = React.forwardRef<HTMLInputElement, GameInputProps>(
           )}
         </div>
         {hint && (
-          <p className="mt-1 ml-1 text-xs" style={{ color: "#964850" }}>
+          <p className={cn("mt-1 ml-1 text-xs", error ? "text-[#e37681]" : "text-[#964850]")}>
             {hint}
           </p>
         )}
