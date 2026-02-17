@@ -64,7 +64,7 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
               onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, "").slice(0, 18))}
               hint={errors.account || "Enter 16 or 18-digit account"}
               error={!!errors.account}
-              onClear={() => setAccountNumber("")}
+              
             />
             <GameInput
               icon={<CreditCard size={16} />}
@@ -73,7 +73,7 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
               onChange={(e) => setIfsc(e.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 11))}
               hint={errors.ifsc || "Please enter 11 digits"}
               error={!!errors.ifsc}
-              onClear={() => setIfsc("")}
+              
             />
             <GameInput
               icon={<User size={16} />}
@@ -82,7 +82,7 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
               onChange={(e) => setName(e.target.value.slice(0, 100))}
               hint={errors.name}
               error={!!errors.name}
-              onClear={() => setName("")}
+              
             />
           </div>
         </GameDialogBody>

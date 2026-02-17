@@ -52,7 +52,7 @@ const Index = () => {
             error
             value={ifsc}
             onChange={(e) => setIfsc(e.target.value)}
-            onClear={() => setIfsc("")}
+            
           />
           <GameInput
             icon={<User size={18} />}

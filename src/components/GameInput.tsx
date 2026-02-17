@@ -1,17 +1,19 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
 
 export interface GameInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;
   hint?: string;
   error?: boolean;
-  onClear?: () => void;
 }
 
 const GameInput = React.forwardRef<HTMLInputElement, GameInputProps>(
-  ({ className, icon, hint, error, onClear, value, ...props }, ref) => {
-    const showClear = onClear && value;
+  ({ className, icon, hint, error, type, ...props }, ref) => {
+    const [showPassword, setShowPassword] = React.useState(false);
+    const isPassword = type === "password";
+    const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
     return (
       <div className="w-full">
@@ -28,17 +30,17 @@ const GameInput = React.forwardRef<HTMLInputElement, GameInputProps>(
           )}
           <input
             ref={ref}
-            value={value}
+            type={inputType}
             className="flex-1 bg-transparent outline-none text-white text-base placeholder:text-[#964850] min-w-0"
             {...props}
           />
-          {showClear && (
+          {isPassword && (
             <button
               type="button"
-              onClick={onClear}
-              className="flex-shrink-0 w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-white/60 text-xs"
+              onClick={() => setShowPassword((p) => !p)}
+              className="flex-shrink-0 text-[#964850]"
             >
-              ✕
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           )}
         </div>
