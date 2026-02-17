@@ -138,7 +138,7 @@ const Bank = () => {
 
             {/* Payment Channel */}
             <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white font-bold text-sm">Payment channel</span>
+              <span className="text-white  text-sm">Payment channel</span>
               <div className="flex gap-2">
                 {channels.map((ch) => {
                   const isActive = activeChannel === ch.id;
@@ -146,7 +146,7 @@ const Bank = () => {
                     <button
                       key={ch.id}
                       onClick={() => setActiveChannel(ch.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all border"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs  transition-all border"
                       style={{
                         backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
                         borderColor: isActive ? "rgb(200, 60, 90)" : "transparent",
@@ -165,18 +165,16 @@ const Bank = () => {
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white font-bold text-sm">Deposit Event</span>
               <div
-                className="relative rounded-lg overflow-hidden flex items-center gap-3 px-3 py-3"
-                style={{ backgroundImage: `url(${eventBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
+                className="relative rounded-lg  flex items-center gap-3 px-3 py-3"
+                style={{ backgroundImage: `url(${eventBg})`, backgroundSize: "contain", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
               >
-                <img src={giftBox} alt="Gift" className="w-10 h-10 object-contain" />
+                <img src={giftBox} alt="Gift" className="w-16 h-16 object-contain" />
                 <div className="flex flex-col flex-1">
-                  <span className="text-green-400 text-[10px] font-bold">First Deposit</span>
-                  <span className="text-white font-bold text-sm">100% Deposit Match Bonus</span>
+                  <span className="text-white text-[10px] font-bold">First Deposit</span>
+                  <span className="text-green-500 font-bold text-sm">100% Deposit  Bonus</span>
                   <span className="text-white/60 text-[10px]">3x Turnover required on total amount</span>
                 </div>
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-                  <Check size={12} className="text-white" />
-                </div>
+                
               </div>
             </GameCard>
           </>
@@ -185,21 +183,21 @@ const Bank = () => {
             {/* Withdrawable & Restricted */}
             <GameCard className="p-3 flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-white/70 text-xs font-bold">Withdrawable:</span>
-                <span className="text-primary font-bold text-sm">₹50</span>
+                <span className="text-white text-xs ">Withdrawable:</span>
+                <span className="text-white text-sm">₹50</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-white/70 text-xs font-bold">Restricted Amount:</span>
+                <span className="text-white text-xs ">Restricted Amount:</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-primary text-xs">₹0</span>
-                <button className="text-primary text-xs font-bold underline">Turnover History&gt;&gt;</button>
+                <button className="text-primary text-xs underline">Turnover History</button>
               </div>
             </GameCard>
 
             {/* Select Withdraw Amount */}
             <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white font-bold text-sm">Select Amount</span>
+              <span className="text-white  text-sm">Select Amount</span>
               <div className="grid grid-cols-3 gap-2">
                 {WITHDRAW_AMOUNTS.map((amount) => {
                   const isActive = selectedWithdrawAmount === amount;
@@ -214,11 +212,11 @@ const Bank = () => {
                     >
                       {amount === 110 && (
                         <>
-                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-8 h-5 object-contain" />
-                          <span className="absolute top-0.5 left-1 text-white text-[8px] font-bold">1st</span>
+                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-10 h-5 object-contain" />
+                          <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
                         </>
                       )}
-                      <span className="text-white font-bold text-base text-center py-2.5">{amount.toLocaleString()}</span>
+                      <span className="text-white  text-base text-center py-2">{amount.toLocaleString()}</span>
                     </div>
                   );
                 })}
@@ -227,7 +225,7 @@ const Bank = () => {
 
             {/* Withdrawal Account */}
             <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white font-bold text-sm">Withdrawal Account</span>
+              <span className="text-white  text-sm">Withdrawal Account</span>
 
               {savedAccounts.map((acc, idx) => (
                 <div
@@ -239,10 +237,10 @@ const Bank = () => {
                   }}
                 >
                   <div className="flex items-center gap-2">
-                    <CreditCard size={18} className="text-white/70" />
+                    <CreditCard size={18} className="text-white" />
                     <div className="flex flex-col">
-                      <span className="text-white text-sm font-bold">{acc.name}</span>
-                      <span className="text-white/60 text-xs">{acc.accountNumber}</span>
+                      <span className="text-white text-sm ">{acc.name}</span>
+                      <span className="text-white text-xs">{acc.accountNumber}</span>
                     </div>
                   </div>
                   {selectedAccountIdx === idx && (
@@ -257,20 +255,20 @@ const Bank = () => {
                 style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
               >
                 <div className="flex items-center gap-2">
-                  <Wallet size={18} className="text-primary" />
-                  <span className="text-primary text-sm font-bold">Add Account</span>
+                  <Wallet size={18} className="text-red-500" />
+                  <span className="text-yellow-400 text-sm ">Add Account</span>
                 </div>
-                <PlusCircle size={20} className="text-primary" />
+                <PlusCircle size={20} className="text-white" />
               </div>
             </GameCard>
 
             {/* Withdrawal Fee */}
             <GameCard className="px-3 py-2.5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Wallet size={16} className="text-white/70" />
-                <span className="text-white text-sm font-bold">Withdrawal Fee</span>
+                <Wallet size={16} className="text-white" />
+                <span className="text-white text-sm ">Withdrawal Fee</span>
               </div>
-              <span className="text-primary font-bold text-sm">₹3.3</span>
+              <span className="text-primary  text-sm">₹3.3</span>
             </GameCard>
           </>
         )}
@@ -306,7 +304,7 @@ const Bank = () => {
             </div>
           )}
         </div>
-        <GameButton className="px-8 mx-2 rounded-md font-bold text-sm" size="lg" variant="gold">
+        <GameButton className="px-8 mx-2 rounded-md  text-sm" size="sm" variant="gold">
           {activeTab === "deposit" ? "Pay" : "Withdraw"}
         </GameButton>
           
