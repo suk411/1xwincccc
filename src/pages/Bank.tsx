@@ -318,7 +318,7 @@ const Bank = () => {
 
       <AddAccountDialog
         open={showAddAccount}
-        onClose={() => setShowAddAccount(false)}
+        onOpenChange={setShowAddAccount}
         onConfirm={(account) => {
           setSavedAccounts((prev) => [...prev, account]);
           setSelectedAccountIdx(savedAccounts.length);
