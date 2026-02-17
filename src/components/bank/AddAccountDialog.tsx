@@ -26,13 +26,13 @@ const AddAccountDialog = ({ open, onClose, onConfirm }: AddAccountDialogProps) =
   const validate = () => {
     const e: typeof errors = {};
     if (!accountNumber || accountNumber.length < 16 || accountNumber.length > 18) {
-      e.account = "Enter 16 or 18-digit account";
+      e.account = "Please enter the account number format is incorrect";
     }
     if (!ifsc || ifsc.length !== 11) {
-      e.ifsc = "Please enter 11 digits";
+      e.ifsc = "Please enter the IFSC format is incorrect";
     }
     if (!name.trim()) {
-      e.name = "Please enter name";
+      e.name = "Enter name cannot be empty";
     }
     setErrors(e);
     return Object.keys(e).length === 0;
