@@ -1,83 +1,71 @@
 import PageLayout from "@/components/PageLayout";
-import { GameButton } from "@/components/GameButton";
-import { GameInput } from "@/components/GameInput";
-import { GameTabs } from "@/components/GameTabs";
-import { toast } from "@/hooks/use-toast";
-import { GameCard } from "@/components/GameCard";
-import { CreditCard, User, LayoutGrid, Clock, Gamepad2, Dice5 } from "lucide-react";
-import { useState } from "react";
+import bannerVideo from "@/assets/banner-video.mp4";
+import { useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
+
+const winMessages = [
+  "User d****z successfully withdrew 20000!",
+  "User q*******i won 3000 in mahjongS!",
+  "User v****k successfully withdrew 10000!",
+  "User a****m won 5000 in Roulette!",
+  "User s****p successfully withdrew 8000!",
+  "User r****j won 15000 in Teen Patti!",
+  "User m****n successfully withdrew 25000!",
+  "User k****l won 7500 in Slots!",
+  "User b****t successfully withdrew 12000!",
+  "User h****e won 9000 in Crash!",
+];
 
 const Index = () => {
-  const [account, setAccount] = useState("");
-  const [ifsc, setIfsc] = useState("");
-  const [name, setName] = useState("Sukfeg");
-  const [activeTab, setActiveTab] = useState("all");
+  const [muted, setMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const tickerRef = useRef<HTMLDivElement>(null);
+  const [tickerText, setTickerText] = useState("");
 
-  const handleToast = () => {
-    toast({ title: "Copy successful" });
-  };
+  useEffect(() => {
+    // Build a long repeating string for seamless scroll
+    const repeated = [...winMessages, ...winMessages, ...winMessages].join("   🎰   ");
+    setTickerText(repeated);
+  }, []);
 
   return (
-    <PageLayout title="Home">
-      <div className="flex-1 flex flex-col items-center justify-start gap-4 mb-10 px-4 pt-6">
-        {/* GameTabs demo */}
-        <div className="w-full">
-          <GameTabs
-            tabs={[
-              { label: "All", value: "all", icon: <LayoutGrid size={14} /> },
-              { label: "Recent", value: "recent", icon: <Clock size={14} /> },
-              { label: "Slots", value: "slots", icon: <Gamepad2 size={14} /> },
-              { label: "Casino", value: "casino", icon: <Dice5 size={14} /> },
-              { label: "Cars", value: "cars", icon: <Gamepad2 size={14} /> },
-              { label: "Sports", value: "sports", icon: <Dice5 size={14} /> },
-            ]}
-            value={activeTab}
-            onChange={setActiveTab}
+    <PageLayout>
+      <div className="flex-1 flex flex-col gap-0 -mx-4 -mt-4">
+        {/* Video Banner */}
+        <div className="relative w-full aspect-video bg-black">
+          <video
+            ref={videoRef}
+            src={bannerVideo}
+            autoPlay
+            loop
+            muted={muted}
+            playsInline
+            className="w-full h-full object-cover"
           />
+          <button
+            onClick={() => setMuted((m) => !m)}
+            className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center"
+          >
+            {muted ? (
+              <VolumeX size={16} className="text-white" />
+            ) : (
+              <Volume2 size={16} className="text-white" />
+            )}
+          </button>
         </div>
 
-        {/* GameInput demo */}
-        <div className="w-full max-w-sm flex flex-col gap-3">
-          <GameInput
-            icon={<CreditCard size={18} />}
-            placeholder="Enter account number"
-            hint="Enter 16 or 18-digit account"
-            value={account}
-            onChange={(e) => setAccount(e.target.value)}
-          />
-          <GameInput
-            icon={<CreditCard size={18} />}
-            placeholder="Enter IFSC code"
-            hint="Please enter 11 digits"
-            error
-            value={ifsc}
-            onChange={(e) => setIfsc(e.target.value)}
-            
-          />
-          <GameInput
-            icon={<User size={18} />}
-            placeholder="Enter name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+        {/* Scrolling Notice Ticker */}
+        <div className="w-full bg-[#1a1028] border-y border-[#2a1a3a] py-1.5 overflow-hidden flex items-center gap-2 px-2">
+          <span className="text-xs flex-shrink-0">🔊</span>
+          <div className="overflow-hidden flex-1 relative">
+            <div
+              ref={tickerRef}
+              className="whitespace-nowrap animate-ticker text-xs text-muted-foreground"
+            >
+              {tickerText}
+            </div>
+          </div>
         </div>
-
-        {/* Existing buttons */}
-        <div className="flex gap-3 mt-4">
-          <GameButton variant="red" size="lg">Save QR</GameButton>
-          <GameButton variant="gold" size="lg" onClick={handleToast}>Copy link</GameButton>
-        </div>
-        <div className="flex gap-3">
-          <GameButton variant="red" size="sm">Small Red</GameButton>
-          <GameButton variant="gold" size="sm">Small Gold</GameButton>
-        </div>
-        <GameCard className="p-3 h-24 w-[95%]">
-  <GameCard variant="inner" className="p-3 flex-1 text-center justify-center items-center">
-    Content here
-   
-  </GameCard>
-</GameCard>
-
       </div>
     </PageLayout>
   );
