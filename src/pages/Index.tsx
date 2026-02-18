@@ -62,8 +62,12 @@ const Index = () => {
 
         {/* Profile Wallet Bar */}
         <div
-          className="relative w-full h-14 rounded-2xl flex items-center px-3 mt-2"
-          style={{ background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)' }}
+          className="relative w-full rounded-full flex items-center px-1.5 py-1.5 mt-2"
+          style={{
+            background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
+            border: '1.5px solid rgba(255, 180, 50, 0.45)',
+            boxShadow: '0 0 8px rgba(255, 150, 30, 0.15)',
+          }}
         >
           {/* Avatar */}
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-500/60 flex-shrink-0">
@@ -72,23 +76,23 @@ const Index = () => {
 
           {/* Balance */}
           <div className="flex items-center gap-1.5 ml-3 flex-1">
-            <img src={rupeeCoin} alt="₹" className="w-6 h-6 object-contain" />
-            <span className="text-yellow-400 font-bold text-lg">1.40</span>
+            <img src={rupeeCoin} alt="₹" className="w-5 h-5 object-contain" />
+            <span className="text-yellow-400 font-bold text-base">1.40</span>
           </div>
 
           {/* Action Icons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 mr-1">
             <button className="flex flex-col items-center gap-0.5">
-              <img src={depositIcon} alt="Deposit" className="w-7 h-7 object-contain" />
-              <span className="text-[9px] text-muted-foreground">Deposit</span>
+              <img src={depositIcon} alt="Deposit" className="w-6 h-6 object-contain" />
+              <span className="text-[8px] text-muted-foreground leading-none">Deposit</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
-              <img src={withdrawIcon} alt="Withdraw" className="w-7 h-7 object-contain" />
-              <span className="text-[9px] text-muted-foreground">Withdraw</span>
+              <img src={withdrawIcon} alt="Withdraw" className="w-6 h-6 object-contain" />
+              <span className="text-[8px] text-muted-foreground leading-none">Withdraw</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
-              <img src={vipIcon} alt="VIP" className="w-7 h-7 object-contain" />
-              <span className="text-[9px] text-muted-foreground">VIP</span>
+              <img src={vipIcon} alt="VIP" className="w-6 h-6 object-contain" />
+              <span className="text-[8px] text-muted-foreground leading-none">VIP</span>
             </button>
           </div>
         </div>
