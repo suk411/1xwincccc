@@ -2,6 +2,12 @@ import PageLayout from "@/components/PageLayout";
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
+import avatar from "@/assets/profile/avatar.png";
+import rupeeCoin from "@/assets/profile/coin-rupee.png";
+import walletBarBg from "@/assets/bank/wallet-bar-bg.png";
+import depositIcon from "@/assets/bank/deposit-icon.png";
+import withdrawIcon from "@/assets/bank/withdraw-icon.png";
+import vipIcon from "@/assets/bank/vip-icon.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
@@ -54,8 +60,41 @@ const Index = () => {
           </button>
         </div>
 
+        {/* Profile Wallet Bar */}
+        <div
+          className="relative w-full h-14 rounded-xl overflow-hidden flex items-center px-3 mt-2"
+          style={{ backgroundImage: `url(${walletBarBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        >
+          {/* Avatar */}
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-500/60 flex-shrink-0">
+            <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
+          </div>
+
+          {/* Balance */}
+          <div className="flex items-center gap-1.5 ml-3 flex-1">
+            <img src={rupeeCoin} alt="₹" className="w-6 h-6" />
+            <span className="text-yellow-400 font-bold text-lg">1.40</span>
+          </div>
+
+          {/* Action Icons */}
+          <div className="flex items-center gap-4">
+            <button className="flex flex-col items-center gap-0.5">
+              <img src={depositIcon} alt="Deposit" className="w-7 h-7" />
+              <span className="text-[9px] text-muted-foreground">Deposit</span>
+            </button>
+            <button className="flex flex-col items-center gap-0.5">
+              <img src={withdrawIcon} alt="Withdraw" className="w-7 h-7" />
+              <span className="text-[9px] text-muted-foreground">Withdraw</span>
+            </button>
+            <button className="flex flex-col items-center gap-0.5">
+              <img src={vipIcon} alt="VIP" className="w-7 h-7" />
+              <span className="text-[9px] text-muted-foreground">VIP</span>
+            </button>
+          </div>
+        </div>
+
         {/* Scrolling Notice Ticker */}
-        <div className="w-full bg-[#1a1028] border-y border-[#2a1a3a] py-1.5 overflow-hidden flex items-center gap-2 px-2">
+        <div className="w-full bg-[#1a1028] border-y border-[#2a1a3a] py-1.5 overflow-hidden flex items-center gap-2 px-2 mt-2 rounded-lg">
           <span className="text-xs flex-shrink-0">🔊</span>
           <div className="overflow-hidden flex-1 relative">
             <div
