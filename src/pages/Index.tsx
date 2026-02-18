@@ -1,13 +1,18 @@
 import PageLayout from "@/components/PageLayout";
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, ChevronRight } from "lucide-react";
 import avatar from "@/assets/profile/avatar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
-import walletBarBg from "@/assets/bank/wallet-bar-bg.png";
 import depositIcon from "@/assets/bank/deposit-icon.png";
 import withdrawIcon from "@/assets/bank/withdraw-icon.png";
 import vipIcon from "@/assets/bank/vip-icon.png";
+import tabCardBg from "@/assets/tabs/tab-card-bg.png";
+import firstDepositIcon from "@/assets/tabs/first-deposit-icon.png";
+import giftIcon from "@/assets/tabs/gift-icon.png";
+import slotsIcon from "@/assets/tabs/slots-icon.png";
+import casinoIcon from "@/assets/tabs/casino-icon.png";
+import telegramIcon from "@/assets/tabs/telegram-icon.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
@@ -22,6 +27,14 @@ const winMessages = [
   "User h****e won 9000 in Crash!",
 ];
 
+const categoryTabs = [
+  { icon: firstDepositIcon, label: "1ST DEPOSIT" },
+  { icon: giftIcon, label: "RELIEF" },
+  { icon: slotsIcon, label: "SLOTS" },
+  { icon: casinoIcon, label: "CASINO REBET" },
+  { icon: telegramIcon, label: "GROUP" },
+];
+
 const Index = () => {
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -29,7 +42,6 @@ const Index = () => {
   const [tickerText, setTickerText] = useState("");
 
   useEffect(() => {
-    // Build a long repeating string for seamless scroll
     const repeated = [...winMessages, ...winMessages, ...winMessages].join("   🎰   ");
     setTickerText(repeated);
   }, []);
@@ -60,6 +72,19 @@ const Index = () => {
           </button>
         </div>
 
+        {/* Scrolling Notice Ticker */}
+        <div className="w-full bg-[#1a1028] border-y border-[#2a1a3a] py-1.5 overflow-hidden flex items-center gap-2 px-2 mt-2 rounded-lg">
+          <span className="text-xs flex-shrink-0">🔊</span>
+          <div className="overflow-hidden flex-1 relative">
+            <div
+              ref={tickerRef}
+              className="whitespace-nowrap animate-ticker text-xs text-muted-foreground"
+            >
+              {tickerText}
+            </div>
+          </div>
+        </div>
+
         {/* Profile Wallet Bar */}
         <div
           className="relative w-full rounded-full flex items-center px-1.5 py-1.5 mt-2"
@@ -69,18 +94,13 @@ const Index = () => {
             boxShadow: '0 0 8px rgba(255, 150, 30, 0.15)',
           }}
         >
-          {/* Avatar */}
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-500/60 flex-shrink-0">
             <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
           </div>
-
-          {/* Balance */}
           <div className="flex items-center gap-1.5 ml-3 flex-1">
             <img src={rupeeCoin} alt="₹" className="w-5 h-5 object-contain" />
             <span className="text-yellow-400 font-bold text-base">1.40</span>
           </div>
-
-          {/* Action Icons */}
           <div className="flex items-center gap-3 mr-1">
             <button className="flex flex-col items-center gap-0.5">
               <img src={depositIcon} alt="Deposit" className="w-6 h-6 object-contain" />
@@ -97,17 +117,31 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Scrolling Notice Ticker */}
-        <div className="w-full bg-[#1a1028] border-y border-[#2a1a3a] py-1.5 overflow-hidden flex items-center gap-2 px-2 mt-2 rounded-lg">
-          <span className="text-xs flex-shrink-0">🔊</span>
-          <div className="overflow-hidden flex-1 relative">
-            <div
-              ref={tickerRef}
-              className="whitespace-nowrap animate-ticker text-xs text-muted-foreground"
+        {/* Category Tabs */}
+        <div className="flex items-center gap-2 mt-3 overflow-x-auto scrollbar-hide pb-1">
+          {categoryTabs.map((tab, i) => (
+            <button
+              key={i}
+              className="flex flex-col items-center gap-1 flex-shrink-0 w-[72px]"
             >
-              {tickerText}
-            </div>
-          </div>
+              <div
+                className="w-[68px] h-[68px] rounded-2xl overflow-hidden flex items-center justify-center p-2"
+                style={{
+                  backgroundImage: `url(${tabCardBg})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              >
+                <img src={tab.icon} alt={tab.label} className="w-12 h-12 object-contain" />
+              </div>
+              <span className="text-[9px] text-muted-foreground font-semibold leading-tight text-center">
+                {tab.label}
+              </span>
+            </button>
+          ))}
+          <button className="flex-shrink-0 w-8 h-[68px] flex items-center justify-center">
+            <ChevronRight size={20} className="text-muted-foreground" />
+          </button>
         </div>
       </div>
     </PageLayout>
