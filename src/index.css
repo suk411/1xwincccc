@@ -113,6 +113,6 @@
   }
 
   .animate-ticker {
-    animation: ticker 30s linear infinite;
+    animation: ticker 24s linear infinite;
   }
 }

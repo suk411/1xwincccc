@@ -30,9 +30,9 @@ const Index = () => {
 
   return (
     <PageLayout>
-      <div className="flex-1 flex flex-col gap-0 -mx-4 -mt-4">
+      <div className="flex-1 flex flex-col gap-0 -mt-4">
         {/* Video Banner */}
-        <div className="relative w-full aspect-video bg-black">
+        <div className="relative w-full rounded-lg overflow-hidden">
           <video
             ref={videoRef}
             src={bannerVideo}
@@ -40,7 +40,7 @@ const Index = () => {
             loop
             muted={muted}
             playsInline
-            className="w-full h-full object-cover"
+            className="w-full h-auto block"
           />
           <button
             onClick={() => setMuted((m) => !m)}
