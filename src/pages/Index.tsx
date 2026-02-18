@@ -10,8 +10,7 @@ import vipIcon from "@/assets/bank/vip-icon.png";
 import tabCardBg from "@/assets/tabs/tab-card-bg.png";
 import firstDepositIcon from "@/assets/tabs/first-deposit-icon.png";
 import giftIcon from "@/assets/tabs/gift-icon.png";
-import slotsIcon from "@/assets/tabs/slots-icon.png";
-import casinoIcon from "@/assets/tabs/casino-icon.png";
+
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 
 const winMessages = [
@@ -28,10 +27,9 @@ const winMessages = [
 ];
 
 const categoryTabs = [
-  { icon: firstDepositIcon, label: "1ST DEPOSIT" },
-  { icon: giftIcon, label: "RELIEF" },
-  { icon: slotsIcon, label: "SLOTS" },
-  { icon: casinoIcon, label: "CASINO REBET" },
+  { icon: giftIcon, label: "1ST DEPOSIT" },
+
+
   { icon: telegramIcon, label: "GROUP" },
 ];
 
@@ -48,7 +46,7 @@ const Index = () => {
 
   return (
     <PageLayout>
-      <div className="flex-1 flex flex-col gap-0 -mt-4">
+      <div className="flex-1 flex flex-col gap-0 pb-12 -mt-4">
         {/* Video Banner */}
         <div className="relative w-full rounded-lg overflow-hidden">
           <video
@@ -87,7 +85,7 @@ const Index = () => {
 
         {/* Profile Wallet Bar */}
         <div
-          className="relative w-full rounded-full flex items-center px-1.5 py-1.5 mt-2"
+          className="relative h-12 w-full rounded-full flex items-center px-1.5 py-1.5 mt-2"
           style={{
             background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
             border: '1.5px solid rgba(255, 180, 50, 0.45)',
@@ -139,9 +137,7 @@ const Index = () => {
               </span>
             </button>
           ))}
-          <button className="flex-shrink-0 w-8 h-[68px] flex items-center justify-center">
-            <ChevronRight size={20} className="text-muted-foreground" />
-          </button>
+         
         </div>
       </div>
     </PageLayout>
