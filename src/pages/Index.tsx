@@ -62,8 +62,8 @@ const Index = () => {
 
         {/* Profile Wallet Bar */}
         <div
-          className="relative w-full h-14 rounded-xl overflow-hidden flex items-center px-3 mt-2"
-          style={{ backgroundImage: `url(${walletBarBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          className="relative w-full h-14 rounded-2xl flex items-center px-3 mt-2"
+          style={{ background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)' }}
         >
           {/* Avatar */}
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-500/60 flex-shrink-0">
@@ -72,22 +72,22 @@ const Index = () => {
 
           {/* Balance */}
           <div className="flex items-center gap-1.5 ml-3 flex-1">
-            <img src={rupeeCoin} alt="₹" className="w-6 h-6" />
+            <img src={rupeeCoin} alt="₹" className="w-6 h-6 object-contain" />
             <span className="text-yellow-400 font-bold text-lg">1.40</span>
           </div>
 
           {/* Action Icons */}
           <div className="flex items-center gap-4">
             <button className="flex flex-col items-center gap-0.5">
-              <img src={depositIcon} alt="Deposit" className="w-7 h-7" />
+              <img src={depositIcon} alt="Deposit" className="w-7 h-7 object-contain" />
               <span className="text-[9px] text-muted-foreground">Deposit</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
-              <img src={withdrawIcon} alt="Withdraw" className="w-7 h-7" />
+              <img src={withdrawIcon} alt="Withdraw" className="w-7 h-7 object-contain" />
               <span className="text-[9px] text-muted-foreground">Withdraw</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
-              <img src={vipIcon} alt="VIP" className="w-7 h-7" />
+              <img src={vipIcon} alt="VIP" className="w-7 h-7 object-contain" />
               <span className="text-[9px] text-muted-foreground">VIP</span>
             </button>
           </div>
