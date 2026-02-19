@@ -16,8 +16,8 @@ export interface GameButtonProps
 const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
   ({ className, variant = "red", size = "lg", children, ...props }, ref) => {
     const sizeClasses = {
-      sm: "h-8 px-4 text-xs",
-      lg: "h-10 px-6 text-sm",
+      sm: "h-8 w-20 px-4 text-xs",
+      lg: "h-10 w-24 px-6 text-sm",
     };
 
     const textColor = variant === "gold" ? "text-[#5a2d0a]" : "text-white";
@@ -26,7 +26,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "relative inline-flex items-center justify-center font-bold transition-transform active:scale-95 overflow-hidden rounded-md border border-black/30",
+          "relative inline-flex items-center justify-center font-bold transition-transform active:scale-95 overflow-hidden rounded-[4px] border border-black/30",
           sizeClasses[size],
           textColor,
           className
