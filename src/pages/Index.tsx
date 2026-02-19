@@ -1,12 +1,7 @@
 import PageLayout from "@/components/PageLayout";
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
-<<<<<<< HEAD
 import { Volume2, VolumeX } from "lucide-react";
-=======
-import { useNavigate } from "react-router-dom";
-import { Volume2, VolumeX, ChevronRight } from "lucide-react";
->>>>>>> 415b9fd7a7cb8224a77775557434fba1b43e11bb
 import avatar from "@/assets/profile/avatar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
 import depositIcon from "@/assets/bank/deposit-icon.png";
@@ -32,12 +27,13 @@ const winMessages = [
 ];
 
 const categoryTabs = [
-  { icon: giftIcon, label: "1ST DEPOSIT", path: "" },
-  { icon: telegramIcon, label: "GROUP", path: "/community-event" },
+  { icon: giftIcon, label: "1ST DEPOSIT" },
+
+
+  { icon: telegramIcon, label: "GROUP" },
 ];
 
 const Index = () => {
-  const navigate = useNavigate();
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -126,7 +122,6 @@ const Index = () => {
   {categoryTabs.map((tab, i) => (
     <button
       key={i}
-      onClick={() => tab.path && navigate(tab.path)}
       className="flex flex-col items-center gap-1 flex-shrink-0 w-[72px]"
     >
       <div
