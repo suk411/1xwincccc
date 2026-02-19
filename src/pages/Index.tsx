@@ -8,8 +8,8 @@ import depositIcon from "@/assets/bank/deposit-icon.png";
 import withdrawIcon from "@/assets/bank/withdraw-icon.png";
 import vipIcon from "@/assets/bank/vip-icon.png";
 import tabCardBg from "@/assets/tabs/tab-card-bg.png";
-import firstDepositIcon from "@/assets/tabs/first-deposit-icon.png";
-import giftIcon from "@/assets/tabs/gift-icon.png";
+
+import giftIcon from "@/assets/bank/gift-box-small.png";
 
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 
@@ -116,29 +116,34 @@ const Index = () => {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-2 mt-3 overflow-x-auto scrollbar-hide pb-1">
-          {categoryTabs.map((tab, i) => (
-            <button
-              key={i}
-              className="flex flex-col items-center gap-1 flex-shrink-0 w-[72px]"
-            >
-              <div
-                className="w-[68px] h-[68px] rounded-2xl overflow-hidden flex items-center justify-center p-2"
-                style={{
-                  backgroundImage: `url(${tabCardBg})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              >
-                <img src={tab.icon} alt={tab.label} className="w-12 h-12 object-contain" />
-              </div>
-              <span className="text-[9px] text-muted-foreground font-semibold leading-tight text-center">
-                {tab.label}
-              </span>
-            </button>
-          ))}
-         
-        </div>
+<div className="flex items-center gap-2 mt-3 overflow-x-auto scrollbar-hide pb-1">
+  {categoryTabs.map((tab, i) => (
+    <button
+      key={i}
+      className="flex flex-col items-center gap-1 flex-shrink-0 w-[72px]"
+    >
+      <div
+        className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center p-2"
+        style={{
+          backgroundImage: `url(${tabCardBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <img
+          src={tab.icon}
+          alt={tab.label}
+          className="w-16 h-16 object-contain"
+        />
+        {/* Label anchored at bottom */}
+        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[5px]  font-boldtext-muted-foreground leading-tight text-center">
+          {tab.label}
+        </span>
+      </div>
+    </button>
+  ))}
+</div>
+
       </div>
     </PageLayout>
   );

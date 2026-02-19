@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { GameCard } from "@/components/GameCard";
 import headerBg from "@/assets/bank/header-bg.png";
 import bankIcon from "@/assets/bank/bank-icon.png";
-import backArrow from "@/assets/icons/back-arrow.png";
+
 import depositBadge from "@/assets/bank/deposit-badge.png";
 import upiLogo from "@/assets/bank/upi-logo.png";
 import usdtLogo from "@/assets/bank/usdt-logo.png";
