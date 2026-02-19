@@ -9,6 +9,7 @@ import Bank from "./pages/Bank";
 import Events from "./pages/Events";
 import Promo from "./pages/Promo";
 import CommunityEvent from "./pages/CommunityEvent";
+import DepositRecords from "./pages/DepositRecords";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
@@ -39,6 +40,7 @@ const AppContent = () => {
         <Route path="/events" element={<Events />} />
         <Route path="/promo" element={<Promo />} />
         <Route path="/community-event" element={<CommunityEvent />} />
+        <Route path="/bank/records" element={<DepositRecords />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       
