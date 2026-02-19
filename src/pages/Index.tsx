@@ -1,7 +1,7 @@
 import PageLayout from "@/components/PageLayout";
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
-import { Volume2, VolumeX, ChevronRight } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 import avatar from "@/assets/profile/avatar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
 import depositIcon from "@/assets/bank/deposit-icon.png";
@@ -40,7 +40,7 @@ const Index = () => {
   const [tickerText, setTickerText] = useState("");
 
   useEffect(() => {
-    const repeated = [...winMessages, ...winMessages, ...winMessages].join("   🎰   ");
+    const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
     setTickerText(repeated);
   }, []);
 
@@ -71,8 +71,10 @@ const Index = () => {
         </div>
 
         {/* Scrolling Notice Ticker */}
-        <div className="w-full bg-[#1a1028] border-y border-[#2a1a3a] py-1.5 overflow-hidden flex items-center gap-2 px-2 mt-2 rounded-lg">
-          <span className="text-xs flex-shrink-0">🔊</span>
+        <div className="w-full h-6 bg-[#3d0a0a] border border-[#471414]  overflow-hidden flex items-center gap-2 px-2 mt-2 mx-0.5 rounded-[6px]">
+      <Volume2  size={16}/> 
+
+
           <div className="overflow-hidden flex-1 relative">
             <div
               ref={tickerRef}
@@ -85,31 +87,31 @@ const Index = () => {
 
         {/* Profile Wallet Bar */}
         <div
-          className="relative h-12 w-full rounded-full flex items-center px-1.5 py-1.5 mt-2"
+          className="relative h-11 w-full rounded-full flex items-center px-3 mt-2"
           style={{
             background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
             border: '1.5px solid rgba(255, 180, 50, 0.45)',
             boxShadow: '0 0 8px rgba(255, 150, 30, 0.15)',
           }}
         >
-          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-500/60 flex-shrink-0">
+          <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-yellow-500/60 flex-shrink-0">
             <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
           </div>
           <div className="flex items-center gap-1.5 ml-3 flex-1">
-            <img src={rupeeCoin} alt="₹" className="w-5 h-5 object-contain" />
-            <span className="text-yellow-400 font-bold text-base">1.40</span>
+            <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
+            <span className="text-white font-bold  text-[14px] ">1.40</span>
           </div>
-          <div className="flex items-center gap-3 mr-1">
+          <div className="flex items-center gap-4 mr-3">
             <button className="flex flex-col items-center gap-0.5">
-              <img src={depositIcon} alt="Deposit" className="w-6 h-6 object-contain" />
+              <img src={depositIcon} alt="Deposit" className="w-5 h-5 object-contain" />
               <span className="text-[8px] text-muted-foreground leading-none">Deposit</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
-              <img src={withdrawIcon} alt="Withdraw" className="w-6 h-6 object-contain" />
+              <img src={withdrawIcon} alt="Withdraw" className="w-5 h-5 object-contain" />
               <span className="text-[8px] text-muted-foreground leading-none">Withdraw</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
-              <img src={vipIcon} alt="VIP" className="w-6 h-6 object-contain" />
+              <img src={vipIcon} alt="VIP" className="w-5 h-5 object-contain" />
               <span className="text-[8px] text-muted-foreground leading-none">VIP</span>
             </button>
           </div>
