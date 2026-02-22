@@ -1,4 +1,5 @@
 import PageLayout from "@/components/PageLayout";
+import { useNavigate } from "react-router-dom"; // Add this import
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
@@ -8,9 +9,7 @@ import depositIcon from "@/assets/bank/deposit-icon.png";
 import withdrawIcon from "@/assets/bank/withdraw-icon.png";
 import vipIcon from "@/assets/bank/vip-icon.png";
 import tabCardBg from "@/assets/tabs/tab-card-bg.png";
-
 import giftIcon from "@/assets/bank/gift-box-small.png";
-
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 
 const winMessages = [
@@ -28,21 +27,28 @@ const winMessages = [
 
 const categoryTabs = [
   { icon: giftIcon, label: "1ST DEPOSIT" },
-
-
   { icon: telegramIcon, label: "GROUP" },
 ];
 
 const Index = () => {
+  const navigate = useNavigate(); // Add navigation hook
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
 
   useEffect(() => {
-    const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
+    const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
     setTickerText(repeated);
   }, []);
+
+  // Handle tab navigation
+  const handleTabClick = (label: string) => {
+    if (label === "GROUP") {
+      navigate("/community-event");
+    }
+    // Add more tab navigation logic here if needed
+  };
 
   return (
     <PageLayout>
@@ -71,10 +77,8 @@ const Index = () => {
         </div>
 
         {/* Scrolling Notice Ticker */}
-        <div className="w-full h-6 bg-[#3d0a0a] border border-[#471414]  overflow-hidden flex items-center gap-2 px-2 mt-2 mx-0.5 rounded-[6px]">
-      <Volume2  size={16}/> 
-
-
+        <div className="w-full h-6 bg-[#3d0a0a] border border-[#471414]  overflow-hidden flex items-center gap-2 px-2 mt-2 mx-0.5 rounded-[6px]">
+          <Volume2  size={16}/> 
           <div className="overflow-hidden flex-1 relative">
             <div
               ref={tickerRef}
@@ -99,7 +103,7 @@ const Index = () => {
           </div>
           <div className="flex items-center gap-1.5 ml-3 flex-1">
             <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
-            <span className="text-white font-bold  text-[14px] ">1.40</span>
+            <span className="text-white font-bold  text-[14px] ">1.40</span>
           </div>
           <div className="flex items-center gap-4 mr-3">
             <button className="flex flex-col items-center gap-0.5">
@@ -118,34 +122,34 @@ const Index = () => {
         </div>
 
         {/* Category Tabs */}
-<div className="flex items-center gap-2 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
-  {categoryTabs.map((tab, i) => (
-    <button
-      key={i}
-      className="flex flex-col ml-2 items-center gap-0.5 flex-shrink-0 w-[70px] "
-    >
-      <div
-        className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center "
-        style={{
-          backgroundImage: `url(${tabCardBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <img
-          src={tab.icon}
-          alt={tab.label}
-          className="w-16 h-16 object-contain"
-        />
-        {/* Label anchored at bottom */}
-        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[5px]  font-boldtext-muted-foreground leading-tight text-center">
-          {tab.label}
-        </span>
-      </div>
-    </button>
-  ))}
-</div>
-
+        <div className="flex items-center gap-2 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
+          {categoryTabs.map((tab, i) => (
+            <button
+              key={i}
+              onClick={() => handleTabClick(tab.label)} // Add click handler
+              className="flex flex-col ml-2 items-center gap-0.5 flex-shrink-0 w-[70px] cursor-pointer hover:scale-105 transition-transform"
+            >
+              <div
+                className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center "
+                style={{
+                  backgroundImage: `url(${tabCardBg})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              >
+                <img
+                  src={tab.icon}
+                  alt={tab.label}
+                  className="w-16 h-16 object-contain"
+                />
+                {/* Label anchored at bottom */}
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[5px]  font-bold text-muted-foreground leading-tight text-center">
+                  {tab.label}
+                </span>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
     </PageLayout>
   );

@@ -14,14 +14,20 @@ const CommunityEvent = () => {
   const [code, setCode] = useState("");
 
   return (
-    <main className="relative flex-1 flex flex-col pb-20">
-      <PageHeader title="Community Event" />
+    <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+      {/* Top Header - matching Bank page header structure */}
+      <div className="relative w-full h-12 flex items-center justify-between px-4">
+        <div className="relative z-10 flex items-center gap-2">
+          <span className="text-white font-bold text-base">Community Event</span>
+        </div>
+        <div className="relative z-10 flex items-center gap-3">
+          {/* Navigation icons can be added here if needed */}
+        </div>
+      </div>
 
-      <div className="flex flex-col px-3 gap-3 mt-2">
+      <div className="flex flex-col gap-2 px-2 pt-2">
         {/* Hero Banner */}
         <div className="relative w-full rounded-xl overflow-hidden" style={{ minHeight: 160, backgroundImage: `url(${cardBg})`, backgroundSize: "cover", backgroundPosition: "center" }}>
-          
-
           <div className="relative z-10 flex items-end justify-between px-4 pt-4 pb-3">
             <div className="flex-1">
               <h2 className="text-white font-semibold text-xl leading-tight drop-shadow-lg">

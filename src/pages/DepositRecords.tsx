@@ -31,10 +31,19 @@ const DepositRecords = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <main className="relative flex-1 flex flex-col pb-20">
-      <PageHeader title="Order History" />
+    <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+      {/* Top Header - matching Bank page header structure */}
+      <div className="relative w-full h-12 flex items-center justify-between px-4">
+        {/* Header background would go here if needed */}
+        <div className="relative z-10 flex items-center gap-2">
+          <span className="text-white font-bold text-base">Order History</span>
+        </div>
+        <div className="relative z-10 flex items-center gap-3">
+          {/* Add back button or other navigation if needed */}
+        </div>
+      </div>
 
-      <div className="flex flex-col gap-2 px-4 mt-2">
+      <div className="flex flex-col gap-2 px-2 pt-2">
         {mockOrders.map((order) => {
           const expanded = expandedId === order.id;
           const statusStyle = statusStyles[order.status];
