@@ -305,7 +305,7 @@ const Bank = () => {
             </div>
           )}
         </div>
-        <GameButton className="px-8 mx-2 rounded-md  text-sm" size="sm" variant="gold">
+        <GameButton className=" rounded-md  text-sm" size="lg" variant="gold">
           {activeTab === "deposit" ? "Pay" : "Withdraw"}
         </GameButton>
           

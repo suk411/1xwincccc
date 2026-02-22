@@ -60,12 +60,12 @@ const Index = () => {
           />
           <button
             onClick={() => setMuted((m) => !m)}
-            className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center"
+            className="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-black/60 flex items-center justify-center"
           >
             {muted ? (
-              <VolumeX size={16} className="text-white" />
+              <VolumeX size={12} className="text-white" />
             ) : (
-              <Volume2 size={16} className="text-white" />
+              <Volume2 size={12} className="text-white" />
             )}
           </button>
         </div>
@@ -104,28 +104,28 @@ const Index = () => {
           <div className="flex items-center gap-4 mr-3">
             <button className="flex flex-col items-center gap-0.5">
               <img src={depositIcon} alt="Deposit" className="w-5 h-5 object-contain" />
-              <span className="text-[8px] text-muted-foreground leading-none">Deposit</span>
+              <span className="text-[8px] ">Deposit</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
               <img src={withdrawIcon} alt="Withdraw" className="w-5 h-5 object-contain" />
-              <span className="text-[8px] text-muted-foreground leading-none">Withdraw</span>
+              <span className="text-[8px] ">Withdraw</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
               <img src={vipIcon} alt="VIP" className="w-5 h-5 object-contain" />
-              <span className="text-[8px] text-muted-foreground leading-none">VIP</span>
+              <span className="text-[8px] ">VIP</span>
             </button>
           </div>
         </div>
 
         {/* Category Tabs */}
-<div className="flex items-center gap-2 mt-3 overflow-x-auto scrollbar-hide pb-1">
+<div className="flex items-center gap-2 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
   {categoryTabs.map((tab, i) => (
     <button
       key={i}
-      className="flex flex-col items-center gap-1 flex-shrink-0 w-[72px]"
+      className="flex flex-col ml-2 items-center gap-0.5 flex-shrink-0 w-[70px] "
     >
       <div
-        className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center p-2"
+        className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center "
         style={{
           backgroundImage: `url(${tabCardBg})`,
           backgroundSize: 'cover',
