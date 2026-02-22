@@ -8,6 +8,7 @@ import emptyBox from "@/assets/events/empty-box.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import { useState } from "react";
 import { Copy } from "lucide-react";
+import { GameButton } from "@/components/GameButton";
 
 const CommunityEvent = () => {
   const [code, setCode] = useState("");
@@ -18,11 +19,12 @@ const CommunityEvent = () => {
 
       <div className="flex flex-col px-3 gap-3 mt-2">
         {/* Hero Banner */}
-        <div className="relative w-full rounded-xl overflow-hidden" style={{ minHeight: 160 }}>
-          <img src={casinoBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="relative w-full rounded-xl overflow-hidden" style={{ minHeight: 160, backgroundImage: `url(${cardBg})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+          
+
           <div className="relative z-10 flex items-end justify-between px-4 pt-4 pb-3">
             <div className="flex-1">
-              <h2 className="text-yellow-400 font-extrabold text-xl leading-tight drop-shadow-lg">
+              <h2 className="text-white font-semibold text-xl leading-tight drop-shadow-lg">
                 JOIN THE GROUP TO<br />GRAB GIFT CODES
               </h2>
               <div className="flex items-center gap-1 mt-2">
@@ -64,34 +66,29 @@ const CommunityEvent = () => {
         {/* Join Our Community */}
         <div
           className="relative rounded-xl overflow-hidden p-4"
-          style={{ backgroundImage: `url(${cardBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
+          style={{ backgroundImage: `url(${casinoBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
         >
           <h3 className="text-center text-white font-bold text-base mb-3">Join Our Community</h3>
           <div className="flex flex-col items-center gap-2">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-              <img src={telegramIcon} alt="Telegram" className="w-10 h-10 object-contain" />
+            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-red-400 to-yellow-200 flex items-center justify-center">
+              <img src={telegramIcon} alt="Telegram" className="w-16 h-16 object-contain" />
             </div>
-            <span className="text-yellow-400 font-bold text-sm">Telegram Group</span>
+            <span className="text-yellow-400 text-sm">Telegram Group</span>
             <div className="flex items-center gap-2 bg-[#541324] rounded-lg px-3 py-2">
               <span className="text-[#c4889a] text-xs truncate">https://t.me/...</span>
-              <button className="text-yellow-400">
+              <button className="text-orange-500 ">
                 <Copy size={14} />
               </button>
             </div>
-            <button
-              className="px-8 py-2 rounded-lg font-bold text-[#5a2d0a] text-sm"
-              style={{
-                backgroundImage: "linear-gradient(rgb(255, 246, 230) 1%, rgb(238, 210, 110) 44%, rgb(195, 132, 45) 75%, rgb(195, 132, 45) 86%, rgb(255, 205, 78) 100%)",
-              }}
-            >
+            <GameButton variant="gold" size="lg" className="w-[120px] mt-2">
               Join Now
-            </button>
+            </GameButton>
           </div>
         </div>
 
         {/* New Player Rewards */}
         <div
-          className="relative rounded-xl overflow-hidden p-4 flex items-start gap-3"
+          className="relative rounded-xl overflow-hidden p-2 flex items-start gap-3"
           style={{ backgroundImage: `url(${cardBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
         >
           <img src={giftBox} alt="" className="w-12 h-12 object-contain flex-shrink-0" />
@@ -105,10 +102,10 @@ const CommunityEvent = () => {
 
         {/* Daily Cash Codes */}
         <div
-          className="relative rounded-xl overflow-hidden p-4 flex items-start gap-3"
+          className="relative rounded-xl overflow-hidden p-2 flex items-start gap-3"
           style={{ backgroundImage: `url(${cardBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
         >
-          <img src={giftBox} alt="" className="w-12 h-12 object-contain flex-shrink-0" />
+          <img src={coins} alt="" className="w-12 h-12 object-contain flex-shrink-0" />
           <div>
             <h4 className="text-white font-bold text-sm">Daily Cash Codes</h4>
             <p className="text-[#c4889a] text-xs mt-1">
