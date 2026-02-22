@@ -34,7 +34,7 @@ const DepositRecords = () => {
     <main className="relative flex-1 flex flex-col pb-20">
       <PageHeader title="Order History" />
 
-      <div className="flex flex-col gap-4 px-4 mt-4">
+      <div className="flex flex-col gap-2 px-4 mt-2">
         {mockOrders.map((order) => {
           const expanded = expandedId === order.id;
           const statusStyle = statusStyles[order.status];
