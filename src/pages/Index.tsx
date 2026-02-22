@@ -78,7 +78,7 @@ const Index = () => {
 
         {/* Scrolling Notice Ticker */}
         <div className="w-full h-6 bg-[#3d0a0a] border border-[#471414]  overflow-hidden flex items-center gap-2 px-2 mt-2 mx-0.5 rounded-[6px]">
-          <Volume2  size={16}/> 
+          <Volume2 size={16}/> 
           <div className="overflow-hidden flex-1 relative">
             <div
               ref={tickerRef}

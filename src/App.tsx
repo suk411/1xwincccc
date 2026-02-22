@@ -24,7 +24,7 @@ const AppContent = () => {
 
   return (
     <div 
-      className="min-h-screen min-h-dvh flex flex-col bg-background bg-cover bg-center bg-no-repeat bg-fixed"
+      className="min-h-screen flex flex-col bg-background bg-cover bg-center bg-no-repeat bg-fixed"
       style={{ backgroundImage: `url(${bgMain})` }}
     >
       {/* Overlay for better readability */}
