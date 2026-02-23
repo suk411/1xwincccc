@@ -27,8 +27,24 @@ interface ProfileDrawerProps {
 }
 
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
-  // Example: you can make VIP level dynamic later
+  const navigate = useNavigate();
   const vipLevel = "VIP0";
+
+  const handleMenuClick = (label: string) => {
+    onOpenChange(false);
+    if (label === "Logout") {
+      authService.logout();
+      window.location.href = "/";
+    } else if (label === "Deposit History") {
+      navigate("/bank/records");
+    } else if (label === "Withdrawal History") {
+      navigate("/bank/records");
+    } else if (label === "Deposit") {
+      navigate("/bank");
+    } else if (label === "Withdrawal") {
+      navigate("/bank");
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
