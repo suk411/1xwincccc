@@ -32,12 +32,18 @@ const DepositRecords = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
-      {/* Top Header - matching Bank page header structure */}
-      <div className="relative w-full h-12 flex items-center justify-between px-4">
-        {/* Header background would go here if needed */}
-        <div className="relative z-10 flex items-center gap-2">
-          <span className="text-white font-bold text-base">Order History</span>
-        </div>
+
+         {/* Top Header */}
+         <PageHeader title="Deposit Records"  />
+
+
+
+   
+      <div className="relative w-full h-12 flex items-center justify-between px-2">
+       
+       
+      
+       
         <div className="relative z-10 flex items-center gap-3">
           {/* Add back button or other navigation if needed */}
         </div>

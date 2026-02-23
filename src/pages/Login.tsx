@@ -56,7 +56,7 @@ const Login = () => {
         {/* Reward Banner */}
         <div className="relative w-full my-4">
           <img src={rewardBanner} alt="" className="w-full h-auto" />
-          <span className="absolute inset-0 flex items-center justify-center text-[#ffd700] font-bold text-sm pl-8">
+          <span className="absolute inset-0 flex items-center justify-center text-[#ffd700] font-bold pt-2 text-sm pl-8">
             Get rewards upto ₹1000
           </span>
         </div>
