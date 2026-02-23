@@ -37,6 +37,8 @@ const AppContent = () => {
       
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/earn" element={<Earn />} />
         <Route path="/bank" element={<Bank />} />
         <Route path="/events" element={<Events />} />
