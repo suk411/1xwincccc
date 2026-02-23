@@ -48,9 +48,9 @@ const Login = () => {
       <div className="relative z-10 flex flex-col flex-1 px-5 pt-6">
         {/* Logo & Domain */}
         <div className="flex flex-col items-center mb-2">
-          <img src={logo} alt="1xKING" className="h-12 w-auto mb-1" />
-          <p className="text-[#e3a44e] text-xs font-semibold tracking-wider">1xking.com</p>
-          <p className="text-[#ffd700] text-sm italic mt-1">SPIN TO WIN,<br className="hidden" /> FORTUNE BEGINS HERE!</p>
+          <img src={logo} alt="1xKING" className="h-16 w-auto mb-1" />
+        
+          <p className="text-[#ffd700] font-bold text-sm italic mt-1">SPIN TO WIN,<br className="hidden" /> FORTUNE BEGINS HERE!</p>
         </div>
 
         {/* Reward Banner */}
