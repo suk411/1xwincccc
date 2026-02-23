@@ -23,6 +23,7 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const showBottomNav = ["/", "/earn", "/bank", "/promo"].includes(location.pathname);
 
   return (
     <div 
@@ -48,7 +49,7 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       
-      <BottomNav />
+      {showBottomNav && <BottomNav />}
     </div>
   );
 };
