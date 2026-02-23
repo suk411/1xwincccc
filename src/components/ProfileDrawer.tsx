@@ -125,6 +125,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           {/* Menu items */}
           <div className="mt-4 space-y-1">
             {[
+              { icon: withdraw, label: "Deposit" },
+              { icon: withdraw, label: "Withdrawal" },
               { icon: logout, label: "Deposit History" },
               { icon: historyIcon, label: "Withdrawal History" },
               { icon: gameIcon, label: "Game Records" },
@@ -136,6 +138,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             ].map((item, index) => (
               <button
                 key={index}
+                onClick={() => handleMenuClick(item.label)}
                 className="w-full flex items-center justify-between py-3 px-2 hover:bg-white/5 rounded-lg transition-colors"
               >
                 <div className="flex items-center gap-3">
