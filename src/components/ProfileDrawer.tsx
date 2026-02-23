@@ -1,5 +1,7 @@
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
+import { useNavigate } from "react-router-dom";
 import { GameButton } from "./GameButton";
+import { authService } from "@/services/authService";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
