@@ -10,6 +10,8 @@ import Events from "./pages/Events";
 import Promo from "./pages/Promo";
 import CommunityEvent from "./pages/CommunityEvent";
 import DepositRecords from "./pages/DepositRecords";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
@@ -35,6 +37,8 @@ const AppContent = () => {
       
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/earn" element={<Earn />} />
         <Route path="/bank" element={<Bank />} />
         <Route path="/events" element={<Events />} />

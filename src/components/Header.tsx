@@ -1,23 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import supportIcon from "@/assets/icons/support.png";
 import mailIcon from "@/assets/icons/mail.png";
 import menuBg from "@/assets/icons/menu.png";
 import ProfileDrawer from "./ProfileDrawer";
-import LoginDialog from "./LoginDialog";
-import RegisterDialog from "./RegisterDialog";
 import { GameButton } from "./GameButton";
 import { authService } from "@/services/authService";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(authService.isLoggedIn());
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [registerOpen, setRegisterOpen] = useState(false);
-
-  const handleAuthSuccess = () => {
-    setIsLoggedIn(true);
-  };
+  const [isLoggedIn] = useState(authService.isLoggedIn());
 
   return (
     <header className="relative z-10">
@@ -41,10 +35,10 @@ const Header = () => {
             </>
           ) : (
             <>
-              <GameButton variant="red" size="sm" onClick={() => setLoginOpen(true)}>
+              <GameButton variant="red" size="sm" onClick={() => navigate("/login")}>
                 Login
               </GameButton>
-              <GameButton variant="gold" size="sm" onClick={() => setRegisterOpen(true)}>
+              <GameButton variant="gold" size="sm" onClick={() => navigate("/register")}>
                 Register
               </GameButton>
             </>
@@ -53,18 +47,6 @@ const Header = () => {
       </div>
 
       <ProfileDrawer open={isProfileOpen} onOpenChange={setIsProfileOpen} />
-      <LoginDialog
-        open={loginOpen}
-        onOpenChange={setLoginOpen}
-        onSwitchToRegister={() => setRegisterOpen(true)}
-        onLoginSuccess={handleAuthSuccess}
-      />
-      <RegisterDialog
-        open={registerOpen}
-        onOpenChange={setRegisterOpen}
-        onSwitchToLogin={() => setLoginOpen(true)}
-        onRegisterSuccess={handleAuthSuccess}
-      />
     </header>
   );
 };
