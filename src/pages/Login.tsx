@@ -42,10 +42,10 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col relative">
       {/* Background */}
-      <img src={authBg} alt="" className="absolute inset-0 w-full h-full object-cover object-top" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/90" />
+      <img src={authBg} alt="" className="absolute inset-0 w-full h-full object-cover object-top " />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/90 " />
 
-      <div className="relative z-10 flex flex-col flex-1 px-5 pt-6">
+      <div className="relative z-10 flex flex-col flex-1 px-5 pb-10 pt-6">
         {/* Logo & Domain */}
         <div className="flex flex-col items-center mb-2">
           <img src={logo} alt="1xKING" className="h-16 w-auto mb-1" />
