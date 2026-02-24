@@ -27,11 +27,9 @@ const AppContent = () => {
 
   return (
     <div 
-      className="min-h-screen flex flex-col bg-background bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{ backgroundImage: `url(${bgMain})` }}
+      className="min-h-screen flex flex-col"
+      style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)", minHeight: "100vh" }}
     >
-      {/* Overlay for better readability */}
-      <div className="fixed inset-0 bg-background/60 pointer-events-none" />
       
       <DownloadBanner />
       {isHomePage && <Header />}
