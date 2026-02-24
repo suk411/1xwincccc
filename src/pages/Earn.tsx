@@ -107,7 +107,7 @@ const Earn = () => {
   const [activeTab, setActiveTab] = useState<"referral" | "commission">("referral");
 
   return (
-    <main className="relative flex-1 flex flex-col pb-20 max-w-screen-lg mx-auto w-full">
+    <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
       <PageHeader title="Earn" />
 
       <div className="flex flex-col gap-2 px-2 pt-2">
@@ -203,6 +203,22 @@ const Earn = () => {
 
         {/* Invitation Records / Daily Bonus Records */}
         <RecordsCard />
+      </div>
+
+      {/* Fixed bottom Invite Friends bar */}
+      <div
+        className="fixed bottom-10 pb-12 left-0 right-0 z-30 px-4 py-3 flex items-center justify-center"
+        style={{
+          backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
+        }}
+      >
+        <GameButton className="w-full rounded-full text-base" size="lg" variant="gold">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
+            <path d="M6 12l-2 2M10 12l2 2M8 12v3M4 7V4a4 4 0 018 0v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 9a2 2 0 012-2h8a2 2 0 012 2v1a2 2 0 01-2 2H4a2 2 0 01-2-2V9z" stroke="currentColor" strokeWidth="1.5"/>
+          </svg>
+          Invite Friends
+        </GameButton>
       </div>
     </main>
   );
