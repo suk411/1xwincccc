@@ -112,23 +112,37 @@ const Earn = () => {
 
       <div className="flex flex-col gap-2 px-2 pt-2">
         {/* Referral Bonus / Commission tabs */}
-        <GameCard className="flex gap-1 p-1">
-          <GameButton
-            variant={activeTab === "referral" ? "gold" : "mute"}
-            size="sm"
+        <GameCard className="flex gap-1">
+          <button
             onClick={() => setActiveTab("referral")}
-            className="flex-1 w-auto"
+            className="flex-1 h-8 rounded-sm text-sm transition-all"
+            style={
+              activeTab === "referral"
+                ? {
+                    backgroundImage:
+                      "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)",
+                    color: "#5a2d0a",
+                  }
+                : { color: "rgba(255,255,255,0.7)" }
+            }
           >
             Referral Bonus
-          </GameButton>
-          <GameButton
-            variant={activeTab === "commission" ? "gold" : "mute"}
-            size="sm"
+          </button>
+          <button
             onClick={() => setActiveTab("commission")}
-            className="flex-1 w-auto"
+            className="flex-1 h-8 rounded-md text-sm transition-all"
+            style={
+              activeTab === "commission"
+                ? {
+                    backgroundImage:
+                      "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)",
+                    color: "#5a2d0a",
+                  }
+                : { color: "rgba(255,255,255,0.7)" }
+            }
           >
             Commission
-          </GameButton>
+          </button>
         </GameCard>
 
         {/* Banner */}
