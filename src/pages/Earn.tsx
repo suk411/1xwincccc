@@ -359,6 +359,34 @@ const Earn = () => {
                 </div>
               </div>
             </GameCard>
+
+            {/* Payout Records */}
+            <GameCard className="p-3 flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z" fill="#AC4059"/>
+                  <path d="M5.73329 11.0669C6.32239 11.0669 6.79996 10.5894 6.79996 10.0003C6.79996 9.41117 6.32239 8.93359 5.73329 8.93359C5.14419 8.93359 4.66663 9.41117 4.66663 10.0003C4.66663 10.5894 5.14419 11.0669 5.73329 11.0669Z" stroke="#FA829D" strokeLinejoin="round"/>
+                  <path d="M14.8 5.73317C15.0946 5.73317 15.3333 5.49439 15.3333 5.19984C15.3333 4.90529 15.0946 4.6665 14.8 4.6665C14.5054 4.6665 14.2667 4.90529 14.2667 5.19984C14.2667 5.49439 14.5054 5.73317 14.8 5.73317Z" stroke="#FA829D" strokeLinejoin="round"/>
+                  <path d="M14.7999 10.533C15.0945 10.533 15.3332 10.2942 15.3332 9.99964C15.3332 9.70508 15.0945 9.46631 14.7999 9.46631C14.5053 9.46631 14.2666 9.70508 14.2666 9.99964C14.2666 10.2942 14.5053 10.533 14.7999 10.533Z" stroke="#FA829D" strokeLinejoin="round"/>
+                  <path d="M14.7999 15.3338C15.0945 15.3338 15.3332 15.095 15.3332 14.8004C15.3332 14.5059 15.0945 14.2671 14.7999 14.2671C14.5053 14.2671 14.2666 14.5059 14.2666 14.8004C14.2666 15.095 14.5053 15.3338 14.7999 15.3338Z" stroke="#FA829D" strokeLinejoin="round"/>
+                  <path d="M12.1332 5.20068H8.93323V14.8007H12.1332" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6.79999 10H12.1333" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="text-white font-bold text-sm">Payout Records</span>
+              </div>
+
+              {/* Table Header */}
+              <div className="flex items-center justify-between px-2">
+                <span className="text-white/70 text-xs font-medium">Date</span>
+                <span className="text-white/70 text-xs font-medium">Total</span>
+              </div>
+
+              {/* Empty State */}
+              <div className="flex flex-col items-center justify-center py-6 gap-2">
+                <img src={emptyBox} alt="No records" className="w-20 h-20 object-contain opacity-50" />
+                <span className="text-[#FA829D] text-sm">No commission records</span>
+              </div>
+            </GameCard>
           </>
         )}
       </div>
