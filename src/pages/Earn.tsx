@@ -211,6 +211,117 @@ const Earn = () => {
                 </div>
               </div>
             </GameCard>
+
+            {/* Daily Team Data */}
+            <GameCard className="p-3 flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <rect width="20" height="20" rx="10" fill="#AC4059"/>
+                  <path fillRule="evenodd" clipRule="evenodd" d="M10 14.375C12.4163 14.375 14.375 12.4162 14.375 10H10V5.625C7.58378 5.625 5.62503 7.58375 5.62503 10C5.62503 12.4162 7.58378 14.375 10 14.375Z" stroke="#FA829D" strokeWidth="1.01" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path fillRule="evenodd" clipRule="evenodd" d="M11.4581 8.54188V5.875C12.7033 6.31704 13.683 7.2967 14.125 8.54188H11.4581Z" stroke="#FA829D" strokeWidth="1.01" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span className="text-white font-bold text-sm">Daily Team Data</span>
+              </div>
+
+              {/* Level 1 */}
+              <div className="rounded-lg overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${level1Bg})` }}>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-white font-bold text-sm">Level 1 Team</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white text-xs">👤 0</span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>
+                      <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
+                      +0
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <div>
+                    <span className="text-white/60 text-[10px]">Commission</span>
+                    <p className="text-white text-sm font-bold">₹0</p>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-white/60 text-[10px]">Deposits</span>
+                    <p className="text-white text-sm font-bold">= ₹0</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div>
+                      <span className="text-white/60 text-[10px]">Ratio</span>
+                      <p className="text-white text-sm font-bold">× 5%</p>
+                    </div>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30">
+                      <span className="text-white/60 text-[8px]">?</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Level 2 */}
+              <div className="rounded-lg overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${level2Bg})` }}>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-white font-bold text-sm">Level 2 Team</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white text-xs">👤 0</span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>
+                      <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
+                      +0
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <div>
+                    <span className="text-white/60 text-[10px]">Commission</span>
+                    <p className="text-white text-sm font-bold">₹0</p>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-white/60 text-[10px]">Deposits</span>
+                    <p className="text-white text-sm font-bold">= ₹0</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div>
+                      <span className="text-white/60 text-[10px]">Ratio</span>
+                      <p className="text-white text-sm font-bold">× 1%</p>
+                    </div>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30">
+                      <span className="text-white/60 text-[8px]">?</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Level 3 */}
+              <div className="rounded-lg overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${level3Bg})` }}>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-white font-bold text-sm">Level 3 Team</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white text-xs">👤 0</span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>
+                      <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
+                      +0
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <div>
+                    <span className="text-white/60 text-[10px]">Commission</span>
+                    <p className="text-white text-sm font-bold">₹0</p>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-white/60 text-[10px]">Deposits</span>
+                    <p className="text-white text-sm font-bold">= ₹0</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div>
+                      <span className="text-white/60 text-[10px]">Ratio</span>
+                      <p className="text-white text-sm font-bold">× 0.5%</p>
+                    </div>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30">
+                      <span className="text-white/60 text-[8px]">?</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </GameCard>
           </>
         )}
       </div>
