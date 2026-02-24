@@ -4,6 +4,7 @@ import { GameCard } from "@/components/GameCard";
 import { GameButton } from "@/components/GameButton";
 import earnBanner from "@/assets/earn/earn-banner.png";
 import goldBorder from "@/assets/events/gold-border.png";
+import emptyBox from "@/assets/events/empty-box.png";
 
 const InviteRow = ({
   icon,
@@ -52,6 +53,55 @@ const InviteRow = ({
     </div>
   </div>
 );
+
+const RecordsCard = () => {
+  const [recordTab, setRecordTab] = useState<"invitation" | "daily">("invitation");
+
+  return (
+    <GameCard className="p-3 flex flex-col gap-3">
+      <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: "#1a0a10" }}>
+        {(["invitation", "daily"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setRecordTab(tab)}
+            className="flex-1 py-2 rounded-md text-sm font-medium transition-colors"
+            style={
+              recordTab === tab
+                ? { backgroundColor: "rgb(177, 44, 73)", color: "white" }
+                : { color: "rgba(255,255,255,0.5)" }
+            }
+          >
+            {tab === "invitation" ? "Invitation Records" : "Daily Bonus Records"}
+          </button>
+        ))}
+      </div>
+
+      {/* Table Header */}
+      <div className="flex items-center justify-between px-2 py-1">
+        {recordTab === "invitation" ? (
+          <>
+            <span className="text-white/60 text-xs">Created Time</span>
+            <span className="text-white/60 text-xs">User ID</span>
+          </>
+        ) : (
+          <>
+            <span className="text-white/60 text-xs">Date</span>
+            <span className="text-white/60 text-xs">Invites</span>
+            <span className="text-white/60 text-xs">Regular</span>
+            <span className="text-white/60 text-xs">Depositor</span>
+            <span className="text-white/60 text-xs">Reward</span>
+          </>
+        )}
+      </div>
+
+      {/* Empty State */}
+      <div className="flex flex-col items-center justify-center py-8 gap-3">
+        <img src={emptyBox} alt="No records" className="w-24 h-24 object-contain opacity-50" />
+        <span className="text-white/40 text-sm">No Invite Records</span>
+      </div>
+    </GameCard>
+  );
+};
 
 const Earn = () => {
   const [activeTab, setActiveTab] = useState<"referral" | "commission">("referral");
@@ -136,6 +186,9 @@ const Earn = () => {
             reward="₹100/ 👤"
           />
         </GameCard>
+
+        {/* Invitation Records / Daily Bonus Records */}
+        <RecordsCard />
       </div>
     </main>
   );
