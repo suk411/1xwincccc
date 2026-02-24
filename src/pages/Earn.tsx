@@ -4,6 +4,7 @@ import { GameCard } from "@/components/GameCard";
 import { GameButton } from "@/components/GameButton";
 import earnBanner from "@/assets/earn/earn-banner.png";
 import goldBorder from "@/assets/events/gold-border.png";
+import emptyBox from "@/assets/events/empty-box.png";
 
 const InviteRow = ({
   icon,
