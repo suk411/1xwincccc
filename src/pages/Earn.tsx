@@ -213,10 +213,9 @@ const Earn = () => {
         }}
       >
         <GameButton className="w-full rounded-full text-base" size="lg" variant="gold">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mr-1">
-            <path d="M6 12l-2 2M10 12l2 2M8 12v3M4 7V4a4 4 0 018 0v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 9a2 2 0 012-2h8a2 2 0 012 2v1a2 2 0 01-2 2H4a2 2 0 01-2-2V9z" stroke="currentColor" strokeWidth="1.5"/>
-          </svg>
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.16667 1.83398L15.1667 7.83398L9.16667 13.5007V9.83398C4.5 9.83398 2.5 14.834 2.5 14.834C2.5 9.16732 4.16667 5.50065 9.16667 5.50065V1.83398Z" stroke="#7B1C0C" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
           Invite Friends
         </GameButton>
       </div>
