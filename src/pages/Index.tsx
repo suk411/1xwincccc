@@ -150,6 +150,17 @@ const Index = () => {
             </button>
           ))}
         </div>
+
+        {/* Text Card */}
+        <div
+          className="w-full rounded-xl p-4 mt-2"
+          style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)" }}
+        >
+          <h3 className="text-white font-bold text-sm">Welcome to the Platform</h3>
+          <p className="text-white/60 text-xs mt-1">
+            Play exciting games, earn rewards, and withdraw your winnings instantly. Join millions of players winning big every day!
+          </p>
+        </div>
       </div>
     </PageLayout>
   );
