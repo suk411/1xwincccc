@@ -34,22 +34,17 @@ const DepositRecords = () => {
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
 
          {/* Top Header */}
-         <PageHeader title="Deposit Records"  />
-
-
-
-   
-      <div className="relative w-full h-12 flex items-center justify-between px-2">
        
+
+
+
+   <div className="mb-2">
        
+         <PageHeader title="Deposit Records"   />
       
-       
-        <div className="relative z-10 flex items-center gap-3">
-          {/* Add back button or other navigation if needed */}
-        </div>
-      </div>
+     </div>
 
-      <div className="flex flex-col gap-2 px-2 pt-2">
+      <div className="flex flex-col gap-2 px-2 ">
         {mockOrders.map((order) => {
           const expanded = expandedId === order.id;
           const statusStyle = statusStyles[order.status];
