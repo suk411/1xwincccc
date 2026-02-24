@@ -137,6 +137,9 @@ const Earn = () => {
             reward="₹100/ 👤"
           />
         </GameCard>
+
+        {/* Invitation Records / Daily Bonus Records */}
+        <RecordsCard />
       </div>
     </main>
   );
