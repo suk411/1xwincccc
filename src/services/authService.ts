@@ -23,7 +23,15 @@ export interface ProfileResponse {
 
 const TOKEN_KEY = "auth_token";
 
+const listeners = new Set<() => void>();
+const notifyListeners = () => listeners.forEach((l) => l());
+
 export const authService = {
+  subscribe(listener: () => void) {
+    listeners.add(listener);
+    return () => { listeners.delete(listener); };
+  },
+
   async register(number: string, password: string, inviteCode?: string): Promise<AuthResponse> {
     const body: Record<string, string> = { number, password };
     if (inviteCode) body.inviteCode = inviteCode;
@@ -46,7 +54,10 @@ export const authService = {
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || "Login failed");
-    if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
+    if (data.token) {
+      localStorage.setItem(TOKEN_KEY, data.token);
+      notifyListeners();
+    }
     return data;
   },
 
@@ -72,5 +83,6 @@ export const authService = {
 
   logout() {
     localStorage.removeItem(TOKEN_KEY);
+    notifyListeners();
   },
 };
