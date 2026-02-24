@@ -47,17 +47,17 @@ const Register = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/90" />
 
       <div className="relative z-10 flex flex-col flex-1 px-5 pt-6">
-        {/* Logo & Domain */}
+         {/* Logo & Domain */}
         <div className="flex flex-col items-center mb-2">
-          <img src={logo} alt="1xKING" className="h-12 w-auto mb-1" />
-          <p className="text-[#e3a44e] text-xs font-semibold tracking-wider">1xking.com</p>
-          <p className="text-[#ffd700] text-sm italic mt-1">SPIN TO WIN, FORTUNE BEGINS HERE!</p>
+          <img src={logo} alt="1xKING" className="h-16 w-auto mb-1" />
+        
+          <p className="text-[#ffd700] font-bold text-sm italic mt-1">SPIN TO WIN,<br className="hidden" /> FORTUNE BEGINS HERE!</p>
         </div>
 
         {/* Reward Banner */}
         <div className="relative w-full my-4">
           <img src={rewardBanner} alt="" className="w-full h-auto" />
-          <span className="absolute inset-0 flex items-center justify-center text-[#ffd700] font-bold text-sm pl-8">
+          <span className="absolute inset-0 flex items-center justify-center text-[#ffd700] font-bold pt-2 text-sm pl-8">
             Get rewards upto ₹1000
           </span>
         </div>
