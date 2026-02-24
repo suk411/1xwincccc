@@ -15,14 +15,8 @@ const CommunityEvent = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
-      {/* Top Header - matching Bank page header structure */}
-      <div className="relative w-full h-12 flex items-center justify-between px-4">
-        <div className="relative z-10 flex items-center gap-2">
-          <span className="text-white font-bold text-base">Community Event</span>
-        </div>
-        <div className="relative z-10 flex items-center gap-3">
-          {/* Navigation icons can be added here if needed */}
-        </div>
+      <div className="mb-2">
+        <PageHeader title="Community Event" />
       </div>
 
       <div className="flex flex-col gap-2 px-2 pt-2">

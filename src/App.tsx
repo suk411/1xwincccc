@@ -23,7 +23,7 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
-  const showBottomNav = ["/", "/earn", "/bank", "/promo"].includes(location.pathname);
+  const showBottomNav = ["/", "/earn", "/bank", "/promo", "/events"].includes(location.pathname);
 
   return (
     <div 
