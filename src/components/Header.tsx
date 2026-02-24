@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import supportIcon from "@/assets/icons/support.png";
@@ -11,7 +11,10 @@ import { authService } from "@/services/authService";
 const Header = () => {
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isLoggedIn] = useState(authService.isLoggedIn());
+  const isLoggedIn = useSyncExternalStore(
+    authService.subscribe,
+    () => authService.isLoggedIn()
+  );
 
   return (
     <header className="relative z-10">
