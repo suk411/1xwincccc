@@ -328,7 +328,7 @@ const Earn = () => {
 
       {/* Fixed bottom Invite Friends bar */}
       <div
-        className="fixed bottom-10 pb-12 left-0 right-0 z-30 px-4 py-3 flex items-center justify-center"
+        className="fixed bottom-12 pb-12 left-0 right-0 z-30 px-4 py-3 flex items-center justify-center"
         style={{
           backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
         }}
