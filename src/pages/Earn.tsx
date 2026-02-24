@@ -171,7 +171,7 @@ const Earn = () => {
                   <span className="text-white/70 text-xs">Claimable Bonus</span>
                   <p className="text-white text-base font-bold">₹0</p>
                 </div>
-                <GameButton variant="gold" size="sm">Claim Now</GameButton>
+                <GameButton variant="gold" size="sm" className="w-36 rounded-md">Claim Now</GameButton>
               </div>
             </GameCard>
 
@@ -195,7 +195,7 @@ const Earn = () => {
                   <span className="text-white/70 text-xs">Claimable Bonus</span>
                   <p className="text-[#f5c842] text-xl font-bold mt-0.5">₹0</p>
                 </div>
-                <GameButton variant="gold" size="sm">Claim Now</GameButton>
+               <GameButton variant="gold" size="sm" className="w-36 rounded-md">Claim Now</GameButton>
               </div>
               <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
                 <div>
