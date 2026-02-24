@@ -5,6 +5,9 @@ import { GameButton } from "@/components/GameButton";
 import earnBanner from "@/assets/earn/earn-banner.png";
 import goldBorder from "@/assets/events/gold-border.png";
 import emptyBox from "@/assets/events/empty-box.png";
+import level1Bg from "@/assets/earn/level1-bg.png";
+import level2Bg from "@/assets/earn/level2-bg.png";
+import level3Bg from "@/assets/earn/level3-bg.png";
 
 const InviteRow = ({
   icon,
