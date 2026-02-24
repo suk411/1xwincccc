@@ -26,10 +26,29 @@ const TOKEN_KEY = "auth_token";
 const listeners = new Set<() => void>();
 const notifyListeners = () => listeners.forEach((l) => l());
 
+const extractToken = (payload: any): string | undefined => {
+  return (
+    payload?.token ??
+    payload?.data?.token ??
+    payload?.data?.accessToken ??
+    payload?.data?.jwt ??
+    payload?.data?.user?.token
+  );
+};
+
+const persistTokenIfPresent = (payload: any) => {
+  const token = extractToken(payload);
+  if (!token) return;
+  localStorage.setItem(TOKEN_KEY, token);
+  notifyListeners();
+};
+
 export const authService = {
   subscribe(listener: () => void) {
     listeners.add(listener);
-    return () => { listeners.delete(listener); };
+    return () => {
+      listeners.delete(listener);
+    };
   },
 
   async register(number: string, password: string, inviteCode?: string): Promise<AuthResponse> {
@@ -43,6 +62,7 @@ export const authService = {
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || "Registration failed");
+    persistTokenIfPresent(data);
     return data;
   },
 
@@ -54,10 +74,7 @@ export const authService = {
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || "Login failed");
-    if (data.token) {
-      localStorage.setItem(TOKEN_KEY, data.token);
-      notifyListeners();
-    }
+    persistTokenIfPresent(data);
     return data;
   },
 
