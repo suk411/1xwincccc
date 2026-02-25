@@ -46,11 +46,11 @@ const Events = () => {
     <main className="relative flex-1 flex flex-col pb-20">
       <PageHeader title="Events" />
 
-      <div className="px-3 mt-2">
+      <div className="px-2 mt-2">
         <GameTabs tabs={tabs} value={activeTab} onChange={setActiveTab} />
       </div>
 
-      <div className="flex flex-col gap-4 px-3 mt-3">
+      <div className="flex flex-col gap-4 px-2 mt-3">
         {events.map((event, i) => (
           <div key={i} className="relative rounded-xl overflow-hidden">
             {/* Gold border frame */}
