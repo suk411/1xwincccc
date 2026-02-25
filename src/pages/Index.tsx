@@ -16,6 +16,7 @@ import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 import logo from "@/assets/logo.png";
 import phoneMockup from "@/assets/download/phone-mockup.png";
+import promoCharacter from "@/assets/download/promo-character.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
@@ -168,34 +169,38 @@ const Index = () => {
         </div>
 
         {/* Download App Section */}
-         <div
-          className="w-full rounded-sm mt-2  "
-          style={{ background: "linear-gradient(180deg, #35030c 100%, #5b0116 100%)" }}
+        <div
+          className="w-full rounded-xl mt-2 overflow-hidden"
+          style={{ background: "linear-gradient(180deg, #1a0a10 0%, #2a0515 100%)", border: '1px solid rgba(255,50,80,0.3)' }}
         >
           {/* Header with glow bg */}
-          
-          <div className="relative  flex items-center justify-center py-1">
-            
-            <img src={headerGlow} alt="" className="absolute inset-0 w-1/2 h-full ml-[25%] object-cover opacity-80" />
-            <h3 className="relative text-white  ">Download App</h3>
+          <div className="relative flex flex-col items-center justify-center pt-3 pb-2">
+            <img src={headerGlow} alt="" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+            <h3 className="relative text-white font-bold text-base tracking-wide">Download App</h3>
+            <div className="relative w-16 h-[2px] bg-gradient-to-r from-transparent via-white/60 to-transparent mt-1" />
           </div>
 
-          {/* Content */}
-          <div className="flex items-center  gap-4 p-2">
-            {/* Phone mockup with logo */}
-            <div className="flex-shrink-0 w-[180px] h-[260px] relative flex items-center justify-center">
-              <img src={phoneMockup} alt="App Preview" className="w-full h-full object-contain drop-shadow-2xl" />
+          {/* Content - character left, phone right */}
+          <div className="flex items-center px-4 pb-2">
+            {/* Promo character */}
+            <div className="flex-shrink-0 w-[140px] h-[180px] relative -ml-2">
+              <img src={promoCharacter} alt="Promo" className="w-full h-full object-contain" />
             </div>
 
-            {/* Download buttons */}
-            <div className="flex flex-col gap-3 flex-1">
-              <button onClick={() => window.open('#', '_blank')}>
-                <img src={appStoreBadge} alt="Download on App Store" className="h-14 w-auto rounded-lg" />
-              </button>
-              <button onClick={() => window.open('#', '_blank')}>
-                <img src={googlePlayBadge} alt="Get it on Google Play" className="h-14 w-auto rounded-lg" />
-              </button>
+            {/* Phone mockup */}
+            <div className="flex-1 flex justify-center -ml-4">
+              <img src={phoneMockup} alt="App Preview" className="h-[200px] object-contain drop-shadow-2xl" />
             </div>
+          </div>
+
+          {/* Download buttons */}
+          <div className="flex flex-col items-center gap-3 px-6 pb-4">
+            <button onClick={() => window.open('#', '_blank')} className="w-full">
+              <img src={appStoreBadge} alt="Download on App Store" className="h-12 w-full object-contain" />
+            </button>
+            <button onClick={() => window.open('#', '_blank')} className="w-full">
+              <img src={googlePlayBadge} alt="Get it on Google Play" className="h-12 w-full object-contain" />
+            </button>
           </div>
         </div>
       </div>
