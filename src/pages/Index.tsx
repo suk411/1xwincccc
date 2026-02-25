@@ -11,6 +11,10 @@ import vipIcon from "@/assets/bank/vip-icon.png";
 import tabCardBg from "@/assets/tabs/tab-card-bg.png";
 import giftIcon from "@/assets/bank/gift-box-small.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
+import headerGlow from "@/assets/header-glow.png";
+import googlePlayBadge from "@/assets/download/google-play.png";
+import appStoreBadge from "@/assets/download/app-store.png";
+import logo from "@/assets/logo.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
@@ -160,6 +164,35 @@ const Index = () => {
           <p className="text-white/60 text-xs mt-1">
             Play exciting games, earn rewards, and withdraw your winnings instantly. Join millions of players winning big every day!
           </p>
+        </div>
+
+        {/* Download App Section */}
+        <div className="w-full rounded-xl mt-4 overflow-hidden relative" style={{ background: "linear-gradient(180deg, #1a0a10 0%, #2a0515 100%)" }}>
+          {/* Header with glow bg */}
+          <div className="relative flex items-center justify-center py-3">
+            <img src={headerGlow} alt="" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+            <h3 className="relative text-white font-bold text-base tracking-wide">Download App</h3>
+          </div>
+
+          {/* Content */}
+          <div className="flex items-center gap-4 p-4">
+            {/* Phone mockup with logo */}
+            <div className="flex-shrink-0 w-[120px] h-[160px] relative flex items-center justify-center">
+              <div className="w-[90px] h-[140px] rounded-2xl border-2 border-white/20 bg-black/40 flex items-center justify-center overflow-hidden shadow-lg shadow-black/50">
+                <img src={logo} alt="App" className="w-16 h-16 object-contain" />
+              </div>
+            </div>
+
+            {/* Download buttons */}
+            <div className="flex flex-col gap-3 flex-1">
+              <button onClick={() => window.open('#', '_blank')}>
+                <img src={appStoreBadge} alt="Download on App Store" className="h-11 w-auto rounded-lg" />
+              </button>
+              <button onClick={() => window.open('#', '_blank')}>
+                <img src={googlePlayBadge} alt="Get it on Google Play" className="h-11 w-auto rounded-lg" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </PageLayout>
