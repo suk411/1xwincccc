@@ -167,15 +167,18 @@ const Index = () => {
         </div>
 
         {/* Download App Section */}
-        <div className="w-full rounded-xl mt-4 overflow-hidden relative" style={{ background: "linear-gradient(180deg, #1a0a10 0%, #2a0515 100%)" }}>
+         <div
+          className="w-full rounded-xl mt-2  "
+          style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)" }}
+        >
           {/* Header with glow bg */}
-          <div className="relative flex items-center justify-center py-3">
-            <img src={headerGlow} alt="" className="absolute inset-0 w-full h-full object-cover opacity-80" />
-            <h3 className="relative text-white font-bold text-base tracking-wide">Download App</h3>
+          <div className="relative flex items-center justify-center py-1">
+            <img src={headerGlow} alt="" className="absolute inset-0 w-1/2 h-full ml-[25%] object-cover opacity-80" />
+            <h3 className="relative text-white  ">Download App</h3>
           </div>
 
           {/* Content */}
-          <div className="flex items-center gap-4 p-4">
+          <div className="flex items-center ml-4 gap-4 p-4">
             {/* Phone mockup with logo */}
             <div className="flex-shrink-0 w-[120px] h-[160px] relative flex items-center justify-center">
               <div className="w-[90px] h-[140px] rounded-2xl border-2 border-white/20 bg-black/40 flex items-center justify-center overflow-hidden shadow-lg shadow-black/50">
