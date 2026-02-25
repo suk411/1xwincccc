@@ -169,7 +169,7 @@ const Index = () => {
         {/* Download App Section */}
          <div
           className="w-full rounded-xl mt-2  "
-          style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)" }}
+          style={{ background: "linear-gradient(180deg, #35030c 20%, #5b0116 20%)" }}
         >
           {/* Header with glow bg */}
           <div className="relative flex items-center justify-center py-1">
