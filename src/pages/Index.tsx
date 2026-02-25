@@ -122,7 +122,7 @@ const Index = () => {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-2 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
+        <div className="flex items-center  pt-1 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
           {categoryTabs.map((tab, i) => (
             <button
               key={i}
