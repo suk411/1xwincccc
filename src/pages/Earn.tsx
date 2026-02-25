@@ -342,11 +342,11 @@ const Earn = () => {
               <div className="flex items-start gap-3">
                 {/* Tree image - smaller */}
                 <div className="flex-shrink-0 w-[140px]">
-                  <img src={agentMapTree} alt="Agent Map Tree" className="w-full h-auto object-contain" />
+                  <img src={agentMapTree} alt="Agent Map Tree" className="w-full h-auto ml-5 object-contain" />
                 </div>
 
                 {/* Level Labels - on the right */}
-                <div className="flex flex-col gap-3 pt-2 text-xs text-white/70 flex-1 min-w-0">
+                <div className="flex flex-col gap-3 ml-10 pt-2 text-xs text-white/70 flex-1 min-w-0">
                   <div>
                     <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#AC4059" }}>Level 1 Team</span>
                     <p className="mt-1">(A1+B1+...)</p>
