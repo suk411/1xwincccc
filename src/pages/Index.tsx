@@ -169,29 +169,31 @@ const Index = () => {
 
         {/* Download App Section */}
          <div
-          className="w-full rounded-xl mt-2  "
-          style={{ background: "linear-gradient(180deg, #35030c 20%, #5b0116 20%)" }}
+          className="w-full rounded-sm mt-2  "
+          style={{ background: "linear-gradient(180deg, #35030c 100%, #5b0116 100%)" }}
         >
           {/* Header with glow bg */}
-          <div className="relative flex items-center justify-center py-1">
+          
+          <div className="relative  flex items-center justify-center py-1">
+            
             <img src={headerGlow} alt="" className="absolute inset-0 w-1/2 h-full ml-[25%] object-cover opacity-80" />
             <h3 className="relative text-white  ">Download App</h3>
           </div>
 
           {/* Content */}
-          <div className="flex items-center ml-4 gap-4 p-4">
+          <div className="flex items-center  gap-4 p-2">
             {/* Phone mockup with logo */}
-            <div className="flex-shrink-0 w-[120px] h-[180px] relative flex items-center justify-center">
+            <div className="flex-shrink-0 w-[180px] h-[260px] relative flex items-center justify-center">
               <img src={phoneMockup} alt="App Preview" className="w-full h-full object-contain drop-shadow-2xl" />
             </div>
 
             {/* Download buttons */}
             <div className="flex flex-col gap-3 flex-1">
               <button onClick={() => window.open('#', '_blank')}>
-                <img src={appStoreBadge} alt="Download on App Store" className="h-11 w-auto rounded-lg" />
+                <img src={appStoreBadge} alt="Download on App Store" className="h-14 w-auto rounded-lg" />
               </button>
               <button onClick={() => window.open('#', '_blank')}>
-                <img src={googlePlayBadge} alt="Get it on Google Play" className="h-11 w-auto rounded-lg" />
+                <img src={googlePlayBadge} alt="Get it on Google Play" className="h-14 w-auto rounded-lg" />
               </button>
             </div>
           </div>
