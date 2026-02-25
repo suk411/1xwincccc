@@ -15,6 +15,7 @@ import headerGlow from "@/assets/header-glow.png";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 import logo from "@/assets/logo.png";
+import phoneMockup from "@/assets/download/phone-mockup.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
@@ -180,10 +181,8 @@ const Index = () => {
           {/* Content */}
           <div className="flex items-center ml-4 gap-4 p-4">
             {/* Phone mockup with logo */}
-            <div className="flex-shrink-0 w-[120px] h-[160px] relative flex items-center justify-center">
-              <div className="w-[90px] h-[140px] rounded-2xl border-2 border-white/20 bg-black/40 flex items-center justify-center overflow-hidden shadow-lg shadow-black/50">
-                <img src={logo} alt="App" className="w-16 h-16 object-contain" />
-              </div>
+            <div className="flex-shrink-0 w-[120px] h-[180px] relative flex items-center justify-center">
+              <img src={phoneMockup} alt="App Preview" className="w-full h-full object-contain drop-shadow-2xl" />
             </div>
 
             {/* Download buttons */}
