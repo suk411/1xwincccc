@@ -24,7 +24,7 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {isLoggedIn ? (
+          {isLoggedIn && (
             <>
               <button className="relative w-7 h-7 flex items-center justify-center">
                 <img src={supportIcon} alt="Support" className="absolute inset-0 w-full h-full object-contain" />
@@ -32,20 +32,11 @@ const Header = () => {
               <button className="relative w-7 h-7 flex items-center justify-center">
                 <img src={mailIcon} alt="Mail" className="absolute inset-0 w-full h-full object-contain" />
               </button>
-              <button className="relative w-7 h-7 flex items-center justify-center" onClick={() => setIsProfileOpen(true)}>
-                <img src={menuBg} alt="Menu" className="absolute inset-0 w-full h-full object-contain" />
-              </button>
-            </>
-          ) : (
-            <>
-              <GameButton variant="red" size="sm" onClick={() => navigate("/login")}>
-                Login
-              </GameButton>
-              <GameButton variant="gold" size="sm" onClick={() => navigate("/register")}>
-                Register
-              </GameButton>
             </>
           )}
+          <button className="relative w-7 h-7 flex items-center justify-center" onClick={() => setIsProfileOpen(true)}>
+            <img src={menuBg} alt="Menu" className="absolute inset-0 w-full h-full object-contain" />
+          </button>
         </div>
       </div>
 
