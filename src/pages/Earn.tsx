@@ -339,23 +339,29 @@ const Earn = () => {
                 <span className="text-white font-bold text-sm">Agent Map</span>
               </div>
 
-              <div className="flex justify-center">
-                <img src={agentMapTree} alt="Agent Map Tree" className="w-full max-w-[300px] h-auto object-contain" />
-              </div>
+              <div className="flex items-start gap-3">
+                {/* Tree image - smaller */}
+                <div className="flex-shrink-0 w-[140px]">
+                  <img src={agentMapTree} alt="Agent Map Tree" className="w-full h-auto object-contain" />
+                </div>
 
-              {/* Level Labels */}
-              <div className="flex flex-col gap-2 text-xs text-white/70">
-                <div className="flex items-center gap-2">
-                  <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#AC4059" }}>Level 1 Team</span>
-                  <span>(A1+B1+...) ×(5~10%)=Commission</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#5B4FA0" }}>Level 2 Team</span>
-                  <span>(A21+B22+...) ×(1~2%)=Commission</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#7B2D8E" }}>Level 3 Team</span>
-                  <span>(A31+B23+...) ×(0.5~1%)=Commission</span>
+                {/* Level Labels - on the right */}
+                <div className="flex flex-col gap-3 pt-2 text-xs text-white/70 flex-1 min-w-0">
+                  <div>
+                    <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#AC4059" }}>Level 1 Team</span>
+                    <p className="mt-1">(A1+B1+...)</p>
+                    <p>×(5~10%)=Commission</p>
+                  </div>
+                  <div>
+                    <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#5B4FA0" }}>Level 2 Team</span>
+                    <p className="mt-1">(A21+B22+...)</p>
+                    <p>×(1~2%)=Commission</p>
+                  </div>
+                  <div>
+                    <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#7B2D8E" }}>Level 3 Team</span>
+                    <p className="mt-1">(A31+B23+...)</p>
+                    <p>×(0.5~1%)=Commission</p>
+                  </div>
                 </div>
               </div>
             </GameCard>
