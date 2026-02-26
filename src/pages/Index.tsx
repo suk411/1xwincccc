@@ -20,6 +20,8 @@ import promoCharacter from "@/assets/download/promo-character.png";
 import officialPartners from "@/assets/partners/official-partners.png";
 import verifiedCertification from "@/assets/partners/verified-certification.png";
 import securityProtection from "@/assets/partners/security-protection.png";
+import telegramPartner from "@/assets/partners/telegram-icon.png";
+import responsibleGaming from "@/assets/partners/responsible-gaming.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
@@ -262,7 +264,7 @@ const Index = () => {
         </div>
 
         {/* About Section */}
-        <div className="w-full rounded-xl mt-2 mb-24 overflow-hidden">
+        <div className="w-full rounded-xl mt-2 overflow-hidden">
           {/* Header with glow bg */}
           <div className="relative flex flex-col items-center">
             <h3 className="relative top-8 z-10">About 1XKING</h3>
@@ -289,6 +291,26 @@ const Index = () => {
               <div className="w-full rounded-lg overflow-hidden border border-red-900">
                 <img src={securityProtection} alt="Security Protection" className="w-full object-contain" />
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Follow Us & Responsible Gaming Section */}
+        <div className="w-full rounded-xl mt-2 mb-24 overflow-hidden">
+          <div className="flex gap-0">
+            {/* Follow Us */}
+            <div className="flex-1 flex flex-col items-center py-4">
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
+              <h4 className="text-white/70 text-xs font-semibold mb-3">Follow Us</h4>
+              <a href="https://t.me/" target="_blank" rel="noopener noreferrer">
+                <img src={telegramPartner} alt="Telegram" className="w-10 h-10 object-contain" />
+              </a>
+            </div>
+            {/* Responsible Gaming */}
+            <div className="flex-1 flex flex-col items-center py-4">
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
+              <h4 className="text-white/70 text-xs font-semibold mb-3">Responsible Gaming Statement</h4>
+              <img src={responsibleGaming} alt="Responsible Gaming" className="w-32 object-contain" />
             </div>
           </div>
         </div>
