@@ -163,6 +163,9 @@ const Index = () => {
           ))}
         </div>
 
+        {/* Game Category Tabs */}
+        <HomeGameTabs />
+
         {/* Text Card */}
         <div
           className="w-full rounded-xl p-4 mt-2"
