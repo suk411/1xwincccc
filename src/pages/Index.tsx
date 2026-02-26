@@ -172,7 +172,7 @@ const Index = () => {
         </div>
 
         {/* Game Category Tabs */}
-        <HomeGameTabs />
+        <GameTabsSection />
 
         {/* Text Card */}
         <div
