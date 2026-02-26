@@ -17,6 +17,7 @@ import appStoreBadge from "@/assets/download/app-store.png";
 import logo from "@/assets/logo.png";
 import phoneMockup from "@/assets/download/phone-mockup.png";
 import promoCharacter from "@/assets/download/promo-character.png";
+import officialPartners from "@/assets/partners/official-partners.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
