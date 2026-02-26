@@ -265,7 +265,7 @@ const Index = () => {
         <div className="w-full rounded-xl mt-2 mb-24 overflow-hidden">
           {/* Header with glow bg */}
           <div className="relative flex flex-col items-center">
-            <h3 className="relative top-8 z-10">About 1XWIN</h3>
+            <h3 className="relative top-8 z-10">About 1XKING</h3>
             <img 
               src={headerGlow} 
               alt="Header glow" 
@@ -279,14 +279,14 @@ const Index = () => {
             {/* Verified Certification */}
             <div className="flex-1 flex flex-col items-center">
               <h4 className="text-white/80 text-xs font-semibold mb-2">Verified Certification</h4>
-              <div className="w-full rounded-lg overflow-hidden border border-[rgba(255,50,80,0.3)]">
+              <div className="w-full rounded-lg overflow-hidden border border-red-900 ">
                 <img src={verifiedCertification} alt="Verified Certification" className="w-full object-contain" />
               </div>
             </div>
             {/* Security Protection */}
             <div className="flex-1 flex flex-col items-center">
               <h4 className="text-white/80 text-xs font-semibold mb-2">Security Protection</h4>
-              <div className="w-full rounded-lg overflow-hidden border border-[rgba(255,50,80,0.3)]">
+              <div className="w-full rounded-lg overflow-hidden border border-red-900">
                 <img src={securityProtection} alt="Security Protection" className="w-full object-contain" />
               </div>
             </div>
