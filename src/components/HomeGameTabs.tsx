@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { GameTabs, GameTab } from "@/components/GameTabs";
+import fishIconImg from "@/assets/tabs/fish-icon.png";
+import liveIconImg from "@/assets/tabs/live-icon.png";
 
 const allIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAJFBMVEVMaXH/mpz/7+//mZr/m53/vsD/m5v/mZv/mp3/mpv/mp7/mpwSh04nAAAAC3RSTlMA8w8g7wkvmee2Lt92b/sAAAAJcEhZcwAAFiUAABYlAUlSJPAAAACSSURBVHic7ZNLDsMgDAX9BRvuf98qMe0iWClVo3aTWT2JERY2Brj5G0obeogzWk1ErDIAj6iJBlqx77iqR8LUJIvTjswyolEmPk+xlXF3l3OxXCXaLFomap3FmvaHXXDDWrE9oHPmASgH+grwncgeBa21KC156eXH0Gp76PrJyKcjFOY3I8S1jwurqwDLy3XzCx5I6QxBI9i78QAAAABJRU5ErkJggg==";
 const recentIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAJ1BMVEVMaXH/mpz/mpz/mJv/mpz/mpz/mp3/mpz/mpz/mpz/mpz/mpv/mpzz6uhFAAAADXRSTlMA/u8JErsl92/YoT5Z594S5QAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAPhJREFUeJztlNsSgzAIRGGBXEz//3s7wVhNNNa+lyfHOQF2ISH6xy8hoqoi8g0LyTKQLYVbNCyI7BGxhHm6FxwBHMdrklQSmKOloBqSgRnpmqz5cmkypOSa87I/MJs65KwaMy76lIU5r5zZSmaOy7l4AKP4lwJ+gEq8SCkp8ppoB8U4nvT4T+pA0XpYB1Lzp0wDZTUfQ5sKbgUdVBWXvRkxARmACYXMnEc1h9JidYhVWUEzYhCzzaEummuQdB7iwZ7jX6Ebw3dMR2/6Ee5tY/RmS9l5oZOl6NdMbtaMfHGxLW6cL+7jq0CPLxc9v67UHgD9+gD8g7p4AxDRBjLhTZjIAAAAAElFTkSuQmCC";
