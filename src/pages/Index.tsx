@@ -70,6 +70,7 @@ const Index = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
+  const [activeGameTab, setActiveGameTab] = useState("top");
 
   useEffect(() => {
     const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
