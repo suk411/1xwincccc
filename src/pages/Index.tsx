@@ -12,6 +12,7 @@ import tabCardBg from "@/assets/tabs/tab-card-bg.png";
 import giftIcon from "@/assets/bank/gift-box-small.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import headerGlow from "@/assets/header-glow.png";
+import HomeGameTabs from "@/components/HomeGameTabs";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
