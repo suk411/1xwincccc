@@ -186,7 +186,14 @@ const Index = () => {
         </div>
 
         {/* Game Category Tabs */}
-        <GameTabsSection />
+        <div className="mt-2 rounded-lg overflow-hidden">
+          <GameTabs
+            tabs={gameTabs}
+            value={activeGameTab}
+            onChange={setActiveGameTab}
+            className="rounded-lg"
+          />
+        </div>
 
         {/* Text Card */}
         <div
