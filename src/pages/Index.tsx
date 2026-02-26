@@ -14,7 +14,7 @@ import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import headerGlow from "@/assets/header-glow.png";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
-import logo from "@/assets/logo.png";
+
 import phoneMockup from "@/assets/download/phone-mockup.png";
 import promoCharacter from "@/assets/download/promo-character.png";
 
@@ -171,22 +171,31 @@ const Index = () => {
 
 
 
-        
+
 
         {/* Download App Section */}
-        <div
-          className="w-full rounded-xl mt-2 mb-24 bg-red-600 overflow-hidden"
-          
-        >
-          {/* Header with glow bg */}
-          <div className="relative flex flex-col items-center justify-center pt-3 pb-2">
-            <img src={headerGlow} alt="" className="absolute items-center justify-center inset-0 w-1/3 h-full object-cover opacity-60" />
-            <h3 className="relative text-white font-bold text-base tracking-wide">Download App</h3>
-          </div>
+<div className="w-full rounded-xl mt-2 overflow-hidden">
+  {/* Header with glow bg */}
+  <div className="relative flex flex-col items-center ">
+    <h3 className="relative top-8 z-10">Download App</h3>
+    
+    {/* Glow image below text */}
+    <img 
+      src={headerGlow} 
+      alt="Header glow" 
+      className="w-1/2  object-cover opacity-60 mx-auto " 
+    />
+    
+    {/* Horizontal bottom line */}
+    <div className="w-full  h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
+  </div>
+
+
+
 
           {/* Content - character left, phone right */}
-          <div className="flex items-center  px-4 pb-2">
-           <div className="relative bottom-16 flex flex-col items-start gap-3 w-[139px] h-[160px]">
+          <div className="flex items-center ml-2  px-4 pb-2">
+           <div className="relative bottom-20 flex flex-col items-start gap-3 w-[160px] h-[140px]">
   {/* Promo character */}
   <img 
     src={promoCharacter} 
@@ -195,12 +204,12 @@ const Index = () => {
   />
 
   {/* Download buttons */}
-  <div className="flex flex-col gap-3 flex-1 justify-start w-full">
-    <button className="w-full">
+  <div className="flex flex-col gap-3   flex-1 justify-start w-full">
+    <button className="w-full ">
       <img 
         src={appStoreBadge} 
         alt="Download on App Store" 
-        className="h-12 w-full object-contain" 
+        className="h-12 w-full  object-contain" 
       />
     </button>
     <button className="w-full">
@@ -216,7 +225,7 @@ const Index = () => {
             </div>
 
             {/* Phone mockup */}
-            <div className="flex-1 flex justify-end ">
+            <div className="flex-1 flex justify-end mr-2 ">
               <img src={phoneMockup} alt="App Preview" className="h-[300px] object-contain drop-shadow-2xl" />
             </div>
          
