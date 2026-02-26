@@ -12,7 +12,15 @@ import tabCardBg from "@/assets/tabs/tab-card-bg.png";
 import giftIcon from "@/assets/bank/gift-box-small.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import headerGlow from "@/assets/header-glow.png";
-import HomeGameTabs from "@/components/HomeGameTabs";
+import { GameTabs, GameTab } from "@/components/GameTabs";
+import { useState as useTabState } from "react";
+import allTabIcon from "@/assets/tabs/all-icon.png";
+import recentTabIcon from "@/assets/tabs/recent-icon.png";
+import slotsTabIcon from "@/assets/tabs/slots-icon.png";
+import casinoTabIcon from "@/assets/tabs/casino-icon.png";
+import fishTabIcon from "@/assets/tabs/fish-icon.png";
+import liveTabIcon from "@/assets/tabs/live-icon.png";
+import sportTabIcon from "@/assets/tabs/sport-icon.png";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
