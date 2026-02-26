@@ -280,15 +280,15 @@ const Index = () => {
           <div className="flex gap-3 px-4 pb-4">
             {/* Verified Certification */}
             <div className="flex-1 flex flex-col items-center">
-              <h4 className="text-white/80 text-xs font-semibold mb-2">Verified Certification</h4>
-              <div className="w-full rounded-lg overflow-hidden border border-red-900 ">
+              <h4 className="text-white text-xs mb-2">Verified Certification</h4>
+              <div className="w-full rounded-lg overflow-hidden   ">
                 <img src={verifiedCertification} alt="Verified Certification" className="w-full object-contain" />
               </div>
             </div>
             {/* Security Protection */}
             <div className="flex-1 flex flex-col items-center">
-              <h4 className="text-white/80 text-xs font-semibold mb-2">Security Protection</h4>
-              <div className="w-full rounded-lg overflow-hidden border border-red-900">
+              <h4 className="text-white text-xs mb-2">Security Protection</h4>
+              <div className="w-full rounded-lg overflow-hidden ">
                 <img src={securityProtection} alt="Security Protection" className="w-full object-contain" />
               </div>
             </div>
@@ -303,7 +303,7 @@ const Index = () => {
               <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
               <h4 className="text-white text-xs mb-3 ">Follow Us</h4>
               <a href="https://t.me/" target="_blank" rel="noopener noreferrer">
-                <img src={telegramPartner} alt="Telegram" className="w-20 h-16 bg-black/35 border  border-red-900 p-2 rounded-sm  object-contain" />
+                <img src={telegramPartner} alt="Telegram" className="w-20 h-16 rounded-sm  object-contain" />
               </a>
             </div>
             {/* Responsible Gaming */}
