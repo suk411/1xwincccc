@@ -13,7 +13,7 @@ import giftIcon from "@/assets/bank/gift-box-small.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import headerGlow from "@/assets/header-glow.png";
 import { GameTabs, GameTab } from "@/components/GameTabs";
-import { useState as useTabState } from "react";
+import allTabIcon from "@/assets/tabs/all-icon.png";
 import allTabIcon from "@/assets/tabs/all-icon.png";
 import recentTabIcon from "@/assets/tabs/recent-icon.png";
 import slotsTabIcon from "@/assets/tabs/slots-icon.png";
