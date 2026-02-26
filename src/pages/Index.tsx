@@ -12,7 +12,29 @@ import tabCardBg from "@/assets/tabs/tab-card-bg.png";
 import giftIcon from "@/assets/bank/gift-box-small.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import headerGlow from "@/assets/header-glow.png";
-import HomeGameTabs from "@/components/HomeGameTabs";
+import { GameTabs, GameTab } from "@/components/GameTabs";
+import allTabIcon from "@/assets/tabs/all-icon.png";
+import recentTabIcon from "@/assets/tabs/recent-icon.png";
+import slotsTabIcon from "@/assets/tabs/slots-icon.png";
+import casinoTabIcon from "@/assets/tabs/casino-icon.png";
+import fishTabIcon from "@/assets/tabs/fish-icon.png";
+import liveTabIcon from "@/assets/tabs/live-icon.png";
+import sportTabIcon from "@/assets/tabs/sport-icon.png";
+
+const IconImg = ({ src, alt }: { src: string; alt: string }) => (
+  <img src={src} alt={alt} className="w-5 h-5 object-contain" />
+);
+
+const gameTabs: GameTab[] = [
+  { label: "TOP", value: "top" },
+  { label: "All", value: "all", icon: <IconImg src={allTabIcon} alt="All" /> },
+  { label: "Recent", value: "recent", icon: <IconImg src={recentTabIcon} alt="Recent" /> },
+  { label: "Slots", value: "slots", icon: <IconImg src={slotsTabIcon} alt="Slots" /> },
+  { label: "Casino", value: "casino", icon: <IconImg src={casinoTabIcon} alt="Casino" /> },
+  { label: "FISH", value: "fish", icon: <IconImg src={fishTabIcon} alt="Fish" /> },
+  { label: "LIVE", value: "live", icon: <IconImg src={liveTabIcon} alt="Live" /> },
+  { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
+];
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
@@ -48,6 +70,7 @@ const Index = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
+  const [activeGameTab, setActiveGameTab] = useState("top");
 
   useEffect(() => {
     const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
@@ -164,7 +187,14 @@ const Index = () => {
         </div>
 
         {/* Game Category Tabs */}
-        <HomeGameTabs />
+        <div className="mt-2 rounded-lg overflow-hidden">
+          <GameTabs
+            tabs={gameTabs}
+            value={activeGameTab}
+            onChange={setActiveGameTab}
+            className="rounded-lg"
+          />
+        </div>
 
         {/* Text Card */}
         <div
@@ -176,7 +206,6 @@ const Index = () => {
             Play exciting games, earn rewards, and withdraw your winnings instantly. Join millions of players winning big every day!
           </p>
         </div>
-
 
 
 
