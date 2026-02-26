@@ -198,7 +198,7 @@ const Index = () => {
             Play exciting games, earn rewards, and withdraw your winnings instantly. Join millions of players winning big every day!
           </p>
         </div>
-
+  const [activeGameTab, setActiveGameTab] = useState("top");
 
 
 
