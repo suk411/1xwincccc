@@ -18,6 +18,8 @@ import appStoreBadge from "@/assets/download/app-store.png";
 import phoneMockup from "@/assets/download/phone-mockup.png";
 import promoCharacter from "@/assets/download/promo-character.png";
 import officialPartners from "@/assets/partners/official-partners.png";
+import verifiedCertification from "@/assets/partners/verified-certification.png";
+import securityProtection from "@/assets/partners/security-protection.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
@@ -256,6 +258,38 @@ const Index = () => {
 
           <div className="px-4 pb-4">
             <img src={officialPartners} alt="Official Partners" className="w-full object-contain" />
+          </div>
+        </div>
+
+        {/* About Section */}
+        <div className="w-full rounded-xl mt-2 mb-24 overflow-hidden">
+          {/* Header with glow bg */}
+          <div className="relative flex flex-col items-center">
+            <h3 className="relative top-8 z-10">About 1XWIN</h3>
+            <img 
+              src={headerGlow} 
+              alt="Header glow" 
+              className="w-1/2 object-cover opacity-60 mx-auto" 
+            />
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
+          </div>
+
+          {/* Two cards side by side */}
+          <div className="flex gap-3 px-4 pb-4">
+            {/* Verified Certification */}
+            <div className="flex-1 flex flex-col items-center">
+              <h4 className="text-white/80 text-xs font-semibold mb-2">Verified Certification</h4>
+              <div className="w-full rounded-lg overflow-hidden border border-[rgba(255,50,80,0.3)]">
+                <img src={verifiedCertification} alt="Verified Certification" className="w-full object-contain" />
+              </div>
+            </div>
+            {/* Security Protection */}
+            <div className="flex-1 flex flex-col items-center">
+              <h4 className="text-white/80 text-xs font-semibold mb-2">Security Protection</h4>
+              <div className="w-full rounded-lg overflow-hidden border border-[rgba(255,50,80,0.3)]">
+                <img src={securityProtection} alt="Security Protection" className="w-full object-contain" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
