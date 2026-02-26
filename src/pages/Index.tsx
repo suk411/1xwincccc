@@ -238,13 +238,22 @@ const Index = () => {
         {/* Official Partner Section */}
         <div
           className="w-full rounded-xl mt-2 mb-24 overflow-hidden"
-          style={{ background: "linear-gradient(180deg, #1a0a10 0%, #2a0515 100%)", border: '1px solid rgba(255,50,80,0.3)' }}
-        >
-          <div className="relative flex flex-col items-center justify-center pt-3 pb-2">
-            <img src={headerGlow} alt="" className="absolute items-center justify-center inset-0 w-1/3 h-full object-cover opacity-60" />
-            <h3 className="relative text-white font-bold text-base tracking-wide">Official Partner</h3>
-            <div className="relative w-16 h-[2px] bg-gradient-to-r from-transparent via-white/60 to-transparent mt-1" />
-          </div>
+        
+        >{/* Header with glow bg */}
+  <div className="relative flex flex-col items-center ">
+    <h3 className="relative top-8 z-10">Offical Partners</h3>
+    
+    {/* Glow image below text */}
+    <img 
+      src={headerGlow} 
+      alt="Header glow" 
+      className="w-1/2  object-cover opacity-60 mx-auto " 
+    />
+    
+    {/* Horizontal bottom line */}
+    <div className="w-full  h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
+  </div>
+
           <div className="px-4 pb-4">
             <img src={officialPartners} alt="Official Partners" className="w-full object-contain" />
           </div>
