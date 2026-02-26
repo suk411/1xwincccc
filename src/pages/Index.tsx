@@ -20,6 +20,8 @@ import promoCharacter from "@/assets/download/promo-character.png";
 import officialPartners from "@/assets/partners/official-partners.png";
 import verifiedCertification from "@/assets/partners/verified-certification.png";
 import securityProtection from "@/assets/partners/security-protection.png";
+import telegramPartner from "@/assets/partners/telegram-icon.png";
+import responsibleGaming from "@/assets/partners/responsible-gaming.png";
 
 const winMessages = [
   "User d****z successfully withdrew 20000!",
