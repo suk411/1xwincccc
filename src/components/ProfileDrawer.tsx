@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
 import { GameButton } from "./GameButton";
@@ -32,7 +33,11 @@ interface ProfileDrawerProps {
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const navigate = useNavigate();
   const vipLevel = "VIP0";
-  const { balance, userId } = useProfile();
+  const { balance, userId, refresh } = useProfile();
+
+  useEffect(() => {
+    if (open) refresh();
+  }, [open]);
 
   const handleMenuClick = (label: string) => {
     onOpenChange(false);
