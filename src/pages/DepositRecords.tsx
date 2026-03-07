@@ -1,143 +1,228 @@
 import PageHeader from "@/components/PageHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
+import { authService } from "@/services/authService";
+import { useToast } from "@/hooks/use-toast";
 
-type OrderStatus = "Pending" | "Timeout" | "Cancelled" | "success";
+type OrderStatus = "Pending" | "Timeout" | "Cancelled" | "success" | string;
 
 interface DepositOrder {
-  id: string;
-  amount: number;
-  channel: string;
-  status: OrderStatus;
-  date: string;
+  [key: string]: any;
 }
 
-const mockOrders: DepositOrder[] = [
-  { id: "20260219165121117246", amount: 1000, channel: "nexPay", status: "Pending", date: "2026-02-19" },
-  { id: "20260216160421612999", amount: 200, channel: "nexPay", status: "Timeout", date: "2026-02-16" },
-  { id: "20260205161059108033", amount: 200, channel: "nexPay", status: "Cancelled", date: "2026-02-05" },
-  { id: "20260205161059108034", amount: 500, channel: "nexPay", status: "success", date: "2026-02-05" },
-];
-
-const statusStyles: Record<OrderStatus, { bg: string; text: string }> = {
-  Pending: { bg: "#ff5500", text: "#ffffff" },    // Orange bg, white text
-  Timeout: { bg: "#ff0000", text: "#ffffff" },    // Red bg, white text  
-  Cancelled: { bg: "#302f2f", text: "#ffffff" },  // Gray bg, white text
-  success: { bg: "#008f13", text: "#ffffff" },    // Green bg, white text
+const statusStyles: Record<string, { bg: string; text: string }> = {
+  Pending: { bg: "#ff5500", text: "#ffffff" },
+  pending: { bg: "#ff5500", text: "#ffffff" },
+  Timeout: { bg: "#ff0000", text: "#ffffff" },
+  timeout: { bg: "#ff0000", text: "#ffffff" },
+  Cancelled: { bg: "#302f2f", text: "#ffffff" },
+  cancelled: { bg: "#302f2f", text: "#ffffff" },
+  success: { bg: "#008f13", text: "#ffffff" },
+  Success: { bg: "#008f13", text: "#ffffff" },
+  completed: { bg: "#008f13", text: "#ffffff" },
+  Completed: { bg: "#008f13", text: "#ffffff" },
+  failed: { bg: "#ff0000", text: "#ffffff" },
+  Failed: { bg: "#ff0000", text: "#ffffff" },
 };
 
+const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
+
 const DepositRecords = () => {
+  const { toast } = useToast();
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [orders, setOrders] = useState<DepositOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+
+  const fetchOrders = async (p = 1) => {
+    setLoading(true);
+    try {
+      const res = await authService.getDeposits(p, 15);
+      setOrders(res.items || []);
+      setTotal(res.total || 0);
+      setPage(res.page || p);
+    } catch (err: any) {
+      toast({ title: err.message || "Failed to fetch deposits", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const getOrderId = (order: DepositOrder) =>
+    order.merOrderNo || order.orderId || order.id || order._id || "—";
+
+  const getAmount = (order: DepositOrder) =>
+    order.amount ?? order.depositAmount ?? 0;
+
+  const getStatus = (order: DepositOrder) =>
+    order.status || order.orderStatus || "Pending";
+
+  const getChannel = (order: DepositOrder) =>
+    order.channel || order.paymentChannel || order.method || "—";
+
+  const getDate = (order: DepositOrder) => {
+    const d = order.createdAt || order.date || order.created_at;
+    if (!d) return "—";
+    try { return new Date(d).toLocaleDateString(); } catch { return d; }
+  };
+
+  const handlePayOrder = (order: DepositOrder) => {
+    const url = order.paymentUrl || order.payment_url;
+    if (url) {
+      window.open(url, "_blank");
+    } else {
+      toast({ title: "No payment URL available", variant: "destructive" });
+    }
+  };
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+      <div className="mb-2">
+        <PageHeader title="Deposit Records" />
+      </div>
 
-         {/* Top Header */}
-       
+      <div className="flex flex-col gap-2 px-2">
+        {loading ? (
+          <div className="text-center text-white/60 py-8 text-sm">Loading...</div>
+        ) : orders.length === 0 ? (
+          <div className="text-center text-white/60 py-8 text-sm">No deposit records found</div>
+        ) : (
+          orders.map((order, idx) => {
+            const orderId = getOrderId(order);
+            const expanded = expandedId === orderId;
+            const status = getStatus(order);
+            const style = statusStyles[status] || fallbackStyle;
 
-
-
-   <div className="mb-2">
-       
-         <PageHeader title="Deposit Records"   />
-      
-     </div>
-
-      <div className="flex flex-col gap-2 px-2 ">
-        {mockOrders.map((order) => {
-          const expanded = expandedId === order.id;
-          const statusStyle = statusStyles[order.status];
-          
-          return (
-            <div
-              key={order.id}
-              className="rounded-xl overflow-hidden w-full max-w-full"
-              style={{ background: "linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)" }}
-            >
-              {/* Top row: Order ID + Status */}
-              <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="text-[#c4889a] text-xs truncate">Order ID: {order.id}</span>
-                  <button className="text-[#c4889a] flex-shrink-0">
-                    <Copy size={12} />
-                  </button>
-                </div>
-                <span
-                  className="text-xs font-bold px-2.5 py-0.5 rounded-sm flex-shrink-0"
-                  style={{
-                    backgroundColor: statusStyle.bg,
-                    color: statusStyle.text,
-                  }}
-                >
-                  {order.status}
-                </span>
-              </div>
-
-              {/* Amount */}
-              <div className="px-4 py-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-white text-base font-bold">Deposit Amount</span>
-                  <span 
-                    className="font-semibold text-base"
-                    style={{ color: statusStyle.bg }}
+            return (
+              <div
+                key={orderId + idx}
+                className="rounded-xl overflow-hidden w-full max-w-full"
+                style={{ background: "linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)" }}
+              >
+                {/* Top row */}
+                <div className="flex items-center justify-between px-4 pt-4 pb-2">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span className="text-[#c4889a] text-xs truncate">Order ID: {orderId}</span>
+                    <button
+                      className="text-[#c4889a] flex-shrink-0"
+                      onClick={() => {
+                        navigator.clipboard.writeText(orderId);
+                        toast({ title: "Order ID copied" });
+                      }}
+                    >
+                      <Copy size={12} />
+                    </button>
+                  </div>
+                  <span
+                    className="text-xs font-bold px-2.5 py-0.5 rounded-sm flex-shrink-0"
+                    style={{ backgroundColor: style.bg, color: style.text }}
                   >
-                    ₹{order.amount.toLocaleString()}
+                    {status}
                   </span>
                 </div>
-              </div>
 
-              {/* Channel */}
-              <div className="flex items-center justify-between px-4 pb-4">
-                <span className="text-[#c4889a] text-xs">Payment channel</span>
-                <span className="text-[#d1d1d1] text-sm font-bold">{order.channel}</span>
-              </div>
+                {/* Amount */}
+                <div className="px-4 py-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-white text-base font-bold">Deposit Amount</span>
+                    <span className="font-semibold text-base" style={{ color: style.bg }}>
+                      ₹{Number(getAmount(order)).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
 
-              {/* Divider */}
-              <div className="border-t border-white/10 mx-4" />
+                {/* Channel */}
+                <div className="flex items-center justify-between px-4 pb-4">
+                  <span className="text-[#c4889a] text-xs">Payment channel</span>
+                  <span className="text-[#d1d1d1] text-sm font-bold">{getChannel(order)}</span>
+                </div>
 
-              {/* Actions row - Buttons contained */}
-              <div className="px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => setExpandedId(expanded ? null : order.id)}
-                    className="flex items-center gap-1 text-white text-xs"
-                  >
-                    Details
-                    {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  </button>
-                  <div className="flex items-center gap-1.5">
-                    <GameButton variant="mute" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
-                      Cancel
-                    </GameButton>
-                    <GameButton variant="red" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
-                      Paid
-                    </GameButton>
-                    {order.status === "Pending" && (
-                      <GameButton variant="gold" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
-                        Pay
-                      </GameButton>
+                <div className="border-t border-white/10 mx-4" />
+
+                {/* Actions */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => setExpandedId(expanded ? null : orderId)}
+                      className="flex items-center gap-1 text-white text-xs"
+                    >
+                      Details
+                      {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    </button>
+                    <div className="flex items-center gap-1.5">
+                      {(status.toLowerCase() === "pending") && (
+                        <>
+                          <GameButton variant="mute" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
+                            Cancel
+                          </GameButton>
+                          <GameButton variant="red" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
+                            Paid
+                          </GameButton>
+                          <GameButton variant="gold" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0" onClick={() => handlePayOrder(order)}>
+                            Pay
+                          </GameButton>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Expanded details */}
+                {expanded && (
+                  <div className="px-4 pb-4 pt-2 text-xs text-[#c4889a] flex flex-col gap-1.5 border-t border-white/10 mx-4 -mt-px">
+                    <div className="flex justify-between">
+                      <span>Date</span>
+                      <span>{getDate(order)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Channel</span>
+                      <span>{getChannel(order)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Amount</span>
+                      <span>₹{Number(getAmount(order)).toLocaleString()}</span>
+                    </div>
+                    {order.currency && (
+                      <div className="flex justify-between">
+                        <span>Currency</span>
+                        <span>{order.currency}</span>
+                      </div>
                     )}
                   </div>
-                </div>
+                )}
               </div>
+            );
+          })
+        )}
 
-              {/* Expanded details */}
-              {expanded && (
-                <div className="px-4 pb-4 pt-2 text-xs text-[#c4889a] flex flex-col gap-1.5 border-t border-white/10 mx-4 -mt-px">
-                  <div className="flex justify-between">
-                    <span>Date</span>
-                    <span>{order.date}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Channel</span>
-                    <span>{order.channel}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
+        {/* Pagination */}
+        {!loading && total > 15 && (
+          <div className="flex items-center justify-center gap-3 py-4">
+            <GameButton
+              variant="mute"
+              size="sm"
+              disabled={page <= 1}
+              onClick={() => fetchOrders(page - 1)}
+            >
+              Previous
+            </GameButton>
+            <span className="text-white/60 text-xs">Page {page}</span>
+            <GameButton
+              variant="mute"
+              size="sm"
+              disabled={orders.length < 15}
+              onClick={() => fetchOrders(page + 1)}
+            >
+              Next
+            </GameButton>
+          </div>
+        )}
       </div>
     </main>
   );
