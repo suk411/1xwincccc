@@ -2,6 +2,7 @@ import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
 import { GameButton } from "./GameButton";
 import { authService } from "@/services/authService";
+import { useProfile } from "@/hooks/useProfile";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
@@ -31,6 +32,7 @@ interface ProfileDrawerProps {
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const navigate = useNavigate();
   const vipLevel = "VIP0";
+  const { balance, userId } = useProfile();
 
   const handleMenuClick = (label: string) => {
     onOpenChange(false);
@@ -82,7 +84,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 <img src={pencilIcon} alt="Edit" className="w-4 h-4" />
               </div>
               <div className="flex items-center mt-1">
-                <span className="text-gray-300 text-sm">ID:37859</span>
+                <span className="text-gray-300 text-sm">ID:{userId || "..."}</span>
 
                 {/* VIP badge with level text overlay */}
                 <div className="relative ml-2 w-16 h-6">
@@ -117,7 +119,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           >
             <div className="flex items-center gap-2 flex-1">
               <img src={rupeeCoin} alt="Rupee" className="w-8 h-8" />
-              <span className="text-[#470211] font-bold text-xl">20</span>
+              <span className="text-[#470211] font-bold text-xl">{balance.toFixed(2)}</span>
             </div>
             <div className="flex items-center gap-3">
               <img src={withdraw} alt="Bank" className="w-8 h-8" />

@@ -2,6 +2,7 @@ import PageLayout from "@/components/PageLayout";
 import { useNavigate } from "react-router-dom"; // Add this import
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
 import { Volume2, VolumeX } from "lucide-react";
 import avatar from "@/assets/profile/avatar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
@@ -65,12 +66,13 @@ const categoryTabs = [
 ];
 
 const Index = () => {
-  const navigate = useNavigate(); // Add navigation hook
+  const navigate = useNavigate();
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
+  const { balance } = useProfile();
 
   useEffect(() => {
     const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
