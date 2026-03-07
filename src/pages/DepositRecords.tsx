@@ -12,18 +12,24 @@ interface DepositOrder {
 }
 
 const statusStyles: Record<string, { bg: string; text: string }> = {
-  Pending: { bg: "#ff5500", text: "#ffffff" },
-  pending: { bg: "#ff5500", text: "#ffffff" },
+  PENDING: { bg: "#ff8800", text: "#ffffff" },
+  Pending: { bg: "#ff8800", text: "#ffffff" },
+  pending: { bg: "#ff8800", text: "#ffffff" },
   Timeout: { bg: "#ff0000", text: "#ffffff" },
   timeout: { bg: "#ff0000", text: "#ffffff" },
+  TIMEOUT: { bg: "#ff0000", text: "#ffffff" },
   Cancelled: { bg: "#302f2f", text: "#ffffff" },
   cancelled: { bg: "#302f2f", text: "#ffffff" },
-  success: { bg: "#008f13", text: "#ffffff" },
-  Success: { bg: "#008f13", text: "#ffffff" },
-  completed: { bg: "#008f13", text: "#ffffff" },
-  Completed: { bg: "#008f13", text: "#ffffff" },
-  failed: { bg: "#ff0000", text: "#ffffff" },
-  Failed: { bg: "#ff0000", text: "#ffffff" },
+  CANCELLED: { bg: "#302f2f", text: "#ffffff" },
+  success: { bg: "#00b341", text: "#ffffff" },
+  Success: { bg: "#00b341", text: "#ffffff" },
+  SUCCESS: { bg: "#00b341", text: "#ffffff" },
+  completed: { bg: "#00b341", text: "#ffffff" },
+  Completed: { bg: "#00b341", text: "#ffffff" },
+  COMPLETED: { bg: "#00b341", text: "#ffffff" },
+  failed: { bg: "#1a1a1a", text: "#ffffff" },
+  Failed: { bg: "#1a1a1a", text: "#ffffff" },
+  FAILED: { bg: "#1a1a1a", text: "#ffffff" },
 };
 
 const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
@@ -55,25 +61,31 @@ const DepositRecords = () => {
   }, []);
 
   const getOrderId = (order: DepositOrder) =>
-    order.merOrderNo || order.orderId || order.id || order._id || "—";
+    order.orderId || order.merOrderNo || order.id || order._id || "—";
 
   const getAmount = (order: DepositOrder) =>
     order.amount ?? order.depositAmount ?? 0;
 
   const getStatus = (order: DepositOrder) =>
-    order.status || order.orderStatus || "Pending";
+    order.status || order.orderStatus || "PENDING";
 
   const getChannel = (order: DepositOrder) =>
-    order.channel || order.paymentChannel || order.method || "—";
+    order.channelName || order.channel || order.paymentChannel || order.method || "—";
 
   const getDate = (order: DepositOrder) => {
     const d = order.createdAt || order.date || order.created_at;
     if (!d) return "—";
-    try { return new Date(d).toLocaleDateString(); } catch { return d; }
+    try {
+      const date = new Date(d);
+      return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch { return d; }
   };
 
+  const getPaymentLink = (order: DepositOrder) =>
+    order.paymentLinks?.paymentLink || order.paymentUrl || order.payment_url || null;
+
   const handlePayOrder = (order: DepositOrder) => {
-    const url = order.paymentUrl || order.payment_url;
+    const url = getPaymentLink(order);
     if (url) {
       window.open(url, "_blank");
     } else {
@@ -160,9 +172,6 @@ const DepositRecords = () => {
                         <>
                           <GameButton variant="mute" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
                             Cancel
-                          </GameButton>
-                          <GameButton variant="red" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
-                            Paid
                           </GameButton>
                           <GameButton variant="gold" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0" onClick={() => handlePayOrder(order)}>
                             Pay
