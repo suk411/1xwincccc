@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { authService } from "@/services/authService";
 
 const CACHE_KEY = "profile_cache";
@@ -57,13 +57,11 @@ authService.subscribe(() => {
 export const useProfile = (autoFetch = true) => {
   const state = useSyncExternalStore(subscribe, getSnapshot);
 
-  // auto-fetch once per mount if requested
-  useCallback(() => {
+  useEffect(() => {
     if (autoFetch) refresh();
-  }, [])();
+  }, []);
 
   return { ...state, refresh };
 };
 
-// Allow imperative refresh from anywhere
 export const refreshProfile = refresh;
