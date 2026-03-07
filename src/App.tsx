@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Earn from "./pages/Earn";
 import Bank from "./pages/Bank";
@@ -20,8 +20,15 @@ import bgMain from "@/assets/bg-main.jpg";
 
 const queryClient = new QueryClient();
 
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem("auth_token");
+  if (!token) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+};
+
 const AppContent = () => {
   const location = useLocation();
+  const isAuthPage = ["/login", "/register"].includes(location.pathname);
   const isHomePage = location.pathname === "/";
   const showBottomNav = ["/", "/earn", "/bank", "/promo", "/events"].includes(location.pathname);
 
@@ -31,27 +38,26 @@ const AppContent = () => {
       style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)", minHeight: "100vh" }}
     >
       
-      <DownloadBanner />
+      {!isAuthPage && <DownloadBanner />}
       {isHomePage && <Header />}
       
       <Routes>
-        <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/earn" element={<Earn />} />
-        <Route path="/bank" element={<Bank />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/promo" element={<Promo />} />
-        <Route path="/community-event" element={<CommunityEvent />} />
-        <Route path="/bank/records" element={<DepositRecords />} />
+        <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+        <Route path="/earn" element={<ProtectedRoute><Earn /></ProtectedRoute>} />
+        <Route path="/bank" element={<ProtectedRoute><Bank /></ProtectedRoute>} />
+        <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+        <Route path="/promo" element={<ProtectedRoute><Promo /></ProtectedRoute>} />
+        <Route path="/community-event" element={<ProtectedRoute><CommunityEvent /></ProtectedRoute>} />
+        <Route path="/bank/records" element={<ProtectedRoute><DepositRecords /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       
-      {showBottomNav && <BottomNav />}
+      {showBottomNav && !isAuthPage && <BottomNav />}
     </div>
   );
 };
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
