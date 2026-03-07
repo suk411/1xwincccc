@@ -1,7 +1,8 @@
 import PageLayout from "@/components/PageLayout";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate } from "react-router-dom";
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
 import { Volume2, VolumeX } from "lucide-react";
 import avatar from "@/assets/profile/avatar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
@@ -47,16 +48,16 @@ import telegramPartner from "@/assets/partners/telegram-icon.png";
 import responsibleGaming from "@/assets/partners/responsible-gaming.png";
 
 const winMessages = [
-  "User d****z successfully withdrew 20000!",
-  "User q*******i won 3000 in mahjongS!",
-  "User v****k successfully withdrew 10000!",
-  "User a****m won 5000 in Roulette!",
-  "User s****p successfully withdrew 8000!",
-  "User r****j won 15000 in Teen Patti!",
-  "User m****n successfully withdrew 25000!",
-  "User k****l won 7500 in Slots!",
-  "User b****t successfully withdrew 12000!",
-  "User h****e won 9000 in Crash!",
+  "Congratulations! User Sarah won ₹5000 on Slots.",
+  "Big Win! User Alex hit the jackpot and won ₹10000 on Roulette.",
+  "Amazing! User Emily just won ₹7500 on Blackjack.",
+  "Jackpot! User David won ₹12000 on Poker.",
+  "Fantastic! User Jessica won ₹6000 on Baccarat.",
+  "Incredible! User Michael won ₹9000 on Bingo.",
+  "Sensational! User Ashley won ₹8000 on Keno.",
+  "Spectacular! User Kevin won ₹11000 on Craps.",
+  "Unbelievable! User Brittany won ₹7000 on Scratch Cards.",
+  "Magnificent! User Justin won ₹13000 on Wheel of Fortune.",
 ];
 
 const categoryTabs = [
@@ -65,24 +66,23 @@ const categoryTabs = [
 ];
 
 const Index = () => {
-  const navigate = useNavigate(); // Add navigation hook
+  const navigate = useNavigate();
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
+  const { balance } = useProfile();
 
   useEffect(() => {
-    const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
+    const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
     setTickerText(repeated);
   }, []);
 
-  // Handle tab navigation
   const handleTabClick = (label: string) => {
     if (label === "GROUP") {
       navigate("/community-event");
     }
-    // Add more tab navigation logic here if needed
   };
 
   return (
@@ -112,7 +112,7 @@ const Index = () => {
         </div>
 
         {/* Scrolling Notice Ticker */}
-        <div className="w-full h-6 bg-[#3d0a0a] border border-[#471414]  overflow-hidden flex items-center gap-2 px-2 mt-2 mx-0.5 rounded-[6px]">
+        <div className="w-full h-6 bg-[#3d0a0a] border border-[#471414] overflow-hidden flex items-center gap-2 px-2 mt-2 mx-0.5 rounded-[6px]">
           <Volume2 size={16}/> 
           <div className="overflow-hidden flex-1 relative">
             <div
@@ -138,34 +138,34 @@ const Index = () => {
           </div>
           <div className="flex items-center gap-1.5 ml-3 flex-1">
             <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
-            <span className="text-white font-bold  text-[14px] ">1.40</span>
+            <span className="text-white font-bold text-[14px]">{balance.toFixed(2)}</span>
           </div>
           <div className="flex items-center gap-4 mr-3">
             <button className="flex flex-col items-center gap-0.5">
               <img src={depositIcon} alt="Deposit" className="w-5 h-5 object-contain" />
-              <span className="text-[8px] ">Deposit</span>
+              <span className="text-[8px]">Deposit</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
               <img src={withdrawIcon} alt="Withdraw" className="w-5 h-5 object-contain" />
-              <span className="text-[8px] ">Withdraw</span>
+              <span className="text-[8px]">Withdraw</span>
             </button>
             <button className="flex flex-col items-center gap-0.5">
               <img src={vipIcon} alt="VIP" className="w-5 h-5 object-contain" />
-              <span className="text-[8px] ">VIP</span>
+              <span className="text-[8px]">VIP</span>
             </button>
           </div>
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center  pt-1 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
+        <div className="flex items-center pt-1 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
           {categoryTabs.map((tab, i) => (
             <button
               key={i}
-              onClick={() => handleTabClick(tab.label)} // Add click handler
+              onClick={() => handleTabClick(tab.label)}
               className="flex flex-col ml-2 items-center gap-0.5 flex-shrink-0 w-[70px] cursor-pointer hover:scale-105 transition-transform"
             >
               <div
-                className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center "
+                className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center"
                 style={{
                   backgroundImage: `url(${tabCardBg})`,
                   backgroundSize: 'cover',
@@ -177,8 +177,7 @@ const Index = () => {
                   alt={tab.label}
                   className="w-16 h-16 object-contain"
                 />
-                {/* Label anchored at bottom */}
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[5px]  font-bold text-muted-foreground leading-tight text-center">
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[5px] font-bold text-muted-foreground leading-tight text-center">
                   {tab.label}
                 </span>
               </div>
@@ -206,10 +205,6 @@ const Index = () => {
             Play exciting games, earn rewards, and withdraw your winnings instantly. Join millions of players winning big every day!
           </p>
         </div>
-
-
-
-
 
         {/* Download App Section */}
         <div className="w-full rounded-xl mt-2 overflow-hidden">
