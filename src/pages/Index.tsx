@@ -212,85 +212,36 @@ const Index = () => {
 
 
         {/* Download App Section */}
-<div className="w-full rounded-xl mt-2 overflow-hidden">
-  {/* Header with glow bg */}
-  <div className="relative flex flex-col items-center ">
-    <h3 className="relative top-8 z-10">Download App</h3>
-    
-    {/* Glow image below text */}
-    <img 
-      src={headerGlow} 
-      alt="Header glow" 
-      className="w-1/2  object-cover opacity-60 mx-auto " 
-    />
-    
-    {/* Horizontal bottom line */}
-    <div className="w-full  h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
-  </div>
+        <div className="w-full rounded-xl mt-2 overflow-hidden">
+          <div className="relative flex flex-col items-center">
+            <h3 className="relative top-8 z-10">Download App</h3>
+            <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
+          </div>
 
-
-
-
-          {/* Content - character left, phone right */}
-          <div className="flex items-center ml-2  px-4 pb-2">
-           <div className="relative bottom-20 flex flex-col items-start gap-3 w-[160px] h-[140px]">
-  {/* Promo character */}
-  <img 
-    src={promoCharacter} 
-    alt="Promo" 
-    className="w-full flex-shrink-0  object-contain" 
-  />
-
-  {/* Download buttons */}
-  <div className="flex flex-col gap-3   flex-1 justify-start w-full">
-    <button className="w-full ">
-      <img 
-        src={appStoreBadge} 
-        alt="Download on App Store" 
-        className="h-12 w-full  object-contain" 
-      />
-    </button>
-    <button className="w-full">
-      <img 
-        src={googlePlayBadge} 
-        alt="Get it on Google Play" 
-        className="h-12 w-full object-contain" 
-      />
-    </button>
-  </div>
-
-
+          <div className="flex items-end px-4 pb-4 gap-3">
+            <div className="flex flex-col items-center gap-3 w-2/5 flex-shrink-0">
+              <img src={promoCharacter} alt="Promo" className="w-full object-contain" />
+              <button className="w-full">
+                <img src={appStoreBadge} alt="App Store" className="h-10 w-full object-contain" />
+              </button>
+              <button className="w-full">
+                <img src={googlePlayBadge} alt="Google Play" className="h-10 w-full object-contain" />
+              </button>
             </div>
-
-            {/* Phone mockup */}
-            <div className="flex-1 flex justify-end mr-2 ">
-              <img src={phoneMockup} alt="App Preview" className="h-[300px] object-contain drop-shadow-2xl" />
+            <div className="flex-1 flex justify-center">
+              <img src={phoneMockup} alt="App Preview" className="w-full max-h-[250px] object-contain drop-shadow-2xl" />
             </div>
-         
-
-        
-           </div>
+          </div>
         </div>
 
-        {/* Official Partner Section */}
-        <div
-          className="w-full rounded-xl mt-2  overflow-hidden"
-        
-        >{/* Header with glow bg */}
-  <div className="relative flex flex-col items-center ">
-    <h3 className="relative top-8 z-10">Offical Partners</h3>
-    
-    {/* Glow image below text */}
-    <img 
-      src={headerGlow} 
-      alt="Header glow" 
-      className="w-1/2  object-cover opacity-60 mx-auto " 
-    />
-    
-    {/* Horizontal bottom line */}
-    <div className="w-full  h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
-  </div>
-
+        {/* Official Partners Section */}
+        <div className="w-full rounded-xl mt-2 overflow-hidden">
+          <div className="relative flex flex-col items-center">
+            <h3 className="relative top-8 z-10">Official Partners</h3>
+            <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
+          </div>
           <div className="px-4 pb-4">
             <img src={officialPartners} alt="Official Partners" className="w-full object-contain" />
           </div>
@@ -298,52 +249,41 @@ const Index = () => {
 
         {/* About Section */}
         <div className="w-full rounded-xl mt-2 overflow-hidden">
-          {/* Header with glow bg */}
           <div className="relative flex flex-col items-center">
             <h3 className="relative top-8 z-10">About 1XKING</h3>
-            <img 
-              src={headerGlow} 
-              alt="Header glow" 
-              className="w-1/2 object-cover opacity-60 mx-auto" 
-            />
+            <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
             <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
           </div>
-
-          {/* Two cards side by side */}
-          <div className="flex gap-3 px-4 pb-4">
-            {/* Verified Certification */}
-            <div className="flex-1 flex flex-col items-center">
+          <div className="grid grid-cols-2 gap-3 px-4 pb-4">
+            <div className="flex flex-col items-center">
               <h4 className="text-white text-xs mb-2">Verified Certification</h4>
-              <div className="w-full rounded-lg overflow-hidden   ">
+              <div className="w-full rounded-lg overflow-hidden">
                 <img src={verifiedCertification} alt="Verified Certification" className="w-full object-contain" />
               </div>
             </div>
-            {/* Security Protection */}
-            <div className="flex-1 flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <h4 className="text-white text-xs mb-2">Security Protection</h4>
-              <div className="w-full rounded-lg overflow-hidden ">
+              <div className="w-full rounded-lg overflow-hidden">
                 <img src={securityProtection} alt="Security Protection" className="w-full object-contain" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Follow Us & Responsible Gaming Section */}
-        <div className="w-full rounded-xl mt-2  overflow-hidden">
-          <div className="flex gap-0">
-            {/* Follow Us */}
-            <div className="flex-1 flex flex-col items-center py-4">
+        {/* Follow Us & Responsible Gaming */}
+        <div className="w-full rounded-xl mt-2 overflow-hidden">
+          <div className="grid grid-cols-2 gap-0">
+            <div className="flex flex-col items-center py-4">
               <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
-              <h4 className="text-white text-xs mb-3 ">Follow Us</h4>
+              <h4 className="text-white text-xs mb-3">Follow Us</h4>
               <a href="https://t.me/" target="_blank" rel="noopener noreferrer">
-                <img src={telegramPartner} alt="Telegram" className="w-20 h-16 rounded-sm  object-contain" />
+                <img src={telegramPartner} alt="Telegram" className="w-16 h-14 rounded-sm object-contain" />
               </a>
             </div>
-            {/* Responsible Gaming */}
-            <div className="flex-1 flex flex-col items-center py-4">
+            <div className="flex flex-col items-center py-4">
               <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
-              <h4 className=" text-xs  mb-3">Responsible Gaming Statement</h4>
-              <img src={responsibleGaming} alt="Responsible Gaming" className="w-32 object-contain" />
+              <h4 className="text-xs mb-3">Responsible Gaming Statement</h4>
+              <img src={responsibleGaming} alt="Responsible Gaming" className="w-4/5 object-contain" />
             </div>
           </div>
         </div>
