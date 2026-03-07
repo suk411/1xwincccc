@@ -49,6 +49,19 @@ export interface LedgerResponse {
 
 const TOKEN_KEY = "auth_token";
 
+const extractErrorMessage = (data: any, fallback: string): string => {
+  if (typeof data === "string") return data;
+  const msg = data?.error || data?.message || data?.msg || data?.detail || data?.errors?.[0]?.message || data?.errors?.[0]?.msg;
+  if (msg) return typeof msg === "string" ? msg : JSON.stringify(msg);
+  // If no known field, stringify the whole response so user sees full API error
+  try {
+    const str = JSON.stringify(data);
+    return str !== "{}" ? str : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 const listeners = new Set<() => void>();
 const notifyListeners = () => listeners.forEach((l) => l());
 
@@ -91,7 +104,7 @@ export const authService = {
       body: JSON.stringify({ mobile, password }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || data.message || "Registration failed");
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Registration failed"));
     persistTokenIfPresent(data);
     return data;
   },
@@ -103,7 +116,7 @@ export const authService = {
       body: JSON.stringify({ mobile, password }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || data.message || "Login failed");
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Login failed"));
     persistTokenIfPresent(data);
     return data;
   },
@@ -113,7 +126,7 @@ export const authService = {
       headers: authHeaders(),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch balance");
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch balance"));
     return data;
   },
 
@@ -132,7 +145,7 @@ export const authService = {
       headers: authHeaders(),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch deposits");
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposits"));
     return data;
   },
 
@@ -141,7 +154,7 @@ export const authService = {
       headers: authHeaders(),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch ledger");
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch ledger"));
     return data;
   },
 
@@ -152,7 +165,7 @@ export const authService = {
       body: JSON.stringify({ amount }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || data.msg || "Deposit failed");
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Deposit failed"));
     return data;
   },
 
