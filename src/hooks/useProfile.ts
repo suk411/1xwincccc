@@ -17,7 +17,7 @@ interface ProfileState {
   loading: boolean;
 }
 
-export const useProfile = () => {
+export const useProfile = (autoFetch = true) => {
   const cached = getCached();
   const [state, setState] = useState<ProfileState>({ balance: cached.balance, userId: cached.userId, loading: true });
 
@@ -35,7 +35,7 @@ export const useProfile = () => {
   };
 
   useEffect(() => {
-    refresh();
+    if (autoFetch) refresh();
   }, []);
 
   return { ...state, refresh };

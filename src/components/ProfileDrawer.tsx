@@ -33,7 +33,7 @@ interface ProfileDrawerProps {
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const navigate = useNavigate();
   const vipLevel = "VIP0";
-  const { balance, userId, refresh } = useProfile();
+  const { balance, userId, refresh } = useProfile(false);
 
   useEffect(() => {
     if (open) refresh();
