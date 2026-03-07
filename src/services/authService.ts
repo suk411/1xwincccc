@@ -1,11 +1,11 @@
-const API_BASE = "https://backend-1xwinccc.onrender.com";
+const API_BASE = "https://backend-ledger-0ra6.onrender.com";
 
 export interface AuthResponse {
   success: boolean;
   message?: string;
   error?: string;
   token?: string;
-  userId?: string;
+  user?: { id: string };
 }
 
 export interface ProfileData {
@@ -15,10 +15,36 @@ export interface ProfileData {
   userId: string;
 }
 
-export interface ProfileResponse {
+export interface BalanceResponse {
+  status: string;
+  userId: string;
+  balance: number;
+}
+
+export interface DepositOrder {
+  [key: string]: any;
+}
+
+export interface DepositsResponse {
+  status: string;
+  total: number;
+  page: number;
+  limit: number;
+  items: DepositOrder[];
+}
+
+export interface DepositResponse {
   success: boolean;
-  data?: ProfileData;
-  error?: string;
+  paymentUrl?: string;
+  merOrderNo?: string;
+  amount?: number;
+  currency?: string;
+  status?: string;
+  msg?: string;
+}
+
+export interface LedgerResponse {
+  [key: string]: any;
 }
 
 const TOKEN_KEY = "auth_token";
@@ -43,6 +69,13 @@ const persistTokenIfPresent = (payload: any) => {
   notifyListeners();
 };
 
+const authHeaders = (): Record<string, string> => {
+  const token = localStorage.getItem(TOKEN_KEY);
+  return token
+    ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
+    : { "Content-Type": "application/json" };
+};
+
 export const authService = {
   subscribe(listener: () => void) {
     listeners.add(listener);
@@ -51,43 +84,76 @@ export const authService = {
     };
   },
 
-  async register(number: string, password: string, inviteCode?: string): Promise<AuthResponse> {
-    const body: Record<string, string> = { number, password };
-    if (inviteCode) body.inviteCode = inviteCode;
-
-    const res = await fetch(`${API_BASE}/api/user/register`, {
+  async register(mobile: string, password: string, _inviteCode?: string): Promise<AuthResponse> {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ mobile, password }),
     });
     const data = await res.json();
-    if (!data.success) throw new Error(data.error || "Registration failed");
+    if (!res.ok) throw new Error(data.error || data.message || "Registration failed");
     persistTokenIfPresent(data);
     return data;
   },
 
-  async login(number: string, password: string): Promise<AuthResponse> {
-    const res = await fetch(`${API_BASE}/api/user/login`, {
+  async login(mobile: string, password: string): Promise<AuthResponse> {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ number, password }),
+      body: JSON.stringify({ mobile, password }),
     });
     const data = await res.json();
-    if (!data.success) throw new Error(data.error || "Login failed");
+    if (!res.ok) throw new Error(data.error || data.message || "Login failed");
     persistTokenIfPresent(data);
+    return data;
+  },
+
+  async getBalance(): Promise<BalanceResponse> {
+    const res = await fetch(`${API_BASE}/api/account/balance`, {
+      headers: authHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to fetch balance");
     return data;
   },
 
   async getProfile(): Promise<ProfileData> {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (!token) throw new Error("Not authenticated");
-    const res = await fetch(`${API_BASE}/api/user/profile`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
+    const bal = await this.getBalance();
+    return {
+      number: "",
+      inviteCode: "",
+      balance: bal.balance,
+      userId: bal.userId,
+    };
+  },
+
+  async getDeposits(page = 1, limit = 15): Promise<DepositsResponse> {
+    const res = await fetch(`${API_BASE}/api/account/my-deposits?page=${page}&limit=${limit}`, {
+      headers: authHeaders(),
     });
-    const data: ProfileResponse = await res.json();
-    if (!data.success || !data.data) throw new Error(data.error || "Failed to fetch profile");
-    return data.data;
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to fetch deposits");
+    return data;
+  },
+
+  async getLedger(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/wallet/ledger`, {
+      headers: authHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to fetch ledger");
+    return data;
+  },
+
+  async deposit(amount: number): Promise<DepositResponse> {
+    const res = await fetch(`${API_BASE}/api/payment/deposit`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ amount }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || data.msg || "Deposit failed");
+    return data;
   },
 
   getToken(): string | null {
