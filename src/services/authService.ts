@@ -106,11 +106,13 @@ export const authService = {
     };
   },
 
-  async register(mobile: string, password: string, _inviteCode?: string): Promise<AuthResponse> {
+  async register(mobile: string, password: string, referralCode?: string): Promise<AuthResponse> {
+    const body: Record<string, string> = { mobile, password };
+    if (referralCode) body.referralCode = referralCode;
     const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobile, password }),
+      body: JSON.stringify(body),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Registration failed"));
