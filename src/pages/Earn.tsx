@@ -276,7 +276,7 @@ const Earn = () => {
     } else {
       try {
         await navigator.clipboard.writeText(referralData.inviteLink);
-        toast({ title: "Invite link copied!" });
+        toast({ description: "Invite link copied!" });
       } catch {
         toast({ title: "Failed to copy", variant: "destructive" });
       }
