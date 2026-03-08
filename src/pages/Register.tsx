@@ -34,7 +34,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      await authService.register(phone, password, inviteCode || undefined);
+      await authService.register(phone, password, (inviteCode || refFromUrl) || undefined);
       toast({ title: "Registration successful" });
       navigate("/");
     } catch (err: any) {

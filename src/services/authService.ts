@@ -192,6 +192,16 @@ export const authService = {
     return !!localStorage.getItem(TOKEN_KEY);
   },
 
+  async getReferrals(page = 1, limit = 20): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/auth/referrals?page=${page}&limit=${limit}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch referrals"));
+    return data;
+  },
+
   logout() {
     localStorage.removeItem(TOKEN_KEY);
     notifyListeners();
