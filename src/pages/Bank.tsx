@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Loader from "@/components/Loader";
 import { GameCard } from "@/components/GameCard";
 import headerBg from "@/assets/bank/header-bg.png";
 import bankIcon from "@/assets/bank/bank-icon.png";
