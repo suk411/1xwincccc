@@ -38,6 +38,7 @@ const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
 
 const DepositRecords = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [orders, setOrders] = useState<DepositOrder[]>([]);
   const [loading, setLoading] = useState(true);
