@@ -243,7 +243,7 @@ const Earn = () => {
       setPage(p);
     } catch (err: any) {
       if (!err.message?.includes("Session expired")) {
-        toast({ title: "Error", description: err.message, variant: "destructive" });
+        toast({ description: err.message || "Something went wrong", variant: "destructive" });
       }
     } finally {
       setLoading(false);
