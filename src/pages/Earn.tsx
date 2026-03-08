@@ -258,13 +258,28 @@ const Earn = () => {
   const hasMore = referralData ? allUsers.length < referralData.total : false;
   const displayData = referralData ? { ...referralData, users: allUsers } : null;
 
-  const handleCopyLink = async () => {
+  const handleShareInvite = async () => {
     if (!referralData?.inviteLink) return;
-    try {
-      await navigator.clipboard.writeText(referralData.inviteLink);
-      toast({ title: "Invite link copied!" });
-    } catch {
-      toast({ title: "Failed to copy", variant: "destructive" });
+    const shareData = {
+      title: "Join 1xKING!",
+      text: `Join 1xKING and get rewards up to ₹1000! Use my invite code: ${referralData.inviteCode}`,
+      url: referralData.inviteLink,
+    };
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData);
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          toast({ title: "Share failed", variant: "destructive" });
+        }
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(referralData.inviteLink);
+        toast({ title: "Invite link copied!" });
+      } catch {
+        toast({ title: "Failed to copy", variant: "destructive" });
+      }
     }
   };
 
