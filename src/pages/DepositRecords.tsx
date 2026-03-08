@@ -90,7 +90,7 @@ const DepositRecords = () => {
   const handlePayOrder = (order: DepositOrder) => {
     const url = getPaymentLink(order);
     if (url) {
-      window.open(url, "_blank");
+      navigate("/payment", { state: { paymentUrl: url } });
     } else {
       toast({ title: "No payment URL available", variant: "destructive" });
     }
