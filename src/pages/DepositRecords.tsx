@@ -94,6 +94,14 @@ const DepositRecords = () => {
   const getChannel = (order: DepositOrder) =>
     order.channelName || order.channel || order.paymentChannel || order.method || "—";
 
+  const isOlderThan15Min = (order: DepositOrder) => {
+    const d = order.createdAt || order.date || order.created_at;
+    if (!d) return true;
+    try {
+      return (Date.now() - new Date(d).getTime()) > 15 * 60 * 1000;
+    } catch { return true; }
+  };
+
   const getDate = (order: DepositOrder) => {
     const d = order.createdAt || order.date || order.created_at;
     if (!d) return "—";
@@ -190,7 +198,7 @@ const DepositRecords = () => {
                       {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                     </button>
                     <div className="flex items-center gap-1.5">
-                      {(status.toLowerCase() === "pending") && (
+                      {(status.toLowerCase() === "pending") && !isOlderThan15Min(order) && (
                         <>
                           <GameButton variant="mute" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
                             Cancel
@@ -223,6 +231,12 @@ const DepositRecords = () => {
                       <div className="flex justify-between">
                         <span>Currency</span>
                         <span>{order.currency}</span>
+                      </div>
+                    )}
+                    {order.userId && (
+                      <div className="flex justify-between">
+                        <span>User ID</span>
+                        <span>{order.userId}</span>
                       </div>
                     )}
                   </div>
