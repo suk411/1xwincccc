@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DotPulse } from "ldrs/react";
 import "ldrs/react/DotPulse.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Phone, Lock, Gift } from "lucide-react";
 import authBg from "@/assets/auth/auth-bg.png";
 import rewardBanner from "@/assets/auth/reward-banner.png";
@@ -16,9 +16,11 @@ import { toast } from "@/hooks/use-toast";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const refFromUrl = searchParams.get("ref") || "";
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [inviteCode, setInviteCode] = useState("");
+  const [inviteCode, setInviteCode] = useState(refFromUrl);
   const [phoneError, setPhoneError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      await authService.register(phone, password, inviteCode || undefined);
+      await authService.register(phone, password, (inviteCode || refFromUrl) || undefined);
       toast({ title: "Registration successful" });
       navigate("/");
     } catch (err: any) {
