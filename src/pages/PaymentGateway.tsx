@@ -15,7 +15,7 @@ const PaymentGateway = () => {
   }
 
   return (
-    <main className="relative flex-1 flex flex-col max-w-screen-lg mx-auto w-full h-screen">
+    <main className="relative flex-1 flex flex-col max-w-screen-lg mx-auto w-full h-screen bg-white">
       <PageHeader title="Payment" />
       {loading && <Loader label="Loading payment..." />}
       <iframe
