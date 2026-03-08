@@ -46,7 +46,7 @@ const Bank = () => {
       const res = await authService.deposit(selectedAmount);
       if (res.paymentUrl) {
         navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
-        toast({ title: "Opening payment..." });
+        toast({ description: "Opening payment..." });
       } else {
         toast({ title: res.msg || "Deposit initiated", variant: "destructive" });
       }
