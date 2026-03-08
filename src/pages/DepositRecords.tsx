@@ -1,6 +1,7 @@
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
