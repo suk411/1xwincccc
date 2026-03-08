@@ -72,7 +72,7 @@ const DepositRecords = () => {
       setPage(pg);
       saveCache({ items, total: t, page: pg });
     } catch (err: any) {
-      toast({ title: err.message || "Failed to fetch deposits", variant: "destructive" });
+      toast({ description: err.message || "Failed to fetch deposits", variant: "destructive" });
     } finally {
       setLoading(false);
     }
