@@ -270,7 +270,7 @@ const Earn = () => {
         await navigator.share(shareData);
       } catch (err: any) {
         if (err.name !== "AbortError") {
-          toast({ title: "Share failed", variant: "destructive" });
+          toast({ description: "Share failed", variant: "destructive" });
         }
       }
     } else {
