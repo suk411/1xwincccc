@@ -182,7 +182,7 @@ const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
                     {new Date(user.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "2-digit" })}
                   </span>
                   <span className="text-white/80 text-xs flex-1 text-center font-mono">
-                    {user.userId.slice(0, 8)}...
+                    {String(user.userId || "").slice(0, 8)}...
                   </span>
                   <span className="text-white/70 text-xs flex-1 text-right">
                     {maskMobile(user.mobile)}
