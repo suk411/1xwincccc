@@ -83,9 +83,9 @@ const ReferralInviteCard = ({ data }: { data: ReferralData | null }) => {
   const handleCopy = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast({ title: `${label} copied!` });
+      toast({ description: `${label} copied!` });
     } catch {
-      toast({ title: "Failed to copy", variant: "destructive" });
+      toast({ description: "Failed to copy", variant: "destructive" });
     }
   };
 
