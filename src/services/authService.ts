@@ -176,6 +176,7 @@ export const authService = {
       headers: authHeaders(),
       body: JSON.stringify({ amount }),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Deposit failed"));
     return data;
