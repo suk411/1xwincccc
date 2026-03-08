@@ -225,6 +225,12 @@ const DepositRecords = () => {
                         <span>{order.currency}</span>
                       </div>
                     )}
+                    {order.userId && (
+                      <div className="flex justify-between">
+                        <span>User ID</span>
+                        <span>{order.userId}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
