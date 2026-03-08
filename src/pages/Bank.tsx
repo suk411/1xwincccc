@@ -48,7 +48,7 @@ const Bank = () => {
         navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
         toast({ description: "Opening payment..." });
       } else {
-        toast({ title: res.msg || "Deposit initiated", variant: "destructive" });
+        toast({ description: res.msg || "Deposit initiated", variant: "destructive" });
       }
       refreshBalance();
     } catch (err: any) {
