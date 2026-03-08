@@ -134,6 +134,7 @@ export const authService = {
     const res = await fetch(`${API_BASE}/api/account/balance`, {
       headers: authHeaders(),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch balance"));
     return data;
@@ -153,6 +154,7 @@ export const authService = {
     const res = await fetch(`${API_BASE}/api/account/my-deposits?page=${page}&limit=${limit}`, {
       headers: authHeaders(),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposits"));
     return data;
@@ -162,6 +164,7 @@ export const authService = {
     const res = await fetch(`${API_BASE}/api/wallet/ledger`, {
       headers: authHeaders(),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch ledger"));
     return data;
