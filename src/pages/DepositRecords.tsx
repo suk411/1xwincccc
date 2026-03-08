@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import Loader from "@/components/Loader";
 import { useState, useEffect } from "react";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
