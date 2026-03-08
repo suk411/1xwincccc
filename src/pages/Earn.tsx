@@ -580,7 +580,7 @@ const Earn = () => {
           backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
         }}
       >
-        <GameButton className="w-full rounded-full text-base" size="lg" variant="gold" onClick={handleCopyLink}>
+        <GameButton className="w-full rounded-full text-base" size="lg" variant="gold" onClick={handleShareInvite}>
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block shrink-0">
             <path d="M9.16667 1.83398L15.1667 7.83398L9.16667 13.5007V9.83398C4.5 9.83398 2.5 14.834 2.5 14.834C2.5 9.16732 4.16667 5.50065 9.16667 5.50065V1.83398Z" stroke="#7B1C0C" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
