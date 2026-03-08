@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DotPulse } from "ldrs/react";
 import "ldrs/react/DotPulse.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Phone, Lock, Gift } from "lucide-react";
 import authBg from "@/assets/auth/auth-bg.png";
 import rewardBanner from "@/assets/auth/reward-banner.png";
