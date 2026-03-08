@@ -119,7 +119,7 @@ const DepositRecords = () => {
     if (url) {
       navigate("/payment", { state: { paymentUrl: url } });
     } else {
-      toast({ title: "No payment URL available", variant: "destructive" });
+      toast({ description: "No payment URL available", variant: "destructive" });
     }
   };
 
