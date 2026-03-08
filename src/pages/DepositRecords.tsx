@@ -1,4 +1,5 @@
 import PageHeader from "@/components/PageHeader";
+import Loader from "@/components/Loader";
 import { useState, useEffect } from "react";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
@@ -101,7 +102,7 @@ const DepositRecords = () => {
 
       <div className="flex flex-col gap-2 px-2">
         {loading ? (
-          <div className="text-center text-white/60 py-8 text-sm">Loading...</div>
+          <Loader label="Loading records..." />
         ) : orders.length === 0 ? (
           <div className="text-center text-white/60 py-8 text-sm">No deposit records found</div>
         ) : (

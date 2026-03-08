@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { DotPulse } from "ldrs/react";
+import "ldrs/react/DotPulse.css";
 import { useNavigate } from "react-router-dom";
 import { Phone, Lock } from "lucide-react";
 import authBg from "@/assets/auth/auth-bg.png";
@@ -99,7 +101,7 @@ const Login = () => {
             backgroundImage: "linear-gradient(rgb(255, 246, 230) 1%, rgb(238, 210, 110) 44%, rgb(195, 132, 45) 75%, rgb(195, 132, 45) 86%, rgb(255, 205, 78) 100%)",
           }}
         >
-          {loading ? "..." : "Login"}
+          {loading ? <span className="flex justify-center"><DotPulse size="30" speed="1.3" color="#5a2d0a" /></span> : "Login"}
         </button>
 
         {/* Forgot & Quick Register */}
