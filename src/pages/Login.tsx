@@ -32,7 +32,7 @@ const Login = () => {
     setLoading(true);
     try {
       await authService.login(phone, password);
-      toast({ title: "Login successful" });
+      toast({ description: "Login successful" });
       navigate("/");
     } catch (err: any) {
       toast({ title: "Login Failed", description: err.message, variant: "destructive" });
