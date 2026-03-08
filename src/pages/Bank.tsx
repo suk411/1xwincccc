@@ -46,13 +46,13 @@ const Bank = () => {
       const res = await authService.deposit(selectedAmount);
       if (res.paymentUrl) {
         navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
-        toast({ title: "Opening payment..." });
+        toast({ description: "Opening payment..." });
       } else {
-        toast({ title: res.msg || "Deposit initiated", variant: "destructive" });
+        toast({ description: res.msg || "Deposit initiated", variant: "destructive" });
       }
       refreshBalance();
     } catch (err: any) {
-      toast({ title: err.message || "Deposit failed", variant: "destructive" });
+      toast({ description: err.message || "Deposit failed", variant: "destructive" });
     } finally {
       setPaying(false);
     }

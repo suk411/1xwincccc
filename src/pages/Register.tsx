@@ -35,10 +35,10 @@ const Register = () => {
     setLoading(true);
     try {
       await authService.register(phone, password, (inviteCode || refFromUrl) || undefined);
-      toast({ title: "Registration successful" });
+      toast({ description: "Registration successful" });
       navigate("/");
     } catch (err: any) {
-      toast({ title: "Registration Failed", description: err.message, variant: "destructive" });
+      toast({ description: err.message || "Registration failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }

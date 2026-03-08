@@ -83,9 +83,9 @@ const ReferralInviteCard = ({ data }: { data: ReferralData | null }) => {
   const handleCopy = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast({ title: `${label} copied!` });
+      toast({ description: `${label} copied!` });
     } catch {
-      toast({ title: "Failed to copy", variant: "destructive" });
+      toast({ description: "Failed to copy", variant: "destructive" });
     }
   };
 
@@ -243,7 +243,7 @@ const Earn = () => {
       setPage(p);
     } catch (err: any) {
       if (!err.message?.includes("Session expired")) {
-        toast({ title: "Error", description: err.message, variant: "destructive" });
+        toast({ description: err.message || "Something went wrong", variant: "destructive" });
       }
     } finally {
       setLoading(false);
@@ -270,15 +270,15 @@ const Earn = () => {
         await navigator.share(shareData);
       } catch (err: any) {
         if (err.name !== "AbortError") {
-          toast({ title: "Share failed", variant: "destructive" });
+          toast({ description: "Share failed", variant: "destructive" });
         }
       }
     } else {
       try {
         await navigator.clipboard.writeText(referralData.inviteLink);
-        toast({ title: "Invite link copied!" });
+        toast({ description: "Invite link copied!" });
       } catch {
-        toast({ title: "Failed to copy", variant: "destructive" });
+        toast({ description: "Failed to copy", variant: "destructive" });
       }
     }
   };

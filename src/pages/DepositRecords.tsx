@@ -72,7 +72,7 @@ const DepositRecords = () => {
       setPage(pg);
       saveCache({ items, total: t, page: pg });
     } catch (err: any) {
-      toast({ title: err.message || "Failed to fetch deposits", variant: "destructive" });
+      toast({ description: err.message || "Failed to fetch deposits", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -119,7 +119,7 @@ const DepositRecords = () => {
     if (url) {
       navigate("/payment", { state: { paymentUrl: url } });
     } else {
-      toast({ title: "No payment URL available", variant: "destructive" });
+      toast({ description: "No payment URL available", variant: "destructive" });
     }
   };
 
@@ -155,7 +155,7 @@ const DepositRecords = () => {
                       className="text-[#c4889a] flex-shrink-0"
                       onClick={() => {
                         navigator.clipboard.writeText(orderId);
-                        toast({ title: "Order ID copied" });
+                        toast({ description: "Order ID copied" });
                       }}
                     >
                       <Copy size={12} />

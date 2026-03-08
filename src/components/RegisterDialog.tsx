@@ -36,11 +36,11 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
     setLoading(true);
     try {
       await authService.register(phone, password, inviteCode || undefined);
-      toast({ title: "Registration successful" });
+      toast({ description: "Registration successful" });
       onOpenChange(false);
       onRegisterSuccess();
     } catch (err: any) {
-      toast({ title: "Registration Failed", description: err.message, variant: "destructive" });
+      toast({ description: err.message || "Registration failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }

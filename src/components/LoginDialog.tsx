@@ -35,11 +35,11 @@ const LoginDialog = ({ open, onOpenChange, onSwitchToRegister, onLoginSuccess }:
     setLoading(true);
     try {
       await authService.login(phone, password);
-      toast({ title: "Login successful" });
+      toast({ description: "Login successful" });
       onOpenChange(false);
       onLoginSuccess();
     } catch (err: any) {
-      toast({ title: "Login Failed", description: err.message, variant: "destructive" });
+      toast({ description: err.message || "Login failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }
