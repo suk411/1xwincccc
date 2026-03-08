@@ -36,22 +36,41 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
 
 const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
 
+const CACHE_KEY = "deposit_records_cache";
+
+const loadCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+};
+
+const saveCache = (data: { items: DepositOrder[]; total: number; page: number }) => {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
+};
+
 const DepositRecords = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const cached = loadCache();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [orders, setOrders] = useState<DepositOrder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
+  const [orders, setOrders] = useState<DepositOrder[]>(cached?.items || []);
+  const [loading, setLoading] = useState(!cached);
+  const [page, setPage] = useState(cached?.page || 1);
+  const [total, setTotal] = useState(cached?.total || 0);
 
   const fetchOrders = async (p = 1) => {
-    setLoading(true);
+    if (orders.length === 0) setLoading(true);
     try {
       const res = await authService.getDeposits(p, 15);
-      setOrders(res.items || []);
-      setTotal(res.total || 0);
-      setPage(res.page || p);
+      const items = res.items || [];
+      const t = res.total || 0;
+      const pg = res.page || p;
+      setOrders(items);
+      setTotal(t);
+      setPage(pg);
+      saveCache({ items, total: t, page: pg });
     } catch (err: any) {
       toast({ title: err.message || "Failed to fetch deposits", variant: "destructive" });
     } finally {
