@@ -39,7 +39,7 @@ const AppContent = () => {
       style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)", minHeight: "100vh" }}
     >
       
-      {!isAuthPage && <DownloadBanner />}
+      {isHomePage && <DownloadBanner />}
       {isHomePage && <Header />}
       
       <Routes>
