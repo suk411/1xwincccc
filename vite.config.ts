@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
       manifest: {
         name: "1xKING",
         short_name: "1xKING",
-        description: "1xKING - Your Ultimate Gaming Platform",
+        description: " Download the 1xKING multi-games app. Play with 1 million+ verified players and use your skills to win real cash daily!",
         theme_color: "#141011",
         background_color: "#141011",
         display: "standalone",
