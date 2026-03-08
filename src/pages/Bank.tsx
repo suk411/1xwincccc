@@ -60,6 +60,7 @@ const Bank = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+      {paying && <Loader overlay label="Payment processing..." />}
       {/* Top Header with red bg */}
       <div className="relative w-full h-12 flex items-center justify-between px-4">
         <img src={headerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
