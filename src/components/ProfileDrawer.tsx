@@ -94,7 +94,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   onClick={() => {
                     if (userId) {
                       navigator.clipboard.writeText(userId);
-                      toast({ title: "Copied!", description: "User ID copied to clipboard" });
+                      toast({ description: "User ID copied to clipboard" });
                     }
                   }}
                   className="ml-1 p-0.5"

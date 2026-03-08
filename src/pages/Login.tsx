@@ -35,7 +35,7 @@ const Login = () => {
       toast({ description: "Login successful" });
       navigate("/");
     } catch (err: any) {
-      toast({ title: "Login Failed", description: err.message, variant: "destructive" });
+      toast({ description: err.message || "Login failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }

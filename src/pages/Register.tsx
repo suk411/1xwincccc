@@ -38,7 +38,7 @@ const Register = () => {
       toast({ description: "Registration successful" });
       navigate("/");
     } catch (err: any) {
-      toast({ title: "Registration Failed", description: err.message, variant: "destructive" });
+      toast({ description: err.message || "Registration failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }

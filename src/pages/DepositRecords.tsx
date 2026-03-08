@@ -155,7 +155,7 @@ const DepositRecords = () => {
                       className="text-[#c4889a] flex-shrink-0"
                       onClick={() => {
                         navigator.clipboard.writeText(orderId);
-                        toast({ title: "Order ID copied" });
+                        toast({ description: "Order ID copied" });
                       }}
                     >
                       <Copy size={12} />

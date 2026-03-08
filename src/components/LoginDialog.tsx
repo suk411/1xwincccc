@@ -39,7 +39,7 @@ const LoginDialog = ({ open, onOpenChange, onSwitchToRegister, onLoginSuccess }:
       onOpenChange(false);
       onLoginSuccess();
     } catch (err: any) {
-      toast({ title: "Login Failed", description: err.message, variant: "destructive" });
+      toast({ description: err.message || "Login failed", variant: "destructive" });
     } finally {
       setLoading(false);
     }

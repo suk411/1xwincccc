@@ -52,7 +52,7 @@ const Bank = () => {
       }
       refreshBalance();
     } catch (err: any) {
-      toast({ title: err.message || "Deposit failed", variant: "destructive" });
+      toast({ description: err.message || "Deposit failed", variant: "destructive" });
     } finally {
       setPaying(false);
     }
