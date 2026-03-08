@@ -1,6 +1,7 @@
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
@@ -37,6 +38,7 @@ const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
 
 const DepositRecords = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [orders, setOrders] = useState<DepositOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +90,7 @@ const DepositRecords = () => {
   const handlePayOrder = (order: DepositOrder) => {
     const url = getPaymentLink(order);
     if (url) {
-      window.open(url, "_blank");
+      navigate("/payment", { state: { paymentUrl: url } });
     } else {
       toast({ title: "No payment URL available", variant: "destructive" });
     }
