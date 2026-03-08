@@ -14,7 +14,7 @@ const Loader = ({ size = "43", speed = "1.3", color = "white", fullScreen = fals
   if (overlay) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm">
-        <div className="flex flex-col items-center gap-3 bg-[#1a1a2e] rounded-xl px-8 py-6 shadow-2xl">
+        <div className="flex flex-col items-center gap-3 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl px-8 py-6 shadow-2xl">
           <DotPulse size={size} speed={speed} color={color} />
           {label && <span className="text-white/80 text-sm mt-1">{label}</span>}
         </div>
