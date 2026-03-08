@@ -89,6 +89,15 @@ const authHeaders = (): Record<string, string> => {
     : { "Content-Type": "application/json" };
 };
 
+const handleUnauthorized = (res: Response) => {
+  if (res.status === 401) {
+    localStorage.removeItem(TOKEN_KEY);
+    notifyListeners();
+    window.location.href = "/login";
+    throw new Error("Session expired. Please login again.");
+  }
+};
+
 export const authService = {
   subscribe(listener: () => void) {
     listeners.add(listener);
