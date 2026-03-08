@@ -89,6 +89,15 @@ const authHeaders = (): Record<string, string> => {
     : { "Content-Type": "application/json" };
 };
 
+const handleUnauthorized = (res: Response) => {
+  if (res.status === 401) {
+    localStorage.removeItem(TOKEN_KEY);
+    notifyListeners();
+    window.location.href = "/login";
+    throw new Error("Session expired. Please login again.");
+  }
+};
+
 export const authService = {
   subscribe(listener: () => void) {
     listeners.add(listener);
@@ -125,6 +134,7 @@ export const authService = {
     const res = await fetch(`${API_BASE}/api/account/balance`, {
       headers: authHeaders(),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch balance"));
     return data;
@@ -144,6 +154,7 @@ export const authService = {
     const res = await fetch(`${API_BASE}/api/account/my-deposits?page=${page}&limit=${limit}`, {
       headers: authHeaders(),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposits"));
     return data;
@@ -153,6 +164,7 @@ export const authService = {
     const res = await fetch(`${API_BASE}/api/wallet/ledger`, {
       headers: authHeaders(),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch ledger"));
     return data;
@@ -164,6 +176,7 @@ export const authService = {
       headers: authHeaders(),
       body: JSON.stringify({ amount }),
     });
+    handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Deposit failed"));
     return data;
