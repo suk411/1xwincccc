@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { Copy, Users, Link2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { GameCard } from "@/components/GameCard";
 import { GameButton } from "@/components/GameButton";
+import { authService } from "@/services/authService";
+import { toast } from "@/hooks/use-toast";
 import earnBanner from "@/assets/earn/earn-banner.png";
 import goldBorder from "@/assets/events/gold-border.png";
 import emptyBox from "@/assets/events/empty-box.png";
@@ -9,6 +12,26 @@ import level1Bg from "@/assets/earn/level1-bg.png";
 import level2Bg from "@/assets/earn/level2-bg.png";
 import level3Bg from "@/assets/earn/level3-bg.png";
 import agentMapTree from "@/assets/earn/agent-map-tree.png";
+
+interface ReferralUser {
+  userId: string;
+  mobile: string;
+  createdAt: string;
+}
+
+interface ReferralData {
+  inviteCode: string;
+  inviteLink: string;
+  total: number;
+  page: number;
+  limit: number;
+  users: ReferralUser[];
+}
+
+const maskMobile = (mobile: string) => {
+  if (!mobile || mobile.length < 4) return mobile;
+  return mobile.slice(0, 2) + "****" + mobile.slice(-4);
+};
 
 const InviteRow = ({
   icon,
@@ -49,16 +72,78 @@ const InviteRow = ({
     </div>
     <div className="flex items-center gap-2">
       <span className="text-white text-sm font-medium">{reward}</span>
-      <div
-        className="w-5 h-5 rounded-full flex items-center justify-center border border-white/30"
-      >
+      <div className="w-5 h-5 rounded-full flex items-center justify-center border border-white/30">
         <span className="text-white/60 text-[10px]">?</span>
       </div>
     </div>
   </div>
 );
 
-const RecordsCard = () => {
+const ReferralInviteCard = ({ data }: { data: ReferralData | null }) => {
+  const handleCopy = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({ title: `${label} copied!` });
+    } catch {
+      toast({ title: "Failed to copy", variant: "destructive" });
+    }
+  };
+
+  if (!data) return null;
+
+  return (
+    <GameCard className="p-3 flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <Link2 size={16} className="text-[#FA829D]" />
+        <span className="text-white font-bold text-sm">Your Invite Info</span>
+      </div>
+
+      {/* Invite Code */}
+      <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
+        <div>
+          <span className="text-white/60 text-[10px]">Invite Code</span>
+          <p className="text-[#f5c842] text-base font-bold font-mono">{data.inviteCode}</p>
+        </div>
+        <button
+          onClick={() => handleCopy(data.inviteCode, "Invite code")}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium text-white"
+          style={{ backgroundColor: "rgb(177, 44, 73)" }}
+        >
+          <Copy size={12} /> Copy
+        </button>
+      </div>
+
+      {/* Invite Link */}
+      <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
+        <div className="flex-1 min-w-0 mr-2">
+          <span className="text-white/60 text-[10px]">Invite Link</span>
+          <p className="text-white/80 text-xs truncate">{data.inviteLink}</p>
+        </div>
+        <button
+          onClick={() => handleCopy(data.inviteLink, "Invite link")}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium text-white shrink-0"
+          style={{ backgroundColor: "rgb(177, 44, 73)" }}
+        >
+          <Copy size={12} /> Copy
+        </button>
+      </div>
+
+      {/* Total Referrals */}
+      <div className="flex items-center justify-center gap-2 py-2">
+        <Users size={16} className="text-[#FA829D]" />
+        <span className="text-white/70 text-sm">Total Referrals:</span>
+        <span className="text-[#f5c842] text-lg font-bold">{data.total}</span>
+      </div>
+    </GameCard>
+  );
+};
+
+const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
+  data: ReferralData | null;
+  loadMore: () => void;
+  hasMore: boolean;
+  loadingMore: boolean;
+}) => {
   const [recordTab, setRecordTab] = useState<"invitation" | "daily">("invitation");
 
   return (
@@ -80,35 +165,108 @@ const RecordsCard = () => {
         ))}
       </div>
 
-      {/* Table Header */}
-      <div className="flex items-center justify-between px-2 py-1">
-        {recordTab === "invitation" ? (
-          <>
-            <span className="text-white/60 text-xs">Created Time</span>
-            <span className="text-white/60 text-xs">User ID</span>
-          </>
-        ) : (
-          <>
+      {recordTab === "invitation" ? (
+        <>
+          {/* Table Header */}
+          <div className="flex items-center justify-between px-2 py-1">
+            <span className="text-white/60 text-xs flex-1">Joined Date</span>
+            <span className="text-white/60 text-xs flex-1 text-center">User ID</span>
+            <span className="text-white/60 text-xs flex-1 text-right">Mobile</span>
+          </div>
+
+          {data && data.users.length > 0 ? (
+            <>
+              {data.users.map((user, i) => (
+                <div key={user.userId + i} className="flex items-center justify-between px-2 py-2 rounded-md" style={{ backgroundColor: i % 2 === 0 ? "rgba(112,28,50,0.3)" : "transparent" }}>
+                  <span className="text-white/70 text-xs flex-1">
+                    {new Date(user.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "2-digit" })}
+                  </span>
+                  <span className="text-white/80 text-xs flex-1 text-center font-mono">
+                    {user.userId.slice(0, 8)}...
+                  </span>
+                  <span className="text-white/70 text-xs flex-1 text-right">
+                    {maskMobile(user.mobile)}
+                  </span>
+                </div>
+              ))}
+              {hasMore && (
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="text-[#FA829D] text-xs text-center py-2"
+                >
+                  {loadingMore ? "Loading..." : "Load More"}
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 gap-3">
+              <img src={emptyBox} alt="No records" className="w-24 h-24 object-contain opacity-50" />
+              <span className="text-white/40 text-sm">No referrals yet — share your link!</span>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <div className="flex items-center justify-between px-2 py-1">
             <span className="text-white/60 text-xs">Date</span>
             <span className="text-white/60 text-xs">Invites</span>
             <span className="text-white/60 text-xs">Regular</span>
             <span className="text-white/60 text-xs">Depositor</span>
             <span className="text-white/60 text-xs">Reward</span>
-          </>
-        )}
-      </div>
-
-      {/* Empty State */}
-      <div className="flex flex-col items-center justify-center py-8 gap-3">
-        <img src={emptyBox} alt="No records" className="w-24 h-24 object-contain opacity-50" />
-        <span className="text-white/40 text-sm">No Invite Records</span>
-      </div>
+          </div>
+          <div className="flex flex-col items-center justify-center py-8 gap-3">
+            <img src={emptyBox} alt="No records" className="w-24 h-24 object-contain opacity-50" />
+            <span className="text-white/40 text-sm">No Invite Records</span>
+          </div>
+        </>
+      )}
     </GameCard>
   );
 };
 
 const Earn = () => {
   const [activeTab, setActiveTab] = useState<"referral" | "commission">("referral");
+  const [referralData, setReferralData] = useState<ReferralData | null>(null);
+  const [allUsers, setAllUsers] = useState<ReferralUser[]>([]);
+  const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchReferrals = useCallback(async (p = 1, append = false) => {
+    try {
+      if (p > 1) setLoadingMore(true);
+      else setLoading(true);
+      const data = await authService.getReferrals(p, 20);
+      setReferralData(data);
+      setAllUsers(prev => append ? [...prev, ...data.users] : data.users);
+      setPage(p);
+    } catch (err: any) {
+      if (!err.message?.includes("Session expired")) {
+        toast({ title: "Error", description: err.message, variant: "destructive" });
+      }
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchReferrals(1);
+  }, [fetchReferrals]);
+
+  const hasMore = referralData ? allUsers.length < referralData.total : false;
+  const displayData = referralData ? { ...referralData, users: allUsers } : null;
+
+  const handleCopyLink = async () => {
+    if (!referralData?.inviteLink) return;
+    try {
+      await navigator.clipboard.writeText(referralData.inviteLink);
+      toast({ title: "Invite link copied!" });
+    } catch {
+      toast({ title: "Failed to copy", variant: "destructive" });
+    }
+  };
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
@@ -157,6 +315,9 @@ const Earn = () => {
 
         {activeTab === "referral" ? (
           <>
+            {/* Invite Info Card (live data) */}
+            {!loading && <ReferralInviteCard data={displayData} />}
+
             {/* Bonus Card */}
             <GameCard className="p-3 flex flex-col gap-3">
               <div>
@@ -181,14 +342,19 @@ const Earn = () => {
 
             {/* Invite Stats Card */}
             <GameCard className="p-3 flex flex-col gap-2">
-              <InviteRow icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.333 6.667a2.333 2.333 0 100-4.667 2.333 2.333 0 000 4.667z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.333 13.599V14h10v-.401c0-1.494 0-2.24-.291-2.811a2.67 2.67 0 00-1.166-1.165c-.57-.291-1.317-.291-2.81-.291H5.6c-1.494 0-2.24 0-2.811.29a2.67 2.67 0 00-1.166 1.166c-.29.57-.29 1.317-.29 2.81z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M12.667 4.332v4M10.667 6.332h4" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Total Invites" values={[0, 0, 0]} reward="₹10/ 👤" />
+              <InviteRow icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.333 6.667a2.333 2.333 0 100-4.667 2.333 2.333 0 000 4.667z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.333 13.599V14h10v-.401c0-1.494 0-2.24-.291-2.811a2.67 2.67 0 00-1.166-1.165c-.57-.291-1.317-.291-2.81-.291H5.6c-1.494 0-2.24 0-2.811.29a2.67 2.67 0 00-1.166 1.166c-.29.57-.29 1.317-.29 2.81z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M12.667 4.332v4M10.667 6.332h4" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Total Invites" values={[referralData?.total || 0, 0, 0]} reward="₹10/ 👤" />
               <InviteRow icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.333 6.667a2.333 2.333 0 100-4.667 2.333 2.333 0 000 4.667z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M10.667 5.334l2 2 2-2" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.333 13.601V14h10v-.399c0-1.494 0-2.24-.291-2.811a2.67 2.67 0 00-1.166-1.165c-.57-.291-1.317-.291-2.81-.291H5.6c-1.494 0-2.24 0-2.811.29a2.67 2.67 0 00-1.166 1.166c-.29.57-.29 1.317-.29 2.81z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Valid Invites" values={[0, 0, 0]} reward="₹30/ 👤" />
               <InviteRow icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M7.333 2.666v4c0 .736-1.343 1.333-3 1.333s-3-.597-3-1.333v-4" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M7.333 4.666c0 .736-1.343 1.333-3 1.333s-3-.597-3-1.333" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M7.333 2.667c0 .737-1.343 1.334-3 1.334s-3-.597-3-1.334C1.333 1.93 2.677 1.334 4.333 1.334s3 .597 3 1.333z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M10.667 2h2a1.333 1.333 0 011.333 1.333v2" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M5.333 14H3.333A1.333 1.333 0 012 12.666v-2" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M11.667 11.333a1.667 1.667 0 100-3.333 1.667 1.667 0 000 3.333z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M14.667 14.666H8.667c0-1.657 1.343-3 3-3s3 1.343 3 3z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Deposit Invites" values={[0, 0, 0]} reward="₹48/ 👤" />
               <InviteRow icon={<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="10" fill="#B12C49"/><path fillRule="evenodd" clipRule="evenodd" d="M10 14.375a4.375 4.375 0 004.375-4.375H10V5.625A4.375 4.375 0 005.625 10 4.375 4.375 0 0010 14.375z" stroke="#FF9FA7" strokeWidth="1.01" strokeLinecap="round" strokeLinejoin="round"/><path fillRule="evenodd" clipRule="evenodd" d="M11.458 8.542V5.875a4.38 4.38 0 012.667 2.667h-2.667z" stroke="#FF9FA7" strokeWidth="1.01" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Core Users" values={[0, 0, 0]} reward="₹100/ 👤" />
             </GameCard>
 
-            {/* Invitation Records / Daily Bonus Records */}
-            <RecordsCard />
+            {/* Invitation Records */}
+            <RecordsCard
+              data={displayData}
+              loadMore={() => fetchReferrals(page + 1, true)}
+              hasMore={hasMore}
+              loadingMore={loadingMore}
+            />
           </>
         ) : (
           <>
@@ -340,12 +506,9 @@ const Earn = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                {/* Tree image - smaller */}
                 <div className="flex-shrink-0 w-[140px]">
                   <img src={agentMapTree} alt="Agent Map Tree" className="w-full h-auto ml-5 object-contain" />
                 </div>
-
-                {/* Level Labels - on the right */}
                 <div className="flex flex-col gap-3 ml-10 pt-2 text-xs text-white/70 flex-1 min-w-0">
                   <div>
                     <span className="inline-block px-2 py-0.5 rounded text-white text-[10px] font-medium" style={{ backgroundColor: "#AC4059" }}>Level 1 Team</span>
@@ -381,13 +544,11 @@ const Earn = () => {
                 <span className="text-white font-bold text-sm">Payout Records</span>
               </div>
 
-              {/* Table Header */}
               <div className="flex items-center justify-between px-2">
                 <span className="text-white/70 text-xs font-medium">Date</span>
                 <span className="text-white/70 text-xs font-medium">Total</span>
               </div>
 
-              {/* Empty State */}
               <div className="flex flex-col items-center justify-center py-6 gap-2">
                 <img src={emptyBox} alt="No records" className="w-20 h-20 object-contain opacity-50" />
                 <span className="text-[#FA829D] text-sm">No commission records</span>
@@ -404,7 +565,7 @@ const Earn = () => {
           backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
         }}
       >
-        <GameButton className="w-full rounded-full text-base" size="lg" variant="gold">
+        <GameButton className="w-full rounded-full text-base" size="lg" variant="gold" onClick={handleCopyLink}>
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block shrink-0">
             <path d="M9.16667 1.83398L15.1667 7.83398L9.16667 13.5007V9.83398C4.5 9.83398 2.5 14.834 2.5 14.834C2.5 9.16732 4.16667 5.50065 9.16667 5.50065V1.83398Z" stroke="#7B1C0C" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
