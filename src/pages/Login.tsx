@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { DotPulse } from "ldrs/react";
+import "ldrs/react/DotPulse.css";
 import { useNavigate } from "react-router-dom";
 import { Phone, Lock } from "lucide-react";
 import authBg from "@/assets/auth/auth-bg.png";

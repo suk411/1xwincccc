@@ -108,7 +108,7 @@ const Register = () => {
             backgroundImage: "linear-gradient(rgb(255, 246, 230) 1%, rgb(238, 210, 110) 44%, rgb(195, 132, 45) 75%, rgb(195, 132, 45) 86%, rgb(255, 205, 78) 100%)",
           }}
         >
-          {loading ? "..." : "Register"}
+          {loading ? <span className="flex justify-center"><DotPulse size="30" speed="1.3" color="#5a2d0a" /></span> : "Register"}
         </button>
 
         {/* Quick Login link */}
