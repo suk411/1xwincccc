@@ -94,6 +94,14 @@ const DepositRecords = () => {
   const getChannel = (order: DepositOrder) =>
     order.channelName || order.channel || order.paymentChannel || order.method || "—";
 
+  const isOlderThan15Min = (order: DepositOrder) => {
+    const d = order.createdAt || order.date || order.created_at;
+    if (!d) return true;
+    try {
+      return (Date.now() - new Date(d).getTime()) > 15 * 60 * 1000;
+    } catch { return true; }
+  };
+
   const getDate = (order: DepositOrder) => {
     const d = order.createdAt || order.date || order.created_at;
     if (!d) return "—";
