@@ -10,6 +10,7 @@ import Events from "./pages/Events";
 import Promo from "./pages/Promo";
 import CommunityEvent from "./pages/CommunityEvent";
 import DepositRecords from "./pages/DepositRecords";
+import PaymentGateway from "./pages/PaymentGateway";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
