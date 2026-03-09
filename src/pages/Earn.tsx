@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Copy, Users } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { GameCard } from "@/components/GameCard";
@@ -47,6 +47,19 @@ interface BonusSummary {
 const maskMobile = (mobile: string) => {
   if (!mobile || mobile.length < 4) return mobile;
   return mobile.slice(0, 2) + "****" + mobile.slice(-4);
+};
+
+const getUserIdFromToken = (): string => {
+  try {
+    const token = authService.getToken();
+    if (!token) return "";
+    const parts = token.split(".");
+    if (parts.length < 2) return "";
+    const payload = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+    return (payload?.userId || payload?.sub || payload?.id || payload?.user?.id || "") as string;
+  } catch {
+    return "";
+  }
 };
 
 const InviteRow = ({
@@ -270,9 +283,11 @@ const Earn = () => {
   const [claiming, setClaiming] = useState(false);
 
   const { userId } = useProfile();
+  const tokenUserId = useMemo(() => getUserIdFromToken(), []);
+  const effectiveUserId = userId || tokenUserId;
 
   // Generate invite URL from userId
-  const inviteUrl = userId ? `https://1xking.vercel.app/register?ref=${userId}` : "";
+  const inviteUrl = effectiveUserId ? `https://1xking.vercel.app/register?ref=${effectiveUserId}` : "";
 
   const fetchReferrals = useCallback(async (p = 1, append = false) => {
     try {
@@ -420,6 +435,28 @@ const Earn = () => {
           <img src={goldBorder} alt="" className="absolute inset-0 w-full h-full z-10 pointer-events-none" style={{ objectFit: "fill" }} />
           <img src={earnBanner} alt="Earn up to ₹88" className="w-full h-auto object-cover rounded-xl" />
         </div>
+
+        {/* Invite link (below banner) */}
+        {inviteUrl && (
+          <GameCard className="p-3 flex flex-col gap-2">
+            <div className="text-white/70 text-xs">Your invite link</div>
+            <div className="flex items-center gap-2">
+              <span className="text-white/70 text-[10px] truncate flex-1 font-mono">{inviteUrl}</span>
+              <button
+                onClick={handleCopyUrl}
+                className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium text-white shrink-0"
+                style={{ backgroundColor: "rgb(177, 44, 73)" }}
+              >
+                <Copy size={10} /> Copy
+              </button>
+            </div>
+            <div className="flex justify-center mt-2">
+              <GameButton size="sm" variant="gold" className="w-36" onClick={handleShareInvite}>
+                Invite Friends
+              </GameButton>
+            </div>
+          </GameCard>
+        )}
 
         {activeTab === "referral" ? (
           <>
@@ -615,34 +652,6 @@ const Earn = () => {
         )}
       </div>
 
-      {/* Fixed bottom bar with invite URL + Invite Friends button */}
-      <div
-        className="fixed bottom-12 pb-12 left-0 right-0 z-30 px-4 pt-2 pb-3 flex flex-col items-center gap-2"
-        style={{
-          backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
-        }}
-      >
-        {/* Invite URL row */}
-        {inviteUrl && (
-          <div className="w-full flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ backgroundColor: "rgba(0,0,0,0.3)" }}>
-            <span className="text-white/60 text-[10px] truncate flex-1 font-mono">{inviteUrl}</span>
-            <button
-              onClick={handleCopyUrl}
-              className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium text-white shrink-0"
-              style={{ backgroundColor: "rgb(177, 44, 73)" }}
-            >
-              <Copy size={10} /> Copy
-            </button>
-          </div>
-        )}
-
-        <GameButton className="w-full rounded-full text-base" size="lg" variant="gold" onClick={handleShareInvite}>
-          <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block shrink-0">
-            <path d="M9.16667 1.83398L15.1667 7.83398L9.16667 13.5007V9.83398C4.5 9.83398 2.5 14.834 2.5 14.834C2.5 9.16732 4.16667 5.50065 9.16667 5.50065V1.83398Z" stroke="#7B1C0C" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Invite Friends
-        </GameButton>
-      </div>
     </main>
   );
 };
