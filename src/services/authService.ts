@@ -224,6 +224,19 @@ export const authService = {
     return data;
   },
 
+  async getDailyBonus(date?: string): Promise<any> {
+    const params = new URLSearchParams();
+    if (date) params.set("date", date);
+    const query = params.toString();
+    const res = await fetch(`${API_BASE}/api/agent/bonus/daily${query ? `?${query}` : ""}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch daily bonus"));
+    return data;
+  },
+
   async claimBonus(upTo?: string): Promise<any> {
     const body = upTo ? JSON.stringify({ upTo }) : undefined;
     const res = await fetch(`${API_BASE}/api/agent/bonus/claim`, {

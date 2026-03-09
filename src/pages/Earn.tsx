@@ -44,6 +44,19 @@ interface BonusSummary {
   updatedAt: string;
 }
 
+interface DailyBonusLevel {
+  deposit: number;
+  commission: number;
+  count: number;
+}
+
+interface DailyBonus {
+  date: string;
+  level1: DailyBonusLevel;
+  level2: DailyBonusLevel;
+  level3: DailyBonusLevel;
+}
+
 const maskMobile = (mobile: string) => {
   if (!mobile || mobile.length < 4) return mobile;
   return mobile.slice(0, 2) + "****" + mobile.slice(-4);
@@ -194,14 +207,21 @@ const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
   );
 };
 
-const CommissionRecordsCard = ({ records, loadMore, hasMore, loadingMore }: {
+const CommissionRecordsCard = ({
+  records,
+  filter,
+  onFilterChange,
+  loadMore,
+  hasMore,
+  loadingMore,
+}: {
   records: CommissionRecord[];
+  filter: "unclaimed" | "claimed";
+  onFilterChange: (filter: "unclaimed" | "claimed") => void;
   loadMore: () => void;
   hasMore: boolean;
   loadingMore: boolean;
 }) => {
-  const [filter, setFilter] = useState<"unclaimed" | "claimed">("unclaimed");
-
   return (
     <GameCard className="p-3 flex flex-col gap-3">
       <div className="flex items-center gap-2">
@@ -218,7 +238,7 @@ const CommissionRecordsCard = ({ records, loadMore, hasMore, loadingMore }: {
         {(["unclaimed", "claimed"] as const).map((tab) => (
           <button
             key={tab}
-            onClick={() => setFilter(tab)}
+            onClick={() => onFilterChange(tab)}
             className="flex-1 py-1.5 rounded-md text-xs font-medium transition-colors"
             style={
               filter === tab
@@ -238,9 +258,9 @@ const CommissionRecordsCard = ({ records, loadMore, hasMore, loadingMore }: {
         <span className="text-white/60 text-xs">Commission</span>
       </div>
 
-      {records.filter(r => filter === "unclaimed" ? !r.claim : r.claim).length > 0 ? (
+      {records.length > 0 ? (
         <>
-          {records.filter(r => filter === "unclaimed" ? !r.claim : r.claim).map((rec, i) => (
+          {records.map((rec, i) => (
             <div key={i} className="flex items-center justify-between px-2 py-2 rounded-md" style={{ backgroundColor: i % 2 === 0 ? "rgba(112,28,50,0.3)" : "transparent" }}>
               <span className="text-white/70 text-xs">
                 {new Date(rec.timestamp).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}
@@ -276,7 +296,9 @@ const Earn = () => {
 
   // Agent data
   const [bonusSummary, setBonusSummary] = useState<BonusSummary | null>(null);
+  const [dailyBonus, setDailyBonus] = useState<DailyBonus | null>(null);
   const [commissionRecords, setCommissionRecords] = useState<CommissionRecord[]>([]);
+  const [commFilter, setCommFilter] = useState<"unclaimed" | "claimed">("unclaimed");
   const [commPage, setCommPage] = useState(1);
   const [commTotal, setCommTotal] = useState(0);
   const [commLoadingMore, setCommLoadingMore] = useState(false);
@@ -318,10 +340,21 @@ const Earn = () => {
     }
   }, []);
 
-  const fetchCommissions = useCallback(async (p = 1, append = false) => {
+  const fetchDailyBonus = useCallback(async (date?: string) => {
+    try {
+      const data = await authService.getDailyBonus(date);
+      setDailyBonus(data);
+    } catch (err: any) {
+      if (!err.message?.includes("Session expired")) {
+        console.error("Daily bonus error:", err);
+      }
+    }
+  }, []);
+
+  const fetchCommissions = useCallback(async (p = 1, append = false, claim?: boolean) => {
     try {
       if (p > 1) setCommLoadingMore(true);
-      const data = await authService.getCommissions(undefined, p, 25);
+      const data = await authService.getCommissions(claim, p, 25);
       setCommissionRecords(prev => append ? [...prev, ...(data.items || [])] : (data.items || []));
       setCommTotal(data.total || 0);
       setCommPage(p);
@@ -337,8 +370,10 @@ const Earn = () => {
   useEffect(() => {
     fetchReferrals(1);
     fetchBonusSummary();
-    fetchCommissions(1);
-  }, [fetchReferrals, fetchBonusSummary, fetchCommissions]);
+    fetchDailyBonus();
+    // Initially show unclaimed commissions.
+    fetchCommissions(1, false, false);
+  }, [fetchReferrals, fetchBonusSummary, fetchDailyBonus, fetchCommissions]);
 
   const hasMore = referralData ? allUsers.length < referralData.total : false;
   const displayData = referralData ? { ...referralData, users: allUsers } : null;
@@ -351,7 +386,7 @@ const Earn = () => {
       const result = await authService.claimBonus();
       toast({ description: `Claimed ₹${result.claimedAmount}! New balance: ₹${result.newBalance}` });
       fetchBonusSummary();
-      fetchCommissions(1);
+      fetchCommissions(1, false, commFilter === "claimed");
     } catch (err: any) {
       toast({ description: err.message || "Claim failed", variant: "destructive" });
     } finally {
@@ -549,13 +584,13 @@ const Earn = () => {
                 <div className="flex items-center justify-between px-3 py-2">
                   <span className="text-white font-bold text-sm">Level 1 Team</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-white text-xs">👤 0</span>
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+0</span>
+                    <span className="text-white text-xs">👤 {dailyBonus?.level1.count ?? 0}</span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+{dailyBonus?.level1.count ?? 0}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-3 py-2">
-                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹0</p></div>
-                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹0</p></div>
+                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹{dailyBonus?.level1.commission ?? 0}</p></div>
+                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹{dailyBonus?.level1.deposit ?? 0}</p></div>
                   <div className="flex items-center gap-1">
                     <div><span className="text-white/60 text-[10px]">Ratio</span><p className="text-white text-sm font-bold">× 5%</p></div>
                     <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30"><span className="text-white/60 text-[8px]">?</span></div>
@@ -568,13 +603,13 @@ const Earn = () => {
                 <div className="flex items-center justify-between px-3 py-2">
                   <span className="text-white font-bold text-sm">Level 2 Team</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-white text-xs">👤 0</span>
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+0</span>
+                    <span className="text-white text-xs">👤 {dailyBonus?.level2.count ?? 0}</span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+{dailyBonus?.level2.count ?? 0}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-3 py-2">
-                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹0</p></div>
-                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹0</p></div>
+                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹{dailyBonus?.level2.commission ?? 0}</p></div>
+                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹{dailyBonus?.level2.deposit ?? 0}</p></div>
                   <div className="flex items-center gap-1">
                     <div><span className="text-white/60 text-[10px]">Ratio</span><p className="text-white text-sm font-bold">× 1%</p></div>
                     <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30"><span className="text-white/60 text-[8px]">?</span></div>
@@ -587,13 +622,13 @@ const Earn = () => {
                 <div className="flex items-center justify-between px-3 py-2">
                   <span className="text-white font-bold text-sm">Level 3 Team</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-white text-xs">👤 0</span>
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+0</span>
+                    <span className="text-white text-xs">👤 {dailyBonus?.level3.count ?? 0}</span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+{dailyBonus?.level3.count ?? 0}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-3 py-2">
-                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹0</p></div>
-                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹0</p></div>
+                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹{dailyBonus?.level3.commission ?? 0}</p></div>
+                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹{dailyBonus?.level3.deposit ?? 0}</p></div>
                   <div className="flex items-center gap-1">
                     <div><span className="text-white/60 text-[10px]">Ratio</span><p className="text-white text-sm font-bold">× 0.5%</p></div>
                     <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30"><span className="text-white/60 text-[8px]">?</span></div>
@@ -644,7 +679,12 @@ const Earn = () => {
             {/* Commission Payout Records */}
             <CommissionRecordsCard
               records={commissionRecords}
-              loadMore={() => fetchCommissions(commPage + 1, true)}
+              filter={commFilter}
+              onFilterChange={(next) => {
+                setCommFilter(next);
+                fetchCommissions(1, false, next === "claimed");
+              }}
+              loadMore={() => fetchCommissions(commPage + 1, true, commFilter === "claimed")}
               hasMore={commHasMore}
               loadingMore={commLoadingMore}
             />
