@@ -202,6 +202,41 @@ export const authService = {
     return data;
   },
 
+  async getCommissions(claim?: boolean, page = 1, limit = 25): Promise<any> {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (claim !== undefined) params.set("claim", String(claim));
+    const res = await fetch(`${API_BASE}/api/agent/commissions?${params}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch commissions"));
+    return data;
+  },
+
+  async getBonusSummary(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/agent/bonus/summary`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch bonus summary"));
+    return data;
+  },
+
+  async claimBonus(upTo?: string): Promise<any> {
+    const body = upTo ? JSON.stringify({ upTo }) : undefined;
+    const res = await fetch(`${API_BASE}/api/agent/bonus/claim`, {
+      method: "POST",
+      headers: authHeaders(),
+      body,
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Claim failed"));
+    return data;
+  },
+
   logout() {
     localStorage.removeItem(TOKEN_KEY);
     notifyListeners();
