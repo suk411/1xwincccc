@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { Copy, Users, Link2 } from "lucide-react";
+import { Copy, Users } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { GameCard } from "@/components/GameCard";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
+import { useProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
 import earnBanner from "@/assets/earn/earn-banner.png";
 import goldBorder from "@/assets/events/gold-border.png";
@@ -26,6 +27,21 @@ interface ReferralData {
   page: number;
   limit: number;
   users: ReferralUser[];
+}
+
+interface CommissionRecord {
+  recUser: number;
+  fromUser: number;
+  depositAmt: number;
+  amount: number;
+  claim: boolean;
+  timestamp: string;
+}
+
+interface BonusSummary {
+  userId: number;
+  unclaimedBonus: number;
+  updatedAt: string;
 }
 
 const maskMobile = (mobile: string) => {
@@ -79,65 +95,6 @@ const InviteRow = ({
   </div>
 );
 
-const ReferralInviteCard = ({ data }: { data: ReferralData | null }) => {
-  const handleCopy = async (text: string, label: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast({ description: `${label} copied!` });
-    } catch {
-      toast({ description: "Failed to copy", variant: "destructive" });
-    }
-  };
-
-  if (!data) return null;
-
-  return (
-    <GameCard className="p-3 flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <Link2 size={16} className="text-[#FA829D]" />
-        <span className="text-white font-bold text-sm">Your Invite Info</span>
-      </div>
-
-      {/* Invite Code */}
-      <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
-        <div>
-          <span className="text-white/60 text-[10px]">Invite Code</span>
-          <p className="text-[#f5c842] text-base font-bold font-mono">{data.inviteCode}</p>
-        </div>
-        <button
-          onClick={() => handleCopy(data.inviteCode, "Invite code")}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium text-white"
-          style={{ backgroundColor: "rgb(177, 44, 73)" }}
-        >
-          <Copy size={12} /> Copy
-        </button>
-      </div>
-
-      {/* Invite Link */}
-      <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
-        <div className="flex-1 min-w-0 mr-2">
-          <span className="text-white/60 text-[10px]">Invite Link</span>
-          <p className="text-white/80 text-xs truncate">{data.inviteLink}</p>
-        </div>
-        <button
-          onClick={() => handleCopy(data.inviteLink, "Invite link")}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium text-white shrink-0"
-          style={{ backgroundColor: "rgb(177, 44, 73)" }}
-        >
-          <Copy size={12} /> Copy
-        </button>
-      </div>
-
-      {/* Total Referrals */}
-      <div className="flex items-center justify-center gap-2 py-2">
-        <Users size={16} className="text-[#FA829D]" />
-        <span className="text-white/70 text-sm">Total Referrals:</span>
-        <span className="text-[#f5c842] text-lg font-bold">{data.total}</span>
-      </div>
-    </GameCard>
-  );
-};
-
 const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
   data: ReferralData | null;
   loadMore: () => void;
@@ -167,7 +124,6 @@ const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
 
       {recordTab === "invitation" ? (
         <>
-          {/* Table Header */}
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-white/60 text-xs flex-1">Joined Date</span>
             <span className="text-white/60 text-xs flex-1 text-center">User ID</span>
@@ -177,7 +133,7 @@ const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
           {data && data.users.length > 0 ? (
             <>
               {data.users.map((user, i) => (
-                <div key={user.userId + i} className="flex items-center justify-between px-2 py-2 rounded-md" style={{ backgroundColor: i % 2 === 0 ? "rgba(112,28,50,0.3)" : "transparent" }}>
+                <div key={String(user.userId) + i} className="flex items-center justify-between px-2 py-2 rounded-md" style={{ backgroundColor: i % 2 === 0 ? "rgba(112,28,50,0.3)" : "transparent" }}>
                   <span className="text-white/70 text-xs flex-1">
                     {new Date(user.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "2-digit" })}
                   </span>
@@ -225,6 +181,78 @@ const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
   );
 };
 
+const CommissionRecordsCard = ({ records, loadMore, hasMore, loadingMore }: {
+  records: CommissionRecord[];
+  loadMore: () => void;
+  hasMore: boolean;
+  loadingMore: boolean;
+}) => {
+  const [filter, setFilter] = useState<"unclaimed" | "claimed">("unclaimed");
+
+  return (
+    <GameCard className="p-3 flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z" fill="#AC4059"/>
+          <path d="M5.73329 11.0669C6.32239 11.0669 6.79996 10.5894 6.79996 10.0003C6.79996 9.41117 6.32239 8.93359 5.73329 8.93359C5.14419 8.93359 4.66663 9.41117 4.66663 10.0003C4.66663 10.5894 5.14419 11.0669 5.73329 11.0669Z" stroke="#FA829D" strokeLinejoin="round"/>
+          <path d="M12.1332 5.20068H8.93323V14.8007H12.1332" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M6.79999 10H12.1333" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className="text-white font-bold text-sm">Payout Records</span>
+      </div>
+
+      <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: "#1a0a10" }}>
+        {(["unclaimed", "claimed"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setFilter(tab)}
+            className="flex-1 py-1.5 rounded-md text-xs font-medium transition-colors"
+            style={
+              filter === tab
+                ? { backgroundColor: "rgb(177, 44, 73)", color: "white" }
+                : { color: "rgba(255,255,255,0.5)" }
+            }
+          >
+            {tab === "unclaimed" ? "Pending" : "Claimed"}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between px-2 py-1">
+        <span className="text-white/60 text-xs">Date</span>
+        <span className="text-white/60 text-xs">From User</span>
+        <span className="text-white/60 text-xs">Deposit</span>
+        <span className="text-white/60 text-xs">Commission</span>
+      </div>
+
+      {records.filter(r => filter === "unclaimed" ? !r.claim : r.claim).length > 0 ? (
+        <>
+          {records.filter(r => filter === "unclaimed" ? !r.claim : r.claim).map((rec, i) => (
+            <div key={i} className="flex items-center justify-between px-2 py-2 rounded-md" style={{ backgroundColor: i % 2 === 0 ? "rgba(112,28,50,0.3)" : "transparent" }}>
+              <span className="text-white/70 text-xs">
+                {new Date(rec.timestamp).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}
+              </span>
+              <span className="text-white/80 text-xs font-mono">{String(rec.fromUser).slice(0, 8)}</span>
+              <span className="text-white/70 text-xs">₹{rec.depositAmt}</span>
+              <span className="text-[#f5c842] text-xs font-bold">₹{rec.amount.toFixed(2)}</span>
+            </div>
+          ))}
+          {hasMore && (
+            <button onClick={loadMore} disabled={loadingMore} className="text-[#FA829D] text-xs text-center py-2">
+              {loadingMore ? "Loading..." : "Load More"}
+            </button>
+          )}
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-6 gap-2">
+          <img src={emptyBox} alt="No records" className="w-20 h-20 object-contain opacity-50" />
+          <span className="text-[#FA829D] text-sm">No commission records</span>
+        </div>
+      )}
+    </GameCard>
+  );
+};
+
 const Earn = () => {
   const [activeTab, setActiveTab] = useState<"referral" | "commission">("referral");
   const [referralData, setReferralData] = useState<ReferralData | null>(null);
@@ -232,6 +260,19 @@ const Earn = () => {
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Agent data
+  const [bonusSummary, setBonusSummary] = useState<BonusSummary | null>(null);
+  const [commissionRecords, setCommissionRecords] = useState<CommissionRecord[]>([]);
+  const [commPage, setCommPage] = useState(1);
+  const [commTotal, setCommTotal] = useState(0);
+  const [commLoadingMore, setCommLoadingMore] = useState(false);
+  const [claiming, setClaiming] = useState(false);
+
+  const { userId } = useProfile();
+
+  // Generate invite URL from userId
+  const inviteUrl = userId ? `https://1xking.vercel.app/register?ref=${userId}` : "";
 
   const fetchReferrals = useCallback(async (p = 1, append = false) => {
     try {
@@ -251,19 +292,74 @@ const Earn = () => {
     }
   }, []);
 
+  const fetchBonusSummary = useCallback(async () => {
+    try {
+      const data = await authService.getBonusSummary();
+      setBonusSummary(data);
+    } catch (err: any) {
+      if (!err.message?.includes("Session expired")) {
+        console.error("Bonus summary error:", err);
+      }
+    }
+  }, []);
+
+  const fetchCommissions = useCallback(async (p = 1, append = false) => {
+    try {
+      if (p > 1) setCommLoadingMore(true);
+      const data = await authService.getCommissions(undefined, p, 25);
+      setCommissionRecords(prev => append ? [...prev, ...(data.items || [])] : (data.items || []));
+      setCommTotal(data.total || 0);
+      setCommPage(p);
+    } catch (err: any) {
+      if (!err.message?.includes("Session expired")) {
+        console.error("Commissions error:", err);
+      }
+    } finally {
+      setCommLoadingMore(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchReferrals(1);
-  }, [fetchReferrals]);
+    fetchBonusSummary();
+    fetchCommissions(1);
+  }, [fetchReferrals, fetchBonusSummary, fetchCommissions]);
 
   const hasMore = referralData ? allUsers.length < referralData.total : false;
   const displayData = referralData ? { ...referralData, users: allUsers } : null;
+  const commHasMore = commissionRecords.length < commTotal;
+
+  const handleClaimBonus = async () => {
+    if (claiming) return;
+    setClaiming(true);
+    try {
+      const result = await authService.claimBonus();
+      toast({ description: `Claimed ₹${result.claimedAmount}! New balance: ₹${result.newBalance}` });
+      fetchBonusSummary();
+      fetchCommissions(1);
+    } catch (err: any) {
+      toast({ description: err.message || "Claim failed", variant: "destructive" });
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  const handleCopyUrl = async () => {
+    if (!inviteUrl) return;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      toast({ description: "Invite link copied!" });
+    } catch {
+      toast({ description: "Failed to copy", variant: "destructive" });
+    }
+  };
 
   const handleShareInvite = async () => {
-    if (!referralData?.inviteLink) return;
+    if (!inviteUrl) return;
     const shareData = {
       title: "Join 1xKING!",
-      text: `Join 1xKING and get rewards up to ₹1000! Use my invite code: ${referralData.inviteCode}`,
-      url: referralData.inviteLink,
+      text: `Join 1xKING and get rewards! Use my referral link:`,
+      url: inviteUrl,
     };
     if (navigator.share && navigator.canShare?.(shareData)) {
       try {
@@ -274,14 +370,11 @@ const Earn = () => {
         }
       }
     } else {
-      try {
-        await navigator.clipboard.writeText(referralData.inviteLink);
-        toast({ description: "Invite link copied!" });
-      } catch {
-        toast({ description: "Failed to copy", variant: "destructive" });
-      }
+      handleCopyUrl();
     }
   };
+
+  const unclaimedBonus = bonusSummary?.unclaimedBonus ?? 0;
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
@@ -330,28 +423,29 @@ const Earn = () => {
 
         {activeTab === "referral" ? (
           <>
-            {/* Invite Info Card (live data) */}
-            {!loading && <ReferralInviteCard data={displayData} />}
-
-            {/* Bonus Card */}
+            {/* Bonus Card with live data */}
             <GameCard className="p-3 flex flex-col gap-3">
               <div>
                 <span className="text-white/70 text-xs">Pending Bonus</span>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[#f5c842] text-xl font-bold">₹0</span>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
-                    Today's Earnings+₹0
-                  </span>
+                  <span className="text-[#f5c842] text-xl font-bold">₹{unclaimedBonus.toFixed(2)}</span>
                 </div>
               </div>
               <div className="w-full h-px" style={{ backgroundColor: "rgba(255,255,255,0.1)" }} />
               <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
                 <div>
                   <span className="text-white/70 text-xs">Claimable Bonus</span>
-                  <p className="text-white text-base font-bold">₹0</p>
+                  <p className="text-white text-base font-bold">₹{unclaimedBonus.toFixed(2)}</p>
                 </div>
-                <GameButton variant="gold" size="sm" className="w-36 rounded-md">Claim Now</GameButton>
+                <GameButton
+                  variant="gold"
+                  size="sm"
+                  className="w-36 rounded-md"
+                  onClick={handleClaimBonus}
+                  disabled={claiming || unclaimedBonus <= 0}
+                >
+                  {claiming ? "Claiming..." : "Claim Now"}
+                </GameButton>
               </div>
             </GameCard>
 
@@ -373,23 +467,31 @@ const Earn = () => {
           </>
         ) : (
           <>
-            {/* Commission Card */}
+            {/* Commission Bonus Card with live data */}
             <GameCard className="p-3 flex flex-col gap-3">
               <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
                 <div>
                   <span className="text-white/70 text-xs">Claimable Bonus</span>
-                  <p className="text-[#f5c842] text-xl font-bold mt-0.5">₹0</p>
+                  <p className="text-[#f5c842] text-xl font-bold mt-0.5">₹{unclaimedBonus.toFixed(2)}</p>
                 </div>
-               <GameButton variant="gold" size="sm" className="w-36 rounded-md">Claim Now</GameButton>
+                <GameButton
+                  variant="gold"
+                  size="sm"
+                  className="w-36 rounded-md"
+                  onClick={handleClaimBonus}
+                  disabled={claiming || unclaimedBonus <= 0}
+                >
+                  {claiming ? "Claiming..." : "Claim Now"}
+                </GameButton>
               </div>
               <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ backgroundColor: "rgb(112, 28, 50)" }}>
                 <div>
                   <span className="text-white/70 text-xs">Pending Bonus</span>
-                  <p className="text-[#f5c842] text-base font-bold mt-0.5">₹0</p>
+                  <p className="text-[#f5c842] text-base font-bold mt-0.5">₹{unclaimedBonus.toFixed(2)}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-white/70 text-xs">Next Payout Time</span>
-                  <p className="text-[#f5c842] text-base font-bold mt-0.5">06:15:36</p>
+                  <span className="text-white/70 text-xs">Total Records</span>
+                  <p className="text-[#f5c842] text-base font-bold mt-0.5">{commTotal}</p>
                 </div>
               </div>
             </GameCard>
@@ -411,29 +513,15 @@ const Earn = () => {
                   <span className="text-white font-bold text-sm">Level 1 Team</span>
                   <div className="flex items-center gap-1.5">
                     <span className="text-white text-xs">👤 0</span>
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>
-                      <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
-                      +0
-                    </span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+0</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-3 py-2">
-                  <div>
-                    <span className="text-white/60 text-[10px]">Commission</span>
-                    <p className="text-white text-sm font-bold">₹0</p>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-white/60 text-[10px]">Deposits</span>
-                    <p className="text-white text-sm font-bold">= ₹0</p>
-                  </div>
+                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹0</p></div>
+                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹0</p></div>
                   <div className="flex items-center gap-1">
-                    <div>
-                      <span className="text-white/60 text-[10px]">Ratio</span>
-                      <p className="text-white text-sm font-bold">× 5%</p>
-                    </div>
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30">
-                      <span className="text-white/60 text-[8px]">?</span>
-                    </div>
+                    <div><span className="text-white/60 text-[10px]">Ratio</span><p className="text-white text-sm font-bold">× 5%</p></div>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30"><span className="text-white/60 text-[8px]">?</span></div>
                   </div>
                 </div>
               </div>
@@ -444,29 +532,15 @@ const Earn = () => {
                   <span className="text-white font-bold text-sm">Level 2 Team</span>
                   <div className="flex items-center gap-1.5">
                     <span className="text-white text-xs">👤 0</span>
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>
-                      <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
-                      +0
-                    </span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+0</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-3 py-2">
-                  <div>
-                    <span className="text-white/60 text-[10px]">Commission</span>
-                    <p className="text-white text-sm font-bold">₹0</p>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-white/60 text-[10px]">Deposits</span>
-                    <p className="text-white text-sm font-bold">= ₹0</p>
-                  </div>
+                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹0</p></div>
+                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹0</p></div>
                   <div className="flex items-center gap-1">
-                    <div>
-                      <span className="text-white/60 text-[10px]">Ratio</span>
-                      <p className="text-white text-sm font-bold">× 1%</p>
-                    </div>
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30">
-                      <span className="text-white/60 text-[8px]">?</span>
-                    </div>
+                    <div><span className="text-white/60 text-[10px]">Ratio</span><p className="text-white text-sm font-bold">× 1%</p></div>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30"><span className="text-white/60 text-[8px]">?</span></div>
                   </div>
                 </div>
               </div>
@@ -477,29 +551,15 @@ const Earn = () => {
                   <span className="text-white font-bold text-sm">Level 3 Team</span>
                   <div className="flex items-center gap-1.5">
                     <span className="text-white text-xs">👤 0</span>
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>
-                      <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
-                      +0
-                    </span>
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium" style={{ backgroundColor: "rgb(5, 121, 45)" }}>+0</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-3 py-2">
-                  <div>
-                    <span className="text-white/60 text-[10px]">Commission</span>
-                    <p className="text-white text-sm font-bold">₹0</p>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-white/60 text-[10px]">Deposits</span>
-                    <p className="text-white text-sm font-bold">= ₹0</p>
-                  </div>
+                  <div><span className="text-white/60 text-[10px]">Commission</span><p className="text-white text-sm font-bold">₹0</p></div>
+                  <div className="text-center"><span className="text-white/60 text-[10px]">Deposits</span><p className="text-white text-sm font-bold">= ₹0</p></div>
                   <div className="flex items-center gap-1">
-                    <div>
-                      <span className="text-white/60 text-[10px]">Ratio</span>
-                      <p className="text-white text-sm font-bold">× 0.5%</p>
-                    </div>
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30">
-                      <span className="text-white/60 text-[8px]">?</span>
-                    </div>
+                    <div><span className="text-white/60 text-[10px]">Ratio</span><p className="text-white text-sm font-bold">× 0.5%</p></div>
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center border border-white/30"><span className="text-white/60 text-[8px]">?</span></div>
                   </div>
                 </div>
               </div>
@@ -544,42 +604,38 @@ const Earn = () => {
               </div>
             </GameCard>
 
-            {/* Payout Records */}
-            <GameCard className="p-3 flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z" fill="#AC4059"/>
-                  <path d="M5.73329 11.0669C6.32239 11.0669 6.79996 10.5894 6.79996 10.0003C6.79996 9.41117 6.32239 8.93359 5.73329 8.93359C5.14419 8.93359 4.66663 9.41117 4.66663 10.0003C4.66663 10.5894 5.14419 11.0669 5.73329 11.0669Z" stroke="#FA829D" strokeLinejoin="round"/>
-                  <path d="M14.8 5.73317C15.0946 5.73317 15.3333 5.49439 15.3333 5.19984C15.3333 4.90529 15.0946 4.6665 14.8 4.6665C14.5054 4.6665 14.2667 4.90529 14.2667 5.19984C14.2667 5.49439 14.5054 5.73317 14.8 5.73317Z" stroke="#FA829D" strokeLinejoin="round"/>
-                  <path d="M14.7999 10.533C15.0945 10.533 15.3332 10.2942 15.3332 9.99964C15.3332 9.70508 15.0945 9.46631 14.7999 9.46631C14.5053 9.46631 14.2666 9.70508 14.2666 9.99964C14.2666 10.2942 14.5053 10.533 14.7999 10.533Z" stroke="#FA829D" strokeLinejoin="round"/>
-                  <path d="M14.7999 15.3338C15.0945 15.3338 15.3332 15.095 15.3332 14.8004C15.3332 14.5059 15.0945 14.2671 14.7999 14.2671C14.5053 14.2671 14.2666 14.5059 14.2666 14.8004C14.2666 15.095 14.5053 15.3338 14.7999 15.3338Z" stroke="#FA829D" strokeLinejoin="round"/>
-                  <path d="M12.1332 5.20068H8.93323V14.8007H12.1332" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M6.79999 10H12.1333" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span className="text-white font-bold text-sm">Payout Records</span>
-              </div>
-
-              <div className="flex items-center justify-between px-2">
-                <span className="text-white/70 text-xs font-medium">Date</span>
-                <span className="text-white/70 text-xs font-medium">Total</span>
-              </div>
-
-              <div className="flex flex-col items-center justify-center py-6 gap-2">
-                <img src={emptyBox} alt="No records" className="w-20 h-20 object-contain opacity-50" />
-                <span className="text-[#FA829D] text-sm">No commission records</span>
-              </div>
-            </GameCard>
+            {/* Commission Payout Records */}
+            <CommissionRecordsCard
+              records={commissionRecords}
+              loadMore={() => fetchCommissions(commPage + 1, true)}
+              hasMore={commHasMore}
+              loadingMore={commLoadingMore}
+            />
           </>
         )}
       </div>
 
-      {/* Fixed bottom Invite Friends bar */}
+      {/* Fixed bottom bar with invite URL + Invite Friends button */}
       <div
-        className="fixed bottom-12 pb-12 left-0 right-0 z-30 px-4 py-3 flex items-center justify-center"
+        className="fixed bottom-12 pb-12 left-0 right-0 z-30 px-4 pt-2 pb-3 flex flex-col items-center gap-2"
         style={{
           backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)",
         }}
       >
+        {/* Invite URL row */}
+        {inviteUrl && (
+          <div className="w-full flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ backgroundColor: "rgba(0,0,0,0.3)" }}>
+            <span className="text-white/60 text-[10px] truncate flex-1 font-mono">{inviteUrl}</span>
+            <button
+              onClick={handleCopyUrl}
+              className="flex items-center gap-1 px-2 py-1 rounded text-[10px] font-medium text-white shrink-0"
+              style={{ backgroundColor: "rgb(177, 44, 73)" }}
+            >
+              <Copy size={10} /> Copy
+            </button>
+          </div>
+        )}
+
         <GameButton className="w-full rounded-full text-base" size="lg" variant="gold" onClick={handleShareInvite}>
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block shrink-0">
             <path d="M9.16667 1.83398L15.1667 7.83398L9.16667 13.5007V9.83398C4.5 9.83398 2.5 14.834 2.5 14.834C2.5 9.16732 4.16667 5.50065 9.16667 5.50065V1.83398Z" stroke="#7B1C0C" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
