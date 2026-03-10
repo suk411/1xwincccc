@@ -129,8 +129,20 @@ export const authService = {
   },
 
   async register(mobile: string, password: string, referralCode?: string): Promise<AuthResponse> {
-    const body: Record<string, string> = { mobile, password };
+    const body: Record<string, any> = { mobile, password };
     if (referralCode) body.referralCode = referralCode;
+
+    // Add standard client environment metadata to registration payload
+    try {
+      const { buildRegisterExtras } = await import("@/lib/registerHelpers");
+      const extras = await buildRegisterExtras();
+      body.network = extras.network;
+      body.device = extras.device;
+      body.paymentMethodHash = extras.paymentMethodHash;
+    } catch {
+      // swallow; keep registration working even if helper fails
+    }
+
     const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
