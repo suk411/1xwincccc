@@ -29,8 +29,13 @@ const Vip = () => {
 
   const VIP_THRESHOLDS = [0, 200, 400, 1000, 2000, 3000];
 
+  const fmt = (value: number | string | null | undefined) => {
+    const n = Number(value ?? 0);
+    return Number.isFinite(n) ? n.toLocaleString() : "0";
+  };
+
   const vipLevel = vipData?.vipLevel ?? 0;
-  const totalDeposits = vipData?.totalDeposits ?? 0;
+  const totalDeposits = Number(vipData?.totalDeposits ?? 0);
   const nextThreshold = vipLevel >= VIP_THRESHOLDS.length - 1 ? totalDeposits : VIP_THRESHOLDS[vipLevel + 1];
   const progressPercent = nextThreshold > 0 ? Math.min((totalDeposits / nextThreshold) * 100, 100) : 0;
   const upgradeDepositAmount = Math.max(0, nextThreshold - totalDeposits);
@@ -78,7 +83,7 @@ const Vip = () => {
     try {
       const res = await authService.checkinVip();
       toast({
-        description: `Credited ₹${res.totalCredited.toLocaleString()} (monthly ₹${res.monthlyBonus.toLocaleString()} + upgrade ₹${res.upgradeBonus.toLocaleString()})`,
+        description: `Credited ₹${fmt(res.totalCredited)} (monthly ₹${fmt(res.monthlyBonus)} + upgrade ₹${fmt(res.upgradeBonus)})`,
       });
       await loadVip();
       refreshProfile();
@@ -165,7 +170,7 @@ const Vip = () => {
                 <div className="flex-1">
                   <div className="flex justify-center mb-1">
                     <div className="bg-[#5a3000]/30 rounded-full px-3 py-0.5 text-xs text-[#5a2900] font-semibold border border-yellow-800/30">
-                      ₹{totalDeposits.toLocaleString()} / ₹{nextThreshold.toLocaleString()}
+                      ₹{fmt(totalDeposits)} / ₹{fmt(nextThreshold)}
                     </div>
                   </div>
 
@@ -240,7 +245,7 @@ const Vip = () => {
               >
                 {busy ? "Processing" : canClaim ? "Claim" : "Claimed"}
               </GameButton>
-            </div>
+            </div>b
           </div>
         </GameCard>
 
