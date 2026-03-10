@@ -23,7 +23,7 @@ export interface BalanceResponse {
 
 export interface VipResponse {
   status: string;
-  vipLevel: number;
+  vipLevel: number | string;
   vipSince: string;
   totalDeposits: number;
   withdrawDailyLimit: number;

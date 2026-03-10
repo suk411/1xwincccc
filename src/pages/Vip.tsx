@@ -15,8 +15,9 @@ import vipGoldCardBg from "@/assets/vip/vip-gold-card-bg.png";
 import upgradeIcon from "@/assets/vip/upgrade-icon.png";
 import checkinIcon from "@/assets/vip/checkin-icon.png";
 import svipIcon from "@/assets/vip/svip-icon.png";
-import backArrow from "@/assets/icons/close-icon.png";
 import svipBgIcon from "@/assets/vip/Svip-bg-icon.png";
+import backArrow from "@/assets/icons/close-icon.png";
+
 
 
 const Vip = () => {
@@ -36,11 +37,31 @@ const Vip = () => {
     return Number.isFinite(n) ? n.toLocaleString() : "0";
   };
 
-  const vipLevel = vipData?.vipLevel ?? 0;
+  const vipLevelRaw = vipData?.vipLevel ?? 0;
+  const vipLevelStr = String(vipLevelRaw);
+  const isSvip = vipLevelStr.toUpperCase().startsWith("SVIP");
+
+  const vipLevelIndex = isSvip
+    ? VIP_THRESHOLDS.length - 1
+    : Math.min(
+        VIP_THRESHOLDS.length - 1,
+        Math.max(0, Number(vipLevelStr.replace(/\D/g, "")) || 0),
+      );
+
+  const displayVipLevel = isSvip ? vipLevelStr : `VIP ${vipLevelIndex}`;
+  const nextLevelDisplay = isSvip
+    ? displayVipLevel
+    : vipLevelIndex + 1 >= VIP_THRESHOLDS.length
+    ? "SVIP 1"
+    : `VIP ${vipLevelIndex + 1}`;
+
   const totalDeposits = Number(vipData?.totalDeposits ?? 0);
-  const nextThreshold = vipLevel >= VIP_THRESHOLDS.length - 1 ? totalDeposits : VIP_THRESHOLDS[vipLevel + 1];
+  const svipThreshold = VIP_THRESHOLDS[VIP_THRESHOLDS.length - 1];
+  const nextThreshold = isSvip ? svipThreshold : VIP_THRESHOLDS[Math.min(vipLevelIndex + 1, VIP_THRESHOLDS.length - 1)];
+
   const progressPercent = nextThreshold > 0 ? Math.min((totalDeposits / nextThreshold) * 100, 100) : 0;
   const upgradeDepositAmount = Math.max(0, nextThreshold - totalDeposits);
+  const svipDepositAmount = Math.max(0, svipThreshold - totalDeposits);
 
   const canClaim = Boolean(vipData?.canClaimMonthly || vipData?.canClaimUpgrade);
 
@@ -65,6 +86,25 @@ const Vip = () => {
     setBusy(true);
     try {
       const res = await authService.deposit(upgradeDepositAmount);
+      if (res.paymentUrl) {
+        navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
+        toast({ description: "Opening payment..." });
+      } else {
+        toast({ description: res.msg || "Deposit initiated", variant: "destructive" });
+      }
+      refreshProfile();
+    } catch (err: any) {
+      toast({ description: err?.message || "Deposit failed", variant: "destructive" });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleBecomeSvip = async () => {
+    if (busy || svipDepositAmount <= 0) return;
+    setBusy(true);
+    try {
+      const res = await authService.deposit(svipDepositAmount);
       if (res.paymentUrl) {
         navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
         toast({ description: "Opening payment..." });
@@ -140,7 +180,10 @@ const Vip = () => {
 
           {/* GOLD CARD */}
           <div className=" absolute  bottom-0  mt-16 w-full">
-            <img src={vipGoldCardBg} className="absolute inset-0 p-2 rounded-lg w-full h-full object-cover" />
+            <img
+              src={vipGoldCardBg}
+              className="absolute inset-0 p-2 rounded-lg w-full h-full object-cover"
+            />
 
             <div className="relative z-10 flex flex-col">
 
@@ -156,9 +199,11 @@ const Vip = () => {
                   </p>
 
                   <div className="relative w-16 h-6 mt-1">
-                    <img src={vipBadge} className="w-full h-full object-contain" />
-                    <span className="absolute inset-0 flex items-center justify-center pl-3 pt-1 text-[10px] font-bold text-white">
-                     {vipLevel}
+                    <img src={isSvip ? svipBgIcon : vipBadge} className="w-full h-full object-contain" />
+                    <span  className={`absolute inset-0 flex items-center justify-center font-bold text-white
+      ${isSvip ? "text-[9px] pl-6 pt-[2px]" : "text-[10px] pl-3 pt-1"}
+    `} >
+                      {displayVipLevel}
                     </span>
                   </div>
                 
@@ -188,7 +233,7 @@ const Vip = () => {
                   onClick={handleUpgrade}
                   disabled={busy || upgradeDepositAmount <= 0}
                 >
-                  {busy ? "Processing" : upgradeDepositAmount > 0 ? "Upgrade" : "Maxed"}
+                  {busy ? "Processing" : upgradeDepositAmount > 0 ? "Upgrade" : "Highest"}
                 </GameButton>
 
               </div>
@@ -204,9 +249,11 @@ const Vip = () => {
           <div className="flex items-center p-3 gap-3">
             <img src={upgradeIcon} alt="Upgrade" className="w-14 h-12 object-contain flex-shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-white font-semibold text-sm truncate">Upgrade VIP{vipLevel} → VIP{Math.min(vipLevel + 1, 5)}</p>
+              <p className="text-white text-xs ">
+                Upgrade {displayVipLevel} → {nextLevelDisplay}
+              </p>
               <p className="text-gray-300 text-xs">
-                Deposit {upgradeDepositAmount > 0 ? `₹${upgradeDepositAmount.toLocaleString()}` : "—"} to reach next level
+                Deposit {upgradeDepositAmount > 0 ? `₹${upgradeDepositAmount.toLocaleString()}` : ""} 
               </p>
             </div>
             <GameButton
@@ -227,15 +274,15 @@ const Vip = () => {
             <div className="flex-1 min-w-0">
               <p className="text-white font-semibold text-sm truncate">VIP Bonus</p>
               <p className="text-gray-300 text-xs">
-                Upgrade bonus <span className="text-yellow-400 ">₹{(vipData?.pendingUpgradeBonus ?? 0).toLocaleString()}</span>
+                Upgrade bonus <span className="text-yellow-400 ">₹{fmt(vipData?.pendingUpgradeBonus)}</span>
               </p>
               <p className="text-gray-300 text-xs">
-                Monthly bonus <span className="text-yellow-400 ">₹{(vipData?.monthlyCheckinBonus ?? 0).toLocaleString()}</span>
+                Monthly bonus <span className="text-yellow-400 ">₹{fmt(vipData?.monthlyCheckinBonus)}</span>
               </p>
             </div>
             <div className="text-right flex flex-col items-end gap-1 flex-shrink-0 min-w-[70px]">
               <span className="text-yellow-400  ">
-                ₹{(((vipData?.pendingUpgradeBonus ?? 0) + (vipData?.monthlyCheckinBonus ?? 0)).toLocaleString())}
+                ₹{fmt((vipData?.pendingUpgradeBonus ?? 0) + (vipData?.monthlyCheckinBonus ?? 0))}
               </span>
               <GameButton
                 variant="mute"
@@ -259,8 +306,14 @@ const Vip = () => {
                 <p className="text-gray-300 text-xs">To get daily unlimited withdrwal </p>
               </div>
             </div>
-            <GameButton variant="red" size="sm" className="w-full h-10 mt-2" onClick={() => navigate("/bank")}>
-              Deposit
+            <GameButton
+              variant="red"
+              size="sm"
+              className="w-full h-10 mt-2"
+              onClick={handleBecomeSvip}
+              disabled={busy || isSvip}
+            >
+              {busy ? "Processing" : isSvip ? "Already SVIP" : `Deposit ₹${fmt(svipDepositAmount)}`}
             </GameButton>
           </div>
         </GameCard>
