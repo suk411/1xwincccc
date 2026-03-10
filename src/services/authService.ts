@@ -21,6 +21,28 @@ export interface BalanceResponse {
   balance: number;
 }
 
+export interface VipResponse {
+  status: string;
+  vipLevel: number;
+  vipSince: string;
+  totalDeposits: number;
+  withdrawDailyLimit: number;
+  monthlyCheckinBonus: number;
+  canClaimMonthly: boolean;
+  pendingUpgradeBonus: number;
+  canClaimUpgrade: boolean;
+}
+
+export interface VipCheckinResponse {
+  status: string;
+  userId: string;
+  monthlyBonus: number;
+  upgradeBonus: number;
+  totalCredited: number;
+  balanceAfter: number;
+  vipLevel: number;
+}
+
 export interface DepositOrder {
   [key: string]: any;
 }
@@ -139,6 +161,27 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch balance"));
+    return data;
+  },
+
+  async getVip(): Promise<VipResponse> {
+    const res = await fetch(`${API_BASE}/api/account/vip`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch VIP info"));
+    return data;
+  },
+
+  async checkinVip(): Promise<VipCheckinResponse> {
+    const res = await fetch(`${API_BASE}/api/account/vip/checkin`, {
+      method: "POST",
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Check-in failed"));
     return data;
   },
 

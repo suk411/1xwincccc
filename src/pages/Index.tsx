@@ -141,15 +141,15 @@ const Index = () => {
             <span className="text-white font-bold text-[14px]">{balance.toFixed(2)}</span>
           </div>
           <div className="flex items-center gap-4 mr-3">
-            <button className="flex flex-col items-center gap-0.5">
+            <button onClick={() => navigate("/bank")} className="flex flex-col items-center gap-0.5">
               <img src={depositIcon} alt="Deposit" className="w-5 h-5 object-contain" />
               <span className="text-[8px]">Deposit</span>
             </button>
-            <button className="flex flex-col items-center gap-0.5">
+            <button onClick={() => navigate("/bank")}  className="flex flex-col items-center gap-0.5">
               <img src={withdrawIcon} alt="Withdraw" className="w-5 h-5 object-contain" />
               <span className="text-[8px]">Withdraw</span>
             </button>
-            <button className="flex flex-col items-center gap-0.5">
+            <button onClick={() => navigate("/vip")} className="flex flex-col items-center gap-0.5">
               <img src={vipIcon} alt="VIP" className="w-5 h-5 object-contain" />
               <span className="text-[8px]">VIP</span>
             </button>

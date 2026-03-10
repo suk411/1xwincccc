@@ -145,7 +145,7 @@ const DepositRecords = () => {
               <div
                 key={orderId + idx}
                 className="rounded-xl overflow-hidden w-full max-w-full"
-                style={{ background: "linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)" }}
+                style={{ background: "linear-gradient(105deg, #5a0a1a 20%, #3a0611 40%, #4a0915 70%)" }}
               >
                 {/* Top row */}
                 <div className="flex items-center justify-between px-4 pt-4 pb-2">
