@@ -54,6 +54,7 @@ const AppContent = () => {
         <Route path="/community-event" element={<ProtectedRoute><CommunityEvent /></ProtectedRoute>} />
         <Route path="/bank/records" element={<ProtectedRoute><DepositRecords /></ProtectedRoute>} />
         <Route path="/payment" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
+        <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       
