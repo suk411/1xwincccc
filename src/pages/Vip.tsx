@@ -16,6 +16,8 @@ import upgradeIcon from "@/assets/vip/upgrade-icon.png";
 import checkinIcon from "@/assets/vip/checkin-icon.png";
 import svipIcon from "@/assets/vip/svip-icon.png";
 import backArrow from "@/assets/icons/close-icon.png";
+import svipBgIcon from "@/assets/vip/Svip-bg-icon.png";
+
 
 const Vip = () => {
   const navigate = useNavigate();
@@ -148,19 +150,18 @@ const Vip = () => {
                 </div>
 
                 <div>
+                
                   <p className="text-[#3a1a00] font-bold text-base">
-                    User 1xwin{userId || "..."}
+                    User{userId }   
                   </p>
 
                   <div className="relative w-16 h-6 mt-1">
                     <img src={vipBadge} className="w-full h-full object-contain" />
-                    <span className="absolute inset-0 flex items-center justify-center pl-3 text-[10px] font-bold text-white">
-                      VIP{vipLevel}
+                    <span className="absolute inset-0 flex items-center justify-center pl-3 pt-1 text-[10px] font-bold text-white">
+                     {vipLevel}
                     </span>
                   </div>
-                  {vipData?.vipSince ? (
-                    <p className="text-[10px] text-[#3a1a00] mt-1">Since {new Date(vipData.vipSince).toLocaleDateString()}</p>
-                  ) : null}
+                
                 </div>
               </div>
 
@@ -245,7 +246,7 @@ const Vip = () => {
               >
                 {busy ? "Processing" : canClaim ? "Claim" : "Claimed"}
               </GameButton>
-            </div>b
+            </div>
           </div>
         </GameCard>
 
@@ -322,7 +323,12 @@ const Vip = () => {
                 <div className="flex items-center gap-2">
 
                   {row.level.includes("SVIP") ? (
-                    <img src={svipIcon} className="w-7 h-7" />
+                    <div className="relative  w-18 h-8 "><img src={svipBgIcon} className="w-full h-full object-contain" />
+                     <span className="absolute inset-0 flex items-center justify-center pl-8 text-[9px] font-bold text-white">
+                       SVIP
+                      </span>
+                    </div>
+                    
                   ) : (
                     <div className="relative  w-16 h-6">
                       <img src={vipBadge} className="w-full h-full object-contain" />
