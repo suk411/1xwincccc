@@ -194,7 +194,7 @@ const Vip = () => {
 
                 <div>
                 
-                  <p className="text-[#3a1a00] font-bold text-base">
+                  <p className="text-[#502f15] font-bold text-base">
                     User{userId }   
                   </p>
 
@@ -215,16 +215,15 @@ const Vip = () => {
 
                 <div className="flex-1">
                   <div className="flex justify-center mb-1">
-                    <div className="bg-[#5a3000]/30 rounded-full px-3 py-0.5 text-xs text-[#5a2900] font-semibold border border-yellow-800/30">
+                    <div className="bg-red-800/70 rounded-sm px-3 py-0.5 text-xs text-[#e1e1e1]  font-semibold border border-black/60">
                       ₹{fmt(totalDeposits)} / ₹{fmt(nextThreshold)}
                     </div>
                   </div>
 
-                  <Progress
-                    value={progressPercent}
-                    className="h-2 bg-[#8a5a10]/40 [&>div]:bg-[#5a3000]"
-                  />
-                </div>
+     <Progress
+  value={progressPercent}
+  className="h-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,##a67a00_20%)]"
+/>        </div>
 
                 <GameButton
                   variant="gold"
