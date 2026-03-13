@@ -221,13 +221,25 @@ export const authService = {
     return data;
   },
 
+  getUserIdFromToken(): string {
+    try {
+      const token = this.getToken();
+      if (!token) return "";
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.userId || payload.user_id || payload.id || payload.sub || "";
+    } catch {
+      return "";
+    }
+  },
+
   async getProfile(): Promise<ProfileData> {
     const bal = await this.getBalance();
+    const userId = bal.userId || this.getUserIdFromToken();
     return {
       number: "",
       inviteCode: "",
       balance: bal.balance,
-      userId: bal.userId,
+      userId,
     };
   },
 
