@@ -36,6 +36,7 @@ const gameTabs: GameTab[] = [
   { label: "LIVE", value: "live", icon: <IconImg src={liveTabIcon} alt="Live" /> },
   { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
 ];
+import GameProviderSection from "@/components/GameProviderSection";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
@@ -194,6 +195,9 @@ const Index = () => {
             className="rounded-lg"
           />
         </div>
+
+        {/* Game Provider Sections */}
+        <GameProviderSection />
 
         {/* Text Card */}
         <div
