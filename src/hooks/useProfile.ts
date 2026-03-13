@@ -35,10 +35,17 @@ const refresh = async () => {
   notify();
   try {
     const profile = await authService.getProfile();
-    current = { balance: profile.balance, userId: profile.userId, loading: false };
+    const userId = profile.userId || authService.getUserIdFromToken();
+    current = { balance: profile.balance, userId, loading: false };
     localStorage.setItem(CACHE_KEY, JSON.stringify({ balance: current.balance, userId: current.userId }));
   } catch {
-    current = { ...current, loading: false };
+    // If API fails, still try to get userId from token
+    const tokenUserId = authService.getUserIdFromToken();
+    if (tokenUserId && !current.userId) {
+      current = { ...current, userId: tokenUserId, loading: false };
+    } else {
+      current = { ...current, loading: false };
+    }
   }
   fetching = false;
   notify();
