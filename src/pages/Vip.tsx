@@ -195,7 +195,7 @@ const Vip = () => {
                 <div>
                 
                   <p className="text-[#502f15] font-bold text-base">
-                    User{userId }   
+                    {userId ? `KING${userId}` : "Loading..."}
                   </p>
 
                   <div className="relative w-16 h-6 mt-1">
