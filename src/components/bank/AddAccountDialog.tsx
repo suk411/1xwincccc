@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CreditCard, User } from "lucide-react";
+import { Banknote, CreditCard, User } from "lucide-react";
 import {
   GameDialog,
   GameDialogContent,
@@ -10,9 +10,10 @@ import { GameInput } from "@/components/GameInput";
 import { GameButton } from "@/components/GameButton";
 
 export interface BankAccount {
-  name: string;
+  bankName: string;
+  bankCode: string;
   accountNumber: string;
-  ifsc: string;
+  accountHolder: string;
 }
 
 interface AddAccountDialogProps {
@@ -22,21 +23,25 @@ interface AddAccountDialogProps {
 }
 
 const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogProps) => {
+  const [accountHolder, setAccountHolder] = useState("");
+  const [bankName, setBankName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
-  const [ifsc, setIfsc] = useState("");
-  const [name, setName] = useState("");
-  const [errors, setErrors] = useState<{ account?: string; ifsc?: string; name?: string }>({});
+  const [bankCode, setBankCode] = useState("");
+  const [errors, setErrors] = useState<{ holder?: string; bankName?: string; account?: string; bankCode?: string }>({});
 
   const validate = () => {
     const e: typeof errors = {};
+    if (!accountHolder.trim()) {
+      e.holder = "Account holder name cannot be empty";
+    }
+    if (!bankName.trim()) {
+      e.bankName = "Bank name cannot be empty";
+    }
     if (!accountNumber || accountNumber.length < 16 || accountNumber.length > 18) {
       e.account = "Please enter the account number format is incorrect";
     }
-    if (!ifsc || ifsc.length !== 11) {
-      e.ifsc = "Please enter the IFSC format is incorrect";
-    }
-    if (!name.trim()) {
-      e.name = "Enter name cannot be empty";
+    if (!bankCode || bankCode.length !== 11) {
+      e.bankCode = "Please enter the IFSC / bank code format is incorrect";
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -44,10 +49,16 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
 
   const handleConfirm = () => {
     if (validate()) {
-      onConfirm({ name: name.trim(), accountNumber, ifsc: ifsc.toUpperCase() });
+      onConfirm({
+        bankName: bankName.trim(),
+        bankCode: bankCode.toUpperCase(),
+        accountNumber,
+        accountHolder: accountHolder.trim(),
+      });
+      setAccountHolder("");
+      setBankName("");
       setAccountNumber("");
-      setIfsc("");
-      setName("");
+      setBankCode("");
       setErrors({});
     }
   };
@@ -58,31 +69,36 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
         <GameDialogBody>
           <div className="w-full flex flex-col gap-3">
             <GameInput
+              icon={<User size={16} />}
+              placeholder="Enter account holder name"
+              value={accountHolder}
+              onChange={(e) => setAccountHolder(e.target.value.slice(0, 100))}
+              hint={errors.holder}
+              error={!!errors.holder}
+            />
+            <GameInput
+              icon={<Banknote size={16} />}
+              placeholder="Enter bank name"
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value.slice(0, 100))}
+              hint={errors.bankName}
+              error={!!errors.bankName}
+            />
+            <GameInput
               icon={<CreditCard size={16} />}
               placeholder="Please enter the account number"
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, "").slice(0, 18))}
               hint={errors.account || "Enter 16 or 18-digit account"}
               error={!!errors.account}
-              
             />
             <GameInput
               icon={<CreditCard size={16} />}
-              placeholder="Please enter the IFSC"
-              value={ifsc}
-              onChange={(e) => setIfsc(e.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 11))}
-              hint={errors.ifsc || "Please enter 11 digits"}
-              error={!!errors.ifsc}
-              
-            />
-            <GameInput
-              icon={<User size={16} />}
-              placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value.slice(0, 100))}
-              hint={errors.name}
-              error={!!errors.name}
-              
+              placeholder="Please enter the IFSC / bank code"
+              value={bankCode}
+              onChange={(e) => setBankCode(e.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 11))}
+              hint={errors.bankCode || "Please enter 11 characters"}
+              error={!!errors.bankCode}
             />
           </div>
         </GameDialogBody>

@@ -69,6 +69,30 @@ export interface LedgerResponse {
   [key: string]: any;
 }
 
+export interface BankAccountDetails {
+  bankName: string;
+  bankCode: string;
+  accountNumber: string;
+  accountHolder: string;
+}
+
+export interface BindBankResponse {
+  status: string;
+  bindAccount: BankAccountDetails;
+}
+
+export interface WithdrawInfoResponse {
+  success: boolean;
+  data: {
+    bindAccount: BankAccountDetails | null;
+    balance: number;
+    canWithdrawAmount: number;
+    charge: number;
+    vip: number | string;
+    vipMeta?: Record<string, any> | null;
+  };
+}
+
 const TOKEN_KEY = "auth_token";
 
 const extractErrorMessage = (data: any, fallback: string): string => {
@@ -224,6 +248,28 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch ledger"));
+    return data;
+  },
+
+  async getWithdrawInfo(): Promise<WithdrawInfoResponse> {
+    const res = await fetch(`${API_BASE}/api/account/withdraw-info`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch withdraw info"));
+    return data;
+  },
+
+  async bindBankAccount(payload: BankAccountDetails): Promise<BindBankResponse> {
+    const res = await fetch(`${API_BASE}/api/account/bind-bank`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(payload),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to bind bank account"));
     return data;
   },
 

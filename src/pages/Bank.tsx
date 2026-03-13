@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/Loader";
 import { GameCard } from "@/components/GameCard";
@@ -9,13 +10,13 @@ import usdtLogo from "@/assets/bank/usdt-logo.png";
 import upayLogo from "@/assets/bank/upay-logo.png";
 import giftBox from "@/assets/bank/gift-box-small.png";
 import eventBg from "@/assets/bank/event-bg.png";
-import { useState } from "react";
 import { Info, ClipboardCheck, ChevronRight, Check, PlusCircle, Wallet, CreditCard, CheckCircle } from "lucide-react";
 import AddAccountDialog, { type BankAccount } from "@/components/bank/AddAccountDialog";
 import { GameButton } from "@/components/GameButton";
 import { useProfile } from "@/hooks/useProfile";
 import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
+import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
 
 const DEPOSIT_AMOUNTS = [200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
@@ -29,8 +30,11 @@ const Bank = () => {
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
   const [showAddAccount, setShowAddAccount] = useState(false);
-  const [savedAccounts, setSavedAccounts] = useState<BankAccount[]>([]);
-  const [selectedAccountIdx, setSelectedAccountIdx] = useState<number>(0);
+  const [showViewAccount, setShowViewAccount] = useState(false);
+  const [bindAccount, setBindAccount] = useState<BankAccount | null>(null);
+  const [withdrawInfo, setWithdrawInfo] = useState<import("@/services/authService").WithdrawInfoResponse | null>(null);
+  const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(false);
+  const [bindingAccount, setBindingAccount] = useState(false);
   const [paying, setPaying] = useState(false);
 
   const channels = [
@@ -38,6 +42,68 @@ const Bank = () => {
     { id: "usdt", label: "USDT", icon: usdtLogo },
     { id: "upay", label: "UPAY", icon: upayLogo },
   ];
+
+  const loadWithdrawInfo = async () => {
+    setLoadingWithdrawInfo(true);
+    try {
+      const info = await authService.getWithdrawInfo();
+      setWithdrawInfo(info);
+      if (info.data.bindAccount) {
+        setBindAccount(info.data.bindAccount);
+      } else {
+        setBindAccount(null);
+      }
+    } catch (err: any) {
+      toast({ description: err?.message || "Failed to load withdraw info", variant: "destructive" });
+    } finally {
+      setLoadingWithdrawInfo(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "withdraw") {
+      loadWithdrawInfo();
+    }
+  }, [activeTab]);
+
+  const handleBindAccount = async (account: BankAccount) => {
+    if (bindingAccount) return;
+    setBindingAccount(true);
+    try {
+      const res = await authService.bindBankAccount({
+        bankName: account.bankName,
+        bankCode: account.bankCode,
+        accountNumber: account.accountNumber,
+        accountHolder: account.accountHolder,
+      });
+      setBindAccount(res.bindAccount);
+      setWithdrawInfo((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: {
+                ...prev.data,
+                bindAccount: res.bindAccount,
+              },
+            }
+          : null,
+      );
+      toast({ description: "Bank account bound successfully" });
+      setShowAddAccount(false);
+    } catch (err: any) {
+      toast({ description: err?.message || "Failed to bind bank account", variant: "destructive" });
+    } finally {
+      setBindingAccount(false);
+    }
+  };
+
+  const withdrawBalance = withdrawInfo?.data.balance ?? balance;
+  const dailyRemaining = withdrawInfo?.data.canWithdrawAmount ?? -1;
+  const effectiveWithdrawable =
+    dailyRemaining === -1 ? withdrawBalance : Math.min(withdrawBalance, dailyRemaining);
+  const restrictedAmount = Math.max(0, withdrawBalance - effectiveWithdrawable);
+  const chargeRate = withdrawInfo?.data.charge ?? 0.0;
+  const feeAmount = selectedWithdrawAmount * chargeRate;
 
   const handlePay = async () => {
     if (paying) return;
@@ -60,7 +126,18 @@ const Bank = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
-      {paying && <Loader overlay label="Payment processing..." />}
+      {(paying || loadingWithdrawInfo || bindingAccount) && (
+        <Loader
+          overlay
+          label={
+            paying
+              ? "Payment processing..."
+              : bindingAccount
+              ? "Saving bank account..."
+              : "Loading withdraw info..."
+          }
+        />
+      )}
       {/* Top Header with red bg */}
       <div className="relative w-full h-12 flex items-center justify-between px-4">
         <img src={headerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
@@ -184,13 +261,13 @@ const Bank = () => {
             <GameCard className="p-3 flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-white text-xs">Withdrawable:</span>
-                <span className="text-white text-sm">₹{balance.toFixed(2)}</span>
+                <span className="text-white text-sm">₹{effectiveWithdrawable.toFixed(2)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-white text-xs">Restricted Amount:</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-primary text-xs">₹0</span>
+                <span className="text-primary text-xs">₹{restrictedAmount.toFixed(2)}</span>
                 <button className="text-primary text-xs underline">Turnover History</button>
               </div>
             </GameCard>
@@ -222,34 +299,47 @@ const Bank = () => {
 
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Withdrawal Account</span>
-              {savedAccounts.map((acc, idx) => (
+              {bindAccount ? (
+                <>
+                  <div
+                    className="flex items-center justify-between rounded-md px-3 py-2.5"
+                    style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <CreditCard size={18} className="text-primary" />
+                      <div className="flex flex-col">
+                        <span className="text-white text-sm">{bindAccount.bankName}</span>
+                        <span className="text-white text-xs">
+                          **** **** **** {bindAccount.accountNumber.slice(-4)}
+                        </span>
+                      </div>
+                    </div>
+                    <GameButton
+                      size="sm"
+                      variant="gold"
+                      className="text-xs px-3 h-8"
+                      onClick={() => setShowViewAccount(true)}
+                    >
+                      View
+                    </GameButton>
+                  </div>
+                  <p className="text-[11px] text-white/60">
+                    Bank account can only be bound once per user. Contact support to change details.
+                  </p>
+                </>
+              ) : (
                 <div
-                  key={idx}
-                  onClick={() => setSelectedAccountIdx(idx)}
+                  onClick={() => setShowAddAccount(true)}
                   className="flex items-center justify-between rounded-md px-3 py-2.5 cursor-pointer"
-                  style={{ backgroundColor: selectedAccountIdx === idx ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
+                  style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
                 >
                   <div className="flex items-center gap-2">
-                    <CreditCard size={18} className="text-primary" />
-                    <div className="flex flex-col">
-                      <span className="text-white text-sm">{acc.name}</span>
-                      <span className="text-white text-xs">{acc.accountNumber}</span>
-                    </div>
+                    <Wallet size={18} className="text-primary" />
+                    <span className="text-yellow-400 text-sm">Add Account</span>
                   </div>
-                  {selectedAccountIdx === idx && <CheckCircle size={20} className="text-green-500" />}
+                  <PlusCircle size={20} className="text-white" />
                 </div>
-              ))}
-              <div
-                onClick={() => setShowAddAccount(true)}
-                className="flex items-center justify-between rounded-md px-3 py-2.5 cursor-pointer"
-                style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
-              >
-                <div className="flex items-center gap-2">
-                  <Wallet size={18} className="text-primary" />
-                  <span className="text-yellow-400 text-sm">Add Account</span>
-                </div>
-                <PlusCircle size={20} className="text-white" />
-              </div>
+              )}
             </GameCard>
 
             <GameCard className="px-5 py-2.5 flex items-center justify-between">
@@ -257,7 +347,7 @@ const Bank = () => {
                 <Wallet size={16} className="text-white" />
                 <span className="text-white text-sm">Withdrawal Fee</span>
               </div>
-              <span className="text-primary text-sm">₹3.3</span>
+              <span className="text-primary text-sm">₹{feeAmount.toFixed(2)}</span>
             </GameCard>
           </>
         )}
@@ -304,12 +394,40 @@ const Bank = () => {
       <AddAccountDialog
         open={showAddAccount}
         onOpenChange={setShowAddAccount}
-        onConfirm={(account) => {
-          setSavedAccounts((prev) => [...prev, account]);
-          setSelectedAccountIdx(savedAccounts.length);
-          setShowAddAccount(false);
-        }}
+        onConfirm={handleBindAccount}
       />
+
+      {bindAccount && (
+        <GameDialog open={showViewAccount} onOpenChange={setShowViewAccount}>
+          <GameDialogContent title="Bank Account Details">
+            <GameDialogBody>
+              <div className="w-full flex flex-col gap-2 text-left text-sm">
+                <div className="flex justify-between">
+                  <span className="text-white/70">Account Holder</span>
+                  <span className="text-white font-medium">{bindAccount.accountHolder}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Bank Name</span>
+                  <span className="text-white font-medium">{bindAccount.bankName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Account Number</span>
+                  <span className="text-white font-medium">{bindAccount.accountNumber}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">IFSC / Bank Code</span>
+                  <span className="text-white font-medium">{bindAccount.bankCode}</span>
+                </div>
+              </div>
+            </GameDialogBody>
+            <GameDialogFooter>
+              <GameButton variant="gold" size="lg" className="flex-1" onClick={() => setShowViewAccount(false)}>
+                Close
+              </GameButton>
+            </GameDialogFooter>
+          </GameDialogContent>
+        </GameDialog>
+      )}
     </main>
   );
 };
