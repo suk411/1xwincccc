@@ -196,6 +196,9 @@ const Index = () => {
           />
         </div>
 
+        {/* Game Provider Sections */}
+        <GameProviderSection />
+
         {/* Text Card */}
         <div
           className="w-full rounded-xl p-4 mt-2"
