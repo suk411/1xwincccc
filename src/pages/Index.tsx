@@ -37,6 +37,9 @@ const gameTabs: GameTab[] = [
   { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
 ];
 import GameProviderSection from "@/components/GameProviderSection";
+import { GAME_LIST, gameService } from "@/services/gameService";
+import { toast } from "@/hooks/use-toast";
+import { refreshProfile } from "@/hooks/useProfile";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
