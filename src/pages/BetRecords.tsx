@@ -14,7 +14,6 @@ interface BetItem {
 }
 
 const BetRecords = () => {
-  const navigate = useNavigate();
   const [items, setItems] = useState<BetItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
