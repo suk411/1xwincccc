@@ -76,7 +76,23 @@ const Index = () => {
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
+  const [launchingGame, setLaunchingGame] = useState<number | null>(null);
   const { balance } = useProfile();
+
+  const handleGameLaunch = async (game: typeof GAME_LIST[0]) => {
+    setLaunchingGame(game.game_id);
+    try {
+      const result = await gameService.launch(game);
+      if (result.gameUrl) {
+        window.open(result.gameUrl, "_blank");
+      }
+      refreshProfile();
+    } catch (e: any) {
+      toast({ title: "Launch failed", description: e.message, variant: "destructive" });
+    } finally {
+      setLaunchingGame(null);
+    }
+  };
 
   useEffect(() => {
     const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
