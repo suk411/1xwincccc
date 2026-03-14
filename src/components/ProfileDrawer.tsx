@@ -73,6 +73,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
       navigate("/bank");
     } else if (label === "VIP") {
       navigate("/vip");
+    } else if (label === "Game Records") {
+      navigate("/bet-records");
     }
   };
 
