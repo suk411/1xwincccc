@@ -84,7 +84,7 @@ const Index = () => {
     try {
       const result = await gameService.launch(game);
       if (result.gameUrl) {
-        window.open(result.gameUrl, "_blank");
+        navigate("/game", { state: { gameUrl: result.gameUrl } });
       }
       refreshProfile();
     } catch (e: any) {
