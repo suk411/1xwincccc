@@ -215,6 +215,25 @@ const Index = () => {
           />
         </div>
 
+        {/* Featured Games */}
+        <div className="grid grid-cols-2 gap-3 mt-2">
+          {GAME_LIST.map((game) => (
+            <button
+              key={game.game_id}
+              disabled={launchingGame === game.game_id}
+              onClick={() => handleGameLaunch(game)}
+              className="flex flex-col items-center rounded-xl overflow-hidden cursor-pointer hover:scale-[1.03] active:scale-95 transition-transform disabled:opacity-50"
+              style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)", border: "1px solid rgba(255,180,50,0.25)" }}
+            >
+              <img src={game.logo} alt={game.name} className="w-full aspect-square object-cover" />
+              <div className="w-full py-2 px-2 text-center">
+                <p className="text-white text-xs font-bold truncate">{game.name}</p>
+                <p className="text-muted-foreground text-[10px]">{game.provider_code}</p>
+              </div>
+            </button>
+          ))}
+        </div>
+
         {/* Game Provider Sections */}
         <GameProviderSection />
 
