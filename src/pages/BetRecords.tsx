@@ -84,7 +84,7 @@ const BetRecords = () => {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-white font-medium">{gameName}</span>
-                    <span className={`font-bold text-lg ${isWin ? "text-green-400" : "text-red-400"}`}>
+                    <span className={`font-bold text-lg ${isWin ? "text-green-600" : "text-red-600"}`}>
                       {isWin ? "+" : ""}{profit.toFixed(2)}
                     </span>
                   </div>
