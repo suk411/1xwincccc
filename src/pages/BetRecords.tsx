@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import backBtn from "@/assets/icons/back-btn.png";
+import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 
 const API_BASE = "https://backend-ledger-0ra6.onrender.com";
@@ -15,7 +14,6 @@ interface BetItem {
 }
 
 const BetRecords = () => {
-  const navigate = useNavigate();
   const [items, setItems] = useState<BetItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -61,13 +59,7 @@ const BetRecords = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)" }}>
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3">
-        <button onClick={() => navigate(-1)} className="w-8 h-8 flex-shrink-0">
-          <img src={backBtn} alt="Back" className="w-full h-full object-contain" />
-        </button>
-        <h1 className="text-white font-bold text-lg">Game Records</h1>
-      </div>
+      <PageHeader title="Game Records" />
 
       {/* Content */}
       <div className="flex-1 px-4 pb-6">
