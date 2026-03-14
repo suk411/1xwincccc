@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import backBtn from "@/assets/icons/back-btn.png";
+import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 
 const API_BASE = "https://backend-ledger-0ra6.onrender.com";
