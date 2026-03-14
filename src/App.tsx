@@ -12,6 +12,7 @@ import CommunityEvent from "./pages/CommunityEvent";
 import DepositRecords from "./pages/DepositRecords";
 import PaymentGateway from "./pages/PaymentGateway";
 import GamePlay from "./pages/GamePlay";
+import BetRecords from "./pages/BetRecords";
 import Vip from "./pages/Vip";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
