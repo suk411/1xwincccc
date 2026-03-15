@@ -39,16 +39,9 @@ import responsibleGaming from "@/assets/partners/responsible-gaming.png";
 
 
 
-const [launchingGame, setLaunchingGame] = useState<string | null>(null);
 const IconImg = ({ src, alt }: { src: string; alt: string }) => (
   <img src={src} alt={alt} className="w-5 h-5 object-contain" />
 );
-
-
-const handleGameLaunch = (gameId: string) => {
-  setLaunchingGame(gameId);
-
-};
 
 
 const gameTabs: GameTab[] = [
