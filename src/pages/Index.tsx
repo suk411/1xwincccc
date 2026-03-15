@@ -224,12 +224,10 @@ const Index = () => {
           />
         </div>
 
-        
-// ✅ CORRECT
-<GameProviderSection 
-  launchingGame={launchingGame}
-  handleGameLaunch={handleGameLaunch}
-/>
+        <GameProviderSection 
+          launchingGame={launchingGame}
+          handleGameLaunch={handleGameLaunch}
+        />
 
         
 
