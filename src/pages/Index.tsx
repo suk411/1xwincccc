@@ -23,7 +23,7 @@ import fishTabIcon from "@/assets/tabs/fish-icon.png";
 import liveTabIcon from "@/assets/tabs/live-icon.png";
 import sportTabIcon from "@/assets/tabs/sport-icon.png";
 import GameProviderSection from "@/components/GameProviderSection";
-import { GAME_LIST, gameService } from "@/services/gameService";
+import { GAME_LIST, gameService, GameObject } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
 import googlePlayBadge from "@/assets/download/google-play.png";
@@ -39,16 +39,9 @@ import responsibleGaming from "@/assets/partners/responsible-gaming.png";
 
 
 
-const [launchingGame, setLaunchingGame] = useState<string | null>(null);
 const IconImg = ({ src, alt }: { src: string; alt: string }) => (
   <img src={src} alt={alt} className="w-5 h-5 object-contain" />
 );
-
-
-const handleGameLaunch = (gameId: string) => {
-  setLaunchingGame(gameId);
-
-};
 
 
 const gameTabs: GameTab[] = [
@@ -92,8 +85,22 @@ const Index = () => {
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
+  const [launchingGame, setLaunchingGame] = useState<number | null>(null);
   
   const { balance } = useProfile();
+
+  const handleGameLaunch = async (game: GameObject) => {
+    setLaunchingGame(game.game_id);
+    try {
+      const result = await gameService.launch(game);
+      await refreshProfile();
+      navigate("/game", { state: { gameUrl: result.gameUrl } });
+    } catch (e: any) {
+      toast({ title: "Launch failed", description: e.message, variant: "destructive" });
+    } finally {
+      setLaunchingGame(null);
+    }
+  };
 
 
   useEffect(() => {
@@ -217,12 +224,10 @@ const Index = () => {
           />
         </div>
 
-        
-// ✅ CORRECT
-<GameProviderSection 
-  launchingGame={launchingGame}
-  handleGameLaunch={handleGameLaunch}
-/>
+        <GameProviderSection 
+          launchingGame={launchingGame}
+          handleGameLaunch={handleGameLaunch}
+        />
 
         
 
