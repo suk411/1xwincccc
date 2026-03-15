@@ -85,8 +85,22 @@ const Index = () => {
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
+  const [launchingGame, setLaunchingGame] = useState<number | null>(null);
   
   const { balance } = useProfile();
+
+  const handleGameLaunch = async (game: GameObject) => {
+    setLaunchingGame(game.game_id);
+    try {
+      const result = await gameService.launch(game);
+      await refreshProfile();
+      navigate("/game", { state: { gameUrl: result.gameUrl } });
+    } catch (e: any) {
+      toast({ title: "Launch failed", description: e.message, variant: "destructive" });
+    } finally {
+      setLaunchingGame(null);
+    }
+  };
 
 
   useEffect(() => {
