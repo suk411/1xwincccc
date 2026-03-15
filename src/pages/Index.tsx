@@ -230,30 +230,69 @@ const Index = () => {
         />
 
         
+{/* Download App Section */}
 
-        {/* Download App Section */}
-        <div className="w-full rounded-xl mt-2 overflow-hidden">
-          <div className="relative flex flex-col items-center">
-            <h3 className="relative top-8 z-10">Download App</h3>
-            <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
-          </div>
+<div className="w-full rounded-xl mt-2 overflow-hidden">
 
-          <div className="flex items-end  px-4 pb-4 gap-11">
-            <div className="flex flex-col items-center gap-3 w-2/5 flex-shrink-0">
-              <img src={promoCharacter} alt="Promo" className="w-full object-contain" />
-              <button className="w-full">
-                <img src={appStoreBadge} alt="App Store" className="h-10 w-full object-contain" />
-              </button>
-              <button className="w-full">
-                <img src={googlePlayBadge} alt="Google Play" className="h-10 w-full object-contain" />
-              </button>
-            </div>
-            <div className="flex-1 flex  justify-center">
-              <img src={phoneMockup} alt="App Preview" className="w-full h-60 object-contain drop-shadow-2xl" />
-            </div>
-          </div>
-        </div>
+{/* Header */}
+
+  <div className="relative flex flex-col items-center">
+    <h3 className="relative top-6 z-10">Download App</h3>
+    <img
+      src={headerGlow}
+      alt="Header glow"
+      className="w-1/2 opacity-60 mx-auto"
+    />
+    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
+  </div>
+
+{/* Content */}
+
+  <div className="grid grid-cols-2 gap-4 items-center px-3 pb-4">
+
+{/* Left Side */}
+<div className="flex flex-col items-center gap-3 w-full">
+
+  <img
+    src={promoCharacter}
+    alt="Promo"
+    className="w-4/5 object-contain"
+  />
+
+  <button className="w-3/4">
+    <img
+      src={appStoreBadge}
+      alt="App Store"
+      className="w-full object-contain"
+    />
+  </button>
+
+  <button className="w-3/4">
+    <img
+      src={googlePlayBadge}
+      alt="Google Play"
+      className="w-full object-contain"
+    />
+  </button>
+
+</div>
+
+{/* Right Side */}
+<div className="flex items-center justify-center w-full">
+
+  <img
+    src={phoneMockup}
+    alt="App Preview"
+    className="w-4/5 px-1  object-contain"
+  />
+
+</div>
+
+
+  </div>
+
+</div>
+
 
         {/* Official Partners Section */}
         <div className="w-full rounded-xl mt-2 overflow-hidden">
