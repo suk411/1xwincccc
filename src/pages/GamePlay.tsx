@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Loader from "@/components/Loader";
-import { X } from "lucide-react";
 
 const GamePlay = () => {
   const location = useLocation();
