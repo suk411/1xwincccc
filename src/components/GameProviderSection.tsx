@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { GameObject, GAME_LIST } from "../services/gameService";
 
 import jiliLogo from "@/assets/providers/jili-logo.png";
@@ -59,14 +59,14 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSe
 
         return (
           <div key={section.provider} className="rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
-            <div className="flex items-center justify-between px-3 py-2">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between px-2 py-2">
+              <div className="flex items-center ">
                 <img
                   src={providerLogos[section.provider] || pgLogo}
                   alt={section.displayName}
-                  className="w-6 h-6 object-contain"
+                  className="w-24 h-8 object-contain"
                 />
-                <span className="text-white text-sm font-bold">{section.displayName}</span>
+               
               </div>
               {totalPages > 1 && (
                 <div className="flex items-center gap-1.5">
@@ -96,24 +96,21 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSe
                   key={`${game.game_id}-${index}`}
                   disabled={launchingGame === game.game_id}
                   onClick={() => handleGameLaunch(game)}
-                  className="flex flex-col rounded-xl overflow-hidden cursor-pointer hover:scale-[1.03] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+                  className="flex flex-col rounded-xl overflow-hidden cursor-pointer hover:scale-[1.03] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group "
                   style={{
                     background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
                     border: "1px solid rgba(255,180,50,0.25)",
-                    height: "140px",
+                  
                   }}
                 >
-                  <div className="flex-1 w-full overflow-hidden">
+                  <div className="h-full w-full overflow-hidden">
                     <img
                       src={game.logo}
-                      alt={game.name}
-                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                    
+                      className="w-full h-full   object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   </div>
-                  <div className="w-full py-2 px-2 text-center bg-black/20">
-                    <p className="text-white text-xs font-bold truncate">{game.name}</p>
-                    <p className="text-muted-foreground text-[10px]">{game.provider_code}</p>
-                  </div>
+                 
                 </button>
               ))}
             </div>
