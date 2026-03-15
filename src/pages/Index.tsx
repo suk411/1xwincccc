@@ -1,4 +1,5 @@
 import PageLayout from "@/components/PageLayout";
+
 import { useNavigate } from "react-router-dom";
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
@@ -21,21 +22,6 @@ import casinoTabIcon from "@/assets/tabs/casino-icon.png";
 import fishTabIcon from "@/assets/tabs/fish-icon.png";
 import liveTabIcon from "@/assets/tabs/live-icon.png";
 import sportTabIcon from "@/assets/tabs/sport-icon.png";
-
-const IconImg = ({ src, alt }: { src: string; alt: string }) => (
-  <img src={src} alt={alt} className="w-5 h-5 object-contain" />
-);
-
-const gameTabs: GameTab[] = [
-  { label: "TOP", value: "top" },
-  { label: "All", value: "all", icon: <IconImg src={allTabIcon} alt="All" /> },
-  { label: "Recent", value: "recent", icon: <IconImg src={recentTabIcon} alt="Recent" /> },
-  { label: "Slots", value: "slots", icon: <IconImg src={slotsTabIcon} alt="Slots" /> },
-  { label: "Casino", value: "casino", icon: <IconImg src={casinoTabIcon} alt="Casino" /> },
-  { label: "FISH", value: "fish", icon: <IconImg src={fishTabIcon} alt="Fish" /> },
-  { label: "LIVE", value: "live", icon: <IconImg src={liveTabIcon} alt="Live" /> },
-  { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
-];
 import GameProviderSection from "@/components/GameProviderSection";
 import { GAME_LIST, gameService } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
@@ -50,6 +36,36 @@ import verifiedCertification from "@/assets/partners/verified-certification.png"
 import securityProtection from "@/assets/partners/security-protection.png";
 import telegramPartner from "@/assets/partners/telegram-icon.png";
 import responsibleGaming from "@/assets/partners/responsible-gaming.png";
+
+
+
+const [launchingGame, setLaunchingGame] = useState<string | null>(null);
+const IconImg = ({ src, alt }: { src: string; alt: string }) => (
+  <img src={src} alt={alt} className="w-5 h-5 object-contain" />
+);
+
+
+const handleGameLaunch = (gameId: string) => {
+  setLaunchingGame(gameId);
+
+};
+
+
+const gameTabs: GameTab[] = [
+  { label: "TOP", value: "top" },
+  { label: "All", value: "all", icon: <IconImg src={allTabIcon} alt="All" /> },
+  { label: "Recent", value: "recent", icon: <IconImg src={recentTabIcon} alt="Recent" /> },
+  { label: "Slots", value: "slots", icon: <IconImg src={slotsTabIcon} alt="Slots" /> },
+  { label: "Casino", value: "casino", icon: <IconImg src={casinoTabIcon} alt="Casino" /> },
+  { label: "FISH", value: "fish", icon: <IconImg src={fishTabIcon} alt="Fish" /> },
+  { label: "LIVE", value: "live", icon: <IconImg src={liveTabIcon} alt="Live" /> },
+  { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
+];
+
+
+
+
+
 
 const winMessages = [
   "Congratulations! User Sarah won ₹5000 on Slots.",
@@ -76,23 +92,9 @@ const Index = () => {
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
-  const [launchingGame, setLaunchingGame] = useState<number | null>(null);
+  
   const { balance } = useProfile();
 
-  const handleGameLaunch = async (game: typeof GAME_LIST[0]) => {
-    setLaunchingGame(game.game_id);
-    try {
-      const result = await gameService.launch(game);
-      if (result.gameUrl) {
-        navigate("/game", { state: { gameUrl: result.gameUrl } });
-      }
-      refreshProfile();
-    } catch (e: any) {
-      toast({ title: "Launch failed", description: e.message, variant: "destructive" });
-    } finally {
-      setLaunchingGame(null);
-    }
-  };
 
   useEffect(() => {
     const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
@@ -197,7 +199,7 @@ const Index = () => {
                   alt={tab.label}
                   className="w-16 h-16 object-contain"
                 />
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[5px] font-bold text-muted-foreground leading-tight text-center">
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[5px] font-bold  leading-tight text-center">
                   {tab.label}
                 </span>
               </div>
@@ -215,38 +217,14 @@ const Index = () => {
           />
         </div>
 
-        {/* Featured Games */}
-        <div className="grid grid-cols-2 gap-3 mt-2">
-          {GAME_LIST.map((game) => (
-            <button
-              key={game.game_id}
-              disabled={launchingGame === game.game_id}
-              onClick={() => handleGameLaunch(game)}
-              className="flex flex-col items-center rounded-xl overflow-hidden cursor-pointer hover:scale-[1.03] active:scale-95 transition-transform disabled:opacity-50"
-              style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)", border: "1px solid rgba(255,180,50,0.25)" }}
-            >
-              <img src={game.logo} alt={game.name} className="w-full aspect-square object-cover" />
-              <div className="w-full py-2 px-2 text-center">
-                <p className="text-white text-xs font-bold truncate">{game.name}</p>
-                <p className="text-muted-foreground text-[10px]">{game.provider_code}</p>
-              </div>
-            </button>
-          ))}
-        </div>
+        
+// ✅ CORRECT
+<GameProviderSection 
+  launchingGame={launchingGame}
+  handleGameLaunch={handleGameLaunch}
+/>
 
-        {/* Game Provider Sections */}
-        <GameProviderSection />
-
-        {/* Text Card */}
-        <div
-          className="w-full rounded-xl p-4 mt-2"
-          style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)" }}
-        >
-          <h3 className="text-white font-bold text-sm">Welcome to the Platform</h3>
-          <p className="text-white/60 text-xs mt-1">
-            Play exciting games, earn rewards, and withdraw your winnings instantly. Join millions of players winning big every day!
-          </p>
-        </div>
+        
 
         {/* Download App Section */}
         <div className="w-full rounded-xl mt-2 overflow-hidden">
@@ -256,7 +234,7 @@ const Index = () => {
             <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
           </div>
 
-          <div className="flex items-end px-4 pb-4 gap-3">
+          <div className="flex items-end  px-4 pb-4 gap-11">
             <div className="flex flex-col items-center gap-3 w-2/5 flex-shrink-0">
               <img src={promoCharacter} alt="Promo" className="w-full object-contain" />
               <button className="w-full">
@@ -266,8 +244,8 @@ const Index = () => {
                 <img src={googlePlayBadge} alt="Google Play" className="h-10 w-full object-contain" />
               </button>
             </div>
-            <div className="flex-1 flex justify-center">
-              <img src={phoneMockup} alt="App Preview" className="w-full max-h-[250px] object-contain drop-shadow-2xl" />
+            <div className="flex-1 flex  justify-center">
+              <img src={phoneMockup} alt="App Preview" className="w-full h-60 object-contain drop-shadow-2xl" />
             </div>
           </div>
         </div>

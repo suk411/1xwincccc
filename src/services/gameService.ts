@@ -26,7 +26,7 @@ export interface GameObject {
 
 export interface GameLaunchResponse {
   status: string;
-  gameId: string;
+ game: GameObject
   type: string;
   providerCode: string;
   gameUrl: string;
