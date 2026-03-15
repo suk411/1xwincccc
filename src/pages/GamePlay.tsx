@@ -1,13 +1,60 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Loader from "@/components/Loader";
-import backBtn from "@/assets/icons/back-btn.png";
+import { X } from "lucide-react";
 
 const GamePlay = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
   const gameUrl = (location.state as any)?.gameUrl || "";
+
+  const enterFullscreen = useCallback(async () => {
+    try {
+      const el = containerRef.current;
+      if (el && !document.fullscreenElement) {
+        await el.requestFullscreen();
+      }
+    } catch {
+      // Fullscreen not supported or denied — still works inline
+    }
+  }, []);
+
+  const handleExit = useCallback(async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      }
+    } catch {}
+    navigate(-1);
+  }, [navigate]);
+
+  // Enter fullscreen once iframe loads
+  useEffect(() => {
+    if (!loading) {
+      enterFullscreen();
+    }
+  }, [loading, enterFullscreen]);
+
+  // Prevent body scroll while game is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  // Listen for fullscreen exit via Escape key
+  useEffect(() => {
+    const onFsChange = () => {
+      if (!document.fullscreenElement) {
+        // User pressed Escape — stay on page but don't force re-enter
+      }
+    };
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
 
   if (!gameUrl) {
     navigate("/", { replace: true });
@@ -15,26 +62,31 @@ const GamePlay = () => {
   }
 
   return (
-    <main className="fixed inset-0 z-50 flex flex-col" style={{ backgroundColor: "#000" }}>
-      {/* Back button */}
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-50 flex flex-col bg-black w-screen h-screen"
+    >
+      {/* Floating exit button */}
       <button
-        onClick={() => navigate(-1)}
-        className="absolute top-3 left-3 z-20 w-9 h-9 flex items-center justify-center"
+        onClick={handleExit}
+        className="absolute top-3 right-3 z-30 w-9 h-9 rounded-full bg-black/70 border border-white/20 flex items-center justify-center backdrop-blur-sm hover:bg-white/20 transition-colors"
+        aria-label="Exit game"
       >
-        <img src={backBtn} alt="Back" className="w-full h-full object-contain" />
+        <X size={18} className="text-white" />
       </button>
 
       {loading && <Loader label="Loading game..." />}
 
       <iframe
         src={gameUrl}
-        className="flex-1 w-full border-0"
+        className="w-full h-full border-0 flex-1"
         style={{ display: loading ? "none" : "block" }}
         onLoad={() => setLoading(false)}
         allow="autoplay; fullscreen"
+        allowFullScreen
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"
       />
-    </main>
+    </div>
   );
 };
 
