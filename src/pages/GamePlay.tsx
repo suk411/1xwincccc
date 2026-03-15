@@ -68,10 +68,11 @@ const GamePlay = () => {
       {/* Floating exit button */}
       <button
         onClick={handleExit}
-        className="absolute top-3 left-3 z-30 w-10 h-10 flex items-center justify-center"
+        className="fixed z-[9999] flex items-center justify-center rounded-full border-2 border-yellow-400"
+        style={{ top: '2%', left: '2%', width: '8vw', height: '8vw', minWidth: 36, minHeight: 36, maxWidth: 56, maxHeight: 56 }}
         aria-label="Exit game"
       >
-        <img src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/backBtn.png" alt="Back" className="w-full h-full object-contain" />
+        <img src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/backBtn.png" alt="Back" className="w-full h-full object-contain rounded-full" />
       </button>
 
       {loading && <Loader label="Loading game..." />}
