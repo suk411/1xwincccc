@@ -40,21 +40,34 @@ const Promo = () => {
         {/* Game Withdraw Buttons */}
         <div className="mt-4 flex flex-col gap-3">
           <h3 className="text-white text-sm font-bold text-center">Withdraw Game Balance</h3>
-          {GAME_LIST.map((game) => (
+          {[
+            {
+              id: "je",
+              name: "JILI Wallet",
+              provider_code: "JE",
+              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/jiliwallet.png"
+            },
+            {
+              id: "pg",
+              name: "PG Wallet",
+              provider_code: "PG",
+              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
+            }
+          ].map((wallet) => (
             <button
-              key={game.game_id}
-              disabled={loading === game.provider_code}
-              onClick={() => handleWithdraw(game.provider_code, game.name)}
+              key={wallet.id}
+              disabled={loading === wallet.provider_code}
+              onClick={() => handleWithdraw(wallet.provider_code, wallet.name)}
               className="flex items-center gap-3 w-full rounded-xl p-3 transition-all active:scale-95 disabled:opacity-50"
               style={{ background: "linear-gradient(135deg, #5a0a1a 0%, #3a0611 100%)", border: "1px solid rgba(255,180,50,0.3)" }}
             >
-              <img src={game.logo} alt={game.name} className="w-12 h-12 rounded-lg object-cover" />
+              <img src={wallet.logo} alt={wallet.name} className="w-12 h-12 rounded-lg object-contain" />
               <div className="flex-1 text-left">
-                <p className="text-white text-sm font-bold">{game.name}</p>
-                <p className="text-muted-foreground text-xs">{game.provider_code}</p>
+                <p className="text-white text-sm font-bold">{wallet.name}</p>
+                <p className="text-muted-foreground text-xs">{wallet.provider_code}</p>
               </div>
               <div className="px-4 py-2 rounded-lg text-xs font-bold text-white" style={{ background: "linear-gradient(135deg, #d4a017, #b8860b)" }}>
-                {loading === game.provider_code ? "..." : "Withdraw"}
+                {loading === wallet.provider_code ? "..." : "Withdraw"}
               </div>
             </button>
           ))}
