@@ -36,6 +36,7 @@ const Bank = () => {
   const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(false);
   const [bindingAccount, setBindingAccount] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
 
   const channels = [
     { id: "upi", label: "UPI", icon: upiLogo },
