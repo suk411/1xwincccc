@@ -40,7 +40,7 @@ const BottomNav = () => {
         />
         
         {/* Nav items overlay */}
-        <div className="absolute inset-0 z-30 flex items-center justify-around px-1">
+        <div className="absolute inset-0 z-30 flex items-center justify-around px-[0.5%]">
           {/* Left nav items */}
           {navItems.slice(0, 2).map((item) => {
             const isActive = location.pathname === item.path;
@@ -48,19 +48,22 @@ const BottomNav = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className="flex flex-col items-center gap-0.5 py-1.5 px-3 min-w-[4rem] transition-all duration-200"
+                className="flex flex-col items-center gap-[0.4%] py-[2%] px-[3%] transition-all duration-200"
+                style={{ minWidth: '10%' }}
               >
                 <img
                   src={isActive ? item.activeIcon : item.inactiveIcon}
                   alt={item.label}
-                  className={`w-[1.75rem] h-[1.75rem] object-contain transition-all duration-200 ${
+                  className={`object-contain transition-all duration-200 ${
                     isActive ? "nav-glow scale-110" : "opacity-70"
                   }`}
+                  style={{ width: 'clamp(1.25rem, 4vw, 2.25rem)', height: 'clamp(1.25rem, 4vw, 2.25rem)' }}
                 />
                 <span
-                  className={`text-[0.75rem] transition-colors duration-200 ${
+                  className={`transition-colors duration-200 ${
                     isActive ? "text-primary text-glow" : "text-muted-foreground"
                   }`}
+                  style={{ fontSize: 'clamp(0.6rem, 1.8vw, 1rem)' }}
                 >
                   {item.label}
                 </span>
@@ -71,9 +74,10 @@ const BottomNav = () => {
           {/* Center spacer - just for text, gift is positioned separately */}
           <Link
             to="/promo"
-            className="flex flex-col items-center min-w-[5rem] pt-[1rem]"
+            className="flex flex-col items-center pt-[2%]"
+            style={{ minWidth: '12%' }}
           >
-            <span className="text-[0.9rem] leading-[1.35rem] text-primary text-glow">
+            <span className="text-primary text-glow" style={{ fontSize: 'clamp(0.7rem, 2.2vw, 1.2rem)' }}>
               GET ₹200
             </span>
           </Link>
@@ -85,19 +89,22 @@ const BottomNav = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className="flex flex-col items-center gap-0.5 py-1.5 px-3 min-w-[4rem] transition-all duration-200"
+                className="flex flex-col items-center gap-[0.4%] py-[2%] px-[3%] transition-all duration-200"
+                style={{ minWidth: '10%' }}
               >
                 <img
                   src={isActive ? item.activeIcon : item.inactiveIcon}
                   alt={item.label}
-                  className={`w-[1.75rem] h-[1.75rem] object-contain transition-all duration-200 ${
+                  className={`object-contain transition-all duration-200 ${
                     isActive ? "nav-glow scale-110" : "opacity-70"
                   }`}
+                  style={{ width: 'clamp(1.25rem, 4vw, 2.25rem)', height: 'clamp(1.25rem, 4vw, 2.25rem)' }}
                 />
                 <span
-                  className={`text-[0.75rem] transition-colors duration-200 ${
+                  className={`transition-colors duration-200 ${
                     isActive ? "text-primary text-glow" : "text-muted-foreground"
                   }`}
+                  style={{ fontSize: 'clamp(0.6rem, 1.8vw, 1rem)' }}
                 >
                   {item.label}
                 </span>
@@ -109,19 +116,22 @@ const BottomNav = () => {
         {/* Center gift + platform - positioned to overlap top edge of nav */}
         <Link
           to="/promo"
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10 top-[-0.75rem]"
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10"
+          style={{ top: '-3%' }}
         >
           {/* Platform background */}
           <img 
             src={navCenterPlatform} 
             alt="" 
-            className="absolute left-1/2 -translate-x-1/2 min-w-[12rem]  z-0 bottom-[-1.5rem]"
+            className="absolute left-1/2 -translate-x-1/2 z-0"
+            style={{ minWidth: 'clamp(8rem, 25vw, 16rem)', bottom: 'clamp(-1rem, -2vw, -2rem)' }}
           />
           {/* Gift box image */}
           <img 
             src={giftBox} 
             alt="GET ₹200" 
-            className="w-[4.5rem] h-[4.5rem] object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+            className="object-contain relative z-10 transition-transform duration-200 hover:scale-110"
+            style={{ width: 'clamp(3rem, 9vw, 6rem)', height: 'clamp(3rem, 9vw, 6rem)' }}
           />
         </Link>
       </div>
