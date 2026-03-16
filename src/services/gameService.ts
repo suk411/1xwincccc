@@ -26,7 +26,7 @@ export interface GameObject {
 
 export interface GameLaunchResponse {
   status: string;
- game: GameObject
+  game: GameObject
   type: string;
   providerCode: string;
   gameUrl: string;
@@ -142,6 +142,18 @@ export const GAME_LIST: GameObject[] = [
     logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/wild-bounty-showdown.png",
     provider_code: "PG",
     game_id: 135,
+  },
+  {
+    name: "Dragon Tiger",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/dravstig.png",
+    provider_code: "JE",
+    game_id: 123,
+  },
+  {
+    name: "Aviator",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/aviator.png",
+    provider_code: "JD",
+    game_id: 60010,
   },
 ];
 
