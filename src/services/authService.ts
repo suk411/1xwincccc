@@ -289,6 +289,28 @@ export const authService = {
     return data;
   },
 
+  async requestWithdraw(amount: number): Promise<WithdrawResponse> {
+    const res = await fetch(`${API_BASE}/api/account/withdraw`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ amount }),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Withdrawal failed"));
+    return data;
+  },
+
+  async getWithdrawals(page = 1, limit = 25): Promise<WithdrawalsResponse> {
+    const res = await fetch(`${API_BASE}/api/account/my-withdrawals?page=${page}&limit=${limit}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch withdrawals"));
+    return data;
+  },
+
   async getWithdrawInfo(): Promise<WithdrawInfoResponse> {
     const res = await fetch(`${API_BASE}/api/account/withdraw-info`, {
       headers: authHeaders(),

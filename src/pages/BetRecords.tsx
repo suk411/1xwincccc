@@ -24,7 +24,7 @@ const BetRecords = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${API_BASE}/api/game/bets?page=${p}&limit=${limit}`, {
+      const res = await fetch(`${API_BASE}/api/game/bets?page=${p}&limit=${limit}&site=JE&status=1`, {
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
