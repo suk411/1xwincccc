@@ -56,6 +56,7 @@ const AppContent = () => {
         <Route path="/promo" element={<ProtectedRoute><Promo /></ProtectedRoute>} />
         <Route path="/community-event" element={<ProtectedRoute><CommunityEvent /></ProtectedRoute>} />
         <Route path="/bank/records" element={<ProtectedRoute><DepositRecords /></ProtectedRoute>} />
+        <Route path="/bank/withdrawals" element={<ProtectedRoute><WithdrawalRecords /></ProtectedRoute>} />
         <Route path="/payment" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
         <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
         <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
