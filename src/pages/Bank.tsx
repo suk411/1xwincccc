@@ -410,10 +410,10 @@ const Bank = () => {
           className="rounded-md text-sm"
           size="lg"
           variant="gold"
-          onClick={activeTab === "deposit" ? handlePay : undefined}
-          disabled={paying}
+          onClick={activeTab === "deposit" ? handlePay : handleWithdraw}
+          disabled={paying || withdrawing}
         >
-          {paying ? "Processing..." : activeTab === "deposit" ? "Pay" : "Withdraw"}
+          {paying ? "Processing..." : withdrawing ? "Processing..." : activeTab === "deposit" ? "Pay" : "Withdraw"}
         </GameButton>
       </div>
 
