@@ -50,7 +50,7 @@ const Bank = () => {
       const info = await authService.getWithdrawInfo();
       setWithdrawInfo(info);
       if (info.data.bindAccount) {
-        setBindAccount(info.data.bindAccount);
+        setBindAccount(info.data.bindAccount as BankAccount);
       } else {
         setBindAccount(null);
       }
@@ -77,19 +77,20 @@ const Bank = () => {
         accountNumber: account.accountNumber,
         accountHolder: account.accountHolder,
       });
-      setBindAccount(res.bindAccount);
+      setBindAccount((res.bindAccount as BankAccount) || account);
       setWithdrawInfo((prev) =>
         prev
           ? {
-              ...prev,
-              data: {
-                ...prev.data,
-                bindAccount: res.bindAccount,
-              },
-            }
+            ...prev,
+            data: {
+              ...prev.data,
+              isBankBound: true,
+              bindAccount: (res.bindAccount as BankAccount) || account,
+            },
+          }
           : null,
       );
-      toast({ description: "Bank account bound successfully" });
+      toast({ description: res.msg || "Bank account bound successfully" });
       setShowAddAccount(false);
     } catch (err: any) {
       toast({ description: err?.message || "Failed to bind bank account", variant: "destructive" });
@@ -127,7 +128,7 @@ const Bank = () => {
 
   const handleWithdraw = async () => {
     if (withdrawing) return;
-    if (!bindAccount) {
+    if (!withdrawInfo?.data?.isBankBound && !bindAccount) {
       toast({ description: "Please bind a bank account first", variant: "destructive" });
       return;
     }
@@ -157,10 +158,10 @@ const Bank = () => {
             paying
               ? "Payment processing..."
               : withdrawing
-              ? "Processing withdrawal..."
-              : bindingAccount
-              ? "Saving bank account..."
-              : "Loading withdraw info..."
+                ? "Processing withdrawal..."
+                : bindingAccount
+                  ? "Saving bank account..."
+                  : "Loading withdraw info..."
           }
         />
       )}
@@ -325,7 +326,7 @@ const Bank = () => {
 
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Withdrawal Account</span>
-              {bindAccount ? (
+              {withdrawInfo?.data?.isBankBound ? (
                 <>
                   <div
                     className="flex items-center justify-between rounded-md px-3 py-2.5"
@@ -334,10 +335,12 @@ const Bank = () => {
                     <div className="flex items-center gap-2">
                       <CreditCard size={18} className="text-primary" />
                       <div className="flex flex-col">
-                        <span className="text-white text-sm">{bindAccount.bankName}</span>
-                        <span className="text-white text-xs">
-                          **** **** **** {bindAccount.accountNumber.slice(-4)}
-                        </span>
+                        <span className="text-white text-sm">{withdrawInfo?.data?.bindAccount?.bankName || bindAccount?.bankName || "Linked Bank"}</span>
+                        {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber) && (
+                          <span className="text-white text-xs">
+                            **** **** **** {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber || "").slice(-4)}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <GameButton
@@ -423,26 +426,26 @@ const Bank = () => {
         onConfirm={handleBindAccount}
       />
 
-      {bindAccount && (
+      {withdrawInfo?.data?.isBankBound && (
         <GameDialog open={showViewAccount} onOpenChange={setShowViewAccount}>
           <GameDialogContent title="Bank Account Details">
             <GameDialogBody>
               <div className="w-full flex flex-col gap-2 text-left text-sm">
                 <div className="flex justify-between">
                   <span className="text-white/70">Account Holder</span>
-                  <span className="text-white font-medium">{bindAccount.accountHolder}</span>
+                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.accountHolder || bindAccount?.accountHolder) ?? "-"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/70">Bank Name</span>
-                  <span className="text-white font-medium">{bindAccount.bankName}</span>
+                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.bankName || bindAccount?.bankName) ?? "-"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/70">Account Number</span>
-                  <span className="text-white font-medium">{bindAccount.accountNumber}</span>
+                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber) ?? "-"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/70">IFSC / Bank Code</span>
-                  <span className="text-white font-medium">{bindAccount.bankCode}</span>
+                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.bankCode || bindAccount?.bankCode) ?? "-"}</span>
                 </div>
               </div>
             </GameDialogBody>

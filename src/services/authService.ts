@@ -78,13 +78,15 @@ export interface BankAccountDetails {
 
 export interface BindBankResponse {
   status: string;
-  bindAccount: BankAccountDetails;
+  msg?: string;
+  bindAccount?: BankAccountDetails;
 }
 
 export interface WithdrawInfoResponse {
   success: boolean;
   data: {
-    bindAccount: BankAccountDetails | null;
+    bindAccount?: BankAccountDetails | null;
+    isBankBound?: boolean;
     balance: number;
     withdrawable: number;
     vipLimit: number;
