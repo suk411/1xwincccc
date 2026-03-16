@@ -86,11 +86,37 @@ export interface WithdrawInfoResponse {
   data: {
     bindAccount: BankAccountDetails | null;
     balance: number;
+    withdrawable: number;
+    vipLimit: number;
+    maxWithdrawByVip: number;
     canWithdrawAmount: number;
     charge: number;
     vip: number | string;
     vipMeta?: Record<string, any> | null;
   };
+}
+
+export interface WithdrawResponse {
+  status: string;
+  msg?: string;
+  newBalance: number;
+  newWithdrawable: number;
+}
+
+export interface WithdrawalRecord {
+  userId: number;
+  type: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface WithdrawalsResponse {
+  status: string;
+  page: number;
+  limit: number;
+  total: number;
+  items: WithdrawalRecord[];
 }
 
 const TOKEN_KEY = "auth_token";
@@ -260,6 +286,28 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch ledger"));
+    return data;
+  },
+
+  async requestWithdraw(amount: number): Promise<WithdrawResponse> {
+    const res = await fetch(`${API_BASE}/api/account/withdraw`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ amount }),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Withdrawal failed"));
+    return data;
+  },
+
+  async getWithdrawals(page = 1, limit = 25): Promise<WithdrawalsResponse> {
+    const res = await fetch(`${API_BASE}/api/account/my-withdrawals?page=${page}&limit=${limit}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch withdrawals"));
     return data;
   },
 

@@ -36,6 +36,7 @@ const Bank = () => {
   const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(false);
   const [bindingAccount, setBindingAccount] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
 
   const channels = [
     { id: "upi", label: "UPI", icon: upiLogo },
@@ -124,14 +125,39 @@ const Bank = () => {
     }
   };
 
+  const handleWithdraw = async () => {
+    if (withdrawing) return;
+    if (!bindAccount) {
+      toast({ description: "Please bind a bank account first", variant: "destructive" });
+      return;
+    }
+    if (selectedWithdrawAmount > effectiveWithdrawable) {
+      toast({ description: "Insufficient withdrawable balance", variant: "destructive" });
+      return;
+    }
+    setWithdrawing(true);
+    try {
+      const res = await authService.requestWithdraw(selectedWithdrawAmount);
+      toast({ description: res.msg || "Withdrawal request submitted" });
+      refreshBalance();
+      loadWithdrawInfo();
+    } catch (err: any) {
+      toast({ description: err.message || "Withdrawal failed", variant: "destructive" });
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
-      {(paying || loadingWithdrawInfo || bindingAccount) && (
+      {(paying || loadingWithdrawInfo || bindingAccount || withdrawing) && (
         <Loader
           overlay
           label={
             paying
               ? "Payment processing..."
+              : withdrawing
+              ? "Processing withdrawal..."
               : bindingAccount
               ? "Saving bank account..."
               : "Loading withdraw info..."
@@ -384,10 +410,10 @@ const Bank = () => {
           className="rounded-md text-sm"
           size="lg"
           variant="gold"
-          onClick={activeTab === "deposit" ? handlePay : undefined}
-          disabled={paying}
+          onClick={activeTab === "deposit" ? handlePay : handleWithdraw}
+          disabled={paying || withdrawing}
         >
-          {paying ? "Processing..." : activeTab === "deposit" ? "Pay" : "Withdraw"}
+          {paying ? "Processing..." : withdrawing ? "Processing..." : activeTab === "deposit" ? "Pay" : "Withdraw"}
         </GameButton>
       </div>
 

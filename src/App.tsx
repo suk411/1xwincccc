@@ -10,6 +10,7 @@ import Events from "./pages/Events";
 import Promo from "./pages/Promo";
 import CommunityEvent from "./pages/CommunityEvent";
 import DepositRecords from "./pages/DepositRecords";
+import WithdrawalRecords from "./pages/WithdrawalRecords";
 import PaymentGateway from "./pages/PaymentGateway";
 import GamePlay from "./pages/GamePlay";
 import BetRecords from "./pages/BetRecords";
@@ -55,6 +56,7 @@ const AppContent = () => {
         <Route path="/promo" element={<ProtectedRoute><Promo /></ProtectedRoute>} />
         <Route path="/community-event" element={<ProtectedRoute><CommunityEvent /></ProtectedRoute>} />
         <Route path="/bank/records" element={<ProtectedRoute><DepositRecords /></ProtectedRoute>} />
+        <Route path="/bank/withdrawals" element={<ProtectedRoute><WithdrawalRecords /></ProtectedRoute>} />
         <Route path="/payment" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
         <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
         <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
