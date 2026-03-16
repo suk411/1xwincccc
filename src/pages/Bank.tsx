@@ -125,6 +125,29 @@ const Bank = () => {
     }
   };
 
+  const handleWithdraw = async () => {
+    if (withdrawing) return;
+    if (!bindAccount) {
+      toast({ description: "Please bind a bank account first", variant: "destructive" });
+      return;
+    }
+    if (selectedWithdrawAmount > effectiveWithdrawable) {
+      toast({ description: "Insufficient withdrawable balance", variant: "destructive" });
+      return;
+    }
+    setWithdrawing(true);
+    try {
+      const res = await authService.requestWithdraw(selectedWithdrawAmount);
+      toast({ description: res.msg || "Withdrawal request submitted" });
+      refreshBalance();
+      loadWithdrawInfo();
+    } catch (err: any) {
+      toast({ description: err.message || "Withdrawal failed", variant: "destructive" });
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
       {(paying || loadingWithdrawInfo || bindingAccount) && (
