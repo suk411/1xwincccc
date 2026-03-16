@@ -86,11 +86,37 @@ export interface WithdrawInfoResponse {
   data: {
     bindAccount: BankAccountDetails | null;
     balance: number;
+    withdrawable: number;
+    vipLimit: number;
+    maxWithdrawByVip: number;
     canWithdrawAmount: number;
     charge: number;
     vip: number | string;
     vipMeta?: Record<string, any> | null;
   };
+}
+
+export interface WithdrawResponse {
+  status: string;
+  msg?: string;
+  newBalance: number;
+  newWithdrawable: number;
+}
+
+export interface WithdrawalRecord {
+  userId: number;
+  type: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface WithdrawalsResponse {
+  status: string;
+  page: number;
+  limit: number;
+  total: number;
+  items: WithdrawalRecord[];
 }
 
 const TOKEN_KEY = "auth_token";
