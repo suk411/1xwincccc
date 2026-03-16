@@ -176,7 +176,7 @@ const Bank = () => {
           </div>
         </div>
         <div className="relative z-10 flex items-center gap-3">
-          <ClipboardCheck size={20} className="text-white cursor-pointer mr-4" onClick={() => navigate("/bank/records")} />
+          <ClipboardCheck size={20} className="text-white cursor-pointer mr-4" onClick={() => navigate(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
         </div>
       </div>
 

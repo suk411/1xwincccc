@@ -43,7 +43,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   useEffect(() => {
     if (open) {
       refresh();
-      authService.getVip().then(setVipData).catch(() => {});
+      authService.getVip().then(setVipData).catch(() => { });
     }
   }, [open]);
 
@@ -66,7 +66,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
     } else if (label === "Deposit History") {
       navigate("/bank/records");
     } else if (label === "Withdrawal History") {
-      navigate("/bank/records");
+      navigate("/bank/withdrawals");
     } else if (label === "Deposit") {
       navigate("/bank");
     } else if (label === "Withdrawal") {
@@ -80,12 +80,12 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent 
-        side="left" 
+      <SheetContent
+        side="left"
         className="w-[90%] p-0 border-none flex flex-col h-full"
       >
         {/* Top Profile Section */}
-        <div 
+        <div
           className="relative p-2 pt-6 flex-shrink-0"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
@@ -121,7 +121,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   }}
                   className="ml-1 p-0.5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
                 </button>
 
                 {/* VIP badge with level text overlay */}
@@ -146,9 +146,9 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-white font-medium">{isSvip ? displayVipLevel : `VIP${vipLevelIndex + 1}`}</span>
-              <GameButton 
-                variant="red" 
-                size="sm" 
+              <GameButton
+                variant="red"
+                size="sm"
                 className="w-20 h-6 text-[10px]"
                 onClick={() => { onOpenChange(false); navigate("/vip"); }}
               >
@@ -164,7 +164,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           />
 
           {/* Gold Balance Bar */}
-          <div 
+          <div
             className="relative h-12 rounded-lg flex items-center px-4"
             style={{ backgroundImage: `url(${goldBar})`, backgroundSize: 'cover' }}
           >
