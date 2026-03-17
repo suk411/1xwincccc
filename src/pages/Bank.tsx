@@ -150,7 +150,7 @@ const Bank = () => {
   };
 
   return (
-    <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+    <main className="relative flex-1 flex flex-col pb-20 w-full">
       {(paying || loadingWithdrawInfo || bindingAccount || withdrawing) && (
         <Loader
           overlay
