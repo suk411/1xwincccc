@@ -38,31 +38,29 @@ const AppContent = () => {
   const showBottomNav = ["/", "/earn", "/bank", "/promo", "/events"].includes(location.pathname);
 
   return (
-    <div 
-      className="min-h-screen flex flex-col"
-      style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)", minHeight: "100vh" }}
-    >
-      
-      {isHomePage && <DownloadBanner />}
-      {isHomePage && <Header />}
-      
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-        <Route path="/earn" element={<ProtectedRoute><Earn /></ProtectedRoute>} />
-        <Route path="/bank" element={<ProtectedRoute><Bank /></ProtectedRoute>} />
-        <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
-        <Route path="/promo" element={<ProtectedRoute><Promo /></ProtectedRoute>} />
-        <Route path="/community-event" element={<ProtectedRoute><CommunityEvent /></ProtectedRoute>} />
-        <Route path="/bank/records" element={<ProtectedRoute><DepositRecords /></ProtectedRoute>} />
-        <Route path="/bank/withdrawals" element={<ProtectedRoute><WithdrawalRecords /></ProtectedRoute>} />
-        <Route path="/payment" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
-        <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
-        <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
-        <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+    <div className="mobile-app-shell">
+      <div className="mobile-app-scroll flex flex-col">
+        {isHomePage && <DownloadBanner />}
+        {isHomePage && <Header />}
+        
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+          <Route path="/earn" element={<ProtectedRoute><Earn /></ProtectedRoute>} />
+          <Route path="/bank" element={<ProtectedRoute><Bank /></ProtectedRoute>} />
+          <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+          <Route path="/promo" element={<ProtectedRoute><Promo /></ProtectedRoute>} />
+          <Route path="/community-event" element={<ProtectedRoute><CommunityEvent /></ProtectedRoute>} />
+          <Route path="/bank/records" element={<ProtectedRoute><DepositRecords /></ProtectedRoute>} />
+          <Route path="/bank/withdrawals" element={<ProtectedRoute><WithdrawalRecords /></ProtectedRoute>} />
+          <Route path="/payment" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
+          <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
+          <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
+          <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
       
       {showBottomNav && !isAuthPage && <BottomNav />}
     </div>
