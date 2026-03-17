@@ -99,12 +99,12 @@ const Bank = () => {
     }
   };
 
-  const withdrawBalance = withdrawInfo?.data.balance ?? balance;
-  const dailyRemaining = withdrawInfo?.data.canWithdrawAmount ?? -1;
-  const effectiveWithdrawable =
-    dailyRemaining === -1 ? withdrawBalance : Math.min(withdrawBalance, dailyRemaining);
-  const restrictedAmount = Math.max(0, withdrawBalance - effectiveWithdrawable);
-  const chargeRate = withdrawInfo?.data.charge ?? 0.0;
+  const walletBalance = withdrawInfo?.data?.walletBalance ?? balance;
+  const withdrawableAmount = withdrawInfo?.data?.withdrawable ?? 0;
+  const dailyLimit = withdrawInfo?.data?.vipMeta?.dailyWithdrawLimit ?? 0;
+  const remainingLimit = withdrawInfo?.data?.remainingDailyLimit ?? 0;
+  
+  const chargeRate = withdrawInfo?.data?.charge ?? 0.0;
   const feeAmount = selectedWithdrawAmount * chargeRate;
 
   const handlePay = async () => {
@@ -132,7 +132,7 @@ const Bank = () => {
       toast({ description: "Please bind a bank account first", variant: "destructive" });
       return;
     }
-    if (selectedWithdrawAmount > effectiveWithdrawable) {
+    if (selectedWithdrawAmount > withdrawableAmount) {
       toast({ description: "Insufficient withdrawable balance", variant: "destructive" });
       return;
     }
@@ -287,15 +287,16 @@ const Bank = () => {
           <>
             <GameCard className="p-3 flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
+                <span className="text-white text-xs">Balance:</span>
+                <span className="text-white text-sm font-bold">₹{walletBalance.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between">
                 <span className="text-white text-xs">Withdrawable:</span>
-                <span className="text-white text-sm">₹{effectiveWithdrawable.toFixed(2)}</span>
+                <span className="text-white text-sm font-bold">₹{withdrawableAmount.toFixed(2)}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-white text-xs">Restricted Amount:</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-primary text-xs">₹{restrictedAmount.toFixed(2)}</span>
-                <button className="text-primary text-xs underline">Turnover History</button>
+              <div className="flex items-center justify-between mt-1 pt-1 border-t border-white/10">
+                <span className="text-white/60 text-[11px]">Daily Limit:</span>
+                <span className="text-white/60 text-[11px]">₹{remainingLimit.toFixed(2)} / ₹{dailyLimit.toFixed(2)}</span>
               </div>
             </GameCard>
 
@@ -405,7 +406,7 @@ const Bank = () => {
           {activeTab === "withdraw" && (
             <div className="flex items-center gap-1">
               <span className="text-white/50 text-[10px]">Fee</span>
-              <span className="text-primary text-[10px] font-bold">₹3.3</span>
+              <span className="text-primary text-[10px] font-bold">₹{feeAmount.toFixed(2)}</span>
             </div>
           )}
         </div>
