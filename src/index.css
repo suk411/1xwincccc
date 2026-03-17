@@ -45,6 +45,9 @@
     /* Custom shadows */
     --glow-coral: 0 0 1.25rem hsl(0 100% 72% / 0.4);
     --glow-orange: 0 0 1.5rem hsl(30 100% 55% / 0.5);
+
+    /* Mobile container */
+    --app-max-width: 430px;
   }
 
   .dark {
@@ -60,21 +63,65 @@
   
   html {
     font-size: 16px;
+    overflow: hidden;
+    height: 100%;
   }
   
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", MIUI, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
     font-weight: 400;
     line-height: 1.5;
     color: rgb(255, 255, 255);
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100%;
+    overflow: hidden;
+    background: hsl(240 20% 4%);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
+
+  #root {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* Mobile app container */
+.mobile-app-shell {
+  position: relative;
+  width: 100%;
+  max-width: var(--app-max-width);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #320913 43%, #41131e 100%);
+  box-shadow: 0 0 60px hsl(0 0% 0% / 0.6);
+}
+
+/* Device frame on desktop */
+@media (min-width: 480px) {
+  .mobile-app-shell {
+    height: 96vh;
+    height: 96dvh;
+    border-radius: 2rem;
+    border: 2px solid hsl(240 10% 15%);
+    margin: 2vh 0;
+  }
+}
+
+/* Scrollable inner area */
+.mobile-app-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 /* Utility classes for the gaming theme */
