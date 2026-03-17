@@ -150,7 +150,7 @@ const Bank = () => {
   };
 
   return (
-    <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+    <main className="relative flex-1 flex flex-col pb-20 w-full">
       {(paying || loadingWithdrawInfo || bindingAccount || withdrawing) && (
         <Loader
           overlay
@@ -382,9 +382,9 @@ const Bank = () => {
         )}
       </div>
 
-      {/* Fixed bottom payment bar */}
+      {/* Bottom payment bar - sticky above bottom nav */}
       <div
-        className="fixed bottom-10 pb-12 left-0 right-0 z-30 px-4 py-3 flex items-center justify-between"
+        className="sticky bottom-0 left-0 right-0 z-30 px-4 py-3 flex items-center justify-between"
         style={{ backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)" }}
       >
         <div className="flex flex-col">
