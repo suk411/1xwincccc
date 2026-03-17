@@ -33,7 +33,7 @@ const getProviderSections = () => {
 };
 
 interface GameProviderSectionProps {
-  launchingGame: number | null;
+  launchingGame: string | number | null;
   handleGameLaunch: (game: GameObject) => void;
 }
 

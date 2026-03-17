@@ -85,7 +85,7 @@ const Index = () => {
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
-  const [launchingGame, setLaunchingGame] = useState<number | null>(null);
+  const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
   
   const { balance } = useProfile();
 
