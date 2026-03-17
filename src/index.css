@@ -107,11 +107,8 @@
 /* Device frame on desktop */
 @media (min-width: 480px) {
   .mobile-app-shell {
-    height: 96vh;
-    height: 96dvh;
-    border-radius: 2rem;
-    border: 2px solid hsl(240 10% 15%);
-    margin: 2vh 0;
+    height: 100vh;
+    height: 100dvh;
   }
 }
 
