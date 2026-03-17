@@ -6,16 +6,37 @@ import { toast } from "@/hooks/use-toast";
 
 const Promo = () => {
   const [loading, setLoading] = useState<string | null>(null);
+  const [countdowns, setCountdowns] = useState<Record<string, number>>({});
 
   const handleWithdraw = async (providerCode: string, gameName: string) => {
+    if (countdowns[providerCode] > 0 || loading === providerCode) return;
+
+    // Start 5-second countdown
+    setCountdowns(prev => ({ ...prev, [providerCode]: 5 }));
+    
+    const interval = setInterval(() => {
+      setCountdowns(prev => {
+        const current = prev[providerCode];
+        if (current <= 1) {
+          clearInterval(interval);
+          // Trigger actual withdrawal after countdown
+          performWithdraw(providerCode, gameName);
+          return { ...prev, [providerCode]: 0 };
+        }
+        return { ...prev, [providerCode]: current - 1 };
+      });
+    }, 1000);
+  };
+
+  const performWithdraw = async (providerCode: string, gameName: string) => {
     setLoading(providerCode);
     try {
       const result = await gameService.withdraw(providerCode);
       await refreshProfile();
       if (result.moveOut.amount > 0) {
-        toast({ title: "Withdrawn ₹" + result.moveOut.amount, description: `Balance from ${gameName} moved to wallet` });
+        toast({ title: "Withdrawn ₹" + result.moveOut.amount, description: ` Recall success ` });
       } else {
-        toast({ title: "No balance", description: result.msg || "Nothing to withdraw from this game" });
+        toast({ title: "No balance", description: result.msg || "No balance in game " });
       }
     } catch (e: any) {
       toast({ title: "Withdraw failed", description: e.message, variant: "destructive" });
@@ -52,25 +73,40 @@ const Promo = () => {
               name: "PG Wallet",
               provider_code: "PG",
               logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
+            },
+            {
+              id: "jd",
+              name: "JD Wallet",
+              provider_code: "JD",
+              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
             }
-          ].map((wallet) => (
-            <button
-              key={wallet.id}
-              disabled={loading === wallet.provider_code}
-              onClick={() => handleWithdraw(wallet.provider_code, wallet.name)}
-              className="flex items-center gap-3 w-full rounded-xl p-3 transition-all active:scale-95 disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #5a0a1a 0%, #3a0611 100%)", border: "1px solid rgba(255,180,50,0.3)" }}
-            >
-              <img src={wallet.logo} alt={wallet.name} className="w-12 h-12 rounded-lg object-contain" />
-              <div className="flex-1 text-left">
-                <p className="text-white text-sm font-bold">{wallet.name}</p>
-                <p className="text-muted-foreground text-xs">{wallet.provider_code}</p>
+          ].map((wallet) => {
+            const isCountdownActive = (countdowns[wallet.provider_code] || 0) > 0;
+            const isLoading = loading === wallet.provider_code;
+            const isActionDisabled = isCountdownActive || isLoading;
+
+            return (
+              <div
+                key={wallet.id}
+                className="flex items-center gap-3 w-full rounded-xl p-3"
+                style={{ background: "linear-gradient(135deg, #5a0a1a 0%, #3a0611 100%)", border: "1px solid rgba(255,180,50,0.3)" }}
+              >
+                <img src={wallet.logo} alt={wallet.name} className="w-12 h-12 rounded-lg object-contain" />
+                <div className="flex-1 text-left">
+                  <p className="text-white text-sm font-bold">{wallet.name}</p>
+                  <p className="text-muted-foreground text-xs">{wallet.provider_code}</p>
+                </div>
+                <button
+                   disabled={isActionDisabled}
+                   onClick={() => handleWithdraw(wallet.provider_code, wallet.name)}
+                   className={`px-4 py-2 rounded-lg text-xs font-bold text-white transition-all ${!isActionDisabled ? "active:scale-95" : ""}`}
+                   style={{ background: "linear-gradient(135deg, #d4a017, #b8860b)" }}
+                 >
+                   {isLoading ? "..." : isCountdownActive ? `recalling ${countdowns[wallet.provider_code]}` : "Withdraw"}
+                 </button>
               </div>
-              <div className="px-4 py-2 rounded-lg text-xs font-bold text-white" style={{ background: "linear-gradient(135deg, #d4a017, #b8860b)" }}>
-                {loading === wallet.provider_code ? "..." : "Withdraw"}
-              </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
       </div>
     </PageLayout>
