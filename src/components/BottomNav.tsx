@@ -30,7 +30,7 @@ const BottomNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="absolute bottom-0 left-0 right-0 z-50 flex justify-center">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-50 flex justify-center">
       {/* Nav container - constrained width */}
       <div className="relative w-full">
         <img 

@@ -150,7 +150,7 @@ const Bank = () => {
   };
 
   return (
-    <main className="relative flex-1 flex flex-col pb-20 w-full">
+    <main className="relative flex-1 flex flex-col pb-52 w-full">
       {(paying || loadingWithdrawInfo || bindingAccount || withdrawing) && (
         <Loader
           overlay
@@ -382,9 +382,9 @@ const Bank = () => {
         )}
       </div>
 
-      {/* Bottom payment bar - sticky above bottom nav */}
+      {/* Bottom payment bar - fixed above bottom nav */}
       <div
-        className="sticky bottom-0 left-0 right-0 z-30 px-4 py-3 flex items-center justify-between"
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-30 px-4 py-3 pb-28 flex items-center justify-between"
         style={{ backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)" }}
       >
         <div className="flex flex-col">
@@ -410,7 +410,7 @@ const Bank = () => {
           )}
         </div>
         <GameButton
-          className="rounded-md text-sm"
+          className="rounded-md text-sm h-12 w-36"
           size="lg"
           variant="gold"
           onClick={activeTab === "deposit" ? handlePay : handleWithdraw}

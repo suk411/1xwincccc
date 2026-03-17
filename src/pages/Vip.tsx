@@ -160,7 +160,7 @@ const Vip = () => {
     <>
       {(loading || busy) && <Loader overlay label={loading ? "Loading VIP..." : "Processing..."} />}
       {/* HEADER */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-48">
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-50 h-48">
         <img src={vipRedBg} className="absolute bg-red-950 inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 " />
 
