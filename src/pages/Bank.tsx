@@ -99,10 +99,10 @@ const Bank = () => {
     }
   };
 
-  const walletBalance = withdrawInfo?.data?.walletBalance ?? balance;
-  const withdrawableAmount = withdrawInfo?.data?.withdrawable ?? 0;
-  const dailyLimit = withdrawInfo?.data?.vipMeta?.dailyWithdrawLimit ?? 0;
-  const remainingLimit = withdrawInfo?.data?.remainingDailyLimit ?? 0;
+  const walletBalance = withdrawInfo?.data?.balance ?? balance;
+  const withdrawableAmount = withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
+  const dailyLimit = (withdrawInfo?.data?.vipMeta as any)?.dailyWithdrawLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
+  const remainingLimit = (withdrawInfo?.data as any)?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   
   const chargeRate = withdrawInfo?.data?.charge ?? 0.0;
   const feeAmount = selectedWithdrawAmount * chargeRate;
