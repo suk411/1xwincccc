@@ -14,13 +14,14 @@ const Promo = () => {
     // Start 5-second countdown
     setCountdowns(prev => ({ ...prev, [providerCode]: 5 }));
     
+    // Trigger actual withdrawal immediately
+    performWithdraw(providerCode, gameName);
+    
     const interval = setInterval(() => {
       setCountdowns(prev => {
         const current = prev[providerCode];
         if (current <= 1) {
           clearInterval(interval);
-          // Trigger actual withdrawal after countdown
-          performWithdraw(providerCode, gameName);
           return { ...prev, [providerCode]: 0 };
         }
         return { ...prev, [providerCode]: current - 1 };
