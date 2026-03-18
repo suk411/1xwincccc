@@ -23,6 +23,7 @@ import fishTabIcon from "@/assets/tabs/fish-icon.png";
 import liveTabIcon from "@/assets/tabs/live-icon.png";
 import sportTabIcon from "@/assets/tabs/sport-icon.png";
 import GameProviderSection from "@/components/GameProviderSection";
+import GameLobby from "@/components/GameLobby";
 import { GAME_LIST, gameService, GameObject } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
