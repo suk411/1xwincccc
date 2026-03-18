@@ -16,6 +16,7 @@ import GamePlay from "./pages/GamePlay";
 import BetRecords from "./pages/BetRecords";
 import Vip from "./pages/Vip";
 import GameLobbyPage from "./pages/GameLobbyPage";
+import SupportChat from "./pages/SupportChat";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
@@ -60,6 +61,7 @@ const AppContent = () => {
           <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
           <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
           <Route path="/lobby" element={<ProtectedRoute><GameLobbyPage /></ProtectedRoute>} />
+          <Route path="/support" element={<ProtectedRoute><SupportChat /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

@@ -9,9 +9,23 @@ import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import { useState } from "react";
 import { Copy } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
+import { useToast } from "@/hooks/use-toast";
 
 const CommunityEvent = () => {
   const [code, setCode] = useState("");
+  const { toast } = useToast();
+  const telegramLink = "https://t.me/+EM8kxuQpfMJmZTRl";
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(telegramLink);
+    toast({
+      description: "Link copied to clipboard",
+    });
+  };
+
+  const handleJoin = () => {
+    window.open(telegramLink, "_blank");
+  };
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
@@ -74,13 +88,21 @@ const CommunityEvent = () => {
               <img src={telegramIcon} alt="Telegram" className="w-16 h-16 object-contain" />
             </div>
             <span className="text-yellow-400 text-sm">Telegram Group</span>
-            <div className="flex items-center gap-2 bg-[#541324] rounded-lg px-3 py-2">
-              <span className="text-[#c4889a] text-xs truncate">https://t.me/...</span>
-              <button className="text-orange-500 ">
+            <div className="flex items-center gap-2 bg-[#541324] rounded-lg px-3 py-2 w-full max-w-[240px]">
+              <span className="text-[#c4889a] text-[10px] truncate flex-1">{telegramLink}</span>
+              <button 
+                onClick={handleCopy}
+                className="text-orange-500 hover:text-orange-400 transition-colors"
+              >
                 <Copy size={14} />
               </button>
             </div>
-            <GameButton variant="gold" size="lg" className="w-[120px] mt-2">
+            <GameButton 
+              variant="gold" 
+              size="lg" 
+              className="w-[120px] mt-2"
+              onClick={handleJoin}
+            >
               Join Now
             </GameButton>
           </div>
