@@ -100,12 +100,13 @@ const Bank = () => {
     }
   };
 
-  const walletBalance = withdrawInfo?.data?.balance ?? balance;
+  const walletBalance = withdrawInfo?.data?.walletBalance ?? withdrawInfo?.data?.balance ?? balance;
   const withdrawableAmount = withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
-  const turnoverRequirement = (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
-  const turnoverProgress = (withdrawInfo?.data as any)?.turnover_progress ?? 0;
-  const dailyLimit = (withdrawInfo?.data?.vipMeta as any)?.dailyWithdrawLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
-  const remainingLimit = (withdrawInfo?.data as any)?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
+  const turnoverRequirement = withdrawInfo?.data?.turnover?.requirement ?? (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
+  const turnoverProgress = withdrawInfo?.data?.turnover?.progress ?? (withdrawInfo?.data as any)?.turnover_progress ?? 0;
+  const turnoverCompleted = withdrawInfo?.data?.turnover?.completed ?? 0;
+  const dailyLimit = withdrawInfo?.data?.vipMeta?.dailyWithdrawLimit ?? withdrawInfo?.data?.dailyLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
+  const remainingLimit = withdrawInfo?.data?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   
   const chargeRate = withdrawInfo?.data?.charge ?? 0.0;
   const feeAmount = selectedWithdrawAmount * chargeRate;
@@ -295,15 +296,15 @@ const Bank = () => {
               </div>
               <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-white text-xs">Turnover Requirement:</span>
-                  <span className="text-primary text-xs font-bold">₹{turnoverRequirement.toFixed(2)}</span>
+                  <span className="text-white text-xs">Turnover Progress:</span>
+                  <span className="text-primary text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
                 </div>
                 <Progress
                   value={turnoverProgress}
                   className="h-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
                 />
                 <div className="flex justify-end mt-0.5">
-                  <span className="text-white/60 text-[10px]">{turnoverProgress}% Completed</span>
+                  <span className="text-white/60 text-[10px]">{turnoverProgress.toFixed(1)}% Completed</span>
                 </div>
               </div>
               <div className="flex items-center justify-between mt-1 pt-1 border-t border-white/10">

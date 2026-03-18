@@ -289,15 +289,7 @@ export const GAME_LIST: GameObject[] = [
     type: "MG",
     category: "casino",
   },
-  {
-    name: "JDB Slot",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/jackpot-joker.png",
-    provider_code: "JD",
-    provider: "jdb",
-    game_id: 999,
-    type: "SL",
-    category: "slot",
-  },
+ 
   {
     name: "Black Jack",
     logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/black%20jack.png",
