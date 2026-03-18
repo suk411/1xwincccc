@@ -87,6 +87,7 @@ const Index = () => {
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
+  const showTopGames = true;
   
   const { balance } = useProfile();
 
