@@ -226,10 +226,20 @@ const Index = () => {
           />
         </div>
 
-        <GameProviderSection 
-          launchingGame={launchingGame}
-          handleGameLaunch={handleGameLaunch}
-        />
+        {activeGameTab === "top" ? (
+          showTopGames && (
+            <GameProviderSection 
+              launchingGame={launchingGame}
+              handleGameLaunch={handleGameLaunch}
+            />
+          )
+        ) : (
+          <GameLobby
+            activeTab={activeGameTab}
+            launchingGame={launchingGame}
+            handleGameLaunch={handleGameLaunch}
+          />
+        )}
 
         
 {/* Download App Section */}
