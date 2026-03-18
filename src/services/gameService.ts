@@ -43,7 +43,17 @@ export interface GameWithdrawResponse {
   walletBalance?: number;
 }
 
+
 export const GAME_LIST: GameObject[] = [
+   {
+    name: "Fortune Gems 3",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/fortune-gem3.png",
+    provider_code: "JE",
+    provider: "jili",
+    game_id: 300,
+    type: "SL",
+    category: "slot",
+  },
   {
     name: "Money Coming",
     logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/money-coming.png",
@@ -89,15 +99,7 @@ export const GAME_LIST: GameObject[] = [
     type: "SL",
     category: "slot",
   },
-  {
-    name: "Fortune Gems 3",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/fortune-gem3.png",
-    provider_code: "JE",
-    provider: "jili",
-    game_id: 300,
-    type: "SL",
-    category: "slot",
-  },
+ 
   {
     name: "Crazy777",
     logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/carzy-777.png",
