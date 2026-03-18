@@ -17,6 +17,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
+import { Progress } from "@/components/ui/progress";
 
 const DEPOSIT_AMOUNTS = [200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
@@ -101,6 +102,8 @@ const Bank = () => {
 
   const walletBalance = withdrawInfo?.data?.balance ?? balance;
   const withdrawableAmount = withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
+  const turnoverRequirement = (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
+  const turnoverProgress = (withdrawInfo?.data as any)?.turnover_progress ?? 0;
   const dailyLimit = (withdrawInfo?.data?.vipMeta as any)?.dailyWithdrawLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
   const remainingLimit = (withdrawInfo?.data as any)?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   
@@ -290,9 +293,18 @@ const Bank = () => {
                 <span className="text-white text-xs">Balance:</span>
                 <span className="text-white text-sm font-bold">₹{walletBalance.toFixed(2)}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-white text-xs">Withdrawable:</span>
-                <span className="text-white text-sm font-bold">₹{withdrawableAmount.toFixed(2)}</span>
+              <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-white text-xs">Turnover Requirement:</span>
+                  <span className="text-primary text-xs font-bold">₹{turnoverRequirement.toFixed(2)}</span>
+                </div>
+                <Progress
+                  value={turnoverProgress}
+                  className="h-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
+                />
+                <div className="flex justify-end mt-0.5">
+                  <span className="text-white/60 text-[10px]">{turnoverProgress}% Completed</span>
+                </div>
               </div>
               <div className="flex items-center justify-between mt-1 pt-1 border-t border-white/10">
                 <span className="text-white/60 text-[11px]">Daily Limit:</span>

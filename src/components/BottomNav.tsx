@@ -57,13 +57,13 @@ const BottomNav = () => {
                   className={`object-contain transition-all duration-200 ${
                     isActive ? "nav-glow scale-110" : "opacity-70"
                   }`}
-                  style={{ width: 'clamp(1.25rem, 4vw, 2.25rem)', height: 'clamp(1.25rem, 4vw, 2.25rem)' }}
+                  style={{ width: 'clamp(1.5rem, 4.8vw, 2.7rem)', height: 'clamp(1.5rem, 4.8vw, 2.7rem)' }}
                 />
                 <span
                   className={`transition-colors duration-200 ${
                     isActive ? "text-primary text-glow" : "text-muted-foreground"
                   }`}
-                  style={{ fontSize: 'clamp(0.6rem, 1.8vw, 1rem)' }}
+                  style={{ fontSize: 'clamp(0.72rem, 2.16vw, 1.2rem)' }}
                 >
                   {item.label}
                 </span>
@@ -98,13 +98,13 @@ const BottomNav = () => {
                   className={`object-contain transition-all duration-200 ${
                     isActive ? "nav-glow scale-110" : "opacity-70"
                   }`}
-                  style={{ width: 'clamp(1.25rem, 4vw, 2.25rem)', height: 'clamp(1.25rem, 4vw, 2.25rem)' }}
+                  style={{ width: 'clamp(1.5rem, 4.8vw, 2.7rem)', height: 'clamp(1.5rem, 4.8vw, 2.7rem)' }}
                 />
                 <span
                   className={`transition-colors duration-200 ${
                     isActive ? "text-primary text-glow" : "text-muted-foreground"
                   }`}
-                  style={{ fontSize: 'clamp(0.6rem, 1.8vw, 1rem)' }}
+                  style={{ fontSize: 'clamp(0.72rem, 2.16vw, 1.2rem)' }}
                 >
                   {item.label}
                 </span>
