@@ -23,6 +23,7 @@ import fishTabIcon from "@/assets/tabs/fish-icon.png";
 import liveTabIcon from "@/assets/tabs/live-icon.png";
 import sportTabIcon from "@/assets/tabs/sport-icon.png";
 import GameProviderSection from "@/components/GameProviderSection";
+import GameLobby from "@/components/GameLobby";
 import { GAME_LIST, gameService, GameObject } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
@@ -86,6 +87,7 @@ const Index = () => {
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
+  const showTopGames = true;
   
   const { balance } = useProfile();
 
@@ -224,10 +226,20 @@ const Index = () => {
           />
         </div>
 
-        <GameProviderSection 
-          launchingGame={launchingGame}
-          handleGameLaunch={handleGameLaunch}
-        />
+        {activeGameTab === "top" ? (
+          showTopGames && (
+            <GameProviderSection 
+              launchingGame={launchingGame}
+              handleGameLaunch={handleGameLaunch}
+            />
+          )
+        ) : (
+          <GameLobby
+            activeTab={activeGameTab}
+            launchingGame={launchingGame}
+            handleGameLaunch={handleGameLaunch}
+          />
+        )}
 
         
 {/* Download App Section */}
