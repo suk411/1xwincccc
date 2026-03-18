@@ -103,7 +103,7 @@ const Promo = () => {
                    className={`px-4 py-2 rounded-lg text-xs font-bold text-white transition-all ${!isActionDisabled ? "active:scale-95" : ""}`}
                    style={{ background: "linear-gradient(135deg, #d4a017, #b8860b)" }}
                  >
-                   {isLoading ? "..." : isCountdownActive ? `recalling ${countdowns[wallet.provider_code]}` : "Withdraw"}
+                   {isCountdownActive ? `recalling ${countdowns[wallet.provider_code]}` : "Withdraw"}
                  </button>
               </div>
             );
