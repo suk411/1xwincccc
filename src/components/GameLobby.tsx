@@ -1,31 +1,41 @@
 import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { GameObject, GAME_LIST } from "@/services/gameService";
+import { GameTabs, GameTab } from "./GameTabs";
+
+import allTabIcon from "@/assets/tabs/all-icon.png";
+import recentTabIcon from "@/assets/tabs/recent-icon.png";
+import slotsTabIcon from "@/assets/tabs/slots-icon.png";
+import casinoTabIcon from "@/assets/tabs/casino-icon.png";
+import fishTabIcon from "@/assets/tabs/fish-icon.png";
+import liveTabIcon from "@/assets/tabs/live-icon.png";
+import sportTabIcon from "@/assets/tabs/sport-icon.png";
+
+const IconImg = ({ src, alt }: { src: string; alt: string }) => (
+  <img src={src} alt={alt} className="w-5 h-5 object-contain" />
+);
+
+const LOBBY_TABS: GameTab[] = [
+  { label: "Slots", value: "slot", icon: <IconImg src={slotsTabIcon} alt="Slots" /> },
+  { label: "Casino", value: "casino", icon: <IconImg src={casinoTabIcon} alt="Casino" /> },
+  { label: "FISH", value: "fish", icon: <IconImg src={fishTabIcon} alt="Fish" /> },
+  { label: "LIVE", value: "live", icon: <IconImg src={liveTabIcon} alt="Live" /> },
+  { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
+];
 
 const PROVIDER_ICONS: Record<string, string> = {
-  ALL: "",
-  JE: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/JILI.avif",
-  JILI: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/JILI.avif",
-  PG: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/pg.png",
-  JDB: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/JDB.avif",
-  JD: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/spribe.avif",
+  jili: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/JILI.avif",
+  pg: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/pg.png",
+  jdb: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/JDB.avif",
+  spribe: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/spribe.avif",
 };
 
 const PROVIDER_LABELS: Record<string, string> = {
-  ALL: "All",
-  JE: "JILI",
-  PG: "PG",
-  JDB: "JDB",
-  JD: "MG",
+  jili: "JILI",
+  pg: "PG",
+  jdb: "JDB",
+  spribe: "SPRIBE",
 };
-
-const SECONDARY_FILTERS = [
-  { label: "All", value: "all" },
-  { label: "Slot", value: "SL" },
-  { label: "Casino", value: "CB" },
-  { label: "Fish", value: "FH" },
-  { label: "Sports", value: "SB" },
-];
 
 const GAMES_PER_PAGE = 9;
 
@@ -36,14 +46,14 @@ interface GameLobbyProps {
 }
 
 const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProps) => {
-  const [selectedProvider, setSelectedProvider] = useState("ALL");
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedProvider, setSelectedProvider] = useState(GAME_LIST[0]?.provider?.toLowerCase() || "jili");
+  const [selectedFilter, setSelectedFilter] = useState("slot");
   const [currentPage, setCurrentPage] = useState(0);
 
   // Get unique providers from GAME_LIST
   const providers = useMemo(() => {
-    const codes = new Set(GAME_LIST.map((g) => g.provider_code));
-    return ["ALL", ...Array.from(codes)];
+    const codes = new Set(GAME_LIST.map((g) => g.provider.toLowerCase()));
+    return Array.from(codes);
   }, []);
 
   // Filter games
@@ -51,82 +61,56 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     let games = [...GAME_LIST];
 
     // Provider filter
-    if (selectedProvider !== "ALL") {
-      games = games.filter((g) => g.provider_code === selectedProvider);
-    }
+    games = games.filter((g) => g.provider.toLowerCase() === selectedProvider.toLowerCase());
 
-    // Type filter from secondary bar
-    if (selectedFilter !== "all") {
-      games = games.filter((g) => g.type === selectedFilter);
-    }
+    // Category filter from horizontal tabs
+    games = games.filter((g) => g.category.toLowerCase() === selectedFilter.toLowerCase());
 
-    // Tab-level filter (from top tabs)
-    if (activeTab === "slots") {
-      games = games.filter((g) => g.type === "SL");
-    } else if (activeTab === "casino") {
-      games = games.filter((g) => g.type === "CB");
-    } else if (activeTab === "fish") {
-      games = games.filter((g) => g.type === "FH");
-    } else if (activeTab === "sport") {
-      games = games.filter((g) => g.type === "SB");
-    } else if (activeTab === "live") {
-      games = games.filter((g) => g.type === "LV");
+    // Tab-level filter (from top level category)
+    if (activeTab !== "all" && activeTab !== "top") {
+      // If activeTab is something like 'slots', 'casino', etc.
+      const categoryMapping: Record<string, string> = {
+        slots: "slot",
+        casino: "casino",
+        fish: "fish",
+        sport: "sport",
+        live: "live",
+      };
+      const targetCategory = categoryMapping[activeTab.toLowerCase()] || activeTab.toLowerCase();
+      games = games.filter((g) => g.category.toLowerCase() === targetCategory);
     }
 
     return games;
   }, [selectedProvider, selectedFilter, activeTab]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredGames.length / GAMES_PER_PAGE));
-  const visibleGames = filteredGames.slice(
-    currentPage * GAMES_PER_PAGE,
-    (currentPage + 1) * GAMES_PER_PAGE
-  );
+  const visibleGames = filteredGames;
 
   // Reset page when filters change
   const handleProviderChange = (code: string) => {
     setSelectedProvider(code);
-    setCurrentPage(0);
   };
 
   const handleFilterChange = (value: string) => {
     setSelectedFilter(value);
-    setCurrentPage(0);
   };
 
   return (
-    <div className="flex flex-col gap-2 mt-2">
-      {/* Secondary Filter Bar */}
-      <div
-        className="flex items-center gap-2 px-2 py-2 overflow-x-auto"
-        style={{ backgroundColor: "#1a0a10", scrollbarWidth: "none" }}
-      >
-        {SECONDARY_FILTERS.map((f) => (
-          <button
-            key={f.value}
-            onClick={() => handleFilterChange(f.value)}
-            className="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-all"
-            style={{
-              background:
-                selectedFilter === f.value
-                  ? "linear-gradient(135deg, #d4a017 0%, #b8860b 100%)"
-                  : "rgba(255,255,255,0.08)",
-              color: selectedFilter === f.value ? "#1a0a10" : "rgba(255,255,255,0.6)",
-              border:
-                selectedFilter === f.value
-                  ? "1px solid rgba(255,200,50,0.5)"
-                  : "1px solid rgba(255,255,255,0.1)",
-            }}
-          >
-            {f.label}
-          </button>
-        ))}
+    <div className="flex flex-col gap-2 mt-2 scrollbar-hide">
+      {/* Secondary Filter Bar - Now using GameTabs */}
+      <div className="w-full overflow-hidden scrollbar-hide">
+        <GameTabs
+          tabs={LOBBY_TABS}
+          value={selectedFilter}
+          onChange={handleFilterChange}
+          className="rounded-lg scrollbar-hide"
+        />
       </div>
 
       {/* Provider Sidebar + Game Grid */}
-      <div className="flex gap-1.5" style={{ minHeight: "20rem" }}>
+      <div className="flex gap-1.5 scrollbar-hide" style={{ minHeight: "calc(100vh - 12rem)" }}>
         {/* Left Provider Sidebar */}
         <div
-          className="flex flex-col gap-1 py-2 px-1 rounded-lg flex-shrink-0"
+          className="flex flex-col gap-1 py-2 px-1 rounded-lg flex-shrink-0 min-h-full scrollbar-hide"
           style={{
             backgroundColor: "#120810",
             width: "4.5rem",
@@ -135,6 +119,9 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
         >
           {providers.map((code) => {
             const isActive = selectedProvider === code;
+            const iconUrl = PROVIDER_ICONS[code];
+            if (!iconUrl) return null;
+
             return (
               <button
                 key={code}
@@ -149,46 +136,24 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
                     : "1px solid transparent",
                 }}
               >
-                {code !== "ALL" && PROVIDER_ICONS[code] ? (
-                  <img
-                    src={PROVIDER_ICONS[code]}
-                    alt={PROVIDER_LABELS[code] || code}
-                    className="w-8 h-8 object-contain rounded"
-                  />
-                ) : (
-                  <div
-                    className="w-8 h-8 rounded flex items-center justify-center text-xs font-bold"
-                    style={{
-                      background: isActive
-                        ? "rgba(255,180,50,0.2)"
-                        : "rgba(255,255,255,0.08)",
-                      color: isActive ? "#ffd700" : "rgba(255,255,255,0.5)",
-                    }}
-                  >
-                    All
-                  </div>
-                )}
-                <span
-                  className="text-[10px] font-medium"
-                  style={{
-                    color: isActive ? "#ffd700" : "rgba(255,255,255,0.5)",
-                  }}
-                >
-                  {PROVIDER_LABELS[code] || code}
-                </span>
+                <img
+                  src={iconUrl}
+                  alt={code}
+                  className="w-10 h-10 object-contain rounded"
+                />
               </button>
             );
           })}
         </div>
 
         {/* Right Game Grid */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col scrollbar-hide">
           {visibleGames.length === 0 ? (
             <div className="flex-1 flex items-center justify-center text-white/40 text-sm">
               No games found
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 pb-4">
               {visibleGames.map((game, i) => (
                 <button
                   key={`${game.game_id}-${i}`}
@@ -207,52 +172,8 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
                       className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   </div>
-                  <div className="px-1 py-1">
-                    <span className="text-[10px] text-white/80 line-clamp-1 text-center block">
-                      {game.name}
-                    </span>
-                  </div>
                 </button>
               ))}
-            </div>
-          )}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-3 pb-2">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                disabled={currentPage === 0}
-                className="w-7 h-7 rounded flex items-center justify-center disabled:opacity-30"
-                style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
-              >
-                <ChevronLeft size={14} className="text-white/60" />
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i)}
-                  className="w-7 h-7 rounded flex items-center justify-center text-xs font-medium"
-                  style={{
-                    backgroundColor: currentPage === i ? "#5b0116" : "#2a1520",
-                    border:
-                      currentPage === i
-                        ? "1px solid rgba(255,180,50,0.4)"
-                        : "1px solid rgba(255,255,255,0.1)",
-                    color: currentPage === i ? "#ffd700" : "rgba(255,255,255,0.5)",
-                  }}
-                >
-                  {i + 1}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
-                disabled={currentPage >= totalPages - 1}
-                className="w-7 h-7 rounded flex items-center justify-center disabled:opacity-30"
-                style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
-              >
-                <ChevronRight size={14} className="text-white/60" />
-              </button>
             </div>
           )}
         </div>

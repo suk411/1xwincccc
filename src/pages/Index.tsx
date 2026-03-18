@@ -110,9 +110,17 @@ const Index = () => {
     setTickerText(repeated);
   }, []);
 
-  const handleTabClick = (label: string) => {
+  const handleGroupClick = (label: string) => {
     if (label === "GROUP") {
       navigate("/community-event");
+    }
+  };
+
+  const handleTabChange = (tabValue: string) => {
+    if (tabValue === "top") {
+      setActiveGameTab("top");
+    } else {
+      navigate("/lobby", { state: { activeTab: tabValue } });
     }
   };
 
@@ -192,7 +200,7 @@ const Index = () => {
           {categoryTabs.map((tab, i) => (
             <button
               key={i}
-              onClick={() => handleTabClick(tab.label)}
+              onClick={() => handleGroupClick(tab.label)}
               className="flex flex-col ml-2 items-center gap-0.5 flex-shrink-0 w-[70px] cursor-pointer hover:scale-105 transition-transform"
             >
               <div
@@ -221,21 +229,13 @@ const Index = () => {
           <GameTabs
             tabs={gameTabs}
             value={activeGameTab}
-            onChange={setActiveGameTab}
+            onChange={handleTabChange}
             className="rounded-lg"
           />
         </div>
 
-        {activeGameTab === "top" ? (
-          showTopGames && (
-            <GameProviderSection 
-              launchingGame={launchingGame}
-              handleGameLaunch={handleGameLaunch}
-            />
-          )
-        ) : (
-          <GameLobby
-            activeTab={activeGameTab}
+        {activeGameTab === "top" && (
+          <GameProviderSection 
             launchingGame={launchingGame}
             handleGameLaunch={handleGameLaunch}
           />

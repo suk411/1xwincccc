@@ -15,6 +15,7 @@ import PaymentGateway from "./pages/PaymentGateway";
 import GamePlay from "./pages/GamePlay";
 import BetRecords from "./pages/BetRecords";
 import Vip from "./pages/Vip";
+import GameLobbyPage from "./pages/GameLobbyPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
@@ -58,6 +59,7 @@ const AppContent = () => {
           <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
           <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
           <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
+          <Route path="/lobby" element={<ProtectedRoute><GameLobbyPage /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
