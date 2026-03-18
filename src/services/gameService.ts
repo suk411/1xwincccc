@@ -687,7 +687,7 @@ export const GAME_LIST: GameObject[] = [
     provider: "jili",
     game_id: 289,
     type: "FH",
-    category: "casino",
+    category: "kish",
   },
   {
     name: "Bombing Fishing",
@@ -745,7 +745,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Fishing Disco",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/MegaFishing.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/FishingDisco.png",
     provider_code: "JD",
     provider: "jdb",
     game_id: "7_7007",
