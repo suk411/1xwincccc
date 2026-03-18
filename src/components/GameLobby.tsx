@@ -16,6 +16,7 @@ const IconImg = ({ src, alt }: { src: string; alt: string }) => (
 );
 
 const LOBBY_TABS: GameTab[] = [
+  { label: "All", value: "all", icon: <IconImg src={allTabIcon} alt="All" /> },
   { label: "Slots", value: "slot", icon: <IconImg src={slotsTabIcon} alt="Slots" /> },
   { label: "Casino", value: "casino", icon: <IconImg src={casinoTabIcon} alt="Casino" /> },
   { label: "FISH", value: "fish", icon: <IconImg src={fishTabIcon} alt="Fish" /> },
@@ -47,7 +48,7 @@ interface GameLobbyProps {
 
 const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProps) => {
   const [selectedProvider, setSelectedProvider] = useState(GAME_LIST[0]?.provider?.toLowerCase() || "jili");
-  const [selectedFilter, setSelectedFilter] = useState("slot");
+  const [selectedFilter, setSelectedFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(0);
 
   // Get unique providers from GAME_LIST
@@ -64,7 +65,9 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     games = games.filter((g) => g.provider.toLowerCase() === selectedProvider.toLowerCase());
 
     // Category filter from horizontal tabs
-    games = games.filter((g) => g.category.toLowerCase() === selectedFilter.toLowerCase());
+    if (selectedFilter !== "all") {
+      games = games.filter((g) => g.category.toLowerCase() === selectedFilter.toLowerCase());
+    }
 
     // Tab-level filter (from top level category)
     if (activeTab !== "all" && activeTab !== "top") {
