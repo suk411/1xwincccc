@@ -38,7 +38,6 @@ import verifiedCertification from "@/assets/partners/verified-certification.png"
 import securityProtection from "@/assets/partners/security-protection.png";
 import telegramPartner from "@/assets/partners/telegram-icon.png";
 import responsibleGaming from "@/assets/partners/responsible-gaming.png";
-import DownloadBanner from "@/components/DownloadBanner";
 
 
 
@@ -201,7 +200,6 @@ const Index = () => {
 
   return (
     <PageLayout>
-      <DownloadBanner />
       <div className="flex-1 flex flex-col gap-0 pb-12 -mt-4">
         {/* Video Banner */}
         <div className="relative w-full rounded-lg overflow-hidden">
