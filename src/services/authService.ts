@@ -95,6 +95,20 @@ export interface WithdrawInfoResponse {
     charge: number;
     vip: number | string;
     vipMeta?: Record<string, any> | null;
+    walletBalance?: number;
+    gameBalance?: number;
+    totalAvailable?: number;
+    turnover?: {
+      total_required: number;
+      requirement: number;
+      completed: number;
+      progress: number;
+      canWithdraw: boolean;
+    };
+    dailyLimit?: number;
+    usedToday?: number;
+    remainingDailyLimit?: number;
+    maxWithdraw?: number;
   };
 }
 
