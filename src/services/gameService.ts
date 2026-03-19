@@ -273,7 +273,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Plinko",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Plinkojili.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Plinko.png",
     provider_code: "SPRIBE",
     provider: "spribe",
     game_id: 242,
