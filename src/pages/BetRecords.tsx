@@ -5,6 +5,21 @@ import { GAME_LIST } from "@/services/gameService";
 import { GameButton } from "@/components/GameButton";
 
 const API_BASE = "https://backend-ledger-0ra6.onrender.com";
+const CACHE_KEY = "bet_records_cache";
+
+const loadCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+};
+
+const saveCache = (data: { items: BetItem[]; total: number; page: number }) => {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {}
+};
 
 interface BetItem {
   _id: string;
@@ -16,14 +31,17 @@ interface BetItem {
 }
 
 const BetRecords = () => {
-  const [items, setItems] = useState<BetItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
+  const cached = loadCache();
+  const [items, setItems] = useState<BetItem[]>(cached?.items || []);
+  const [loading, setLoading] = useState(!cached);
+  const [page, setPage] = useState(cached?.page || 1);
+  const [total, setTotal] = useState(cached?.total || 0);
   const limit = 15;
 
   const fetchBets = async (p: number) => {
-    setLoading(true);
+    // Only show full loader if we have NO items at all
+    if (items.length === 0) setLoading(true);
+    
     try {
       const token = localStorage.getItem("auth_token");
       const res = await fetch(`${API_BASE}/api/game/bets?page=${p}&limit=${limit}&site=JE&status=1`, {
@@ -39,8 +57,11 @@ const BetRecords = () => {
       }
       const data = await res.json();
       if (data.status === "success") {
-        setItems(data.items || []);
-        setTotal(data.total || 0);
+        const newItems = data.items || [];
+        const newTotal = data.total || 0;
+        setItems(newItems);
+        setTotal(newTotal);
+        saveCache({ items: newItems, total: newTotal, page: p });
       }
     } catch {
       // silent
@@ -63,7 +84,7 @@ const BetRecords = () => {
 
       {/* Content Container */}
       <div className="flex-1 px-4 py-4">
-        {loading ? (
+        {loading && items.length === 0 ? (
           <Loader label="Loading records..." />
         ) : items.length === 0 ? (
           <p className="text-center text-gray-400 mt-10">No bet records found</p>
@@ -90,7 +111,7 @@ const BetRecords = () => {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex flex-col gap-1">
-                      <span className="text-white font-bold text-base">{gameName}</span>
+                      <span className="text-yellow-400 font-bold text-base">{gameName}</span>
                       {hasPayout && (
                         <span className={`font-bold text-lg ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
                           {profit > 0 ? "+" : ""}{profit.toFixed(2)}
@@ -111,7 +132,7 @@ const BetRecords = () => {
                        <span className="text-green-500 font-bold text-sm">{item.bet.toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col items-end">
-                       <span className="text-white text-xs">{dateStr}</span>
+                       <span className="text-yellow-400 text-xs">{dateStr}</span>
                     </div>
                   </div>
                 </div>
@@ -128,9 +149,7 @@ const BetRecords = () => {
               size="sm"
               disabled={page <= 1}
               onClick={() => {
-                const newPage = page - 1;
-                setPage(newPage);
-                fetchBets(newPage);
+                setPage((p) => p - 1);
                 window.scrollTo(0, 0);
               }}
             >
@@ -142,9 +161,7 @@ const BetRecords = () => {
               size="sm"
               disabled={page >= totalPages}
               onClick={() => {
-                const newPage = page + 1;
-                setPage(newPage);
-                fetchBets(newPage);
+                setPage((p) => p + 1);
                 window.scrollTo(0, 0);
               }}
             >
