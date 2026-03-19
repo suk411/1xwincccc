@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 import { GAME_LIST } from "@/services/gameService";
+import { GameButton } from "@/components/GameButton";
 
 const API_BASE = "https://backend-ledger-0ra6.onrender.com";
 
@@ -112,36 +112,30 @@ const BetRecords = () => {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-8 mb-4">
-            <button
+          <div className="flex items-center justify-center gap-3 py-4 mt-4">
+            <GameButton
+              variant="mute"
+              size="sm"
               disabled={page <= 1}
               onClick={() => {
                 setPage((p) => p - 1);
                 window.scrollTo(0, 0);
               }}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white disabled:opacity-30 active:scale-95 transition-all"
-              style={{ border: "1px solid rgba(255,255,255,0.1)" }}
             >
-              <ChevronLeft size={20} />
-            </button>
-            
-            <div className="flex items-center gap-1">
-              <span className="text-orange-400 font-bold">{page}</span>
-              <span className="text-gray-500">/</span>
-              <span className="text-white">{totalPages}</span>
-            </div>
-
-            <button
+              Previous
+            </GameButton>
+            <span className="text-white/60 text-xs">Page {page}</span>
+            <GameButton
+              variant="mute"
+              size="sm"
               disabled={page >= totalPages}
               onClick={() => {
                 setPage((p) => p + 1);
                 window.scrollTo(0, 0);
               }}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white disabled:opacity-30 active:scale-95 transition-all"
-              style={{ border: "1px solid rgba(255,255,255,0.1)" }}
             >
-              <ChevronRight size={20} />
-            </button>
+              Next
+            </GameButton>
           </div>
         )}
       </div>
