@@ -36,7 +36,7 @@ const BetRecords = () => {
   const [loading, setLoading] = useState(!cached);
   const [page, setPage] = useState(cached?.page || 1);
   const [total, setTotal] = useState(cached?.total || 0);
-  const limit = 15;
+  const limit = 25;
 
   const fetchBets = async (p: number) => {
     // Only show full loader if we have NO items at all
@@ -44,7 +44,7 @@ const BetRecords = () => {
     
     try {
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${API_BASE}/api/game/bets?page=${p}&limit=${limit}&site=JE&status=1`, {
+      const res = await fetch(`${API_BASE}/api/game/bets?page=${p}&limit=${limit}`, {
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -111,7 +111,7 @@ const BetRecords = () => {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex flex-col gap-1">
-                      <span className="text-yellow-400 font-bold text-base">{gameName}</span>
+                      <span className="text-white text-base">{gameName}</span>
                       {hasPayout && (
                         <span className={`font-bold text-lg ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
                           {profit > 0 ? "+" : ""}{profit.toFixed(2)}
@@ -132,7 +132,7 @@ const BetRecords = () => {
                        <span className="text-green-500 font-bold text-sm">{item.bet.toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col items-end">
-                       <span className="text-yellow-400 text-xs">{dateStr}</span>
+                       <span className="text-white text-xs">{dateStr}</span>
                     </div>
                   </div>
                 </div>
