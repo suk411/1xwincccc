@@ -90,7 +90,7 @@ const BetRecords = () => {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex flex-col gap-1">
-                      <span className="text-yellow-400 font-bold text-base">{gameName}</span>
+                      <span className="text-white font-bold text-base">{gameName}</span>
                       {hasPayout && (
                         <span className={`font-bold text-lg ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
                           {profit > 0 ? "+" : ""}{profit.toFixed(2)}
@@ -111,7 +111,7 @@ const BetRecords = () => {
                        <span className="text-green-500 font-bold text-sm">{item.bet.toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col items-end">
-                       <span className="text-yellow-400 text-xs">{dateStr}</span>
+                       <span className="text-white text-xs">{dateStr}</span>
                     </div>
                   </div>
                 </div>
