@@ -32,7 +32,7 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
     if (isWithdrawing) return;
     setIsWithdrawing(true);
 
-    const providers = ["JE", "PG", "JD", "SPRIBE", "TU"];
+    const providers = ["JE", "PG", "TU", "JD"];
 
     // 1. Trigger API calls immediately
     const apiPromise = (async () => {

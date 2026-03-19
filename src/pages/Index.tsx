@@ -124,7 +124,7 @@ const Index = () => {
     if (isWithdrawing) return;
     setIsWithdrawing(true);
 
-    const providers = ["JE", "PG", "JD", "SPRIBE", "TG"];
+    const providers = ["JE", "PG", "TU", "JD"];
 
     // 1. Trigger API calls immediately
     const apiPromise = (async () => {
