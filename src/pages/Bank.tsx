@@ -297,7 +297,7 @@ const Bank = () => {
               <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-white text-xs">Turnover Progress:</span>
-                  <span className="text-primary text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
+                  <span className="text-green-700 text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
                 </div>
                 <Progress
                   value={turnoverProgress}

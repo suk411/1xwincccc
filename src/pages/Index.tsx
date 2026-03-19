@@ -87,9 +87,56 @@ const Index = () => {
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [withdrawCountdown, setWithdrawCountdown] = useState(0);
   const showTopGames = true;
-  
+
   const { balance } = useProfile();
+
+  const handleWithdrawAll = async () => {
+    if (isWithdrawing) return;
+    setIsWithdrawing(true);
+
+    const providers = ["JE", "PG", "JD", "SPRIBE", "TG"];
+
+    // 1. Trigger API calls immediately
+    const apiPromise = (async () => {
+      try {
+        const results = await Promise.allSettled(
+          providers.map((p_code) => gameService.withdraw(p_code))
+        );
+        const successful = results.filter((r) => r.status === "fulfilled").length;
+        if (successful > 0) {
+          await refreshProfile();
+          return successful;
+        }
+        return 0;
+      } catch (e) {
+        console.error("Withdrawal error:", e);
+        return -1;
+      }
+    })();
+
+    // 2. Start visual countdown (5 to 1)
+    for (let i = 5; i > 0; i--) {
+      setWithdrawCountdown(i);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    // 3. Wait for API to finish if it hasn't already
+    const successfulCount = await apiPromise;
+
+    if (successfulCount > 0) {
+      toast({ title: "Withdrawal Successful", description: `Withdrawn from ${successfulCount} providers.` });
+    } else if (successfulCount === 0) {
+      toast({ title: "Withdrawal Failed", description: "No funds found to withdraw.", variant: "destructive" });
+    } else if (successfulCount === -1) {
+      toast({ title: "Withdrawal Error", description: "Something went wrong during withdrawal.", variant: "destructive" });
+    }
+
+    setWithdrawCountdown(0);
+    setIsWithdrawing(false);
+  };
 
   const handleGameLaunch = async (game: GameObject) => {
     setLaunchingGame(game.game_id);
@@ -195,13 +242,13 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex items-center pt-1 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
+        {/* Category Tabs & Game Wallet Withdrawal */}
+        <div className="flex items-center justify-between px-2 pt-1 mt-2 bg-black rounded-lg overflow-x-auto scrollbar-hide pb-1">
           {categoryTabs.map((tab, i) => (
             <button
               key={i}
               onClick={() => handleGroupClick(tab.label)}
-              className="flex flex-col ml-2 items-center gap-0.5 flex-shrink-0 w-[70px] cursor-pointer hover:scale-105 transition-transform"
+              className="flex flex-col items-center gap-0.5 flex-shrink-0 w-[70px] cursor-pointer hover:scale-105 transition-transform"
             >
               <div
                 className="relative w-[70px] h-[70px] rounded-2xl overflow-hidden flex items-center justify-center"
@@ -222,6 +269,38 @@ const Index = () => {
               </div>
             </button>
           ))}
+
+          {/* Game Wallet Withdrawal Card */}
+          <div 
+            className="relative flex-shrink-0 min-w-[170px] h-[70px] rounded-xl overflow-hidden"
+            style={{
+              background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+              border: "1px solid rgba(255,180,50,0.25)",
+            }}
+          >
+            {/* Icon on left top */}
+            <img 
+              src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/GAME_wallet.png" 
+              alt="Game Wallet" 
+              className="absolute top-2 left-2 w-6 h-6 object-contain"
+            />
+            {/* Text on top center */}
+            <span className="absolute top-2 left-1/2 -translate-x-1/2 text-white text-[9px] font-bold whitespace-nowrap leading-tight">
+              GAME Wallet
+            </span>
+            {/* Button on lower right side */}
+            <button
+              onClick={handleWithdrawAll}
+              disabled={isWithdrawing}
+              className="absolute bottom-2 right-2 px-2 py-1.5 rounded-sm text-white font-bold text-[8px] transition-all active:scale-95 disabled:cursor-not-allowed whitespace-nowrap"
+              style={{
+                background: "linear-gradient(180deg, #b8860b 0%, #8b6508 100%)",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+              }}
+            >
+              {isWithdrawing ? (withdrawCountdown > 0 ? `Recalling ${withdrawCountdown}` : "...") : "Withdraw"}
+            </button>
+          </div>
         </div>
 
         {/* Game Category Tabs */}

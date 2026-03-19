@@ -782,8 +782,15 @@ export const GAME_LIST: GameObject[] = [
     type: "FH",
     category: "fish",
   },
-
-
+  {
+    name: "Turbo Mines",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
+    provider_code: "TG",
+    provider: "turbo",
+    game_id: "mines",
+    type: "MG",
+    category: "casino",
+  },
 ];
 
 export const gameService = {

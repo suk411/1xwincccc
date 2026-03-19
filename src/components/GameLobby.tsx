@@ -25,10 +25,11 @@ const LOBBY_TABS: GameTab[] = [
 ];
 
 const PROVIDER_ICONS: Record<string, string> = {
-  jili: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/JILI.avif",
-  pg: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/pg.png",
-  jdb: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/JDB.avif",
-  spribe: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/buttonIcon/spribe.avif",
+  jili: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JILI_LOGO.avif",
+  pg: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/PG_LOGO.avif",
+  jdb: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JDB_LOGO.avif",
+  spribe: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/SPRIBE_LOGO.avif",
+  turbo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
 };
 
 const PROVIDER_LABELS: Record<string, string> = {
@@ -36,6 +37,7 @@ const PROVIDER_LABELS: Record<string, string> = {
   pg: "PG",
   jdb: "JDB",
   spribe: "SPRIBE",
+  turbo: "TURBO",
 };
 
 const GAMES_PER_PAGE = 9;
