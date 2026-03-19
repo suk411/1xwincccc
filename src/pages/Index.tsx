@@ -24,9 +24,10 @@ import liveTabIcon from "@/assets/tabs/live-icon.png";
 import sportTabIcon from "@/assets/tabs/sport-icon.png";
 import GameProviderSection from "@/components/GameProviderSection";
 import GameLobby from "@/components/GameLobby";
-import { GAME_LIST, gameService, GameObject } from "@/services/gameService";
+import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
+import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
@@ -89,9 +90,35 @@ const Index = () => {
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawCountdown, setWithdrawCountdown] = useState(0);
+  const [showBalanceDialog, setShowBalanceDialog] = useState(false);
+  const [gameBalances, setGameBalances] = useState<Record<string, number>>({});
+  const [totalGameBalance, setTotalGameBalance] = useState(0);
   const showTopGames = true;
 
   const { balance } = useProfile();
+
+  const fetchBalances = async () => {
+    try {
+      const data = await gameService.getBalance();
+      setGameBalances(data.gameBalance);
+      // Sum up only the game balances for the display on the card
+      const total = Object.values(data.gameBalance).reduce((sum, val) => sum + val, 0);
+      setTotalGameBalance(total);
+      // We also trigger a profile refresh if needed, but since we have walletBalance in the response, 
+      // we could potentially update the profile store directly if there's a way.
+      // For now, let's keep it simple and refresh the profile.
+      await refreshProfile();
+    } catch (e) {
+      console.error("Failed to fetch game balances:", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchBalances();
+    // Poll balances every 30 seconds
+    const interval = setInterval(fetchBalances, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleWithdrawAll = async () => {
     if (isWithdrawing) return;
@@ -127,11 +154,12 @@ const Index = () => {
     const successfulCount = await apiPromise;
 
     if (successfulCount > 0) {
-      toast({ title: "Withdrawal Successful", description: `Withdrawn from ${successfulCount} providers.` });
+      toast({ title: "Withdrawal Successful", description: `Recall success` });
+      await fetchBalances(); // Update balances after withdrawal
     } else if (successfulCount === 0) {
-      toast({ title: "Withdrawal Failed", description: "No funds found to withdraw.", variant: "destructive" });
+      toast({ title: "Try again.", description: "Try again", variant: "destructive" });
     } else if (successfulCount === -1) {
-      toast({ title: "Withdrawal Error", description: "Something went wrong during withdrawal.", variant: "destructive" });
+      toast({ title: "Try again", description: "Try again.", variant: "destructive" });
     }
 
     setWithdrawCountdown(0);
@@ -167,7 +195,9 @@ const Index = () => {
     if (tabValue === "top") {
       setActiveGameTab("top");
     } else {
-      navigate("/lobby", { state: { activeTab: tabValue } });
+      // Regardless of which category tab is clicked (all, slots, casino, etc.), 
+      // always open the lobby with "all" active.
+      navigate("/lobby", { state: { activeTab: "all" } });
     }
   };
 
@@ -286,8 +316,22 @@ const Index = () => {
             />
             {/* Text on top center */}
             <span className="absolute top-2 left-1/2 -translate-x-1/2 text-white text-[9px] font-bold whitespace-nowrap leading-tight">
-              GAME Wallet
+              Game Wallet
             </span>
+
+            {/* Amount in the center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-white text-[12px] font-mono font-bold">₹{totalGameBalance.toFixed(2)}</span>
+            </div>
+
+            {/* Details Button on top right */}
+            <button
+              onClick={() => setShowBalanceDialog(true)}
+              className="absolute top-2 right-2 text-[7px] text-yellow-500 underline uppercase font-bold"
+            >
+              Details
+            </button>
+
             {/* Button on lower right side */}
             <button
               onClick={handleWithdrawAll}
@@ -302,6 +346,16 @@ const Index = () => {
             </button>
           </div>
         </div>
+
+        <BalanceDetailsDialog 
+          isOpen={showBalanceDialog} 
+          onClose={() => setShowBalanceDialog(false)} 
+          balances={gameBalances} 
+          onRefresh={() => {
+            fetchBalances();
+            refreshProfile();
+          }}
+        />
 
         {/* Game Category Tabs */}
         <div className="mt-2 rounded-lg overflow-hidden">

@@ -782,18 +782,38 @@ export const GAME_LIST: GameObject[] = [
     type: "FH",
     category: "fish",
   },
+  
   {
-    name: "Turbo Mines",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
-    provider_code: "TG",
-    provider: "turbo",
-    game_id: "mines",
-    type: "MG",
-    category: "casino",
-  },
+  name: "1Tap Mines",
+  logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/01-1x1-1tapmines-thumb.png",
+  provider_code: "TU",
+  provider: "turbo",
+  game_id: "1tapmines",
+  type: "MG",
+  category: "casino",
+},
 ];
 
+export interface GameBalanceResponse {
+  status: string;
+  walletBalance: number;
+  gameBalance: Record<string, number>;
+  totalBalance: number;
+}
+
 export const gameService = {
+  async getBalance(): Promise<GameBalanceResponse> {
+    const res = await fetch(`${API_BASE}/api/game/balance`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok || data.status !== "success") {
+      throw new Error(data.msg || "Failed to fetch balances");
+    }
+    return data;
+  },
+
   async launch(game: GameObject): Promise<GameLaunchResponse> {
     const params = new URLSearchParams({
       g_id: String(game.game_id),

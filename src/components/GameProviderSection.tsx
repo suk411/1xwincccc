@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { GameObject, GAME_LIST } from "../services/gameService";
 
 import jiliLogo from "@/assets/providers/jili-logo.png";
@@ -38,16 +39,13 @@ interface GameProviderSectionProps {
 }
 
 const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSectionProps) => {
+  const navigate = useNavigate();
   const providerSections = getProviderSections();
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
 
   const changePage = (provider: string, delta: number, totalGames: number) => {
-    setPageMap((prev) => {
-      const current = prev[provider] || 0;
-      const maxPage = Math.ceil(totalGames / GAMES_PER_PAGE) - 1;
-      const next = Math.max(0, Math.min(maxPage, current + delta));
-      return { ...prev, [provider]: next };
-    });
+    // If we're on the TOP section and try to change page, navigate to lobby instead
+    navigate("/lobby", { state: { activeTab: "all" } });
   };
 
   return (
