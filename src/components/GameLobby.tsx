@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { GameObject, GAME_LIST } from "@/services/gameService";
 import { GameTabs, GameTab } from "./GameTabs";
 
@@ -49,9 +50,16 @@ interface GameLobbyProps {
 }
 
 const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProps) => {
+  const location = useLocation();
   const [selectedProvider, setSelectedProvider] = useState(GAME_LIST[0]?.provider?.toLowerCase() || "jili");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    if (location.state?.selectedProvider) {
+      setSelectedProvider(location.state.selectedProvider.toLowerCase());
+    }
+  }, [location.state]);
 
   // Get unique providers from GAME_LIST
   const providers = useMemo(() => {

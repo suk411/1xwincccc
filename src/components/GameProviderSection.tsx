@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { GameObject, GAME_LIST } from "../services/gameService";
 
@@ -24,7 +23,7 @@ const GAMES_PER_PAGE = 6;
 const getProviderSections = () => {
   const providers = ["jili", "pg", "jdb", "spribe", "turbo"];
   const gameNames: Record<string, string[]> = {
-    jili: ["Money Coming", "Fortune Gems 2", "Black Jack", "Mega Ace", "Super Ace", "Fortune Gems 3"],
+    jili: ["Money Coming", "Fortune Gems 2", "Black Jack", "Mega Ace", "Super Ace", "Dragon Tiger"],
     pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko"],
     jdb: ["Mines 2", "Trump Card", "Bull Treasure", "Fortune Neko", "Super Niubi Deluxe", "Lucky Color Game"],
     spribe: ["Aviator", "Mines", "Plinko", "Goal", "Hilo", "Dice"],
@@ -59,19 +58,15 @@ interface GameProviderSectionProps {
 const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSectionProps) => {
   const navigate = useNavigate();
   const providerSections = getProviderSections();
-  const [pageMap, setPageMap] = useState<Record<string, number>>({});
 
-  const changePage = (provider: string, delta: number, totalGames: number) => {
-    // If we're on the TOP section and try to change page, navigate to lobby instead
-    navigate("/lobby", { state: { activeTab: "all" } });
+  const navigateToLobby = (provider: string) => {
+    navigate("/lobby", { state: { activeTab: "all", selectedProvider: provider } });
   };
 
   return (
     <div className="flex flex-col gap-3 mt-2">
       {providerSections.map((section) => {
-        const page = pageMap[section.provider] || 0;
-        const totalPages = Math.ceil(section.games.length / GAMES_PER_PAGE);
-        const visibleGames = section.games.slice(page * GAMES_PER_PAGE, (page + 1) * GAMES_PER_PAGE);
+        const visibleGames = section.games;
 
         return (
           <div key={section.provider} className="rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
@@ -84,26 +79,13 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSe
                 />
                
               </div>
-              {totalPages > 1 && (
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => changePage(section.provider, -1, section.games.length)}
-                    disabled={page === 0}
-                    className="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30"
-                    style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
-                  >
-                    <ChevronLeft size={14} className="text-muted-foreground" />
-                  </button>
-                  <button
-                    onClick={() => changePage(section.provider, 1, section.games.length)}
-                    disabled={page >= totalPages - 1}
-                    className="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30"
-                    style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
-                  >
-                    <ChevronRight size={14} className="text-muted-foreground" />
-                  </button>
-                </div>
-              )}
+              <button
+                onClick={() => navigateToLobby(section.provider)}
+                className="w-7 h-7 rounded-md flex items-center justify-center transition-all hover:bg-white/10 active:scale-90"
+                style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
+              >
+                <ChevronRight size={16} className="text-white" />
+              </button>
             </div>
 
             <div className="grid grid-cols-3 gap-2 px-2 pb-3">
