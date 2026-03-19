@@ -77,22 +77,32 @@ const BetRecords = () => {
               const date = new Date(item.betTime);
               const dateStr = `${date.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })} ${date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
               
-              // Find game name from GAME_LIST using gameId
+              // Find game name and logo from GAME_LIST using gameId
               const gameObj = GAME_LIST.find(g => String(g.game_id) === String(item.gameId));
               const gameName = gameObj ? gameObj.name : `Game ${item.gameId}`;
+              const gameLogo = gameObj ? gameObj.logo : "";
 
               return (
                 <div
                   key={item._id}
-                  className="rounded-xl px-4 py-3 shadow-lg"
+                  className="rounded-xl px-4 py-3 shadow-lg relative overflow-hidden"
                   style={{ backgroundColor: "rgba(120, 20, 40, 0.5)", border: "1px solid rgba(255,255,255,0.05)" }}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-yellow-400 font-bold text-base">{gameName}</span>
-                    {hasPayout && (
-                      <span className={`font-bold text-lg ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
-                        {profit > 0 ? "+" : ""}{profit.toFixed(2)}
-                      </span>
+                  <div className="flex items-start justify-between">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-yellow-400 font-bold text-base">{gameName}</span>
+                      {hasPayout && (
+                        <span className={`font-bold text-lg ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
+                          {profit > 0 ? "+" : ""}{profit.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    {gameLogo && (
+                      <img 
+                        src={gameLogo} 
+                        alt={gameName} 
+                        className="w-12 h-12 object-cover rounded-lg shadow-md border border-white/10"
+                      />
                     )}
                   </div>
                   
