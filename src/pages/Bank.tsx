@@ -101,10 +101,10 @@ const Bank = () => {
   };
 
   const walletBalance = withdrawInfo?.data?.walletBalance ?? withdrawInfo?.data?.balance ?? balance;
-  const withdrawableAmount = withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
-  const turnoverRequirement = withdrawInfo?.data?.turnover?.requirement ?? (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
-  const turnoverProgress = withdrawInfo?.data?.turnover?.progress ?? (withdrawInfo?.data as any)?.turnover_progress ?? 0;
+  const withdrawableAmount = withdrawInfo?.data?.totalAvailable ?? withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
+  const turnoverRequirement = withdrawInfo?.data?.turnover?.total_required ?? withdrawInfo?.data?.turnover?.requirement ?? (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
   const turnoverCompleted = withdrawInfo?.data?.turnover?.completed ?? 0;
+  const turnoverProgress = withdrawInfo?.data?.turnover?.progress ?? (withdrawInfo?.data as any)?.turnover_progress ?? 0;
   const dailyLimit = withdrawInfo?.data?.vipMeta?.dailyWithdrawLimit ?? withdrawInfo?.data?.dailyLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
   const remainingLimit = withdrawInfo?.data?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   
@@ -136,16 +136,17 @@ const Bank = () => {
       toast({ description: "Please bind a bank account first", variant: "destructive" });
       return;
     }
-    if (selectedWithdrawAmount > withdrawableAmount) {
-      toast({ description: "Insufficient withdrawable balance", variant: "destructive" });
-      return;
-    }
+    
     setWithdrawing(true);
     try {
       const res = await authService.requestWithdraw(selectedWithdrawAmount);
-      toast({ description: res.msg || "Withdrawal request submitted" });
-      refreshBalance();
-      loadWithdrawInfo();
+      if (res.status === "success") {
+        toast({ description: res.msg || "Withdrawal request submitted" });
+        refreshBalance();
+        loadWithdrawInfo();
+      } else {
+        toast({ description: res.msg || "Withdrawal failed", variant: "destructive" });
+      }
     } catch (err: any) {
       toast({ description: err.message || "Withdrawal failed", variant: "destructive" });
     } finally {
@@ -176,7 +177,7 @@ const Bank = () => {
           <img src={bankIcon} alt="Bank" className="w-8 h-8 object-contain" />
           <div className="flex items-center gap-1">
             <span className="text-white/70 text-sm">Balance:</span>
-            <span className="text-primary font-bold text-base">₹{balance.toFixed(2)}</span>
+            <span className="text-primary font-bold text-base">₹{activeTab === 'deposit' ? balance.toFixed(2) : walletBalance.toFixed(2)}</span>
           </div>
         </div>
         <div className="relative z-10 flex items-center gap-3">
@@ -297,7 +298,7 @@ const Bank = () => {
               <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-white text-xs">Turnover Progress:</span>
-                  <span className="text-green-700 text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
+                  <span className="text-green-500 text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
                 </div>
                 <Progress
                   value={turnoverProgress}
