@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
 import { GameTabs } from "@/components/GameTabs";
 import firstDepositBanner from "@/assets/events/first-deposit-banner.png";
@@ -15,6 +16,7 @@ interface EventCard {
   banner: string;
   title: string;
   description: string;
+  path?: string;
 }
 
 const depositEvents: EventCard[] = [
@@ -27,6 +29,7 @@ const depositEvents: EventCard[] = [
     banner: groupBanner,
     title: "Join the Group",
     description: "Grab gift codes & claim cash daily up to ₹16,888",
+    path: "/community-event",
   },
 ];
 
@@ -39,8 +42,15 @@ const withdrawalEvents: EventCard[] = [
 ];
 
 const Events = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("deposit");
   const events = activeTab === "deposit" ? depositEvents : withdrawalEvents;
+
+  const handleEventClick = (event: EventCard) => {
+    if (event.path) {
+      navigate(event.path);
+    }
+  };
 
   return (
     <main className="relative flex-1 flex flex-col pb-20">
@@ -52,7 +62,13 @@ const Events = () => {
 
       <div className="flex flex-col gap-4 px-2 mt-3">
         {events.map((event, i) => (
-          <div key={i} className="relative rounded-xl overflow-hidden">
+          <div
+            key={i}
+            className={`relative rounded-xl overflow-hidden ${
+              event.path ? "cursor-pointer" : ""
+            }`}
+            onClick={() => handleEventClick(event)}
+          >
             {/* Gold border frame */}
             <img
               src={goldBorder}
