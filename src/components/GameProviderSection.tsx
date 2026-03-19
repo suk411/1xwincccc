@@ -71,13 +71,15 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSe
         return (
           <div key={section.provider} className="rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
             <div className="flex items-center justify-between px-2 py-2">
-              <div className="flex items-center ">
+              <div className="flex items-center gap-2">
                 <img
                   src={providerLogos[section.provider] || ""}
                   alt={section.displayName}
                   className="w-24 h-8 object-contain"
                 />
-               
+                <span className="text-white text-sm font-bold tracking-wider">
+                  {section.displayName}
+                </span>
               </div>
               <button
                 onClick={() => navigateToLobby(section.provider)}
