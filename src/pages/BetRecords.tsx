@@ -56,10 +56,13 @@ const BetRecords = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)" }}>
-      <PageHeader title="Game Records" />
+      {/* Header with fixed height to prevent shrinking */}
+      <div className="h-11 flex-shrink-0 sticky top-0 z-50">
+        <PageHeader title="Game Records" />
+      </div>
 
       {/* Content Container with margin-top for header clearance */}
-      <div className="flex-1 px-4 py-6 mt-2">
+      <div className="flex-1 px-4 py-4 overflow-y-auto">
         {loading ? (
           <Loader label="Loading records..." />
         ) : items.length === 0 ? (
@@ -85,7 +88,7 @@ const BetRecords = () => {
                   style={{ backgroundColor: "rgba(120, 20, 40, 0.5)", border: "1px solid rgba(255,255,255,0.05)" }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-white font-bold text-base">{gameName}</span>
+                    <span className="text-yellow-400 font-bold text-base">{gameName}</span>
                     {hasPayout && (
                       <span className={`font-bold text-lg ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
                         {profit > 0 ? "+" : ""}{profit.toFixed(2)}
@@ -95,12 +98,10 @@ const BetRecords = () => {
                   
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10">
                     <div className="flex flex-col">
-                       <span className="text-gray-400 text-[10px] uppercase">Bet Amount</span>
-                       <span className="text-orange-400 font-bold text-sm">{item.bet.toFixed(2)}</span>
+                       <span className="text-green-500 font-bold text-sm">{item.bet.toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col items-end">
-                       <span className="text-gray-400 text-[10px] uppercase">Time</span>
-                       <span className="text-gray-300 text-xs">{dateStr}</span>
+                       <span className="text-yellow-400 text-xs">{dateStr}</span>
                     </div>
                   </div>
                 </div>
