@@ -298,19 +298,19 @@ const Bank = () => {
               <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-white text-xs">Turnover Progress:</span>
-                  <span className="text-green-500 text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
+                  <span className="text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
                 </div>
                 <Progress
                   value={turnoverProgress}
                   className="h-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
                 />
                 <div className="flex justify-end mt-0.5">
-                  <span className="text-white/60 text-[10px]">{turnoverProgress.toFixed(1)}% Completed</span>
+                  <span className=" text-green-500  text-[10px]">{turnoverProgress.toFixed(1)}% Completed</span>
                 </div>
               </div>
               <div className="flex items-center justify-between mt-1 pt-1 border-t border-white/10">
-                <span className="text-white/60 text-[11px]">Daily Limit:</span>
-                <span className="text-white/60 text-[11px]">₹{remainingLimit.toFixed(2)} / ₹{dailyLimit.toFixed(2)}</span>
+                <span className=" text-[11px]">Daily Withdraw Limit:</span>
+                <span className=" text-[11px]">₹{remainingLimit.toFixed(2)} / ₹{dailyLimit.toFixed(2)}</span>
               </div>
             </GameCard>
 
