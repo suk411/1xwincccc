@@ -3,34 +3,52 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { GameObject, GAME_LIST } from "../services/gameService";
 
-import jiliLogo from "@/assets/providers/jili-logo.png";
-import pgLogo from "@/assets/providers/pg-logo.png";
-
 const providerLogos: Record<string, string> = {
-  JILI: jiliLogo,
-  JE: jiliLogo,
-  PG: pgLogo,
+  jili: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JILI_LOGO.avif",
+  pg: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/PG_LOGO.avif",
+  jdb: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JDB_LOGO.avif",
+  spribe: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/SPRIBE_LOGO.avif",
+  turbo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
 };
 
 const providerNames: Record<string, string> = {
-  JE: "JILI",
-  PG: "PG",
+  jili: "JILI",
+  pg: "PG",
+  jdb: "JDB",
+  spribe: "SPRIBE",
+  turbo: "TURBO",
 };
 
 const GAMES_PER_PAGE = 6;
 
 const getProviderSections = () => {
-  const grouped: Record<string, GameObject[]> = {};
-  for (const game of GAME_LIST) {
-    const key = game.provider_code;
-    if (!grouped[key]) grouped[key] = [];
-    grouped[key].push(game);
-  }
-  return Object.entries(grouped).map(([provider, games]) => ({
-    provider,
-    displayName: providerNames[provider] || provider,
-    games,
-  }));
+  const providers = ["jili", "pg", "jdb", "spribe", "turbo"];
+  const gameNames: Record<string, string[]> = {
+    jili: ["Money Coming", "Fortune Gems 2", "Black Jack", "Mega Ace", "Super Ace", "Fortune Gems 3"],
+    pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko"],
+    jdb: ["Mines 2", "Trump Card", "Bull Treasure", "Fortune Neko", "Super Niubi Deluxe", "Lucky Color Game"],
+    spribe: ["Aviator", "Mines", "Plinko", "Goal", "Hilo", "Dice"],
+    turbo: ["Vortex", "Chicken Route", "Limbo Rider", "Vortex Halloween", "Mysteco", "Turbo Plinko"],
+  };
+
+  return providers.map((provider) => {
+    const targetNames = gameNames[provider];
+    const games = targetNames
+      .map((name) => {
+        // Search for the game by name and provider
+        const found = GAME_LIST.find(
+          (g) => g.name.toLowerCase() === name.toLowerCase() && g.provider.toLowerCase() === provider
+        );
+        return found;
+      })
+      .filter((g): g is GameObject => g !== undefined);
+
+    return {
+      provider,
+      displayName: providerNames[provider],
+      games,
+    };
+  });
 };
 
 interface GameProviderSectionProps {
@@ -60,7 +78,7 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSe
             <div className="flex items-center justify-between px-2 py-2">
               <div className="flex items-center ">
                 <img
-                  src={providerLogos[section.provider] || pgLogo}
+                  src={providerLogos[section.provider] || ""}
                   alt={section.displayName}
                   className="w-24 h-8 object-contain"
                 />
