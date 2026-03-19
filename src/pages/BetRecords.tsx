@@ -20,7 +20,7 @@ const BetRecords = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const limit = 25;
+  const limit = 15;
 
   const fetchBets = async (p: number) => {
     setLoading(true);
@@ -55,14 +55,14 @@ const BetRecords = () => {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)" }}>
+    <div className="min-h-screen flex flex-col pb-32" style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)" }}>
       {/* Header with fixed height to prevent shrinking */}
       <div className="h-11 flex-shrink-0 sticky top-0 z-50">
         <PageHeader title="Game Records" />
       </div>
 
-      {/* Content Container with margin-top for header clearance */}
-      <div className="flex-1 px-4 py-4 overflow-y-auto">
+      {/* Content Container */}
+      <div className="flex-1 px-4 py-4">
         {loading ? (
           <Loader label="Loading records..." />
         ) : items.length === 0 ? (
@@ -121,26 +121,30 @@ const BetRecords = () => {
         )}
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-3 py-4 mt-4">
+        {!loading && total > limit && (
+          <div className="flex items-center justify-center gap-3 py-6 mt-4">
             <GameButton
               variant="mute"
               size="sm"
               disabled={page <= 1}
               onClick={() => {
-                setPage((p) => p - 1);
+                const newPage = page - 1;
+                setPage(newPage);
+                fetchBets(newPage);
                 window.scrollTo(0, 0);
               }}
             >
               Previous
             </GameButton>
-            <span className="text-white/60 text-xs">Page {page}</span>
+            <span className="text-white/60 text-xs font-medium">Page {page}</span>
             <GameButton
               variant="mute"
               size="sm"
               disabled={page >= totalPages}
               onClick={() => {
-                setPage((p) => p + 1);
+                const newPage = page + 1;
+                setPage(newPage);
+                fetchBets(newPage);
                 window.scrollTo(0, 0);
               }}
             >
