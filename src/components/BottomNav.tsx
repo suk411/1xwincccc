@@ -1,4 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 import homeActive from "@/assets/icons/home-active.png";
 import homeInactive from "@/assets/icons/home-inactive.png";
@@ -28,6 +29,14 @@ const navItems: NavItem[] = [
 
 const BottomNav = () => {
   const location = useLocation();
+
+  const handlePromoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast({
+      description: " Event Undergoing Updates",
+      variant: "destructive"
+    });
+  };
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-50 flex justify-center">
@@ -72,15 +81,15 @@ const BottomNav = () => {
           })}
 
           {/* Center spacer - just for text, gift is positioned separately */}
-          <Link
-            to="/promo"
-            className="flex flex-col items-center pt-[2%]"
+          <div
+            onClick={handlePromoClick}
+            className="flex flex-col items-center pt-[2%] cursor-pointer"
             style={{ minWidth: '12%' }}
           >
             <span className="text-primary text-glow" style={{ fontSize: 'clamp(0.7rem, 2.2vw, 1.2rem)' }}>
               GET ₹200
             </span>
-          </Link>
+          </div>
 
           {/* Right nav items */}
           {navItems.slice(2, 4).map((item) => {
@@ -114,9 +123,9 @@ const BottomNav = () => {
         </div>
         
         {/* Center gift + platform - positioned to overlap top edge of nav */}
-        <Link
-          to="/promo"
-          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10"
+        <div
+          onClick={handlePromoClick}
+          className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center z-10 cursor-pointer"
           style={{ top: '-3%' }}
         >
           {/* Platform background */}
@@ -133,7 +142,7 @@ const BottomNav = () => {
             className="object-contain relative z-10 transition-transform duration-200 hover:scale-110"
             style={{ width: 'clamp(3rem, 9vw, 6rem)', height: 'clamp(3rem, 9vw, 6rem)' }}
           />
-        </Link>
+        </div>
       </div>
     </nav>
   );

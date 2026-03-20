@@ -1,12 +1,19 @@
 import PageLayout from "@/components/PageLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { GAME_LIST, gameService } from "@/services/gameService";
 import { refreshProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
 
 const Promo = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
   const [countdowns, setCountdowns] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    // Redirect to home page as per maintenance requirement
+    navigate("/", { replace: true });
+  }, [navigate]);
 
   const handleWithdraw = async (providerCode: string, gameName: string) => {
     if (countdowns[providerCode] > 0 || loading === providerCode) return;
