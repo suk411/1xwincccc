@@ -19,7 +19,19 @@ import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
 import { Progress } from "@/components/ui/progress";
 
-const DEPOSIT_AMOUNTS = [200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
+const DEPOSIT_OPTIONS = [
+  { deposit: 100, bonus: 20 },
+  { deposit: 200, bonus: 40 },
+  { deposit: 300, bonus: 60 },
+  { deposit: 500, bonus: 100 },
+  { deposit: 1000, bonus: 250 },
+  { deposit: 3000, bonus: 750 },
+  { deposit: 5000, bonus: 1250 },
+  { deposit: 8000, bonus: 2000 },
+  { deposit: 10000, bonus: 3000 },
+  { deposit: 20000, bonus: 6000 },
+  { deposit: 30000, bonus: 7500 }
+];
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 
 const Bank = () => {
@@ -27,7 +39,7 @@ const Bank = () => {
   const { toast } = useToast();
   const { balance, refresh: refreshBalance } = useProfile();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
-  const [selectedAmount, setSelectedAmount] = useState(200);
+  const [selectedAmount, setSelectedAmount] = useState(100);
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
   const [showAddAccount, setShowAddAccount] = useState(false);
@@ -110,6 +122,7 @@ const Bank = () => {
   
   const chargeRate = withdrawInfo?.data?.charge ?? 0.0;
   const feeAmount = selectedWithdrawAmount * chargeRate;
+  const selectedDepositBonus = DEPOSIT_OPTIONS.find(o => o.deposit === selectedAmount)?.bonus || 0;
 
   const handlePay = async () => {
     if (paying) return;
@@ -225,23 +238,23 @@ const Bank = () => {
             <GameCard className="p-2 flex flex-col gap-2">
               <span className="text-white text-sm">Choose Deposit Amount</span>
               <div className="grid grid-cols-3 gap-2">
-                {DEPOSIT_AMOUNTS.map((amount) => {
-                  const isActive = selectedAmount === amount;
+                {DEPOSIT_OPTIONS.map((opt) => {
+                  const isActive = selectedAmount === opt.deposit;
                   return (
                     <div
-                      key={amount}
-                      onClick={() => setSelectedAmount(amount)}
+                      key={opt.deposit}
+                      onClick={() => setSelectedAmount(opt.deposit)}
                       className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
                       style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                     >
                       <img src={depositBadge} alt="" className="absolute top-0 left-0 w-12 h-5 object-contain" />
                       <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
-                      <span className="text-white text-base text-center pt-2.5 pb-0.5">{amount.toLocaleString()}</span>
+                      <span className="text-white text-base text-center pt-2.5 pb-0.5">{opt.deposit.toLocaleString()}</span>
                       <div
                         className="text-center text-[11px] font-bold rounded-b-md"
                         style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
                       >
-                        +1.4
+                        +{opt.bonus}
                       </div>
                     </div>
                   );
@@ -412,9 +425,9 @@ const Bank = () => {
           {activeTab === "deposit" && (
             <div className="flex items-center gap-1">
               <span className="text-white/50 text-[10px]">Received</span>
-              <span className="text-green-400 text-[10px] font-bold">₹{(selectedAmount + 1.4).toLocaleString()}</span>
+              <span className="text-green-400 text-[10px] font-bold">₹{(selectedAmount + selectedDepositBonus).toLocaleString()}</span>
               <span className="text-white/50 text-[10px]">Bonus</span>
-              <span className="text-primary text-[10px] font-bold">₹1.4</span>
+              <span className="text-primary text-[10px] font-bold">₹{selectedDepositBonus.toLocaleString()}</span>
             </div>
           )}
           {activeTab === "withdraw" && (
