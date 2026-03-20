@@ -28,6 +28,7 @@ import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/servi
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
 import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
+import VipLockModal from "@/components/VipLockModal";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
@@ -91,11 +92,13 @@ const Index = () => {
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawCountdown, setWithdrawCountdown] = useState(0);
   const [showBalanceDialog, setShowBalanceDialog] = useState(false);
+  const [showVipModal, setShowVipModal] = useState(false);
+  const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
   const [gameBalances, setGameBalances] = useState<Record<string, number>>({});
   const [totalGameBalance, setTotalGameBalance] = useState(0);
   const showTopGames = true;
 
-  const { balance } = useProfile();
+  const { balance, vipLevel } = useProfile();
 
   const fetchBalances = async () => {
     try {
@@ -164,11 +167,24 @@ const Index = () => {
   };
 
   const handleGameLaunch = async (game: GameObject) => {
+    // Check VIP requirement immediately using cached vipLevel from useProfile hook
+    // Strictly restrict ALL games if vipLevel is 0
+    if (vipLevel === 0) {
+      setPendingGame(game);
+      setShowVipModal(true);
+      return;
+    }
+
     setLaunchingGame(game.game_id);
     try {
+      // Backend request is ONLY made if user is VIP 1 or more
       const result = await gameService.launch(game);
+      // Only refresh profile if necessary (e.g. to update balance)
       await refreshProfile();
-      navigate("/game", { state: { gameUrl: result.gameUrl } });
+      
+      if (result.gameUrl) {
+        navigate("/game", { state: { gameUrl: result.gameUrl } });
+      }
     } catch (e: any) {
       toast({ title: "Launch failed", description: e.message, variant: "destructive" });
     } finally {
@@ -354,6 +370,14 @@ const Index = () => {
           }}
         />
 
+        <VipLockModal
+          isOpen={showVipModal}
+          onClose={() => {
+            setShowVipModal(false);
+            setPendingGame(null);
+          }}
+        />
+
         {/* Game Category Tabs */}
         <div className="mt-2 rounded-lg overflow-hidden">
           <GameTabs
@@ -368,6 +392,7 @@ const Index = () => {
           <GameProviderSection 
             launchingGame={launchingGame}
             handleGameLaunch={handleGameLaunch}
+            vipLevel={vipLevel}
           />
         )}
 

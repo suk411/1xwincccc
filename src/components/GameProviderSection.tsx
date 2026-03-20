@@ -53,13 +53,22 @@ const getProviderSections = () => {
 interface GameProviderSectionProps {
   launchingGame: string | number | null;
   handleGameLaunch: (game: GameObject) => void;
+  vipLevel?: number;
 }
 
-const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSectionProps) => {
+const GameProviderSection = ({ launchingGame, handleGameLaunch, vipLevel }: GameProviderSectionProps) => {
   const navigate = useNavigate();
   const providerSections = getProviderSections();
 
   const navigateToLobby = (provider: string) => {
+    if (vipLevel === 0) {
+      // Find a VIP game from this provider to trigger the modal
+      const providerVipGame = GAME_LIST.find(g => g.provider.toLowerCase() === provider.toLowerCase() && g.isVipOnly);
+      if (providerVipGame) {
+        handleGameLaunch(providerVipGame);
+        return;
+      }
+    }
     navigate("/lobby", { state: { activeTab: "all", selectedProvider: provider } });
   };
 

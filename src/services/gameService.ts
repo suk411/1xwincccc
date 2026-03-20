@@ -25,6 +25,7 @@ export interface GameObject {
   game_id: string | number;
   type: string;
   category: string;
+  isVipOnly?: boolean;
 }
 
 export interface GameLaunchResponse {
@@ -53,6 +54,7 @@ export const GAME_LIST: GameObject[] = [
     game_id: 300,
     type: "SL",
     category: "slot",
+    isVipOnly: true,
   },
   {
     name: "Money Coming",
@@ -62,6 +64,7 @@ export const GAME_LIST: GameObject[] = [
     game_id: 51,
     type: "SL",
     category: "slot",
+    isVipOnly: true,
   },
   {
     name: "Fortune Mouse",
@@ -71,6 +74,7 @@ export const GAME_LIST: GameObject[] = [
     game_id: 68,
     type: "SL",
     category: "slot",
+    isVipOnly: true,
   },
   {
     name: "Fortune Gems 2",
