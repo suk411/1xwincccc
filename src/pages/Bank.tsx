@@ -57,6 +57,7 @@ const Bank = () => {
   const cached = loadCache();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
   const [selectedAmount, setSelectedAmount] = useState(100);
+  const [customAmount, setCustomAmount] = useState("");
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
   const [showAddAccount, setShowAddAccount] = useState(false);
@@ -142,13 +143,28 @@ const Bank = () => {
   
   const chargeRate = withdrawInfo?.data?.charge ?? 0.0;
   const feeAmount = selectedWithdrawAmount * chargeRate;
-  const selectedDepositBonus = DEPOSIT_OPTIONS.find(o => o.deposit === selectedAmount)?.bonus || 0;
+  
+  const currentEffectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
+  const selectedDepositBonus = [...DEPOSIT_OPTIONS]
+    .sort((a, b) => b.deposit - a.deposit)
+    .find(o => currentEffectiveAmount >= o.deposit)?.bonus || 0;
 
   const handlePay = async () => {
     if (paying) return;
+    
+    const depositAmount = customAmount ? parseInt(customAmount) : selectedAmount;
+    
+    if (customAmount) {
+      const amount = parseInt(customAmount);
+      if (isNaN(amount) || amount < 300 || amount > 20000) {
+        toast({ description: "Please enter an amount between 300 and 20000", variant: "destructive" });
+        return;
+      }
+    }
+
     setPaying(true);
     try {
-      const res = await authService.deposit(selectedAmount);
+      const res = await authService.deposit(depositAmount);
       if (res.paymentUrl) {
         navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
         toast({ description: "Opening payment..." });
@@ -247,41 +263,6 @@ const Bank = () => {
 
         {activeTab === "deposit" ? (
           <>
-            <GameCard className="px-3 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Info size={16} className="text-red-600" />
-                <span className="text-white text-xs">You have pending orders</span>
-              </div>
-              <ChevronRight size={18} className="text-white" onClick={() => navigate("/bank/records")} />
-            </GameCard>
-
-            <GameCard className="p-2 flex flex-col gap-2">
-              <span className="text-white text-sm">Choose Deposit Amount</span>
-              <div className="grid grid-cols-3 gap-2">
-                {DEPOSIT_OPTIONS.map((opt) => {
-                  const isActive = selectedAmount === opt.deposit;
-                  return (
-                    <div
-                      key={opt.deposit}
-                      onClick={() => setSelectedAmount(opt.deposit)}
-                      className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
-                      style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
-                    >
-                      <img src={depositBadge} alt="" className="absolute top-0 left-0 w-12 h-5 object-contain" />
-                      <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
-                      <span className="text-white text-base text-center pt-2.5 pb-0.5">{opt.deposit.toLocaleString()}</span>
-                      <div
-                        className="text-center text-[11px] font-bold rounded-b-md"
-                        style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
-                      >
-                        +{opt.bonus}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </GameCard>
-
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Payment channel</span>
               <div className="flex gap-2">
@@ -303,6 +284,53 @@ const Bank = () => {
                     </button>
                   );
                 })}
+              </div>
+            </GameCard>
+
+            <GameCard className="p-2 flex flex-col gap-2">
+              <span className="text-white text-sm">Choose Deposit Amount</span>
+              <div className="grid grid-cols-3 gap-2">
+                {DEPOSIT_OPTIONS.map((opt) => {
+                  const isActive = !customAmount && selectedAmount === opt.deposit;
+                  return (
+                    <div
+                      key={opt.deposit}
+                      onClick={() => {
+                        setSelectedAmount(opt.deposit);
+                        setCustomAmount("");
+                      }}
+                      className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
+                      style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
+                    >
+                      <img src={depositBadge} alt="" className="absolute top-0 left-0 w-12 h-5 object-contain" />
+                      <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
+                      <span className="text-white text-base text-center pt-2.5 pb-0.5">{opt.deposit.toLocaleString()}</span>
+                      <div
+                        className="text-center text-[11px] font-bold rounded-b-md"
+                        style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
+                      >
+                        +{opt.bonus}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-2 flex flex-col gap-1.5">
+                <span className="text-white/70 text-xs">Custom Amount</span>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold">₹</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={customAmount}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, ""); // Remove any non-digits
+                      setCustomAmount(value);
+                    }}
+                    placeholder="300-20000"
+                    className="w-full bg-black/20 border border-white/10 rounded-md py-2.5 pl-7 pr-3 text-white text-sm focus:outline-none focus:border-primary transition-colors"
+                  />
+                </div>
               </div>
             </GameCard>
 
@@ -439,13 +467,13 @@ const Bank = () => {
           <div className="flex items-center gap-1">
             <span className="text-white/70 text-xs">{activeTab === "deposit" ? "Payment" : "Withdraw"}</span>
             <span className="text-white font-bold text-sm">
-              ₹{(activeTab === "deposit" ? selectedAmount : selectedWithdrawAmount).toLocaleString()}
+              ₹{(activeTab === "deposit" ? (customAmount ? parseInt(customAmount) || 0 : selectedAmount) : selectedWithdrawAmount).toLocaleString()}
             </span>
           </div>
           {activeTab === "deposit" && (
             <div className="flex items-center gap-1">
               <span className="text-white/50 text-[10px]">Received</span>
-              <span className="text-green-400 text-[10px] font-bold">₹{(selectedAmount + selectedDepositBonus).toLocaleString()}</span>
+              <span className="text-green-400 text-[10px] font-bold">₹{((customAmount ? parseInt(customAmount) || 0 : selectedAmount) + selectedDepositBonus).toLocaleString()}</span>
               <span className="text-white/50 text-[10px]">Bonus</span>
               <span className="text-primary text-[10px] font-bold">₹{selectedDepositBonus.toLocaleString()}</span>
             </div>
