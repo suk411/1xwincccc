@@ -214,7 +214,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Aviator",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/aviator.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SPRIBEgamelogo/SPRIBEaviator.png",
     provider_code: "SPRIBE",
     provider: "spribe",
     game_id: "22_22001",
@@ -232,8 +232,8 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Mines",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Mines5.png",
-    provider_code: "SPRIBE",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SPRIBEgamelogo/SPRIBEmines.png",
+    provider_code: "JD",
     provider: "spribe",
     game_id: 229,
     type: "MG",
@@ -275,15 +275,7 @@ export const GAME_LIST: GameObject[] = [
     type: "CB",
     category: "casino",
   },
-  {
-    name: "Plinko",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Plinko.png",
-    provider_code: "SPRIBE",
-    provider: "spribe",
-    game_id: 242,
-    type: "MG",
-    category: "casino",
-  },
+  
   {
     name: "Chicken Dash",
     logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/chicken%20dash.png",
@@ -1005,7 +997,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Dice",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Dice12.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SPRIBEgamelogo/SPRIBEdice.png",
     provider_code: "JD",
     provider: "spribe",
     game_id: "9_9019",
@@ -1014,7 +1006,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Hilo",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Hilo.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SPRIBEgamelogo/SPRIBEhilo.png",
     provider_code: "JD",
     provider: "spribe",
     game_id: "9_9017",
@@ -1023,7 +1015,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Goal",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Goal.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SPRIBEgamelogo/SPRIBEgoal.png",
     provider_code: "JD",
     provider: "spribe",
     game_id: "9_9016",
@@ -1032,7 +1024,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Plinko",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Plinko.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SPRIBEgamelogo/SPRIBEplinko.png",
     provider_code: "JD",
     provider: "spribe",
     game_id: "9_9018",
