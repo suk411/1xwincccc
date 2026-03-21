@@ -115,7 +115,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Fortune Rabbit",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/fortune-rabbit.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/PGgamelogo/PGfortunerabbit.png",
     provider_code: "PG",
     provider: "pg",
     game_id: 1543462,
@@ -169,7 +169,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Leprechaun Riches",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/leprechaun-riches.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/PGgamelogo/PGleprachaunriches.png",
     provider_code: "PG",
     provider: "pg",
     game_id: 60,
@@ -178,7 +178,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Captain's Bounty",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/captains-bounty.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/PGgamelogo/PGcaptainsbounty.png",
     provider_code: "PG",
     provider: "pg",
     game_id: 54,
@@ -933,7 +933,7 @@ export const GAME_LIST: GameObject[] = [
 },
  {
     name: "Lucky Neko",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/lucky%20neko.avif",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/PGgamelogo/PGluckyneko.png",
     provider_code: "PG",
     provider: "pg",
     game_id: 89,
@@ -942,7 +942,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Treasures of Aztec",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/treasure%20of%20aztec.avif",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/PGgamelogo/PGtreasuresOFaztec.png",
     provider_code: "PG",
     provider: "pg",
     game_id: 87,
@@ -951,7 +951,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Anubis Wrath",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/anubis%20wrath.avif",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/PGgamelogo/PGanubiswrath.png",
     provider_code: "PG",
     provider: "pg",
     game_id: 1623475,
