@@ -87,6 +87,12 @@ const Promo = () => {
               name: "JD Wallet",
               provider_code: "JD",
               logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
+            },
+            {
+              id: "tu",
+              name: "TU Wallet",
+              provider_code: "TU",
+              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
             }
           ].map((wallet) => {
             const isCountdownActive = (countdowns[wallet.provider_code] || 0) > 0;
