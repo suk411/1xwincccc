@@ -178,7 +178,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
                     border: "1px solid rgba(255,180,50,0.25)",
                   }}
                 >
-                  <div className="w-full aspect-square overflow-hidden">
+                  <div className="h-full w-full overflow-hidden">
                     <img
                       src={game.logo}
                       alt={game.name}
