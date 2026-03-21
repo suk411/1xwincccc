@@ -21,6 +21,17 @@
   <meta name="description" content="1xKING - Your Ultimate Gaming Platform" />
   <meta name="author" content="1xKING" />
 
+  <!-- Unregister Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script>
+
   <!-- Open Graph -->
   <meta property="og:title" content="1xKING" />
   <meta property="og:description" content="1xKING - Your Ultimate Gaming Platform" />
