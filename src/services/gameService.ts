@@ -817,7 +817,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Vortex Halloween",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/07-vortexhalloween-Thumb-logo%20-%201x1.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/TURBOgamelogo/TURBOvortexhalloween.png",
     provider_code: "TU",
     provider: "turbo",
     game_id: "vortexhalloween",
@@ -835,7 +835,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Chicken Route",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/06-chickenroute-Thumb-logo%20-%201x1.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/TURBOgamelogo/TURBOchickenroute.png",
     provider_code: "TU",
     provider: "turbo",
     game_id: "chickenroute",
@@ -871,7 +871,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Limbo Rider",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/LimboRider_1_1.jpg",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/TURBOgamelogo/TURBOlimborider.png",
     provider_code: "TU",
     provider: "turbo",
     game_id: "limbo",
@@ -907,7 +907,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Mysteco",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/06-mysteco-Thumb-logo%20-%201x1.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/TURBOgamelogo/TURBOmysteco.png",
     provider_code: "TU",
     provider: "turbo",
     game_id: "mysteco",
@@ -1033,7 +1033,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
   name: "Vortex",
-  logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/14-Thumb-logo%20-%201x1.png",
+  logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/TURBOgamelogo/TURBOvortex.png",
   provider_code: "TU",
   provider: "turbo",
   game_id: "vortex",
@@ -1042,7 +1042,7 @@ export const GAME_LIST: GameObject[] = [
 },
 {
   name: "Turbo Plinko",
-  logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/1x1.png",
+  logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/TURBOgamelogo/TURBOturboplinko.png",
   provider_code: "TU",
   provider: "turbo",
   game_id: "turboplinko",
