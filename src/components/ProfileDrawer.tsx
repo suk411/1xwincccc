@@ -27,6 +27,7 @@ import languageIcon from "@/assets/profile/language-icon.png";
 import mailicon from "@/assets/profile/mail-icon.png";
 import backArrow from "@/assets/icons/back-arrow.png";
 import vipIcon from "@/assets/profile/vip-icon.png";
+import versionIcon from "@/assets/profile/version-info.png";
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -192,12 +193,17 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               { icon: mailicon, label: "Mail" },
               { icon: languageIcon, label: "Language", value: "English" },
               { icon: accountIcon, label: "Account Settings" },
+              { icon: versionIcon, label: "Version Info", value: `v${appVersion}` },
               { icon: logout, label: "Logout" },
             ].map((item, index) => (
               <button
                 key={index}
                 onClick={() => handleMenuClick(item.label)}
-                className="w-full flex items-center justify-between py-3 px-2 hover:bg-white/5 rounded-lg transition-colors"
+                className={`w-full flex items-center justify-between py-3 px-2 rounded-lg transition-colors ${
+                  item.label === "Version Info" 
+                  ? "bg-[#5D0518] hover:bg-[#6D061C]" 
+                  : "hover:bg-white/5"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <img src={item.icon} alt={item.label} className="w-8 h-8 object-contain" />
@@ -205,7 +211,9 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 </div>
                 <div className="flex items-center gap-2">
                   {item.value && (
-                    <span className="text-gray-400 text-sm">{item.value}</span>
+                    <span className={`${item.label === "Version Info" ? "text-gray-300" : "text-gray-400"} text-sm`}>
+                      {item.value}
+                    </span>
                   )}
                   <img src={backArrow} alt="Arrow" className="w-6 h-6 object-contain" />
                 </div>
@@ -213,10 +221,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             ))}
           </div>
 
-          {/* App Version Display */}
-          <div className="mt-8 mb-4 flex justify-center">
-            <span className="text-gray-500 text-xs font-mono">[{appVersion}]</span>
-          </div>
+          {/* App Version Display removed to use the new menu item instead */}
         </div>
       </SheetContent>
     </Sheet>
