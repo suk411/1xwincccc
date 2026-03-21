@@ -7,13 +7,13 @@ import { authService, type WithdrawalRecord } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 
 const statusStyles: Record<string, { bg: string; text: string }> = {
-  auditing: { bg: "#ff8800", text: "#ffffff" },
-  approved: { bg: "#00b341", text: "#ffffff" },
-  completed: { bg: "#00b341", text: "#ffffff" },
-  rejected: { bg: "#ff0000", text: "#ffffff" },
-  pending: { bg: "#ff8800", text: "#ffffff" },
-  success: { bg: "#00b341", text: "#ffffff" },
-  failed: { bg: "#1a1a1a", text: "#ffffff" },
+  Auditing: { bg: "#1D4ED8", text: "#ffffff" },
+  Approved: { bg: "#00b341", text: "#ffffff" },
+  Completed: { bg: "#00b341", text: "#ffffff" },
+  Rejected: { bg: "#EF4444", text: "#ffffff" },
+  Pending: { bg: "#ff8800", text: "#ffffff" },
+  Success: { bg: "#00b341", text: "#ffffff" },
+  Failed: { bg: "#EF4444", text: "#ffffff" },
 };
 
 const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
