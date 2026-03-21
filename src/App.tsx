@@ -23,6 +23,7 @@ import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
 import DownloadBanner from "./components/DownloadBanner";
+import { VersionCheck } from "./components/VersionCheck";
 import bgMain from "@/assets/bg-main.jpg";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const AppContent = () => {
 
   return (
     <div className="mobile-app-shell">
+      <VersionCheck />
       <div className="mobile-app-scroll flex flex-col">
         {isHomePage && <DownloadBanner />}
         {isHomePage && <Header />}
