@@ -104,12 +104,12 @@ const Index = () => {
     try {
       const data = await gameService.getBalance();
       setGameBalances(data.gameBalance);
+      // Cache the balances in local storage
+      localStorage.setItem("cached_game_balances", JSON.stringify(data.gameBalance));
+      
       // Sum up only the game balances for the display on the card
       const total = Object.values(data.gameBalance).reduce((sum, val) => sum + val, 0);
       setTotalGameBalance(total);
-      // We also trigger a profile refresh if needed, but since we have walletBalance in the response, 
-      // we could potentially update the profile store directly if there's a way.
-      // For now, let's keep it simple and refresh the profile.
       await refreshProfile();
     } catch (e) {
       console.error("Failed to fetch game balances:", e);
@@ -117,6 +117,18 @@ const Index = () => {
   };
 
   useEffect(() => {
+    // Load initial balances from cache if available
+    const cached = localStorage.getItem("cached_game_balances");
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        setGameBalances(parsed);
+        const total = Object.values(parsed as Record<string, number>).reduce((sum, val) => sum + val, 0);
+        setTotalGameBalance(total);
+      } catch (e) {
+        console.error("Failed to parse cached balances:", e);
+      }
+    }
     fetchBalances();
   }, []);
 
@@ -339,7 +351,10 @@ const Index = () => {
 
             {/* Details Button on top right */}
             <button
-              onClick={() => setShowBalanceDialog(true)}
+              onClick={() => {
+                setShowBalanceDialog(true);
+                fetchBalances();
+              }}
               className="absolute top-2 right-2 text-[7px] text-yellow-500 underline uppercase font-bold"
             >
               Details
