@@ -199,11 +199,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               <button
                 key={index}
                 onClick={() => handleMenuClick(item.label)}
-                className={`w-full flex items-center justify-between py-3 px-2 rounded-lg transition-colors ${
-                  item.label === "Version Info" 
-                  ? "bg-[#5D0518] hover:bg-[#6D061C]" 
-                  : "hover:bg-white/5"
-                }`}
+                className="w-full flex items-center justify-between py-3 px-2 hover:bg-white/5 rounded-lg transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <img src={item.icon} alt={item.label} className="w-8 h-8 object-contain" />
@@ -211,7 +207,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 </div>
                 <div className="flex items-center gap-2">
                   {item.value && (
-                    <span className={`${item.label === "Version Info" ? "text-gray-300" : "text-gray-400"} text-sm`}>
+                    <span className="text-gray-400 text-sm">
                       {item.value}
                     </span>
                   )}
