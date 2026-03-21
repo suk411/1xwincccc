@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,7 +25,9 @@ import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
 import DownloadBanner from "./components/DownloadBanner";
 import { VersionCheck } from "./components/VersionCheck";
+import PosterModal from "./components/PosterModal";
 import bgMain from "@/assets/bg-main.jpg";
+import { authService } from "./services/authService";
 
 const queryClient = new QueryClient();
 
@@ -36,13 +39,30 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const AppContent = () => {
   const location = useLocation();
+  const [isPosterOpen, setIsPosterOpen] = useState(false);
   const isAuthPage = ["/login", "/register"].includes(location.pathname);
   const isHomePage = location.pathname === "/";
   const showBottomNav = ["/", "/earn", "/bank", "/promo", "/events"].includes(location.pathname);
 
+  useEffect(() => {
+    const isLoggedIn = authService.isLoggedIn();
+    if (isLoggedIn && !isAuthPage) {
+      const lastShowTime = localStorage.getItem("last_poster_show_time");
+      const now = Date.now();
+      const ONE_DAY = 24 * 60 * 60 * 1000;
+
+      if (!lastShowTime || (now - parseInt(lastShowTime)) > ONE_DAY) {
+        // Show poster if never shown before or last shown more than 24h ago
+        setIsPosterOpen(true);
+        localStorage.setItem("last_poster_show_time", now.toString());
+      }
+    }
+  }, [location.pathname, isAuthPage]);
+
   return (
     <div className="mobile-app-shell">
       <VersionCheck />
+      <PosterModal isOpen={isPosterOpen} onClose={() => setIsPosterOpen(false)} />
       <div className="mobile-app-scroll flex flex-col">
         {isHomePage && <DownloadBanner />}
         {isHomePage && <Header />}

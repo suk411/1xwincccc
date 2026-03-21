@@ -348,6 +348,21 @@ const Bank = () => {
                 </div>
               </div>
             </GameCard>
+
+            <div className="mt-2 px-2 space-y-2">
+              {[
+                "Each deposit will be credited within 1-5 minutes.",
+                "You can use customer service at any time to resolve deposit issues.",
+                "If you encounter fluctuations in the banking system, don't worry, just try a few more times and you will succeed.",
+                "Please ensure that you have installed Paytm and PhonePe.",
+                "The wagering requirement for withdrawal is 1× the deposit amount and 3× the bonus amount."
+              ].map((text, idx) => (
+                <div key={idx} className="flex gap-2">
+                  <span className="text-primary text-[10px] font-bold shrink-0">{idx + 1}.</span>
+                  <p className="text-white/50 text-[10px] leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
           </>
         ) : (
           <>
