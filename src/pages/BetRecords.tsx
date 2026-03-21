@@ -79,7 +79,7 @@ const BetRecords = () => {
   return (
     <div className="min-h-screen flex flex-col pb-32" style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)" }}>
       <div className="sticky top-0 z-50">
-        <PageHeader title="Game Records" />
+        <PageHeader title="Game Records" backPath="/" />
       </div>
       <RecordTabs />
 

@@ -8,13 +8,13 @@ import { authService, type WithdrawalRecord } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 
 const statusStyles: Record<string, { bg: string; text: string }> = {
-  auditing: { bg: "#1D4ED8", text: "#ffffff" },
+  auditing: { bg: "#fc6203", text: "#ffffff" },
   approved: { bg: "#00b341", text: "#ffffff" },
   approve: { bg: "#00b341", text: "#ffffff" },
   completed: { bg: "#00b341", text: "#ffffff" },
   rejected: { bg: "#EF4444", text: "#ffffff" },
   reject: { bg: "#EF4444", text: "#ffffff" },
-  pending: { bg: "#ff8800", text: "#ffffff" },
+  pending: { bg: "#fc6203", text: "#ffffff" },
   success: { bg: "#00b341", text: "#ffffff" },
   failed: { bg: "#EF4444", text: "#ffffff" },
 };
@@ -81,7 +81,7 @@ const WithdrawalRecords = () => {
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
       <div className="sticky top-0 z-50">
-        <PageHeader title="Withdrawal Records" />
+        <PageHeader title="Withdrawal Records" backPath="/" />
       </div>
       <RecordTabs />
 

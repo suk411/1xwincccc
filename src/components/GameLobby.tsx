@@ -108,9 +108,9 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
   };
 
   return (
-    <div className="flex flex-col gap-2 mt-2 scrollbar-hide">
+    <div className="flex flex-col gap-2 mt-2 h-full overflow-hidden scrollbar-hide">
       {/* Secondary Filter Bar - Now using GameTabs */}
-      <div className="w-full overflow-hidden scrollbar-hide">
+      <div className="w-full flex-shrink-0 overflow-hidden scrollbar-hide">
         <GameTabs
           tabs={LOBBY_TABS}
           value={selectedFilter}
@@ -120,10 +120,10 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
       </div>
 
       {/* Provider Sidebar + Game Grid */}
-      <div className="flex gap-1.5 scrollbar-hide" style={{ minHeight: "calc(100vh - 12rem)" }}>
+      <div className="flex gap-1.5 flex-1 overflow-hidden scrollbar-hide">
         {/* Left Provider Sidebar */}
         <div
-          className="flex flex-col gap-1 py-2 px-1 rounded-lg flex-shrink-0 min-h-full scrollbar-hide"
+          className="flex flex-col gap-1 py-2 px-1 rounded-lg flex-shrink-0 h-full overflow-y-auto scrollbar-hide"
           style={{
             backgroundColor: "#120810",
             width: "4.5rem",
@@ -139,7 +139,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
               <button
                 key={code}
                 onClick={() => handleProviderChange(code)}
-                className="flex flex-col items-center justify-center gap-1 py-2 rounded-lg transition-all"
+                className="flex flex-col items-center justify-center gap-1 py-2 rounded-lg transition-all flex-shrink-0"
                 style={{
                   background: isActive
                     ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
@@ -160,7 +160,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
         </div>
 
         {/* Right Game Grid */}
-        <div className="flex-1 flex flex-col scrollbar-hide">
+        <div className="flex-1 flex flex-col overflow-y-auto scrollbar-hide pb-4">
           {visibleGames.length === 0 ? (
             <div className="flex-1 flex items-center justify-center text-white/40 text-sm">
               No games found

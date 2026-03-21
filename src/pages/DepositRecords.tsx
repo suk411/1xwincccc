@@ -127,7 +127,7 @@ const DepositRecords = () => {
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
       <div className="sticky top-0 z-50">
-        <PageHeader title="Deposit Records" />
+        <PageHeader title="Deposit Records" backPath="/" />
       </div>
       <RecordTabs />
 

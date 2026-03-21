@@ -62,7 +62,7 @@ const GameLobbyPage = () => {
       <PageHeader title={titleMapping[activeTab.toLowerCase()] || activeTab} />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
+      <div className="flex-1 overflow-hidden scrollbar-hide">
         <GameLobby 
           activeTab={activeTab}
           launchingGame={launchingGame}
