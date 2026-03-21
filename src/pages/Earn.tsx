@@ -109,7 +109,7 @@ const InviteRow = ({
             +{values[2]}
           </span>
         </div>
-        <span className="text-white/70 text-xs">{label}</span>
+        <span className="text-white/90 text-xs">{label}</span>
       </div>
     </div>
     <div className="flex items-center gap-2">
