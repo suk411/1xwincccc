@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
+import RecordTabs from "@/components/RecordTabs";
 import { useState, useEffect } from "react";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
@@ -7,13 +8,15 @@ import { authService, type WithdrawalRecord } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 
 const statusStyles: Record<string, { bg: string; text: string }> = {
-  Auditing: { bg: "#1D4ED8", text: "#ffffff" },
-  Approved: { bg: "#00b341", text: "#ffffff" },
-  Completed: { bg: "#00b341", text: "#ffffff" },
-  Rejected: { bg: "#EF4444", text: "#ffffff" },
-  Pending: { bg: "#ff8800", text: "#ffffff" },
-  Success: { bg: "#00b341", text: "#ffffff" },
-  Failed: { bg: "#EF4444", text: "#ffffff" },
+  auditing: { bg: "#1D4ED8", text: "#ffffff" },
+  approved: { bg: "#00b341", text: "#ffffff" },
+  approve: { bg: "#00b341", text: "#ffffff" },
+  completed: { bg: "#00b341", text: "#ffffff" },
+  rejected: { bg: "#EF4444", text: "#ffffff" },
+  reject: { bg: "#EF4444", text: "#ffffff" },
+  pending: { bg: "#ff8800", text: "#ffffff" },
+  success: { bg: "#00b341", text: "#ffffff" },
+  failed: { bg: "#EF4444", text: "#ffffff" },
 };
 
 const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
@@ -77,11 +80,12 @@ const WithdrawalRecords = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
-      <div className="mb-2">
+      <div className="sticky top-0 z-50">
         <PageHeader title="Withdrawal Records" />
       </div>
+      <RecordTabs />
 
-      <div className="flex flex-col gap-2 px-2">
+      <div className="flex flex-col gap-2 px-2 mt-4">
         {loading ? (
           <Loader label="Loading records..." />
         ) : items.length === 0 ? (

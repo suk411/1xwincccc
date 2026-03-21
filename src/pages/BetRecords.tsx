@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
+import RecordTabs from "@/components/RecordTabs";
 import { GAME_LIST } from "@/services/gameService";
 import { GameButton } from "@/components/GameButton";
 
@@ -77,13 +78,12 @@ const BetRecords = () => {
 
   return (
     <div className="min-h-screen flex flex-col pb-32" style={{ background: "linear-gradient(180deg, #320913 43%, #41131e 100%)" }}>
-      {/* Header with fixed height to prevent shrinking */}
-      <div className="h-11 flex-shrink-0 sticky top-0 z-50">
+      <div className="sticky top-0 z-50">
         <PageHeader title="Game Records" />
       </div>
+      <RecordTabs />
 
-      {/* Content Container */}
-      <div className="flex-1 px-4 py-4">
+      <div className="flex-1 px-4 py-4 mt-2">
         {loading && items.length === 0 ? (
           <Loader label="Loading records..." />
         ) : items.length === 0 ? (
