@@ -189,7 +189,7 @@ const Bank = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-52 w-full">
-      {(paying || loadingWithdrawInfo || bindingAccount || withdrawing) && (
+      {(paying || bindingAccount || withdrawing) && (
         <Loader
           overlay
           label={
@@ -199,7 +199,7 @@ const Bank = () => {
                 ? "Processing withdrawal..."
                 : bindingAccount
                   ? "Saving bank account..."
-                  : "Loading withdraw info..."
+                  : "Loading info..."
           }
         />
       )}
@@ -322,111 +322,118 @@ const Bank = () => {
             </GameCard>
           </>
         ) : (
-          <>
-            <GameCard className="p-3 flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <span className="text-white text-xs">Balance:</span>
-                <span className="text-white text-sm font-bold">₹{walletBalance.toFixed(2)}</span>
+          <div className="relative min-h-[300px]">
+            {loadingWithdrawInfo && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 rounded-lg">
+                <Loader label="Loading withdraw info..." />
               </div>
-              <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white text-xs">Turnover Progress:</span>
-                  <span className="text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
+            )}
+            <div className={loadingWithdrawInfo ? "opacity-50 pointer-events-none" : ""}>
+              <GameCard className="p-3 flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-white text-xs">Balance:</span>
+                  <span className="text-white text-sm font-bold">₹{walletBalance.toFixed(2)}</span>
                 </div>
-                <Progress
-                  value={turnoverProgress}
-                  className="h-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
-                />
-                <div className="flex justify-end mt-0.5">
-                  <span className=" text-green-500  text-[10px]">{turnoverProgress.toFixed(1)}% Completed</span>
+                <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white text-xs">Turnover Progress:</span>
+                    <span className="text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
+                  </div>
+                  <Progress
+                    value={turnoverProgress}
+                    className="h-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
+                  />
+                  <div className="flex justify-end mt-0.5">
+                    <span className=" text-green-500  text-[10px]">{turnoverProgress.toFixed(1)}% Completed</span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center justify-between mt-1 pt-1 border-t border-white/10">
-                <span className=" text-[11px]">Daily Withdraw Limit:</span>
-                <span className=" text-[11px]">₹{remainingLimit.toFixed(2)} / ₹{dailyLimit.toFixed(2)}</span>
-              </div>
-            </GameCard>
+                <div className="flex items-center justify-between mt-1 pt-1 border-t border-white/10">
+                  <span className=" text-[11px]">Daily Withdraw Limit:</span>
+                  <span className=" text-[11px]">₹{remainingLimit.toFixed(2)} / ₹{dailyLimit.toFixed(2)}</span>
+                </div>
+              </GameCard>
 
-            <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white text-sm">Select Amount</span>
-              <div className="grid grid-cols-3 gap-2">
-                {WITHDRAW_AMOUNTS.map((amount) => {
-                  const isActive = selectedWithdrawAmount === amount;
-                  return (
+              <GameCard className="p-3 flex flex-col gap-2">
+                <span className="text-white text-sm">Select Amount</span>
+                <div className="grid grid-cols-3 gap-2">
+                  {WITHDRAW_AMOUNTS.map((amount) => {
+                    const isActive = selectedWithdrawAmount === amount;
+                    return (
+                      <div
+                        key={amount}
+                        onClick={() => setSelectedWithdrawAmount(amount)}
+                        className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
+                        style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
+                      >
+                        {amount === 110 && (
+                          <>
+                            <img src={depositBadge} alt="" className="absolute top-0 left-0 w-10 h-5 object-contain" />
+                            <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
+                          </>
+                        )}
+                        <span className="text-white text-base text-center py-2">{amount.toLocaleString()}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </GameCard>
+
+              <GameCard className="p-3 flex flex-col gap-2">
+                <span className="text-white text-sm">Withdrawal Account</span>
+                {withdrawInfo?.data?.isBankBound ? (
+                  <>
                     <div
-                      key={amount}
-                      onClick={() => setSelectedWithdrawAmount(amount)}
-                      className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
-                      style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
+                      className="flex items-center justify-between rounded-md px-3 py-2.5"
+                      style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
                     >
-                      {amount === 110 && (
-                        <>
-                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-10 h-5 object-contain" />
-                          <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
-                        </>
-                      )}
-                      <span className="text-white text-base text-center py-2">{amount.toLocaleString()}</span>
+                      <div className="flex items-center gap-2">
+                        <CreditCard size={18} className="text-primary" />
+                        <div className="flex flex-col">
+                          <span className="text-white text-sm">{withdrawInfo?.data?.bindAccount?.bankName || bindAccount?.bankName || "Linked Bank"}</span>
+                          {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber) && (
+                            <span className="text-white text-xs">
+                              **** **** **** {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber || "").slice(-4)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <GameButton
+                        size="sm"
+                        variant="gold"
+                        className="text-xs px-3 h-8"
+                        onClick={() => setShowViewAccount(true)}
+                      >
+                        View
+                      </GameButton>
                     </div>
-                  );
-                })}
-              </div>
-            </GameCard>
-
-            <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white text-sm">Withdrawal Account</span>
-              {withdrawInfo?.data?.isBankBound ? (
-                <>
+                    <p className="text-[11px] text-white/60">
+                      Bank account can only be bound once per user. Contact support to change details.
+                    </p>
+                  </>
+                ) : (
                   <div
-                    className="flex items-center justify-between rounded-md px-3 py-2.5"
+                    onClick={() => setShowAddAccount(true)}
+                    className="flex items-center justify-between rounded-md px-3 py-2.5 cursor-pointer"
                     style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
                   >
                     <div className="flex items-center gap-2">
-                      <CreditCard size={18} className="text-primary" />
-                      <div className="flex flex-col">
-                        <span className="text-white text-sm">{withdrawInfo?.data?.bindAccount?.bankName || bindAccount?.bankName || "Linked Bank"}</span>
-                        {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber) && (
-                          <span className="text-white text-xs">
-                            **** **** **** {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber || "").slice(-4)}
-                          </span>
-                        )}
-                      </div>
+                      <Wallet size={18} className="text-primary" />
+                      <span className="text-yellow-400 text-sm">Add Account</span>
                     </div>
-                    <GameButton
-                      size="sm"
-                      variant="gold"
-                      className="text-xs px-3 h-8"
-                      onClick={() => setShowViewAccount(true)}
-                    >
-                      View
-                    </GameButton>
+                    <PlusCircle size={20} className="text-white" />
                   </div>
-                  <p className="text-[11px] text-white/60">
-                    Bank account can only be bound once per user. Contact support to change details.
-                  </p>
-                </>
-              ) : (
-                <div
-                  onClick={() => setShowAddAccount(true)}
-                  className="flex items-center justify-between rounded-md px-3 py-2.5 cursor-pointer"
-                  style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
-                >
-                  <div className="flex items-center gap-2">
-                    <Wallet size={18} className="text-primary" />
-                    <span className="text-yellow-400 text-sm">Add Account</span>
-                  </div>
-                  <PlusCircle size={20} className="text-white" />
-                </div>
-              )}
-            </GameCard>
+                )}
+              </GameCard>
 
-            <GameCard className="px-5 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Wallet size={16} className="text-white" />
-                <span className="text-white text-sm">Withdrawal Fee</span>
-              </div>
-              <span className="text-primary text-sm">₹{feeAmount.toFixed(2)}</span>
-            </GameCard>
-          </>
+              <GameCard className="px-5 py-2.5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Wallet size={16} className="text-white" />
+                  <span className="text-white text-sm">Withdrawal Fee</span>
+                </div>
+                <span className="text-primary text-sm">₹{feeAmount.toFixed(2)}</span>
+              </GameCard>
+            </div>
+          </div>
         )}
       </div>
 

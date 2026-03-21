@@ -56,7 +56,7 @@ const DepositRecords = () => {
   const cached = loadCache();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [orders, setOrders] = useState<DepositOrder[]>(cached?.items || []);
-  const [loading, setLoading] = useState(!cached || !cached.items || cached.items.length === 0);
+  const [loading, setLoading] = useState(!cached);
   const [page, setPage] = useState(cached?.page || 1);
   const [total, setTotal] = useState(cached?.total || 0);
 
