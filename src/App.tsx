@@ -49,10 +49,10 @@ const AppContent = () => {
     if (isLoggedIn && !isAuthPage) {
       const lastShowTime = localStorage.getItem("last_poster_show_time");
       const now = Date.now();
-      const ONE_DAY = 24 * 60 * 60 * 1000;
+      const ONE_HOUR = 60 * 60 * 1000;
 
-      if (!lastShowTime || (now - parseInt(lastShowTime)) > ONE_DAY) {
-        // Show poster if never shown before or last shown more than 24h ago
+      if (!lastShowTime || (now - parseInt(lastShowTime)) > ONE_HOUR) {
+        // Show poster if never shown before or last shown more than 1h ago
         setIsPosterOpen(true);
         localStorage.setItem("last_poster_show_time", now.toString());
       }
