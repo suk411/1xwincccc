@@ -58,6 +58,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const nextThreshold = isSvip ? VIP_THRESHOLDS[VIP_THRESHOLDS.length - 1] : VIP_THRESHOLDS[Math.min(vipLevelIndex + 1, VIP_THRESHOLDS.length - 1)];
   const progressPercent = nextThreshold > 0 ? Math.min((totalDeposits / nextThreshold) * 100, 100) : 0;
 
+  const appVersion = localStorage.getItem('app_version') || '1.0.0';
+
   const handleMenuClick = (label: string) => {
     onOpenChange(false);
     if (label === "Logout") {
@@ -209,6 +211,11 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 </div>
               </button>
             ))}
+          </div>
+
+          {/* App Version Display */}
+          <div className="mt-8 mb-4 flex justify-center">
+            <span className="text-gray-500 text-xs font-mono">[{appVersion}]</span>
           </div>
         </div>
       </SheetContent>
