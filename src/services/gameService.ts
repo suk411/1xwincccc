@@ -306,7 +306,7 @@ export const GAME_LIST: GameObject[] = [
   
   {
     name: "Mines 2",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/Mines2.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/JDBgamelogo/JDBmines2.png",
     provider_code: "JD",
     provider: "jdb",
     game_id: "9_9021",
@@ -960,7 +960,7 @@ export const GAME_LIST: GameObject[] = [
   },
    {
     name: "Trump Card",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/trumpcard.avif",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/JDBgamelogo/JDBtrumpcard.png",
     provider_code: "JD",
     provider: "jdb",
     game_id: "0_14077",
@@ -969,7 +969,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Bull Treasure",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/bull%20treasure.avif",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/JDBgamelogo/JDBbulltreasure.png",
     provider_code: "JD",
     provider: "jdb",
     game_id: "0_14094",
@@ -978,7 +978,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Fortune Neko",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/fortuneneko.avif",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/JDBgamelogo/JDBfortuneneko.png",
     provider_code: "JD",
     provider: "jdb",
     game_id: "0_14075",
@@ -987,7 +987,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Super Niubi Deluxe",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/superniubideluxe.avif",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/JDBgamelogo/JDBsuperniubideluxe.png",
     provider_code: "JD",
     provider: "jdb",
     game_id: "0_14045",
@@ -996,7 +996,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Lucky Color Game",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/LuckyColorGame.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/JDBgamelogo/JDBluckycolorgame.png",
     provider_code: "JD",
     provider: "jdb",
     game_id: "9_9010",
