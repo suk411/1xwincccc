@@ -63,7 +63,7 @@ const Bank = () => {
   const [showViewAccount, setShowViewAccount] = useState(false);
   const [bindAccount, setBindAccount] = useState<BankAccount | null>(cached?.data?.bindAccount || null);
   const [withdrawInfo, setWithdrawInfo] = useState<import("@/services/authService").WithdrawInfoResponse | null>(cached || null);
-  const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(!cached);
+  const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(false);
   const [bindingAccount, setBindingAccount] = useState(false);
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
