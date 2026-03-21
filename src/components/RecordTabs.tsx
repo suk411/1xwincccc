@@ -31,36 +31,38 @@ const RecordTabs: React.FC = () => {
         WebkitOverflowScrolling: "touch",
         msOverflowStyle: "none",
         scrollbarWidth: "none",
-        borderBottom: "1px solid rgba(255,255,255,0.05)"
       }}
     >
-      <div className="flex w-full">
-        {RECORD_TABS.map((tab) => {
-          const isActive = tab.value === activeTab;
-          return (
-            <button
-              key={tab.value}
-              onClick={() => navigate(tab.path)}
-              className={cn(
-                "relative flex-1 flex items-center justify-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap py-3",
-                isActive ? "text-white" : "text-muted-foreground"
-              )}
-            >
-              {isActive && (
-                <img
-                  src={tabGlow}
-                  alt=""
-                  className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom z-0 pointer-events-none opacity-50"
-                />
-              )}
-              <span className="relative z-10">{tab.label}</span>
-              {isActive && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600 z-20" />
-              )}
-            </button>
-          );
-        })}
-      </div>
+      <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <tbody>
+          <tr>
+            {RECORD_TABS.map((tab) => {
+              const isActive = tab.value === activeTab;
+              return (
+                <td key={tab.value} style={{ padding: 0, border: "none", width: "33.33%" }}>
+                  <button
+                    onClick={() => navigate(tab.path)}
+                    className={cn(
+                      "relative flex items-center justify-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap w-full",
+                      isActive ? "text-white" : "text-muted-foreground"
+                    )}
+                    style={{ minWidth: 80, padding: "6px 16px" }}
+                  >
+                    {isActive && (
+                      <img
+                        src={tabGlow}
+                        alt=""
+                        className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom z-0 pointer-events-none"
+                      />
+                    )}
+                    <span className="relative z-10">{tab.label}</span>
+                  </button>
+                </td>
+              );
+            })}
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };

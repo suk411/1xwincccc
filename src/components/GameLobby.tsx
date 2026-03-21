@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { GameObject, GAME_LIST } from "@/services/gameService";
 import { GameTabs, GameTab } from "./GameTabs";
+import { GameButton } from "./GameButton";
 
 import allTabIcon from "@/assets/tabs/all-icon.png";
 import recentTabIcon from "@/assets/tabs/recent-icon.png";
@@ -41,7 +42,7 @@ const PROVIDER_LABELS: Record<string, string> = {
   turbo: "TURBO",
 };
 
-const GAMES_PER_PAGE = 9;
+const GAMES_PER_PAGE = 21;
 
 interface GameLobbyProps {
   activeTab: string;
@@ -53,13 +54,18 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
   const location = useLocation();
   const [selectedProvider, setSelectedProvider] = useState(GAME_LIST[0]?.provider?.toLowerCase() || "jili");
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(GAMES_PER_PAGE);
 
   useEffect(() => {
     if (location.state?.selectedProvider) {
       setSelectedProvider(location.state.selectedProvider.toLowerCase());
     }
   }, [location.state]);
+
+  // Reset visible count when provider or filter changes
+  useEffect(() => {
+    setVisibleCount(GAMES_PER_PAGE);
+  }, [selectedProvider, selectedFilter, activeTab]);
 
   // Get unique providers from GAME_LIST
   const providers = useMemo(() => {
@@ -96,7 +102,9 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     return games;
   }, [selectedProvider, selectedFilter, activeTab]);
 
-  const visibleGames = filteredGames;
+  const visibleGames = useMemo(() => {
+    return filteredGames.slice(0, visibleCount);
+  }, [filteredGames, visibleCount]);
 
   // Reset page when filters change
   const handleProviderChange = (code: string) => {
@@ -105,6 +113,10 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
 
   const handleFilterChange = (value: string) => {
     setSelectedFilter(value);
+  };
+
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + GAMES_PER_PAGE);
   };
 
   return (
@@ -187,6 +199,23 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
                   </div>
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* Load More Section */}
+          {!visibleGames.length || visibleCount >= filteredGames.length ? null : (
+            <div className="flex flex-col items-center gap-2 pb-10">
+              <span className="text-white/60 text-xs">
+                Showing {visibleGames.length} of {filteredGames.length} games
+              </span>
+              <GameButton
+                variant="mute"
+                size="lg"
+                onClick={handleLoadMore}
+                className="w-full max-w-[200px]"
+              >
+                Load More
+              </GameButton>
             </div>
           )}
         </div>
