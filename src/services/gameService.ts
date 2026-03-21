@@ -58,7 +58,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Money Coming",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/money-coming.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/Jmoneycoming.png",
     provider_code: "JE",
     provider: "jili",
     game_id: 51,
@@ -78,7 +78,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Fortune Gems 2",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/fortune-gem2.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/JfortuneGems2.png",
     provider_code: "JE",
     provider: "jili",
     game_id: 223,
@@ -87,7 +87,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Super Ace",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/super-ace.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/Jsuperace.png",
     provider_code: "JE",
     provider: "jili",
     game_id: 49,
@@ -205,7 +205,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Dragon Tiger",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/dravstig.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/Jdragon&tiger.png",
     provider_code: "JE",
     provider: "jili",
     game_id: 123,
@@ -296,7 +296,7 @@ export const GAME_LIST: GameObject[] = [
  
   {
     name: "Black Jack",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/black%20jack.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/Jblackjack.png",
     provider_code: "JE",
     provider: "jili",
     game_id: 219,
@@ -623,7 +623,7 @@ export const GAME_LIST: GameObject[] = [
   },
   {
     name: "Mega Ace",
-    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/MegaAce.png",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/Jmegaace.png",
     provider_code: "JE",
     provider: "jili",
     game_id: 134,
