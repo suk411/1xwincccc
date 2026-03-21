@@ -33,7 +33,7 @@ interface BetItem {
 const BetRecords = () => {
   const cached = loadCache();
   const [items, setItems] = useState<BetItem[]>(cached?.items || []);
-  const [loading, setLoading] = useState(!cached);
+  const [loading, setLoading] = useState(!cached || !cached.items || cached.items.length === 0);
   const [page, setPage] = useState(cached?.page || 1);
   const [total, setTotal] = useState(cached?.total || 0);
   const limit = 25;

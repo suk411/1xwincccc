@@ -34,19 +34,36 @@ const DEPOSIT_OPTIONS = [
 ];
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 
+const CACHE_KEY = "withdraw_info_cache";
+
+const loadCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+};
+
+const saveCache = (data: any) => {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {}
+};
+
 const Bank = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { balance, refresh: refreshBalance } = useProfile();
+  const cached = loadCache();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
   const [selectedAmount, setSelectedAmount] = useState(100);
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
   const [showAddAccount, setShowAddAccount] = useState(false);
   const [showViewAccount, setShowViewAccount] = useState(false);
-  const [bindAccount, setBindAccount] = useState<BankAccount | null>(null);
-  const [withdrawInfo, setWithdrawInfo] = useState<import("@/services/authService").WithdrawInfoResponse | null>(null);
-  const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(false);
+  const [bindAccount, setBindAccount] = useState<BankAccount | null>(cached?.data?.bindAccount || null);
+  const [withdrawInfo, setWithdrawInfo] = useState<import("@/services/authService").WithdrawInfoResponse | null>(cached || null);
+  const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(!cached);
   const [bindingAccount, setBindingAccount] = useState(false);
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
@@ -58,17 +75,20 @@ const Bank = () => {
   ];
 
   const loadWithdrawInfo = async () => {
-    setLoadingWithdrawInfo(true);
+    if (!withdrawInfo) setLoadingWithdrawInfo(true);
     try {
       const info = await authService.getWithdrawInfo();
       setWithdrawInfo(info);
+      saveCache(info);
       if (info.data.bindAccount) {
         setBindAccount(info.data.bindAccount as BankAccount);
       } else {
         setBindAccount(null);
       }
     } catch (err: any) {
-      toast({ description: err?.message || "Failed to load withdraw info", variant: "destructive" });
+      if (!withdrawInfo) {
+        toast({ description: err?.message || "Failed to load withdraw info", variant: "destructive" });
+      }
     } finally {
       setLoadingWithdrawInfo(false);
     }
