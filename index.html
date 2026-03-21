@@ -23,6 +23,26 @@
   <meta name="description" content="1xKING - Your Ultimate Gaming Platform" />
   <meta name="author" content="1xKING" />
 
+  <!-- Version Check Script -->
+  <script>
+    (function() {
+      const LOCAL_STORAGE_KEY = 'app_version';
+      fetch('/version.json?t=' + Date.now(), { cache: 'no-store' })
+        .then(response => response.json())
+        .then(data => {
+          const latestVersion = data.version;
+          const storedVersion = localStorage.getItem(LOCAL_STORAGE_KEY);
+          if (storedVersion && latestVersion !== storedVersion) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, latestVersion);
+            window.location.reload();
+          } else if (!storedVersion) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, latestVersion);
+          }
+        })
+        .catch(() => { /* Silent fail */ });
+    })();
+  </script>
+
   <!-- Unregister Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {

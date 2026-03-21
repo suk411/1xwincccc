@@ -1,10 +1,13 @@
 import { useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const VERSION_CHECK_INTERVAL = 15000; // 15 seconds
 const LOCAL_STORAGE_KEY = 'app_version';
 
 export const VersionCheck = () => {
+  const location = useLocation();
+
   const checkForUpdates = useCallback(async () => {
     try {
       // Use timestamp query to bypass any possible caching
@@ -55,9 +58,11 @@ export const VersionCheck = () => {
   }, []);
 
   useEffect(() => {
-    // Initial check on mount
+    // Check on every navigation/route change
     checkForUpdates();
+  }, [location.pathname, checkForUpdates]);
 
+  useEffect(() => {
     // Regular interval check
     const intervalId = setInterval(checkForUpdates, VERSION_CHECK_INTERVAL);
 
