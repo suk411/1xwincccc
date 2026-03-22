@@ -200,6 +200,14 @@ const Bank = () => {
       });
       return;
     }
+
+    if (selectedWithdrawAmount > remainingLimit) {
+      toast({ 
+        description: `Daily withdrawal limit exceeded, upgrade vip level to increase limit `, 
+        variant: "destructive" 
+      });
+      return;
+    }
     
     setWithdrawing(true);
     try {
