@@ -192,8 +192,7 @@ const Bank = () => {
       return;
     }
 
-    const totalNeeded = selectedWithdrawAmount + feeAmount;
-    if (totalNeeded > walletBalance) {
+    if (selectedWithdrawAmount > walletBalance) {
       toast({ 
         description: `Insufficient balance`, 
         variant: "destructive" 
@@ -201,7 +200,7 @@ const Bank = () => {
       return;
     }
 
-    if (selectedWithdrawAmount > remainingLimit) {
+    if (remainingLimit !== -1 && selectedWithdrawAmount > remainingLimit) {
       toast({ 
         description: `Daily withdrawal limit exceeded, upgrade vip level to increase limit `, 
         variant: "destructive" 
@@ -511,7 +510,7 @@ const Bank = () => {
                 </div>
                 <div className="flex gap-2">
                   <span className="text-primary text-[15px] font-bold shrink-0">•</span>
-                  <p className="text-white text-[15px] leading-relaxed italic">Daily withdrawal limit ₹{remainingLimit.toFixed(0)}/₹{dailyLimit.toFixed(0)}</p>
+                  <p className="text-white text-[15px] leading-relaxed italic">Daily withdrawal limit {remainingLimit === -1 ? "Unlimited" : `₹${remainingLimit.toFixed(0)}`}/{dailyLimit === -1 ? "Unlimited" : `₹${dailyLimit.toFixed(0)}`}</p>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-primary text-[15px] font-bold shrink-0">•</span>
