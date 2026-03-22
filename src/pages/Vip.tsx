@@ -361,7 +361,7 @@ const Vip = () => {
             <div className="grid grid-cols-3 px-3 py-2 text-[11px] text-gray-200 font-semibold">
               <span>VIP Level</span>
               <span>{vipTab === "privilege" ? "Deposit" : "Monthly Bonus"}</span>
-              <span>{vipTab === "privilege" ? "Today withdrawn" : "Upgrade Reward"}</span>
+              <span>{vipTab === "privilege" ? "Daily withdrawn" : "Upgrade Reward"}</span>
             </div>
 
             {/* ROWS */}

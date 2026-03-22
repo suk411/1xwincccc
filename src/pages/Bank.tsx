@@ -20,7 +20,6 @@ import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from 
 import { Progress } from "@/components/ui/progress";
 
 const DEPOSIT_OPTIONS = [
-  { deposit: 100, bonus: 20 },
   { deposit: 200, bonus: 40 },
   { deposit: 300, bonus: 60 },
   { deposit: 500, bonus: 100 },
@@ -56,7 +55,7 @@ const Bank = () => {
   const { balance, refresh: refreshBalance } = useProfile();
   const cached = loadCache();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
-  const [selectedAmount, setSelectedAmount] = useState(100);
+  const [selectedAmount, setSelectedAmount] = useState(200);
   const [customAmount, setCustomAmount] = useState("");
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
@@ -137,12 +136,12 @@ const Bank = () => {
   const withdrawableAmount = withdrawInfo?.data?.totalAvailable ?? withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   const turnoverRequirement = withdrawInfo?.data?.turnover?.total_required ?? withdrawInfo?.data?.turnover?.requirement ?? (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
   const turnoverCompleted = withdrawInfo?.data?.turnover?.completed ?? 0;
+  const remainingTurnover = Math.max(0, turnoverRequirement - turnoverCompleted);
   const turnoverProgress = withdrawInfo?.data?.turnover?.progress ?? (withdrawInfo?.data as any)?.turnover_progress ?? 0;
   const dailyLimit = withdrawInfo?.data?.vipMeta?.dailyWithdrawLimit ?? withdrawInfo?.data?.dailyLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
   const remainingLimit = withdrawInfo?.data?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   
-  const chargeRate = withdrawInfo?.data?.charge ?? 0.0;
-  const feeAmount = selectedWithdrawAmount * chargeRate;
+  const feeAmount = (selectedWithdrawAmount * 0.035) + 6;
   
   const currentEffectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
   const selectedDepositBonus = [...DEPOSIT_OPTIONS]
@@ -156,8 +155,8 @@ const Bank = () => {
     
     if (customAmount) {
       const amount = parseInt(customAmount);
-      if (isNaN(amount) || amount < 300 || amount > 20000) {
-        toast({ description: "Please enter an amount between 300 and 20000", variant: "destructive" });
+      if (isNaN(amount) || amount < 200 || amount > 20000) {
+        toast({ description: "Please enter an amount between 200 and 20000", variant: "destructive" });
         return;
       }
     }
@@ -183,6 +182,23 @@ const Bank = () => {
     if (withdrawing) return;
     if (!withdrawInfo?.data?.isBankBound && !bindAccount) {
       toast({ description: "Please bind a bank account first", variant: "destructive" });
+      return;
+    }
+
+    if (remainingTurnover > 0) {
+      toast({ 
+        description: `Turnover requirement not met. Need to bet ₹${remainingTurnover.toFixed(0)} more.`, 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    const totalNeeded = selectedWithdrawAmount + feeAmount;
+    if (totalNeeded > walletBalance) {
+      toast({ 
+        description: `Insufficient balance`, 
+        variant: "destructive" 
+      });
       return;
     }
     
@@ -224,10 +240,7 @@ const Bank = () => {
         <img src={headerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="relative z-10 flex items-center gap-2">
           <img src={bankIcon} alt="Bank" className="w-8 h-8 object-contain" />
-          <div className="flex items-center gap-1">
-            <span className="text-white/70 text-sm">Balance:</span>
-            <span className="text-primary font-bold text-base">₹{activeTab === 'deposit' ? balance.toFixed(2) : walletBalance.toFixed(2)}</span>
-          </div>
+          <span className="text-white font-bold text-base">Bank</span>
         </div>
         <div className="relative z-10 flex items-center gap-3">
           <ClipboardCheck size={20} className="text-white cursor-pointer mr-4" onClick={() => navigate(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
@@ -260,6 +273,50 @@ const Bank = () => {
             Withdraw
           </button>
         </GameCard>
+
+        {/* New Bank Card */}
+        <div 
+          className="relative w-full h-36 rounded-2xl overflow-hidden shadow-xl p-5 flex flex-col justify-between"
+          style={{
+            background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
+            border: '1.5px solid rgba(255, 180, 50, 0.45)',
+          }}
+        >
+          <div className="relative z-10 flex justify-between items-start">
+            <div className="flex flex-col gap-1">
+              <span className="text-white/80 text-xs font-medium uppercase tracking-wider">Total Balance</span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-white text-3xl font-black">₹</span>
+                <span className="text-white text-3xl font-black">
+                  {(activeTab === 'deposit' ? balance : walletBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
+            </div>
+            {/* Credit Card Icon as requested */}
+            <img 
+              src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/creditcardicon.png" 
+              alt="Credit Card" 
+              className="w-12 h-12 object-contain opacity-90"
+            />
+          </div>
+
+          {activeTab === 'withdraw' && (
+            <div className="relative z-10 flex flex-col gap-1.5 mt-2">
+              <div className="flex items-center justify-between">
+                <span className="text-white/80 text-[10px] font-medium uppercase">Turnover Progress</span>
+                <span className="text-white text-[10px] font-bold italic">{turnoverProgress.toFixed(1)}%</span>
+              </div>
+              <Progress
+                value={turnoverProgress}
+                className="h-1.5 bg-white/20 rounded-full [&>div]:bg-white"
+              />
+              <div className="flex items-center justify-between">
+                <span className="text-white/60 text-[9px]">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
+                <span className="text-white/80 text-[9px] font-medium">Limit: ₹{remainingLimit.toFixed(0)}</span>
+              </div>
+            </div>
+          )}
+        </div>
 
         {activeTab === "deposit" ? (
           <>
@@ -327,7 +384,7 @@ const Bank = () => {
                       const value = e.target.value.replace(/\D/g, ""); // Remove any non-digits
                       setCustomAmount(value);
                     }}
-                    placeholder="300-20000"
+                    placeholder="200-20000"
                     className="w-full bg-black/20 border border-white/10 rounded-md py-2.5 pl-7 pr-3 text-white text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
@@ -366,30 +423,6 @@ const Bank = () => {
           </>
         ) : (
           <>
-            <GameCard className="p-3 flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <span className="text-white text-xs">Balance:</span>
-                <span className="text-white text-sm font-bold">₹{walletBalance.toFixed(2)}</span>
-              </div>
-              <div className="flex flex-col gap-1 mt-1 pt-1 border-t border-white/10">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-white text-xs">Turnover Progress:</span>
-                  <span className="text-xs font-bold">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
-                </div>
-                <Progress
-                  value={turnoverProgress}
-                  className="h-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
-                />
-                <div className="flex justify-end mt-0.5">
-                  <span className=" text-green-500  text-[10px]">{turnoverProgress.toFixed(1)}% Completed</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between mt-1 pt-1 border-t border-white/10">
-                <span className=" text-[11px]">Daily Withdraw Limit:</span>
-                <span className=" text-[11px]">₹{remainingLimit.toFixed(2)} / ₹{dailyLimit.toFixed(2)}</span>
-              </div>
-            </GameCard>
-
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Select Amount</span>
               <div className="grid grid-cols-3 gap-2">
@@ -424,7 +457,11 @@ const Bank = () => {
                     style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
                   >
                     <div className="flex items-center gap-2">
-                      <CreditCard size={18} className="text-primary" />
+                      <img 
+                        src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/bankcardicon.png" 
+                        alt="Bank" 
+                        className="w-6 h-6 object-contain"
+                      />
                       <div className="flex flex-col">
                         <span className="text-white text-sm">{withdrawInfo?.data?.bindAccount?.bankName || bindAccount?.bankName || "Linked Bank"}</span>
                         {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber) && (
@@ -443,7 +480,7 @@ const Bank = () => {
                       View
                     </GameButton>
                   </div>
-                  <p className="text-[11px] text-white/60">
+                  <p className="text-[11px] text-white">
                     Bank account can only be bound once per user. Contact support to change details.
                   </p>
                 </>
@@ -454,7 +491,11 @@ const Bank = () => {
                   style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
                 >
                   <div className="flex items-center gap-2">
-                    <Wallet size={18} className="text-primary" />
+                    <img 
+                      src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/bankcardicon.png" 
+                      alt="Bank" 
+                      className="w-6 h-6 object-contain"
+                    />
                     <span className="text-yellow-400 text-sm">Add Account</span>
                   </div>
                   <PlusCircle size={20} className="text-white" />
@@ -462,13 +503,41 @@ const Bank = () => {
               )}
             </GameCard>
 
-            <GameCard className="px-5 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Wallet size={16} className="text-white" />
-                <span className="text-white text-sm">Withdrawal Fee</span>
+           
+
+            <div className="mt-4 px-2 space-y-3 pb-4">
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-2">
+                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
+                  <p className="text-white text-[15px] leading-relaxed italic">Need to bet ₹{remainingTurnover.toFixed(0)} to be able to withdraw</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
+                  <p className="text-white text-[15px] leading-relaxed italic">Betting turnover has a 10-minute delay, please wait patiently for updates</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
+                  <p className="text-white text-[15px] leading-relaxed italic">Withdraw time 00:00–23:59</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
+                  <p className="text-white text-[15px] leading-relaxed italic">Daily withdrawal limit ₹{remainingLimit.toFixed(0)}/₹{dailyLimit.toFixed(0)}</p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
+                  <p className="text-white text-[15px] leading-relaxed italic">Reminder: When you withdraw the funds, a 3.5% + ₹6 processing fee will be automatically deducted from the withdrawal, and the remaining amount will be safely deposited into your account.</p>
+                </div>
               </div>
-              <span className="text-primary text-sm">₹{feeAmount.toFixed(2)}</span>
-            </GameCard>
+
+              <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
+                <p className="text-yellow-500 text-[15px] leading-relaxed font-medium">
+                  Please confirm your beneficial account information before withdrawing. If your information is incorrect, our company will not be liable for the amount of loss.
+                </p>
+                <p className="text-white  text-[15px] leading-relaxed italic">
+                  If your beneficial information is incorrect, please contact customer service.
+                </p>
+              </div>
+            </div>
           </>
         )}
       </div>
