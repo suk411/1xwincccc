@@ -17,7 +17,6 @@ import { useProfile } from "@/hooks/useProfile";
 import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
-import { Progress } from "@/components/ui/progress";
 
 const DEPOSIT_OPTIONS = [
   { deposit: 200, bonus: 40 },
@@ -299,23 +298,6 @@ const Bank = () => {
               className="w-12 h-12 object-contain opacity-90"
             />
           </div>
-
-          {activeTab === 'withdraw' && (
-            <div className="relative z-10 flex flex-col gap-1.5 mt-2">
-              <div className="flex items-center justify-between">
-                <span className="text-white/80 text-[10px] font-medium uppercase">Turnover Progress</span>
-                <span className="text-white text-[10px] font-bold italic">{turnoverProgress.toFixed(1)}%</span>
-              </div>
-              <Progress
-                value={turnoverProgress}
-                className="h-1.5 bg-white/20 rounded-full [&>div]:bg-white"
-              />
-              <div className="flex items-center justify-between">
-                <span className="text-white/60 text-[9px]">₹{turnoverCompleted.toFixed(2)} / ₹{turnoverRequirement.toFixed(2)}</span>
-                <span className="text-white/80 text-[9px] font-medium">Limit: ₹{remainingLimit.toFixed(0)}</span>
-              </div>
-            </div>
-          )}
         </div>
 
         {activeTab === "deposit" ? (
