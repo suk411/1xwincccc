@@ -2,16 +2,26 @@ import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const VERSION_CHECK_INTERVAL = 15000; // 15 seconds
+const VERSION_CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
+const LAST_CHECK_KEY = 'last_version_check';
 const LOCAL_STORAGE_KEY = 'app_version';
 
 export const VersionCheck = () => {
   const location = useLocation();
 
-  const checkForUpdates = useCallback(async () => {
+  const checkForUpdates = useCallback(async (force = false) => {
     try {
+      const now = Date.now();
+      const lastCheck = localStorage.getItem(LAST_CHECK_KEY);
+      
+      if (!force && lastCheck && (now - parseInt(lastCheck)) < VERSION_CHECK_INTERVAL) {
+        return; // Skip if checked within the last 24h
+      }
+
+      localStorage.setItem(LAST_CHECK_KEY, now.toString());
+
       // Use timestamp query to bypass any possible caching
-      const response = await fetch(`/version.json?t=${Date.now()}`, {
+      const response = await fetch(`/version.json?t=${now}`, {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache',
@@ -58,8 +68,13 @@ export const VersionCheck = () => {
   }, []);
 
   useEffect(() => {
-    // Check on every navigation/route change
-    checkForUpdates();
+    // Check if we are on login or register page to force check
+    const isAuthPage = ['/login', '/register'].includes(location.pathname);
+    if (isAuthPage) {
+      checkForUpdates(true);
+    } else {
+      checkForUpdates();
+    }
   }, [location.pathname, checkForUpdates]);
 
   useEffect(() => {
