@@ -135,6 +135,17 @@ export interface WithdrawalsResponse {
   items: WithdrawalRecord[];
 }
 
+export interface RedeemGiftCodeResponse {
+  status: string;
+  msg: string;
+  rewardAmount?: number;
+  newBalance?: number;
+  turnoverAdded?: number;
+  code?: string;
+  required?: number;
+  deposited?: number;
+}
+
 const TOKEN_KEY = "auth_token";
 
 const extractErrorMessage = (data: any, fallback: string): string => {
@@ -424,6 +435,18 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Claim failed"));
+    return data;
+  },
+
+  async redeemGiftCode(code: string): Promise<RedeemGiftCodeResponse> {
+    const res = await fetch(`${API_BASE}/api/account/redeem-gift-code`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ code }),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to redeem gift code"));
     return data;
   },
 
