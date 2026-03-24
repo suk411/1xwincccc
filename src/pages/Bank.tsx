@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
 
 const DEPOSIT_OPTIONS = [
+  { deposit: 100, bonus: 20 },
   { deposit: 200, bonus: 40 },
   { deposit: 300, bonus: 60 },
   { deposit: 500, bonus: 100 },
@@ -54,7 +55,7 @@ const Bank = () => {
   const { balance, refresh: refreshBalance } = useProfile();
   const cached = loadCache();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
-  const [selectedAmount, setSelectedAmount] = useState(200);
+  const [selectedAmount, setSelectedAmount] = useState(100);
   const [customAmount, setCustomAmount] = useState("");
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
@@ -154,8 +155,8 @@ const Bank = () => {
     
     if (customAmount) {
       const amount = parseInt(customAmount);
-      if (isNaN(amount) || amount < 200 || amount > 20000) {
-        toast({ description: "Please enter an amount between 200 and 20000", variant: "destructive" });
+      if (isNaN(amount) || amount < 100 || amount > 20000) {
+        toast({ description: "Please enter an amount between 100 and 20000", variant: "destructive" });
         return;
       }
     }
@@ -373,7 +374,7 @@ const Bank = () => {
                       const value = e.target.value.replace(/\D/g, ""); // Remove any non-digits
                       setCustomAmount(value);
                     }}
-                    placeholder="200-20000"
+                    placeholder="100-20000"
                     className="w-full bg-black/20 border border-white/10 rounded-md py-2.5 pl-7 pr-3 text-white text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
