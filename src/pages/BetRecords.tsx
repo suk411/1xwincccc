@@ -113,9 +113,12 @@ const BetRecords = () => {
                     <div className="flex flex-col gap-1">
                       <span className="text-white text-base">{gameName}</span>
                       {hasPayout && (
-                        <span className={`font-bold text-lg ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
-                          {profit > 0 ? "+" : ""}{profit.toFixed(2)}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-white/60 text-sm font-medium">Payout:</span>
+                          <span className={`font-bold text-sm ${isWin ? "text-green-500" : isLoss ? "text-red-500" : "text-gray-300"}`}>
+                            {profit > 0 ? "+" : ""}{profit.toFixed(2)}
+                          </span>
+                        </div>
                       )}
                     </div>
                     {gameLogo && (
@@ -129,7 +132,10 @@ const BetRecords = () => {
                   
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10">
                     <div className="flex flex-col">
-                       <span className="text-green-500 font-bold text-sm">{item.bet.toFixed(2)}</span>
+                       <div className="flex items-center gap-1">
+                         <span className="text-white/60 text-sm font-medium">Bet:</span>
+                         <span className="text-green-500 font-bold text-sm">{item.bet.toFixed(2)}</span>
+                       </div>
                     </div>
                     <div className="flex flex-col items-end">
                        <span className="text-white text-xs">{dateStr}</span>
