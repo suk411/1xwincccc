@@ -27,6 +27,8 @@ import GameLobby from "@/components/GameLobby";
 import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
+import { authService } from "@/services/authService";
+import VipUpgradeDialog from "@/components/VipUpgradeDialog";
 import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
 import VipLockModal from "@/components/VipLockModal";
 import googlePlayBadge from "@/assets/download/google-play.png";
@@ -89,14 +91,15 @@ const Index = () => {
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
+  const [vipDialogOpen, setVipDialogOpen] = useState(false);
+  const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
+  const showTopGames = true;
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawCountdown, setWithdrawCountdown] = useState(0);
   const [showBalanceDialog, setShowBalanceDialog] = useState(false);
   const [showVipModal, setShowVipModal] = useState(false);
-  const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
   const [gameBalances, setGameBalances] = useState<Record<string, number>>({});
   const [totalGameBalance, setTotalGameBalance] = useState(0);
-  const showTopGames = true;
 
   const { balance, vipLevel } = useProfile();
 
@@ -189,6 +192,18 @@ const Index = () => {
 
     setLaunchingGame(game.game_id);
     try {
+      // Check VIP status first
+      const vipData = await authService.getVip();
+      const vipLevel = typeof vipData.vipLevel === "number" ? vipData.vipLevel : parseInt(String(vipData.vipLevel), 10);
+      
+      if (!vipLevel || vipLevel <= 0) {
+        // Non-VIP user — show upgrade dialog
+        setPendingGame(game);
+        setVipDialogOpen(true);
+        setLaunchingGame(null);
+        return;
+      }
+
       // Backend request is ONLY made if user is VIP 1 or more
       const result = await gameService.launch(game);
       // Only refresh profile if necessary (e.g. to update balance)
@@ -404,11 +419,18 @@ const Index = () => {
           />
         </div>
 
-        {activeGameTab === "top" && (
-          <GameProviderSection 
+        {activeGameTab === "top" ? (
+          showTopGames && (
+            <GameProviderSection 
+              launchingGame={launchingGame}
+              handleGameLaunch={handleGameLaunch}
+            />
+          )
+        ) : (
+          <GameLobby
+            activeTab={activeGameTab}
             launchingGame={launchingGame}
             handleGameLaunch={handleGameLaunch}
-            vipLevel={vipLevel}
           />
         )}
 
@@ -530,6 +552,11 @@ const Index = () => {
           </div>
         </div>
       </div>
+      <VipUpgradeDialog
+        open={vipDialogOpen}
+        onOpenChange={setVipDialogOpen}
+        game={pendingGame}
+      />
     </PageLayout>
   );
 };

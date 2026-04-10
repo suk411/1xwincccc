@@ -1,12 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { GameObject, GAME_LIST } from "@/services/gameService";
 import { GameTabs, GameTab } from "./GameTabs";
 import { GameButton } from "./GameButton";
 
 import allTabIcon from "@/assets/tabs/all-icon.png";
-import recentTabIcon from "@/assets/tabs/recent-icon.png";
 import slotsTabIcon from "@/assets/tabs/slots-icon.png";
 import casinoTabIcon from "@/assets/tabs/casino-icon.png";
 import fishTabIcon from "@/assets/tabs/fish-icon.png";
@@ -34,14 +32,6 @@ const PROVIDER_ICONS: Record<string, string> = {
   turbo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
 };
 
-const PROVIDER_LABELS: Record<string, string> = {
-  jili: "JILI",
-  pg: "PG",
-  jdb: "JDB",
-  spribe: "SPRIBE",
-  turbo: "TURBO",
-};
-
 const GAMES_PER_PAGE = 21;
 
 interface GameLobbyProps {
@@ -62,32 +52,25 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     }
   }, [location.state]);
 
-  // Reset visible count when provider or filter changes
   useEffect(() => {
     setVisibleCount(GAMES_PER_PAGE);
   }, [selectedProvider, selectedFilter, activeTab]);
 
-  // Get unique providers from GAME_LIST
   const providers = useMemo(() => {
     const codes = new Set(GAME_LIST.map((g) => g.provider.toLowerCase()));
     return Array.from(codes);
   }, []);
 
-  // Filter games
   const filteredGames = useMemo(() => {
     let games = [...GAME_LIST];
 
-    // Provider filter
     games = games.filter((g) => g.provider.toLowerCase() === selectedProvider.toLowerCase());
 
-    // Category filter from horizontal tabs
     if (selectedFilter !== "all") {
       games = games.filter((g) => g.category.toLowerCase() === selectedFilter.toLowerCase());
     }
 
-    // Tab-level filter (from top level category)
     if (activeTab !== "all" && activeTab !== "top") {
-      // If activeTab is something like 'slots', 'casino', etc.
       const categoryMapping: Record<string, string> = {
         slots: "slot",
         casino: "casino",
@@ -106,7 +89,6 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     return filteredGames.slice(0, visibleCount);
   }, [filteredGames, visibleCount]);
 
-  // Reset page when filters change
   const handleProviderChange = (code: string) => {
     setSelectedProvider(code);
   };
@@ -121,7 +103,6 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
 
   return (
     <div className="flex flex-col gap-2 mt-2 h-full overflow-hidden scrollbar-hide">
-      {/* Secondary Filter Bar - Now using GameTabs */}
       <div className="w-full flex-shrink-0 overflow-hidden scrollbar-hide">
         <GameTabs
           tabs={LOBBY_TABS}
@@ -131,9 +112,8 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
         />
       </div>
 
-      {/* Provider Sidebar + Game Grid */}
       <div className="flex gap-1.5 flex-1 overflow-hidden scrollbar-hide">
-        {/* Left Provider Sidebar */}
+        {/* Provider Sidebar */}
         <div
           className="flex flex-col gap-1 py-2 px-1 rounded-lg flex-shrink-0 h-full overflow-y-auto scrollbar-hide"
           style={{
@@ -171,7 +151,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
           })}
         </div>
 
-        {/* Right Game Grid */}
+        {/* Game Grid */}
         <div className="flex-1 flex flex-col overflow-y-auto scrollbar-hide pb-4">
           {visibleGames.length === 0 ? (
             <div className="flex-1 flex items-center justify-center text-white/40 text-sm">
@@ -202,8 +182,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
             </div>
           )}
 
-          {/* Load More Section */}
-          {!visibleGames.length || visibleCount >= filteredGames.length ? null : (
+          {visibleGames.length > 0 && visibleCount < filteredGames.length && (
             <div className="flex flex-col items-center gap-2 pb-10">
               <span className="text-white/60 text-xs">
                 Showing {visibleGames.length} of {filteredGames.length} games
