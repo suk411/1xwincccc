@@ -178,6 +178,26 @@ export const GAME_LIST: GameObject[] = [
 ];
 
 export const gameService = {
+  async watch(game: GameObject): Promise<GameLaunchResponse> {
+    const params = new URLSearchParams({
+      g_id: String(game.game_id),
+      p_code: game.provider_code,
+      type: game.type,
+      lang: "en-US",
+      html5: "1",
+    });
+    const res = await fetch(`${API_BASE}/game/watch?${params}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const rawData = await res.json();
+    const data = Array.isArray(rawData) ? rawData[0] : rawData;
+    if (!res.ok || data.status !== "success") {
+      throw new Error(data.msg || data.error || data.message || "Demo launch failed");
+    }
+    return data;
+  },
+
   async launch(game: GameObject): Promise<GameLaunchResponse> {
     const params = new URLSearchParams({
       g_id: String(game.game_id),
