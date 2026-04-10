@@ -26,9 +26,8 @@ const Header = () => {
         <div className="flex items-center gap-3">
           {isLoggedIn && (
             <>
-              <button className="relative w-7 h-7 flex items-center justify-center" onClick={() => window.open("https://t.me/", "_blank")}>
               <button 
-                onClick={() => navigate("/support")}
+                onClick={() => window.open("https://t.me/", "_blank")}
                 className="relative w-7 h-7 flex items-center justify-center hover:opacity-80 transition-opacity"
               >
                 <img src={supportIcon} alt="Support" className="absolute inset-0 w-full h-full object-contain" />

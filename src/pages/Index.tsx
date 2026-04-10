@@ -437,11 +437,6 @@ const Index = () => {
             activeTab={activeGameTab}
             launchingGame={launchingGame}
             handleGameLaunch={handleGameLaunch}
-        {activeGameTab === "top" && (
-          <GameProviderSection 
-            launchingGame={launchingGame}
-            handleGameLaunch={handleGameLaunch}
-            vipLevel={vipLevel}
           />
         )}
 

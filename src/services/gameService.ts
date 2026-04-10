@@ -1249,6 +1249,10 @@ export const gameService = {
     const data = Array.isArray(rawData) ? rawData[0] : rawData;
     if (!res.ok || data.status !== "success") {
       throw new Error(data.msg || data.error || data.message || "Demo launch failed");
+    }
+    return data;
+  },
+
   async getBalance(): Promise<GameBalanceResponse> {
     const res = await fetch(`${API_BASE}/api/game/balance`, {
       headers: authHeaders(),
