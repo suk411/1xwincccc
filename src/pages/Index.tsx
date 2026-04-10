@@ -24,14 +24,11 @@ import liveTabIcon from "@/assets/tabs/live-icon.png";
 import sportTabIcon from "@/assets/tabs/sport-icon.png";
 import GameProviderSection from "@/components/GameProviderSection";
 import GameLobby from "@/components/GameLobby";
-import { GAME_LIST, gameService, GameObject } from "@/services/gameService";
+import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
 import { authService } from "@/services/authService";
 import VipUpgradeDialog from "@/components/VipUpgradeDialog";
-import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
-import { toast } from "@/hooks/use-toast";
-import { refreshProfile } from "@/hooks/useProfile";
 import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
 import VipLockModal from "@/components/VipLockModal";
 import googlePlayBadge from "@/assets/download/google-play.png";
@@ -97,16 +94,12 @@ const Index = () => {
   const [vipDialogOpen, setVipDialogOpen] = useState(false);
   const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
   const showTopGames = true;
-  
-  const { balance } = useProfile();
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawCountdown, setWithdrawCountdown] = useState(0);
   const [showBalanceDialog, setShowBalanceDialog] = useState(false);
   const [showVipModal, setShowVipModal] = useState(false);
-  const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
   const [gameBalances, setGameBalances] = useState<Record<string, number>>({});
   const [totalGameBalance, setTotalGameBalance] = useState(0);
-  const showTopGames = true;
 
   const { balance, vipLevel } = useProfile();
 
