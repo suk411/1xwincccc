@@ -76,6 +76,7 @@ const GameLobbyPage = () => {
           setShowVipModal(false);
           setPendingGame(null);
         }}
+        game={pendingGame}
       />
     </div>
   );

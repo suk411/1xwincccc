@@ -1,16 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameButton } from "./GameButton";
+import { gameService, GameObject } from "@/services/gameService";
+import { useToast } from "@/hooks/use-toast";
+import { Eye } from "lucide-react";
 
 interface VipLockModalProps {
   isOpen: boolean;
   onClose: () => void;
+  game: GameObject | null;
 }
 
 const IMG_BASE_URL = "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/vipdilog/";
 
-const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose }) => {
+const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -28,6 +34,26 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose }) => {
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
+    }
+  };
+
+  const handleWatchNow = async () => {
+    if (!game) return;
+    setLoading(true);
+    try {
+      const result = await gameService.watch(game);
+      if (result.gameUrl) {
+        onClose();
+        navigate("/game", { state: { gameUrl: result.gameUrl } });
+      }
+    } catch (e: any) {
+      toast({
+        title: "Watch failed",
+        description: e.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,10 +146,26 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Buttons */}
-        <div className="w-full px-8 z-10">
+        <div className="w-full px-8 z-10 space-y-3">
+          <GameButton
+            variant="gold"
+            className="w-full h-12 text-lg font-bold shadow-lg"
+            onClick={handleWatchNow}
+            disabled={loading}
+          >
+            {loading ? (
+              "Loading..."
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <span>Watch Only</span>
+                <Eye size={20} className="stroke-[2.5]" />
+              </span>
+            )}
+          </GameButton>
+
           <GameButton
             variant="red"
-            className="w-full h-11 text-lg font-bold shadow-lg"
+            className="w-full h-12 text-lg font-bold shadow-lg"
             onClick={() => {
               onClose();
               navigate("/bank");

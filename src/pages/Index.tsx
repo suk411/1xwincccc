@@ -391,6 +391,7 @@ const Index = () => {
             setShowVipModal(false);
             setPendingGame(null);
           }}
+          game={pendingGame}
         />
 
         {/* Game Category Tabs */}
