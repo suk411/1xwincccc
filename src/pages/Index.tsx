@@ -27,6 +27,8 @@ import GameLobby from "@/components/GameLobby";
 import { GAME_LIST, gameService, GameObject } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { refreshProfile } from "@/hooks/useProfile";
+import { authService } from "@/services/authService";
+import VipUpgradeDialog from "@/components/VipUpgradeDialog";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
 
@@ -87,6 +89,8 @@ const Index = () => {
   const [tickerText, setTickerText] = useState("");
   const [activeGameTab, setActiveGameTab] = useState("top");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
+  const [vipDialogOpen, setVipDialogOpen] = useState(false);
+  const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
   const showTopGames = true;
   
   const { balance } = useProfile();
@@ -94,6 +98,18 @@ const Index = () => {
   const handleGameLaunch = async (game: GameObject) => {
     setLaunchingGame(game.game_id);
     try {
+      // Check VIP status first
+      const vipData = await authService.getVip();
+      const vipLevel = typeof vipData.vipLevel === "number" ? vipData.vipLevel : parseInt(String(vipData.vipLevel), 10);
+      
+      if (!vipLevel || vipLevel <= 0) {
+        // Non-VIP user — show upgrade dialog
+        setPendingGame(game);
+        setVipDialogOpen(true);
+        setLaunchingGame(null);
+        return;
+      }
+
       const result = await gameService.launch(game);
       await refreshProfile();
       navigate("/game", { state: { gameUrl: result.gameUrl } });
