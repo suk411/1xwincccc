@@ -26,7 +26,7 @@ const Header = () => {
         <div className="flex items-center gap-3">
           {isLoggedIn && (
             <>
-              <button className="relative w-7 h-7 flex items-center justify-center">
+              <button className="relative w-7 h-7 flex items-center justify-center" onClick={() => window.open("https://t.me/", "_blank")}>
                 <img src={supportIcon} alt="Support" className="absolute inset-0 w-full h-full object-contain" />
               </button>
               <button className="relative w-7 h-7 flex items-center justify-center">
