@@ -132,6 +132,10 @@ const Bank = () => {
     }
   };
 
+  const walletBalance = withdrawInfo?.data?.balance ?? balance;
+  const withdrawableAmount = withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
+  const dailyLimit = (withdrawInfo?.data?.vipMeta as any)?.dailyWithdrawLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
+  const remainingLimit = (withdrawInfo?.data as any)?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   const walletBalance = withdrawInfo?.data?.walletBalance ?? withdrawInfo?.data?.balance ?? balance;
   const withdrawableAmount = withdrawInfo?.data?.totalAvailable ?? withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   const turnoverRequirement = withdrawInfo?.data?.turnover?.total_required ?? withdrawInfo?.data?.turnover?.requirement ?? (withdrawInfo?.data as any)?.turnover_requirement ?? 0;

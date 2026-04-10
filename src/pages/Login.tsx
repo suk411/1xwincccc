@@ -121,7 +121,7 @@ const Login = () => {
 
         {/* Support & Language */}
         <div className="flex items-center justify-center gap-4 mt-6">
-          <button className="flex items-center gap-1.5 text-[#c4889a] text-xs border border-[#5a2030] rounded-full px-4 py-1.5">
+          <button className="flex items-center gap-1.5 text-[#c4889a] text-xs border border-[#5a2030] rounded-full px-4 py-1.5" onClick={() => window.open("https://t.me/", "_blank")}>
             <img src={supportIcon} alt="" className="w-4 h-4" />
             Contact Support
           </button>
