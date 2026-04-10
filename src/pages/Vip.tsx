@@ -148,11 +148,11 @@ const Vip = () => {
     }
 
     return [
-      { level: "VIP 1", checkin: "₹160", upgrade: "₹10" },
-      { level: "VIP 2", checkin: "₹160", upgrade: "₹20" },
-      { level: "VIP 3", checkin: "₹240", upgrade: "₹30" },
-      { level: "VIP 4", checkin: "₹240", upgrade: "₹40" },
-      { level: "SVIP 1", checkin: "₹400", upgrade: "₹50", icon: svipIcon },
+      { level: "VIP 1", checkin: "₹50", upgrade: "₹10" },
+      { level: "VIP 2", checkin: "₹70", upgrade: "₹20" },
+      { level: "VIP 3", checkin: "₹140", upgrade: "₹30" },
+      { level: "VIP 4", checkin: "₹260", upgrade: "₹40" },
+      { level: "SVIP 1", checkin: "₹340", upgrade: "₹50", icon: svipIcon },
     ];
   }, [vipTab]);
 
@@ -361,7 +361,7 @@ const Vip = () => {
             <div className="grid grid-cols-3 px-3 py-2 text-[11px] text-gray-200 font-semibold">
               <span>VIP Level</span>
               <span>{vipTab === "privilege" ? "Deposit" : "Monthly Bonus"}</span>
-              <span>{vipTab === "privilege" ? "Today withdrawn" : "Upgrade Reward"}</span>
+              <span>{vipTab === "privilege" ? "Daily withdrawn" : "Upgrade Reward"}</span>
             </div>
 
             {/* ROWS */}

@@ -10,6 +10,7 @@ import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
 import vipBadge from "@/assets/profile/vip-badge.png";
+import deposit from "@/assets/bank/deposit-icon.png";
 import withdraw from "@/assets/profile/withdrawal.png";
 
 import avatar from "@/assets/profile/avatar.png";
@@ -27,6 +28,7 @@ import languageIcon from "@/assets/profile/language-icon.png";
 import mailicon from "@/assets/profile/mail-icon.png";
 import backArrow from "@/assets/icons/back-arrow.png";
 import vipIcon from "@/assets/profile/vip-icon.png";
+import versionIcon from "@/assets/profile/version-info.png";
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -57,6 +59,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const totalDeposits = Number(vipData?.totalDeposits ?? 0);
   const nextThreshold = isSvip ? VIP_THRESHOLDS[VIP_THRESHOLDS.length - 1] : VIP_THRESHOLDS[Math.min(vipLevelIndex + 1, VIP_THRESHOLDS.length - 1)];
   const progressPercent = nextThreshold > 0 ? Math.min((totalDeposits / nextThreshold) * 100, 100) : 0;
+
+  const appVersion = localStorage.getItem('app_version') || '1.0.0';
 
   const handleMenuClick = (label: string) => {
     onOpenChange(false);
@@ -180,16 +184,17 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           {/* Menu items */}
           <div className="mt-4 space-y-1">
             {[
-              { icon: withdraw, label: "Deposit" },
+              { icon: deposit, label: "Deposit" },
               { icon: withdraw, label: "Withdrawal" },
               { icon: vipIcon, label: "VIP" },
-              { icon: logout, label: "Deposit History" },
+              { icon: historyIcon, label: "Deposit History" },
               { icon: historyIcon, label: "Withdrawal History" },
               { icon: gameIcon, label: "Game Records" },
               { icon: inviteIcon, label: "Invitation Records" },
               { icon: mailicon, label: "Mail" },
               { icon: languageIcon, label: "Language", value: "English" },
               { icon: accountIcon, label: "Account Settings" },
+              { icon: versionIcon, label: "Version Info", value: `v${appVersion}` },
               { icon: logout, label: "Logout" },
             ].map((item, index) => (
               <button
@@ -203,13 +208,17 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 </div>
                 <div className="flex items-center gap-2">
                   {item.value && (
-                    <span className="text-gray-400 text-sm">{item.value}</span>
+                    <span className="text-gray-400 text-sm">
+                      {item.value}
+                    </span>
                   )}
                   <img src={backArrow} alt="Arrow" className="w-6 h-6 object-contain" />
                 </div>
               </button>
             ))}
           </div>
+
+          {/* App Version Display removed to use the new menu item instead */}
         </div>
       </SheetContent>
     </Sheet>

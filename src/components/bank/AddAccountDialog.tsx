@@ -37,8 +37,8 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
     if (!bankName.trim()) {
       e.bankName = "Bank name cannot be empty";
     }
-    if (!accountNumber || accountNumber.length < 16 || accountNumber.length > 18) {
-      e.account = "Please enter the account number format is incorrect";
+    if (!accountNumber.trim()) {
+      e.account = "Account number cannot be empty";
     }
     if (!bankCode || bankCode.length !== 11) {
       e.bankCode = "Please enter the IFSC / bank code format is incorrect";
@@ -88,8 +88,8 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
               icon={<CreditCard size={16} />}
               placeholder="Please enter the account number"
               value={accountNumber}
-              onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, "").slice(0, 18))}
-              hint={errors.account || "Enter 16 or 18-digit account"}
+              onChange={(e) => setAccountNumber(e.target.value.slice(0, 50))}
+              hint={errors.account}
               error={!!errors.account}
             />
             <GameInput

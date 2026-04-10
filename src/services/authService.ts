@@ -95,6 +95,20 @@ export interface WithdrawInfoResponse {
     charge: number;
     vip: number | string;
     vipMeta?: Record<string, any> | null;
+    walletBalance?: number;
+    gameBalance?: number;
+    totalAvailable?: number;
+    turnover?: {
+      total_required: number;
+      requirement: number;
+      completed: number;
+      progress: number;
+      canWithdraw: boolean;
+    };
+    dailyLimit?: number;
+    usedToday?: number;
+    remainingDailyLimit?: number;
+    maxWithdraw?: number;
   };
 }
 
@@ -119,6 +133,17 @@ export interface WithdrawalsResponse {
   limit: number;
   total: number;
   items: WithdrawalRecord[];
+}
+
+export interface RedeemGiftCodeResponse {
+  status: string;
+  msg: string;
+  rewardAmount?: number;
+  newBalance?: number;
+  turnoverAdded?: number;
+  code?: string;
+  required?: number;
+  deposited?: number;
 }
 
 const TOKEN_KEY = "auth_token";
@@ -410,6 +435,18 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Claim failed"));
+    return data;
+  },
+
+  async redeemGiftCode(code: string): Promise<RedeemGiftCodeResponse> {
+    const res = await fetch(`${API_BASE}/api/account/redeem-gift-code`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ code }),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to redeem gift code"));
     return data;
   },
 

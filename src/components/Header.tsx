@@ -27,6 +27,10 @@ const Header = () => {
           {isLoggedIn && (
             <>
               <button className="relative w-7 h-7 flex items-center justify-center" onClick={() => window.open("https://t.me/", "_blank")}>
+              <button 
+                onClick={() => navigate("/support")}
+                className="relative w-7 h-7 flex items-center justify-center hover:opacity-80 transition-opacity"
+              >
                 <img src={supportIcon} alt="Support" className="absolute inset-0 w-full h-full object-contain" />
               </button>
               <button className="relative w-7 h-7 flex items-center justify-center">

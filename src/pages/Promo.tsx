@@ -1,12 +1,19 @@
 import PageLayout from "@/components/PageLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { GAME_LIST, gameService } from "@/services/gameService";
 import { refreshProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
 
 const Promo = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
   const [countdowns, setCountdowns] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    // Redirect to home page as per maintenance requirement
+    navigate("/", { replace: true });
+  }, [navigate]);
 
   const handleWithdraw = async (providerCode: string, gameName: string) => {
     if (countdowns[providerCode] > 0 || loading === providerCode) return;
@@ -14,13 +21,14 @@ const Promo = () => {
     // Start 5-second countdown
     setCountdowns(prev => ({ ...prev, [providerCode]: 5 }));
     
+    // Trigger actual withdrawal immediately
+    performWithdraw(providerCode, gameName);
+    
     const interval = setInterval(() => {
       setCountdowns(prev => {
         const current = prev[providerCode];
         if (current <= 1) {
           clearInterval(interval);
-          // Trigger actual withdrawal after countdown
-          performWithdraw(providerCode, gameName);
           return { ...prev, [providerCode]: 0 };
         }
         return { ...prev, [providerCode]: current - 1 };
@@ -79,6 +87,12 @@ const Promo = () => {
               name: "JD Wallet",
               provider_code: "JD",
               logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
+            },
+            {
+              id: "tu",
+              name: "TU Wallet",
+              provider_code: "TU",
+              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
             }
           ].map((wallet) => {
             const isCountdownActive = (countdowns[wallet.provider_code] || 0) > 0;
@@ -102,7 +116,7 @@ const Promo = () => {
                    className={`px-4 py-2 rounded-lg text-xs font-bold text-white transition-all ${!isActionDisabled ? "active:scale-95" : ""}`}
                    style={{ background: "linear-gradient(135deg, #d4a017, #b8860b)" }}
                  >
-                   {isLoading ? "..." : isCountdownActive ? `recalling ${countdowns[wallet.provider_code]}` : "Withdraw"}
+                   {isCountdownActive ? `recalling ${countdowns[wallet.provider_code]}` : "Withdraw"}
                  </button>
               </div>
             );

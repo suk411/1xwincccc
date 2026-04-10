@@ -1,5 +1,6 @@
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
+import RecordTabs from "@/components/RecordTabs";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
@@ -125,11 +126,12 @@ const DepositRecords = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
-      <div className="mb-2">
-        <PageHeader title="Deposit Records" />
+      <div className="sticky top-0 z-50">
+        <PageHeader title="Deposit Records" backPath="/" />
       </div>
+      <RecordTabs />
 
-      <div className="flex flex-col gap-2 px-2">
+      <div className="flex flex-col gap-2 px-2 mt-4">
         {loading ? (
           <Loader label="Loading records..." />
         ) : orders.length === 0 ? (

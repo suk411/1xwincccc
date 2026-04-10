@@ -1,93 +1,102 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { GameObject, GAME_LIST } from "../services/gameService";
 
-import jiliLogo from "@/assets/providers/jili-logo.png";
-import pgLogo from "@/assets/providers/pg-logo.png";
-
 const providerLogos: Record<string, string> = {
-  JILI: jiliLogo,
-  JE: jiliLogo,
-  PG: pgLogo,
+  jili: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JILI_LOGO.avif",
+  pg: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/PG_LOGO.avif",
+  jdb: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JDB_LOGO.avif",
+  spribe: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/SPRIBE_LOGO.avif",
+  turbo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
 };
 
 const providerNames: Record<string, string> = {
-  JE: "JILI",
-  PG: "PG",
+  jili: "JILI",
+  pg: "PG",
+  jdb: "JDB",
+  spribe: "SPRIBE",
+  turbo: "TURBO",
 };
 
 const GAMES_PER_PAGE = 6;
 
 const getProviderSections = () => {
-  const grouped: Record<string, GameObject[]> = {};
-  for (const game of GAME_LIST) {
-    const key = game.provider_code;
-    if (!grouped[key]) grouped[key] = [];
-    grouped[key].push(game);
-  }
-  return Object.entries(grouped).map(([provider, games]) => ({
-    provider,
-    displayName: providerNames[provider] || provider,
-    games,
-  }));
+  const providers = ["jili", "pg", "jdb", "spribe", "turbo"];
+  const gameNames: Record<string, string[]> = {
+    jili: ["Money Coming", "Fortune Gems 2", "Black Jack", "Mega Ace", "Super Ace", "Dragon Tiger"],
+    pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko"],
+    jdb: ["Mines 2", "Trump Card", "Bull Treasure", "Fortune Neko", "Super Niubi Deluxe", "Lucky Color Game"],
+    spribe: ["Aviator", "Mines", "Plinko", "Goal", "Hilo", "Dice"],
+    turbo: ["Vortex", "Chicken Route", "Limbo Rider", "Vortex Halloween", "Mysteco", "Turbo Plinko"],
+  };
+
+  return providers.map((provider) => {
+    const targetNames = gameNames[provider];
+    const games = targetNames
+      .map((name) => {
+        // Search for the game by name and provider
+        const found = GAME_LIST.find(
+          (g) => g.name.toLowerCase() === name.toLowerCase() && g.provider.toLowerCase() === provider
+        );
+        return found;
+      })
+      .filter((g): g is GameObject => g !== undefined);
+
+    return {
+      provider,
+      displayName: providerNames[provider],
+      games,
+    };
+  });
 };
 
 interface GameProviderSectionProps {
   launchingGame: string | number | null;
   handleGameLaunch: (game: GameObject) => void;
+  vipLevel?: number;
 }
 
-const GameProviderSection = ({ launchingGame, handleGameLaunch }: GameProviderSectionProps) => {
+const GameProviderSection = ({ launchingGame, handleGameLaunch, vipLevel }: GameProviderSectionProps) => {
+  const navigate = useNavigate();
   const providerSections = getProviderSections();
-  const [pageMap, setPageMap] = useState<Record<string, number>>({});
 
-  const changePage = (provider: string, delta: number, totalGames: number) => {
-    setPageMap((prev) => {
-      const current = prev[provider] || 0;
-      const maxPage = Math.ceil(totalGames / GAMES_PER_PAGE) - 1;
-      const next = Math.max(0, Math.min(maxPage, current + delta));
-      return { ...prev, [provider]: next };
-    });
+  const navigateToLobby = (provider: string) => {
+    if (vipLevel === 0) {
+      // Find a VIP game from this provider to trigger the modal
+      const providerVipGame = GAME_LIST.find(g => g.provider.toLowerCase() === provider.toLowerCase() && g.isVipOnly);
+      if (providerVipGame) {
+        handleGameLaunch(providerVipGame);
+        return;
+      }
+    }
+    navigate("/lobby", { state: { activeTab: "all", selectedProvider: provider } });
   };
 
   return (
     <div className="flex flex-col gap-3 mt-2">
       {providerSections.map((section) => {
-        const page = pageMap[section.provider] || 0;
-        const totalPages = Math.ceil(section.games.length / GAMES_PER_PAGE);
-        const visibleGames = section.games.slice(page * GAMES_PER_PAGE, (page + 1) * GAMES_PER_PAGE);
+        const visibleGames = section.games;
 
         return (
           <div key={section.provider} className="rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
             <div className="flex items-center justify-between px-2 py-2">
-              <div className="flex items-center ">
+              <div className="flex items-center gap-2">
                 <img
-                  src={providerLogos[section.provider] || pgLogo}
+                  src={providerLogos[section.provider] || ""}
                   alt={section.displayName}
                   className="w-24 h-8 object-contain"
                 />
-               
+                <span className="text-white text-sm font-bold tracking-wider">
+                  {section.displayName}
+                </span>
               </div>
-              {totalPages > 1 && (
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => changePage(section.provider, -1, section.games.length)}
-                    disabled={page === 0}
-                    className="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30"
-                    style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
-                  >
-                    <ChevronLeft size={14} className="text-muted-foreground" />
-                  </button>
-                  <button
-                    onClick={() => changePage(section.provider, 1, section.games.length)}
-                    disabled={page >= totalPages - 1}
-                    className="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30"
-                    style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
-                  >
-                    <ChevronRight size={14} className="text-muted-foreground" />
-                  </button>
-                </div>
-              )}
+              <button
+                onClick={() => navigateToLobby(section.provider)}
+                className="w-7 h-7 rounded-md flex items-center justify-center transition-all hover:bg-white/10 active:scale-90"
+                style={{ backgroundColor: "#2a1520", border: "1px solid rgba(255,255,255,0.1)" }}
+              >
+                <ChevronRight size={16} className="text-white" />
+              </button>
             </div>
 
             <div className="grid grid-cols-3 gap-2 px-2 pb-3">

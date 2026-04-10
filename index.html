@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   
   <!-- PWA Meta Tags -->
@@ -20,6 +22,37 @@
   <title>1xKING</title>
   <meta name="description" content="1xKING - Your Ultimate Gaming Platform" />
   <meta name="author" content="1xKING" />
+
+  <!-- Version Check Script -->
+  <script>
+    (function() {
+      const LOCAL_STORAGE_KEY = 'app_version';
+      fetch('/version.json?t=' + Date.now(), { cache: 'no-store' })
+        .then(response => response.json())
+        .then(data => {
+          const latestVersion = data.version;
+          const storedVersion = localStorage.getItem(LOCAL_STORAGE_KEY);
+          if (storedVersion && latestVersion !== storedVersion) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, latestVersion);
+            window.location.reload();
+          } else if (!storedVersion) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, latestVersion);
+          }
+        })
+        .catch(() => { /* Silent fail */ });
+    })();
+  </script>
+
+  <!-- Unregister Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script>
 
   <!-- Open Graph -->
   <meta property="og:title" content="1xKING" />

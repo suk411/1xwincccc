@@ -24,8 +24,8 @@ ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
   "group pointer-events-auto relative flex flex-col items-stretch justify-center " +
-  "rounded-full px-5 py-4 shadow-lg transition-all text-center " +
-  "w-[320px] max-w-[90vw] break-words " +
+  "rounded-md px-5 py-4 shadow-lg transition-all text-center " +
+  "w-[320px] max-w-[90vw] break-words whitespace-normal " +
   // enter animation
   "data-[state=open]:animate-in data-[state=open]:fade-in-20 data-[state=open]:slide-in-from-top-6 " +
   // exit animation (fade only, no slide)
@@ -65,7 +65,7 @@ const ToastAction = React.forwardRef<
   <ToastPrimitives.Action
     ref={ref}
     className={cn(
-      "inline-flex h-8 shrink-0 items-center justify-center rounded-lg border bg-transparent px-3 text-sm font-medium ring-offset-background transition-colors group-[.destructive]:border-muted/40 hover:bg-secondary group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 group-[.destructive]:focus:ring-destructive disabled:pointer-events-none disabled:opacity-50",
+      "inline-flex h-8 shrink-0 items-center justify-center rounded-sm border bg-transparent px-3 text-sm font-medium ring-offset-background transition-colors group-[.destructive]:border-muted/40 hover:bg-secondary group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 group-[.destructive]:focus:ring-destructive disabled:pointer-events-none disabled:opacity-50",
       className,
     )}
     {...props}
@@ -80,7 +80,7 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-1 text-white/70 opacity-0 transition-opacity group-hover:opacity-100 hover:text-white focus:opacity-100 focus:outline-none",
+      "absolute right-1 top-1/2 -translate-y-1/2 rounded-none p-1 text-white/70 opacity-0 transition-opacity group-hover:opacity-100 hover:text-white focus:opacity-100 focus:outline-none",
       className,
     )}
     toast-close=""
@@ -97,7 +97,7 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Title
     ref={ref}
-    className={cn("w-full max-w-full whitespace-normal break-all text-sm font-medium text-white text-center", className)}
+    className={cn("w-full max-w-full whitespace-normal break-words text-sm font-medium text-white text-center", className)}
     {...props}
   />
 ));
@@ -109,7 +109,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn("w-full max-w-full whitespace-normal break-all text-sm text-white/90 text-center", className)}
+    className={cn("w-full max-w-full whitespace-normal break-words text-sm text-white/90 text-center", className)}
     {...props}
   />
 ));

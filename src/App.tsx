@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,13 +16,18 @@ import PaymentGateway from "./pages/PaymentGateway";
 import GamePlay from "./pages/GamePlay";
 import BetRecords from "./pages/BetRecords";
 import Vip from "./pages/Vip";
+import GameLobbyPage from "./pages/GameLobbyPage";
+import SupportChat from "./pages/SupportChat";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
 import DownloadBanner from "./components/DownloadBanner";
+import { VersionCheck } from "./components/VersionCheck";
+import PosterModal from "./components/PosterModal";
 import bgMain from "@/assets/bg-main.jpg";
+import { authService } from "./services/authService";
 
 const queryClient = new QueryClient();
 
@@ -33,12 +39,30 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const AppContent = () => {
   const location = useLocation();
+  const [isPosterOpen, setIsPosterOpen] = useState(false);
   const isAuthPage = ["/login", "/register"].includes(location.pathname);
   const isHomePage = location.pathname === "/";
   const showBottomNav = ["/", "/earn", "/bank", "/promo", "/events"].includes(location.pathname);
 
+  useEffect(() => {
+    const isLoggedIn = authService.isLoggedIn();
+    if (isLoggedIn && !isAuthPage) {
+      const lastShowTime = localStorage.getItem("last_poster_show_time");
+      const now = Date.now();
+      const ONE_HOUR = 60 * 60 * 1000;
+
+      if (!lastShowTime || (now - parseInt(lastShowTime)) > ONE_HOUR) {
+        // Show poster if never shown before or last shown more than 1h ago
+        setIsPosterOpen(true);
+        localStorage.setItem("last_poster_show_time", now.toString());
+      }
+    }
+  }, [location.pathname, isAuthPage]);
+
   return (
     <div className="mobile-app-shell">
+      <VersionCheck />
+      <PosterModal isOpen={isPosterOpen} onClose={() => setIsPosterOpen(false)} />
       <div className="mobile-app-scroll flex flex-col">
         {isHomePage && <DownloadBanner />}
         {isHomePage && <Header />}
@@ -58,6 +82,8 @@ const AppContent = () => {
           <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
           <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
           <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
+          <Route path="/lobby" element={<ProtectedRoute><GameLobbyPage /></ProtectedRoute>} />
+          <Route path="/support" element={<ProtectedRoute><SupportChat /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

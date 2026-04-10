@@ -9,9 +9,66 @@ import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import { useState } from "react";
 import { Copy } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
+import { useToast } from "@/hooks/use-toast";
+import { authService } from "@/services/authService";
+import { useProfile } from "@/hooks/useProfile";
 
 const CommunityEvent = () => {
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const { refresh: refreshProfile } = useProfile();
+  const telegramLink = "https://t.me/+EM8kxuQpfMJmZTRl";
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(telegramLink);
+    toast({
+      description: "Link copied to clipboard",
+    });
+  };
+
+  const handleJoin = () => {
+    window.open(telegramLink, "_blank");
+  };
+
+  const handleRedeem = async () => {
+    if (!code.trim()) {
+      toast({
+        description: "Please enter a gift code",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await authService.redeemGiftCode(code);
+      if (res.status === "success") {
+        toast({
+          title: "Success",
+          description: `Gift code redeemed`,
+        });
+        setCode("");
+        refreshProfile();
+      } else {
+        let errorMsg = res.msg || "Failed to redeem code";
+        if (res.msg === "Minimum deposit not met" && res.required) {
+          errorMsg = `Minimum deposit of ₹${res.required} not met. You have deposited ₹${res.deposited || 0} today.`;
+        }
+        toast({
+          description: errorMsg,
+          variant: "destructive",
+        });
+      }
+    } catch (err: any) {
+      toast({
+        description: err.message || "Failed to redeem code",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
@@ -47,19 +104,20 @@ const CommunityEvent = () => {
           </p>
           <input
             type="text"
-            placeholder="Enter 6-digit code."
+            placeholder="Enter gift code."
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            maxLength={6}
             className="w-full h-11 rounded-lg bg-[#541324] border border-[#7a2040] text-white placeholder:text-[#964850] px-4 text-base outline-none mb-3"
           />
           <button
-            className="w-full h-11 rounded-lg font-bold text-[#5a2d0a] text-base"
+            onClick={handleRedeem}
+            disabled={loading}
+            className="w-full h-11 rounded-lg font-bold text-[#5a2d0a] text-base disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               backgroundImage: "linear-gradient(rgb(255, 246, 230) 1%, rgb(238, 210, 110) 44%, rgb(195, 132, 45) 75%, rgb(195, 132, 45) 86%, rgb(255, 205, 78) 100%)",
             }}
           >
-            Redeem
+            {loading ? "Redeeming..." : "Redeem"}
           </button>
         </div>
 
@@ -74,13 +132,21 @@ const CommunityEvent = () => {
               <img src={telegramIcon} alt="Telegram" className="w-16 h-16 object-contain" />
             </div>
             <span className="text-yellow-400 text-sm">Telegram Group</span>
-            <div className="flex items-center gap-2 bg-[#541324] rounded-lg px-3 py-2">
-              <span className="text-[#c4889a] text-xs truncate">https://t.me/...</span>
-              <button className="text-orange-500 ">
+            <div className="flex items-center gap-2 bg-[#541324] rounded-lg px-3 py-2 w-full max-w-[240px]">
+              <span className="text-[#c4889a] text-[10px] truncate flex-1">{telegramLink}</span>
+              <button 
+                onClick={handleCopy}
+                className="text-orange-500 hover:text-orange-400 transition-colors"
+              >
                 <Copy size={14} />
               </button>
             </div>
-            <GameButton variant="gold" size="lg" className="w-[120px] mt-2">
+            <GameButton 
+              variant="gold" 
+              size="lg" 
+              className="w-[120px] mt-2"
+              onClick={handleJoin}
+            >
               Join Now
             </GameButton>
           </div>
