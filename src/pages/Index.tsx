@@ -375,6 +375,11 @@ const Index = () => {
           </div>
         </div>
       </div>
+      <VipUpgradeDialog
+        open={vipDialogOpen}
+        onOpenChange={setVipDialogOpen}
+        game={pendingGame}
+      />
     </PageLayout>
   );
 };
