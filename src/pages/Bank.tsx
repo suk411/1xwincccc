@@ -163,7 +163,7 @@ const Bank = () => {
 
     setPaying(true);
     try {
-      const res = await authService.deposit(depositAmount);
+      const res = await authService.deposit(depositAmount, activeChannel);
       if (res.paymentUrl) {
         navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
         toast({ description: "Opening payment..." });

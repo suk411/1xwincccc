@@ -360,11 +360,11 @@ export const authService = {
     return data;
   },
 
-  async deposit(amount: number): Promise<DepositResponse> {
+  async deposit(amount: number, channel: string = "simplypay"): Promise<DepositResponse> {
     const res = await fetch(`${API_BASE}/api/payment/deposit`, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({ amount }),
+      body: JSON.stringify({ amount, channel }),
     });
     handleUnauthorized(res);
     const data = await res.json();
