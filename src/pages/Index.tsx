@@ -456,13 +456,7 @@ const Index = () => {
               name="Win Go" 
               hint="Guess the number"
               tag="HOT"
-              onClick={() => handleGameLaunch({
-                game_id: "wingo",
-                name: "Win Go",
-                provider: "spribe",
-                logo: "https://www.rajaluck.com/assets/png/WinGo-b9c59235.png",
-                isVipOnly: false,
-              })}
+              onClick={() => navigate("/wingo")}
             />
           </div>
         </div>

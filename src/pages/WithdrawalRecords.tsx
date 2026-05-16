@@ -6,6 +6,8 @@ import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { authService, type WithdrawalRecord } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
+import pendingIcon from "@/assets/games/pendingicon.png";
+import successIcon from "@/assets/games/success.png";
 
 const statusStyles: Record<string, { bg: string; text: string }> = {
   auditing: { bg: "#fc6203", text: "#ffffff" },
@@ -97,68 +99,91 @@ const WithdrawalRecords = () => {
             const status = item.status || "pending";
             const style = statusStyles[status.toLowerCase()] || fallbackStyle;
 
+          items.map((item, idx) => {
+            const itemId = getItemId(item, idx);
+            const expanded = expandedId === itemId;
+            const status = item.status || "pending";
+            const style = statusStyles[status.toLowerCase()] || fallbackStyle;
+
+            const getStatusIcon = () => {
+              const statusLower = status.toLowerCase();
+              if (statusLower === "pending" || statusLower === "auditing") {
+                return <img src={pendingIcon} alt="Pending" className="w-7 h-7" />;
+              } else if (statusLower === "success" || statusLower === "completed" || statusLower === "approved" || statusLower === "approve") {
+                return <img src={successIcon} alt="Success" className="w-7 h-7" />;
+              } else if (statusLower === "failed" || statusLower === "rejected" || statusLower === "reject") {
+                return "❌";
+              }
+              return <img src={pendingIcon} alt="Pending" className="w-7 h-7" />;
+            };
+
             return (
               <div
                 key={itemId}
                 className="rounded-xl overflow-hidden w-full max-w-full"
                 style={{ background: "linear-gradient(105deg, #5a0a1a 20%, #3a0611 40%, #4a0915 70%)" }}
               >
-                {/* Top row */}
-                <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="text-[#c4889a] text-xs truncate">ID: {itemId}</span>
-                    <button
-                      className="text-[#c4889a] flex-shrink-0"
-                      onClick={() => {
-                        navigator.clipboard.writeText(String(itemId));
-                        toast({ description: "ID copied" });
-                      }}
+                {/* Main row */}
+                <div className="flex items-center gap-3 px-4 py-3">
+                  {/* Icon */}
+                  <div className="text-2xl flex-shrink-0">
+                    {getStatusIcon()}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    {/* Order ID & Copy */}
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[#c4889a] text-xs truncate">Order id.{itemId}</span>
+                      <button
+                        className="text-[#c4889a] flex-shrink-0 hover:text-white transition"
+                        onClick={() => {
+                          navigator.clipboard.writeText(String(itemId));
+                          toast({ description: "Order ID copied" });
+                        }}
+                      >
+                        <Copy size={12} />
+                      </button>
+                    </div>
+
+                    {/* Date & Time */}
+                    <div className="text-[#c4889a] text-xs mb-2">
+                      {getDate(item)}
+                    </div>
+
+                    {/* Amount Info */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-white text-sm font-bold">
+                        Cash+ ₹{Number(item.amount).toLocaleString()}
+                      </span>
+                      <span className="text-[#c4889a] text-xs">
+                        Type: {item.type || "WITHDRAW"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                    <span
+                      className="text-xs font-bold px-3 py-1 rounded-full text-center whitespace-nowrap capitalize"
+                      style={{ backgroundColor: style.bg, color: style.text }}
                     >
-                      <Copy size={12} />
-                    </button>
-                  </div>
-                  <span
-                    className="text-xs font-bold px-2.5 py-0.5 rounded-sm flex-shrink-0 capitalize"
-                    style={{ backgroundColor: style.bg, color: style.text }}
-                  >
-                    {status}
-                  </span>
-                </div>
-
-                {/* Amount */}
-                <div className="px-4 py-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-white text-base font-bold">Withdrawal Amount</span>
-                    <span className="font-semibold text-base" style={{ color: style.bg }}>
-                      ₹{Number(item.amount).toLocaleString()}
+                      {status}
                     </span>
-                  </div>
-                </div>
 
-                {/* Type */}
-                <div className="flex items-center justify-between px-4 pb-4">
-                  <span className="text-[#c4889a] text-xs">Type</span>
-                  <span className="text-[#d1d1d1] text-sm font-bold">{item.type || "WITHDRAW"}</span>
-                </div>
-
-                <div className="border-t border-white/10 mx-4" />
-
-                {/* Actions */}
-                <div className="px-4 py-3">
-                  <div className="flex items-center justify-between">
+                    {/* Details Button */}
                     <button
                       onClick={() => setExpandedId(expanded ? null : itemId)}
-                      className="flex items-center gap-1 text-white text-xs"
+                      className="text-[#c4889a] text-xs hover:text-white transition"
                     >
-                      Details
-                      {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      {expanded ? "Hide" : "Details"}
                     </button>
                   </div>
                 </div>
 
                 {/* Expanded details */}
                 {expanded && (
-                  <div className="px-4 pb-4 pt-2 text-xs text-[#c4889a] flex flex-col gap-1.5 border-t border-white/10 mx-4 -mt-px">
+                  <div className="px-4 pb-4 pt-2 text-xs text-[#c4889a] flex flex-col gap-1.5 border-t border-white/10">
                     <div className="flex justify-between">
                       <span>Date</span>
                       <span>{getDate(item)}</span>
@@ -185,6 +210,7 @@ const WithdrawalRecords = () => {
                 )}
               </div>
             );
+          })
           })
         )}
 

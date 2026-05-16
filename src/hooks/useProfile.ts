@@ -29,6 +29,33 @@ const getSnapshot = () => current;
 
 let fetching = false;
 
+const refreshBalanceOnly = async () => {
+  if (fetching || !authService.isLoggedIn()) return;
+
+  fetching = true;
+  current = { ...current, loading: true };
+  notify();
+  try {
+    const bal = await authService.getBalance();
+    const userId = bal.userId || authService.getUserIdFromToken();
+    current = { ...current, balance: bal.balance, userId, loading: false };
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ 
+      balance: current.balance, 
+      userId: current.userId, 
+      vipLevel: current.vipLevel 
+    }));
+  } catch {
+    const tokenUserId = authService.getUserIdFromToken();
+    if (tokenUserId && !current.userId) {
+      current = { ...current, userId: tokenUserId, loading: false };
+    } else {
+      current = { ...current, loading: false };
+    }
+  }
+  fetching = false;
+  notify();
+};
+
 const refresh = async (force = false) => {
   if (fetching || !authService.isLoggedIn()) return;
   
@@ -105,3 +132,4 @@ export const useProfile = (autoFetch = true) => {
 };
 
 export const refreshProfile = refresh;
+export const refreshBalance = refreshBalanceOnly;

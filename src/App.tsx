@@ -26,6 +26,7 @@ import Header from "./components/Header";
 import DownloadBanner from "./components/DownloadBanner";
 import { VersionCheck } from "./components/VersionCheck";
 import PosterModal from "./components/PosterModal";
+import WinGo from "./components/games/WinGo";
 import bgMain from "@/assets/bg-main.jpg";
 import { authService } from "./services/authService";
 
@@ -80,6 +81,7 @@ const AppContent = () => {
           <Route path="/bank/withdrawals" element={<ProtectedRoute><WithdrawalRecords /></ProtectedRoute>} />
           <Route path="/payment" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
           <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
+          <Route path="/wingo" element={<ProtectedRoute><WinGo /></ProtectedRoute>} />
           <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
           <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
           <Route path="/lobby" element={<ProtectedRoute><GameLobbyPage /></ProtectedRoute>} />

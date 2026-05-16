@@ -3,10 +3,12 @@ import Loader from "@/components/Loader";
 import RecordTabs from "@/components/RecordTabs";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Copy, ChevronDown, ChevronUp } from "lucide-react";
+import { Copy } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
+import pendingIcon from "@/assets/games/pendingicon.png";
+import successIcon from "@/assets/games/success.png";
 
 type OrderStatus = "Pending" | "Timeout" | "Cancelled" | "success" | string;
 
@@ -142,6 +144,20 @@ const DepositRecords = () => {
             const expanded = expandedId === orderId;
             const status = getStatus(order);
             const style = statusStyles[status] || fallbackStyle;
+            const amount = getAmount(order);
+            const bonus = order.bonus || order.bonusAmount || 0;
+
+            const getStatusIcon = () => {
+              const statusLower = status.toLowerCase();
+              if (statusLower === "pending") {
+                return <img src={pendingIcon} alt="Pending" className="w-7 h-7" />;
+              } else if (statusLower === "success" || statusLower === "completed") {
+                return <img src={successIcon} alt="Success" className="w-7 h-7" />;
+              } else if (statusLower === "failed" || statusLower === "cancelled") {
+                return "❌";
+              }
+              return <img src={pendingIcon} alt="Pending" className="w-7 h-7" />;
+            };
 
             return (
               <div
@@ -149,74 +165,67 @@ const DepositRecords = () => {
                 className="rounded-xl overflow-hidden w-full max-w-full"
                 style={{ background: "linear-gradient(105deg, #5a0a1a 20%, #3a0611 40%, #4a0915 70%)" }}
               >
-                {/* Top row */}
-                <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="text-[#c4889a] text-xs truncate">Order ID: {orderId}</span>
-                    <button
-                      className="text-[#c4889a] flex-shrink-0"
-                      onClick={() => {
-                        navigator.clipboard.writeText(orderId);
-                        toast({ description: "Order ID copied" });
-                      }}
+                {/* Main row */}
+                <div className="flex items-center gap-3 px-4 py-3">
+                  {/* Icon */}
+                  <div className="text-2xl flex-shrink-0">
+                    {getStatusIcon()}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    {/* Order ID & Copy */}
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[#c4889a] text-xs truncate">Order id.{orderId}</span>
+                      <button
+                        className="text-[#c4889a] flex-shrink-0 hover:text-white transition"
+                        onClick={() => {
+                          navigator.clipboard.writeText(orderId);
+                          toast({ description: "Order ID copied" });
+                        }}
+                      >
+                        <Copy size={12} />
+                      </button>
+                    </div>
+
+                    {/* Date & Time */}
+                    <div className="text-[#c4889a] text-xs mb-2">
+                      {getDate(order)}
+                    </div>
+
+                    {/* Amount Info */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-white text-sm font-bold">
+                        Cash+ ₹{Number(amount).toLocaleString()}
+                      </span>
+                      <span className="text-[#c4889a] text-xs">
+                        Bonus+ ₹{Number(bonus).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                    <span
+                      className="text-xs font-bold px-3 py-1 rounded-full text-center whitespace-nowrap"
+                      style={{ backgroundColor: style.bg, color: style.text }}
                     >
-                      <Copy size={12} />
-                    </button>
-                  </div>
-                  <span
-                    className="text-xs font-bold px-2.5 py-0.5 rounded-sm flex-shrink-0"
-                    style={{ backgroundColor: style.bg, color: style.text }}
-                  >
-                    {status}
-                  </span>
-                </div>
-
-                {/* Amount */}
-                <div className="px-4 py-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-white text-base font-bold">Deposit Amount</span>
-                    <span className="font-semibold text-base" style={{ color: style.bg }}>
-                      ₹{Number(getAmount(order)).toLocaleString()}
+                      {status}
                     </span>
-                  </div>
-                </div>
 
-                {/* Channel */}
-                <div className="flex items-center justify-between px-4 pb-4">
-                  <span className="text-[#c4889a] text-xs">Payment channel</span>
-                  <span className="text-[#d1d1d1] text-sm font-bold">{getChannel(order)}</span>
-                </div>
-
-                <div className="border-t border-white/10 mx-4" />
-
-                {/* Actions */}
-                <div className="px-4 py-3">
-                  <div className="flex items-center justify-between">
+                    {/* Details Button */}
                     <button
                       onClick={() => setExpandedId(expanded ? null : orderId)}
-                      className="flex items-center gap-1 text-white text-xs"
+                      className="text-[#c4889a] text-xs hover:text-white transition"
                     >
-                      Details
-                      {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      {expanded ? "Hide" : "Details"}
                     </button>
-                    <div className="flex items-center gap-1.5">
-                      {(status.toLowerCase() === "pending") && !isOlderThan15Min(order) && (
-                        <>
-                          <GameButton variant="mute" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0">
-                            Cancel
-                          </GameButton>
-                          <GameButton variant="gold" size="sm" className="px-2.5 h-7 text-xs flex-shrink-0" onClick={() => handlePayOrder(order)}>
-                            Pay
-                          </GameButton>
-                        </>
-                      )}
-                    </div>
                   </div>
                 </div>
 
                 {/* Expanded details */}
                 {expanded && (
-                  <div className="px-4 pb-4 pt-2 text-xs text-[#c4889a] flex flex-col gap-1.5 border-t border-white/10 mx-4 -mt-px">
+                  <div className="px-4 pb-4 pt-2 text-xs text-[#c4889a] flex flex-col gap-1.5 border-t border-white/10">
                     <div className="flex justify-between">
                       <span>Date</span>
                       <span>{getDate(order)}</span>
@@ -227,8 +236,14 @@ const DepositRecords = () => {
                     </div>
                     <div className="flex justify-between">
                       <span>Amount</span>
-                      <span>₹{Number(getAmount(order)).toLocaleString()}</span>
+                      <span>₹{Number(amount).toLocaleString()}</span>
                     </div>
+                    {bonus > 0 && (
+                      <div className="flex justify-between">
+                        <span>Bonus</span>
+                        <span>₹{Number(bonus).toLocaleString()}</span>
+                      </div>
+                    )}
                     {order.currency && (
                       <div className="flex justify-between">
                         <span>Currency</span>
@@ -239,6 +254,21 @@ const DepositRecords = () => {
                       <div className="flex justify-between">
                         <span>User ID</span>
                         <span>{order.userId}</span>
+                      </div>
+                    )}
+                    {(status.toLowerCase() === "pending") && !isOlderThan15Min(order) && (
+                      <div className="flex gap-2 mt-3 pt-3 border-t border-white/10">
+                        <GameButton variant="mute" size="sm" className="flex-1 h-7 text-xs">
+                          Cancel
+                        </GameButton>
+                        <GameButton
+                          variant="gold"
+                          size="sm"
+                          className="flex-1 h-7 text-xs"
+                          onClick={() => handlePayOrder(order)}
+                        >
+                          Pay
+                        </GameButton>
                       </div>
                     )}
                   </div>
