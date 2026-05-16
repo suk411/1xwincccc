@@ -1,0 +1,206 @@
+:root {
+  --font-main: 'bahnschrift', sans-serif;
+}
+
+/* Container */
+.tab-Lottery.is-wingo {
+  width: 100%;
+  min-height: 80px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background-image: linear-gradient(160deg, #0d0208 0%, #2a0818 18%, #5a1025 38%, #8a1430 55%, #b81e3a 72%, #d42840 85%, #e83545 100%);
+  overflow: hidden;
+  font-family: var(--font-main);
+  animation: lotteryCardIn-7575de35 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 180, 50, 0.25);
+  gap: 12px;
+}
+
+.tab-Lottery.is-wingo:hover {
+  border-color: rgba(255, 180, 50, 0.4);
+}
+
+.tab-Lottery.is-wingo:active {
+  transform: scale(0.98);
+}
+
+/* Glow Effect */
+.tab-Lottery__glow {
+  display: none;
+}
+
+/* Flame Layers */
+.wg-flame {
+  display: none;
+}
+
+/* Rings & Halo */
+.wg-halo {
+  display: none;
+}
+
+.wg-ring {
+  display: none;
+}
+
+/* Embers */
+.wg-ember {
+  display: none;
+}
+
+/* Tag */
+.wg-tag {
+  display: none;
+}
+
+/* Content */
+.tab-Lottery__icon {
+  width: 60px;
+  height: 60px;
+  z-index: 3;
+  flex-shrink: 0;
+}
+
+.tab-Lottery__icon img {
+  width: 100%;
+  height: auto;
+}
+
+.tab-Lottery__name {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  z-index: 3;
+  margin: 0;
+  background: linear-gradient(90deg, #ffd700, #fff8e0, #ffd700, #ffaa00);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tab-Lottery__hint {
+  font-size: 11px;
+  color: rgba(255, 220, 170, 0.95);
+  z-index: 3;
+  margin: 2px 0 0;
+}
+
+/* Animations */
+@keyframes lotteryCardIn-7575de35 {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes wgScale-7575de35 {
+  0%,
+  100% {
+    transform: scale(1.08);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes wgBreathe-7575de35 {
+  0%,
+  100% {
+    box-shadow: rgba(196, 30, 58, 0.55) 0px 6px 25px, rgba(255, 100, 50, 0.3) 0px 0px 17px,
+      inset 0 1px rgba(255, 220, 160, 0.3);
+  }
+  50% {
+    box-shadow: rgba(196, 30, 58, 0.65) 0px 8px 30px, rgba(255, 100, 50, 0.4) 0px 0px 22px,
+      inset 0 1px rgba(255, 220, 160, 0.35);
+  }
+}
+
+@keyframes wgFlame1-7575de35 {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scaleY(1);
+  }
+  25% {
+    opacity: 0.85;
+    transform: scaleY(1.1) scaleX(0.97);
+  }
+}
+
+@keyframes wgFlame2-7575de35 {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scaleY(1);
+  }
+  35% {
+    opacity: 0.75;
+    transform: scaleY(1.15) scaleX(1.04);
+  }
+}
+
+@keyframes wgFlame3-7575de35 {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scaleY(1.2);
+  }
+}
+
+@keyframes wgHalo-7575de35 {
+  0%,
+  100% {
+    transform: translate(-50%) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes wgRingExpand-7575de35 {
+  0% {
+    transform: translate(-50%) scale(0.4);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes wgTextShimmer-7575de35 {
+  0% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: -200% 50%;
+  }
+}
+
+@keyframes wgTagPulse-7575de35 {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}

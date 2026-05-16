@@ -31,6 +31,9 @@ import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
 import VipLockModal from "@/components/VipLockModal";
 import googlePlayBadge from "@/assets/download/google-play.png";
 import appStoreBadge from "@/assets/download/app-store.png";
+import LotteryCard from "@/components/LotteryCard";
+import GameConfirmDialog from "@/components/GameConfirmDialog";
+import Loader from "@/components/Loader";
 
 import phoneMockup from "@/assets/download/phone-mockup.png";
 import promoCharacter from "@/assets/download/promo-character.png";
@@ -90,6 +93,9 @@ const Index = () => {
   const [activeGameTab, setActiveGameTab] = useState("top");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
   const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
+  const [showGameConfirm, setShowGameConfirm] = useState(false);
+  const [gameForConfirm, setGameForConfirm] = useState<GameObject | null>(null);
+  const [isLaunching, setIsLaunching] = useState(false);
   const showTopGames = true;
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawCountdown, setWithdrawCountdown] = useState(0);
@@ -187,10 +193,25 @@ const Index = () => {
       return;
     }
 
-    setLaunchingGame(game.game_id);
+    // Show confirmation dialog
+    setGameForConfirm(game);
+    setShowGameConfirm(true);
+  };
+
+  const handleConfirmGameLaunch = async () => {
+    if (!gameForConfirm) return;
+    
+    // Close dialog immediately
+    setShowGameConfirm(false);
+    setGameForConfirm(null);
+    
+    // Start loading overlay
+    setIsLaunching(true);
+    setLaunchingGame(gameForConfirm.game_id);
+    
     try {
       // Backend request is ONLY made if user is VIP 1 or more
-      const result = await gameService.launch(game);
+      const result = await gameService.launch(gameForConfirm);
       // Only refresh profile if necessary (e.g. to update balance)
       await refreshProfile();
       
@@ -200,6 +221,7 @@ const Index = () => {
     } catch (e: any) {
       toast({ title: "Launch failed", description: e.message, variant: "destructive" });
     } finally {
+      setIsLaunching(false);
       setLaunchingGame(null);
     }
   };
@@ -394,6 +416,24 @@ const Index = () => {
           game={pendingGame}
         />
 
+        <GameConfirmDialog
+          isOpen={showGameConfirm}
+          game={gameForConfirm}
+          isLoading={isLaunching}
+          onConfirm={handleConfirmGameLaunch}
+          onCancel={() => {
+            setShowGameConfirm(false);
+            setGameForConfirm(null);
+          }}
+        />
+
+        {isLaunching && (
+          <Loader
+            overlay
+            label="Launching game..."
+          />
+        )}
+
         {/* Game Category Tabs */}
         <div className="mt-2 rounded-lg overflow-hidden">
           <GameTabs
@@ -402,6 +442,29 @@ const Index = () => {
             onChange={handleTabChange}
             className="rounded-lg"
           />
+        </div>
+
+        {/* Lottery Card Section */}
+        <div className="mt-3 rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
+          <div className="flex items-center justify-between px-2 py-2">
+            <div className="flex items-center gap-2">
+              <span className="text-white text-sm font-bold tracking-wider">LOTTERY</span>
+            </div>
+          </div>
+          <div className="px-2 pb-3">
+            <LotteryCard 
+              name="Win Go" 
+              hint="Guess the number"
+              tag="HOT"
+              onClick={() => handleGameLaunch({
+                game_id: "wingo",
+                name: "Win Go",
+                provider: "spribe",
+                logo: "https://www.rajaluck.com/assets/png/WinGo-b9c59235.png",
+                isVipOnly: false,
+              })}
+            />
+          </div>
         </div>
 
         {activeGameTab === "top" ? (
