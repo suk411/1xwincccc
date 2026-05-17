@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Copy } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { useToast } from "@/hooks/use-toast";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { authService } from "@/services/authService";
 import { useProfile } from "@/hooks/useProfile";
 
@@ -17,14 +18,12 @@ const CommunityEvent = () => {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { copyToClipboard } = useCopyToClipboard();
   const { refresh: refreshProfile } = useProfile();
   const telegramLink = "https://t.me/+EM8kxuQpfMJmZTRl";
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(telegramLink);
-    toast({
-      description: "Link copied to clipboard",
-    });
+    copyToClipboard(telegramLink, "Link copied to clipboard");
   };
 
   const handleJoin = () => {

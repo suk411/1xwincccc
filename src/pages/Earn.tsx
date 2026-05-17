@@ -6,6 +6,7 @@ import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import earnBanner from "@/assets/earn/earn-banner.png";
 import goldBorder from "@/assets/events/gold-border.png";
 import emptyBox from "@/assets/events/empty-box.png";
@@ -305,6 +306,7 @@ const Earn = () => {
   const [claiming, setClaiming] = useState(false);
 
   const { userId } = useProfile();
+  const { copyToClipboard } = useCopyToClipboard();
   const tokenUserId = useMemo(() => getUserIdFromToken(), []);
   const effectiveUserId = userId || tokenUserId;
 
@@ -396,12 +398,7 @@ const Earn = () => {
 
   const handleCopyUrl = async () => {
     if (!inviteUrl) return;
-    try {
-      await navigator.clipboard.writeText(inviteUrl);
-      toast({ description: "Invite link copied!" });
-    } catch {
-      toast({ description: "Failed to copy", variant: "destructive" });
-    }
+    copyToClipboard(inviteUrl, "Invite link copied!");
   };
 
   const handleShareInvite = async () => {

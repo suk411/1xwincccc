@@ -120,11 +120,19 @@ export interface WithdrawResponse {
 }
 
 export interface WithdrawalRecord {
+  [key: string]: unknown;
   userId: number;
   type: string;
   amount: number;
   status: string;
   createdAt: string;
+  orderId?: string;
+  _id?: string;
+  charge?: number;
+  currency?: string;
+  channelName?: string;
+  note?: string;
+  updatedAt?: string;
 }
 
 export interface WithdrawalsResponse {

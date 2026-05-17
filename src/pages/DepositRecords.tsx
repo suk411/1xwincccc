@@ -3,10 +3,11 @@ import Loader from "@/components/Loader";
 import RecordTabs from "@/components/RecordTabs";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Copy } from "lucide-react";
+import { Copy, ChevronDown } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import pendingIcon from "@/assets/games/pendingicon.png";
 import successIcon from "@/assets/games/success.png";
 
@@ -16,28 +17,28 @@ interface DepositOrder {
   [key: string]: any;
 }
 
-const statusStyles: Record<string, { bg: string; text: string }> = {
-  PENDING: { bg: "#ff8800", text: "#ffffff" },
-  Pending: { bg: "#ff8800", text: "#ffffff" },
-  pending: { bg: "#ff8800", text: "#ffffff" },
-  Timeout: { bg: "#ff0000", text: "#ffffff" },
-  timeout: { bg: "#ff0000", text: "#ffffff" },
-  TIMEOUT: { bg: "#ff0000", text: "#ffffff" },
-  Cancelled: { bg: "#302f2f", text: "#ffffff" },
-  cancelled: { bg: "#302f2f", text: "#ffffff" },
-  CANCELLED: { bg: "#302f2f", text: "#ffffff" },
-  success: { bg: "#00b341", text: "#ffffff" },
-  Success: { bg: "#00b341", text: "#ffffff" },
-  SUCCESS: { bg: "#00b341", text: "#ffffff" },
-  completed: { bg: "#00b341", text: "#ffffff" },
-  Completed: { bg: "#00b341", text: "#ffffff" },
-  COMPLETED: { bg: "#00b341", text: "#ffffff" },
-  failed: { bg: "#1a1a1a", text: "#ffffff" },
-  Failed: { bg: "#1a1a1a", text: "#ffffff" },
-  FAILED: { bg: "#1a1a1a", text: "#ffffff" },
+const statusStyles: Record<string, string> = {
+  PENDING: "#ff8800",
+  Pending: "#ff8800",
+  pending: "#ff8800",
+  Timeout: "#ff0000",
+  timeout: "#ff0000",
+  TIMEOUT: "#ff0000",
+  Cancelled: "#888888",
+  cancelled: "#888888",
+  CANCELLED: "#888888",
+  success: "#00b341",
+  Success: "#00b341",
+  SUCCESS: "#00b341",
+  completed: "#00b341",
+  Completed: "#00b341",
+  COMPLETED: "#00b341",
+  failed: "#ff0000",
+  Failed: "#ff0000",
+  FAILED: "#ff0000",
 };
 
-const fallbackStyle = { bg: "#302f2f", text: "#ffffff" };
+const fallbackStyle = "#888888";
 
 const CACHE_KEY = "deposit_records_cache";
 
@@ -55,6 +56,7 @@ const saveCache = (data: { items: DepositOrder[]; total: number; page: number })
 
 const DepositRecords = () => {
   const { toast } = useToast();
+  const { copyToClipboard } = useCopyToClipboard();
   const navigate = useNavigate();
   const cached = loadCache();
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -143,7 +145,7 @@ const DepositRecords = () => {
             const orderId = getOrderId(order);
             const expanded = expandedId === orderId;
             const status = getStatus(order);
-            const style = statusStyles[status] || fallbackStyle;
+            const statusColor = statusStyles[status] || fallbackStyle;
             const amount = getAmount(order);
             const bonus = order.bonus || order.bonusAmount || 0;
 
@@ -162,26 +164,28 @@ const DepositRecords = () => {
             return (
               <div
                 key={orderId + idx}
-                className="rounded-xl overflow-hidden w-full max-w-full"
-                style={{ background: "linear-gradient(105deg, #5a0a1a 20%, #3a0611 40%, #4a0915 70%)" }}
+                className="rounded-xl overflow-hidden w-full max-w-full border"
+                style={{ 
+                  background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
+                  border: '1.5px solid rgba(255, 180, 50, 0.45)',
+                }}
               >
                 {/* Main row */}
-                <div className="flex items-center gap-3 px-4 py-3">
+                <div className="flex gap-3 px-4 py-3">
                   {/* Icon */}
-                  <div className="text-2xl flex-shrink-0">
+                  <div className="text-2xl flex-shrink-0 flex items-center justify-center">
                     {getStatusIcon()}
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
+                  {/* Left Content - Vertical */}
+                  <div className="flex-1 min-w-0 flex flex-col gap-1">
                     {/* Order ID & Copy */}
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[#c4889a] text-xs truncate">Order id.{orderId}</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-white text-xs flex-1 truncate">Order id.{orderId}</span>
                       <button
-                        className="text-[#c4889a] flex-shrink-0 hover:text-white transition"
+                        className="text-white flex-shrink-0 hover:text-yellow-400 transition"
                         onClick={() => {
-                          navigator.clipboard.writeText(orderId);
-                          toast({ description: "Order ID copied" });
+                          copyToClipboard(orderId, "Order ID copied");
                         }}
                       >
                         <Copy size={12} />
@@ -189,43 +193,48 @@ const DepositRecords = () => {
                     </div>
 
                     {/* Date & Time */}
-                    <div className="text-[#c4889a] text-xs mb-2">
+                    <div className="text-white/70 text-xs">
                       {getDate(order)}
                     </div>
 
                     {/* Amount Info */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-white text-sm font-bold">
+                      <span className="text-yellow-400 text-sm font-bold">
                         Cash+ ₹{Number(amount).toLocaleString()}
                       </span>
-                      <span className="text-[#c4889a] text-xs">
+                      <span className="text-white/70 text-xs">
                         Bonus+ ₹{Number(bonus).toLocaleString()}
                       </span>
                     </div>
                   </div>
 
-                  {/* Status Badge */}
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                  {/* Right Status Column - Vertical */}
+                  <div className="flex flex-col items-end justify-between flex-shrink-0 min-w-[80px]">
+                    {/* Status Text */}
                     <span
-                      className="text-xs font-bold px-3 py-1 rounded-full text-center whitespace-nowrap"
-                      style={{ backgroundColor: style.bg, color: style.text }}
+                      className="text-xs font-bold text-center whitespace-nowrap mt-1"
+                      style={{ color: statusColor }}
                     >
                       {status}
                     </span>
 
-                    {/* Details Button */}
+                    {/* Details Button with Arrow */}
                     <button
                       onClick={() => setExpandedId(expanded ? null : orderId)}
-                      className="text-[#c4889a] text-xs hover:text-white transition"
+                      className="text-white hover:text-white transition flex items-center gap-1 text-xs mt-1"
                     >
-                      {expanded ? "Hide" : "Details"}
+                      <span>{expanded ? "Hide" : "Details"}</span>
+                      <ChevronDown 
+                        size={12} 
+                        className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
+                      />
                     </button>
                   </div>
                 </div>
 
                 {/* Expanded details */}
                 {expanded && (
-                  <div className="px-4 pb-4 pt-2 text-xs text-[#c4889a] flex flex-col gap-1.5 border-t border-white/10">
+                  <div className="px-4 pb-4 pt-2 text-xs text-white/70 flex flex-col gap-1.5 border-t border-white/10">
                     <div className="flex justify-between">
                       <span>Date</span>
                       <span>{getDate(order)}</span>

@@ -283,18 +283,18 @@ const Bank = () => {
 
         {/* New Bank Card */}
         <div 
-          className="relative w-full h-36 rounded-2xl overflow-hidden shadow-xl p-5 flex flex-col justify-between"
+          className="relative w-full h-24 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col justify-center"
           style={{
             background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
             border: '1.5px solid rgba(255, 180, 50, 0.45)',
           }}
         >
-          <div className="relative z-10 flex justify-between items-start">
-            <div className="flex flex-col gap-1">
-              <span className="text-white/80 text-xs font-medium uppercase tracking-wider">Total Balance</span>
-              <div className="flex items-baseline gap-1">
-                <span className="text-white text-3xl font-black">₹</span>
-                <span className="text-white text-3xl font-black">
+          <div className="relative z-10 flex justify-between items-center gap-2">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-white/80 text-[10px] font-medium uppercase tracking-wider">Total Balance</span>
+              <div className="flex items-baseline gap-0.5">
+                <span className="text-white text-lg font-black">₹</span>
+                <span className="text-white text-lg font-black">
                   {(activeTab === 'deposit' ? balance : walletBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
@@ -303,7 +303,7 @@ const Bank = () => {
             <img 
               src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/creditcardicon.png" 
               alt="Credit Card" 
-              className="w-12 h-12 object-contain opacity-90"
+              className="w-8 h-8 object-contain opacity-90"
             />
           </div>
         </div>
@@ -312,22 +312,39 @@ const Bank = () => {
           <>
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Payment channel</span>
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 {channels.map((ch) => {
                   const isActive = activeChannel === ch.id;
                   return (
                     <button
                       key={ch.id}
                       onClick={() => setActiveChannel(ch.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs transition-all border"
+                      className="relative flex items-center justify-center rounded-[7px] cursor-pointer overflow-hidden transition-all"
                       style={{
-                        backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
-                        borderColor: isActive ? "rgb(200, 60, 90)" : "transparent",
-                        color: "white",
+                        width: "105px",
+                        height: "42px",
+                        backgroundColor: "rgba(211, 54, 93, 0.2)",
                       }}
                     >
-                      <img src={ch.icon} alt={ch.label} className="w-5 h-5 object-contain rounded" />
-                      {ch.label}
+                      {/* Active background overlay */}
+                      {isActive && (
+                        <div
+                          className="absolute inset-0 rounded-[7px] z-0"
+                          style={{ backgroundColor: "rgb(177, 44, 73)" }}
+                        />
+                      )}
+                      
+                      {/* Content */}
+                      <div className="relative z-10 flex items-center gap-1 justify-center w-full">
+                        <img 
+                          src={ch.icon} 
+                          alt={ch.label} 
+                          className="w-[30px] h-[30px] object-contain rounded-[4px]"
+                        />
+                        <span className="text-white text-[12px] text-center w-[60px]">
+                          {ch.label}
+                        </span>
+                      </div>
                     </button>
                   );
                 })}

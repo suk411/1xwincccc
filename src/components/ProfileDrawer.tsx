@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
 import { GameButton } from "./GameButton";
@@ -40,6 +41,7 @@ const VIP_THRESHOLDS = [0, 200, 400, 1000, 2000, 3000];
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const navigate = useNavigate();
   const { balance, userId, refresh } = useProfile(false);
+  const { copyToClipboard } = useCopyToClipboard();
   const [vipData, setVipData] = useState<import("@/services/authService").VipResponse | null>(null);
 
   useEffect(() => {
@@ -90,17 +92,17 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
       >
         {/* Top Profile Section */}
         <div
-          className="relative p-2 pt-6 flex-shrink-0"
+          className="relative p-1.5 pt-4 flex-shrink-0"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
           <SheetClose className="absolute right-4 top-4 z-10" />
 
           {/* Avatar and User Info */}
-          <div className="flex items-start gap-3 mb-4">
+          <div className="flex items-start gap-2 mb-2">
             {/* Avatar with status */}
             <div className="relative">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-yellow-500/50">
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-yellow-500/50">
                 <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
               </div>
               {/* avatar change icon */}
@@ -111,27 +113,26 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
 
             {/* User details */}
             <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-white font-semibold text-lg">KING{userId || "..."}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-white font-semibold text-sm">KING{userId || "..."}</span>
               </div>
-              <div className="flex items-center mt-1">
-                <span className="text-gray-300 text-sm">ID:{userId || "..."}</span>
+              <div className="flex items-center mt-0.5">
+                <span className="text-gray-300 text-xs">ID:{userId || "..."}</span>
                 <button
                   onClick={() => {
                     if (userId) {
-                      navigator.clipboard.writeText(userId);
-                      toast({ description: "User ID copied to clipboard" });
+                      copyToClipboard(userId, "User ID copied to clipboard");
                     }
                   }}
                   className="ml-1 p-0.5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
                 </button>
 
                 {/* VIP badge with level text overlay */}
-                <div className="relative ml-2 w-16 h-6">
-                  <img src={vipBadge} alt="VIP" className="w-full h-full  object-contain" />
-                  <span className="absolute inset-0 flex items-center justify-center pl-4 text-[12px] font-bold text-yellow-300">
+                <div className="relative ml-1 w-12 h-5">
+                  <img src={vipBadge} alt="VIP" className="w-full h-full object-contain" />
+                  <span className="absolute inset-0 flex items-center justify-center pl-3 text-[10px] font-bold text-yellow-300">
                     {displayVipLevel}
                   </span>
                 </div>
@@ -141,19 +142,19 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         </div>
 
         {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-2 pb-12 bg-[#470211] ">
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-3 pt-1 pb-8 bg-[#470211] ">
           {/* VIP Progress Section */}
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-white">
+          <div className="flex items-center justify-between mb-1">
+            <div className="text-white text-xs">
               <span className="text-yellow-400">₹{totalDeposits.toLocaleString()}</span>
               <span className="text-gray-400">/₹{nextThreshold.toLocaleString()}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-white font-medium">{isSvip ? displayVipLevel : `VIP${vipLevelIndex + 1}`}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-white font-medium text-xs">{isSvip ? displayVipLevel : `VIP${vipLevelIndex + 1}`}</span>
               <GameButton
                 variant="red"
                 size="sm"
-                className="w-20 h-6 text-[10px]"
+                className="w-16 h-5 text-[8px]"
                 onClick={() => { onOpenChange(false); navigate("/vip"); }}
               >
                 Upgrade
@@ -164,25 +165,25 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           {/* VIP Progress Bar */}
           <Progress
             value={progressPercent}
-            className="h-2 mb-4 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
+            className="h-1.5 mb-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
           />
 
           {/* Gold Balance Bar */}
           <div
-            className="relative h-12 rounded-lg flex items-center px-4"
+            className="relative h-9 rounded-lg flex items-center px-3"
             style={{ backgroundImage: `url(${goldBar})`, backgroundSize: 'cover' }}
           >
-            <div className="flex items-center gap-2 flex-1">
-              <img src={rupeeCoin} alt="Rupee" className="w-8 h-8" />
-              <span className="text-[#470211] font-bold text-xl">{balance.toFixed(2)}</span>
+            <div className="flex items-center gap-1.5 flex-1">
+              <img src={rupeeCoin} alt="Rupee" className="w-6 h-6" />
+              <span className="text-[#470211] font-bold text-sm">{balance.toFixed(2)}</span>
             </div>
-            <div className="flex items-center gap-3">
-              <img src={withdraw} alt="Bank" className="w-8 h-8" />
+            <div className="flex items-center gap-2">
+              <img src={withdraw} alt="Bank" className="w-6 h-6" />
             </div>
           </div>
 
           {/* Menu items */}
-          <div className="mt-4 space-y-1">
+          <div className="mt-2 space-y-0.5">
             {[
               { icon: deposit, label: "Deposit" },
               { icon: withdraw, label: "Withdrawal" },
@@ -200,19 +201,19 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               <button
                 key={index}
                 onClick={() => handleMenuClick(item.label)}
-                className="w-full flex items-center justify-between py-3 px-2 hover:bg-white/5 rounded-lg transition-colors"
+                className="w-full flex items-center justify-between py-1.5 px-2 hover:bg-white/5 rounded-lg transition-colors"
               >
-                <div className="flex items-center gap-3">
-                  <img src={item.icon} alt={item.label} className="w-8 h-8 object-contain" />
-                  <span className="text-white text-sm">{item.label}</span>
-                </div>
                 <div className="flex items-center gap-2">
+                  <img src={item.icon} alt={item.label} className="w-6 h-6 object-contain" />
+                  <span className="text-white text-xs">{item.label}</span>
+                </div>
+                <div className="flex items-center gap-1">
                   {item.value && (
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-gray-400 text-xs">
                       {item.value}
                     </span>
                   )}
-                  <img src={backArrow} alt="Arrow" className="w-6 h-6 object-contain" />
+                  <img src={backArrow} alt="Arrow" className="w-5 h-5 object-contain" />
                 </div>
               </button>
             ))}
