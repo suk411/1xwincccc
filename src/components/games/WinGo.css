@@ -85,8 +85,8 @@
 
     .back-btn {
       position: relative;
-      width: 41.778px; /* 37.98 * 1.1 = 41.778 */
-      height: 41.778px;
+      width: 33.422px; /* 41.778 * 0.8 = 33.422 */
+      height: 33.422px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -121,8 +121,8 @@
     .back-btn svg {
       color: #ffffff;
       z-index: 1;
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
     }
 
     .navbar__content-center {
@@ -900,8 +900,8 @@
       }
 
       .back-btn {
-        width: 37.4px; /* 34 * 1.1 = 37.4 */
-        height: 37.4px;
+        width: 29.92px; /* 37.4 * 0.8 = 29.92 */
+        height: 29.92px;
         flex-shrink: 0;
       }
 
