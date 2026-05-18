@@ -1,116 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game List Tabs</title>
     <style>
-        :root {
-            --pkr01-Color_bg_03: rgba(211, 54, 93, 0.2);
-            --pkr01-Bar_7: 7px;
-            --adm-font-family: -apple-system, blinkmacsystemfont, "Helvetica Neue", helvetica, "segoe ui", arial, roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
-        }
-
         body {
             background-color: #1a1a1a;
-            margin: 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        ._payChannelPanel_1fnr1_422 {
-            position: relative;
+        /* Container for the game list */
+        .GameList__C {
             display: flex;
-            flex-direction: row;
-            box-sizing: border-box;
-            margin: 5px 0 0 0;
-            gap: 5px;
-            width: 376px;
-            height: 42px;
-            font-family: var(--adm-font-family);
-        }
-
-        ._channelItem_1fnr1_435 {
+            width: 350px;
+            height: 90px;
+            margin: 13px auto 0;
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border-radius: 10px;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 10px 0px;
             position: relative;
-            background-color: var(--pkr01-Color_bg_03);
-            border-radius: var(--pkr01-Bar_7);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            width: 105px;
-            height: 42px;
-            cursor: pointer;
             overflow: hidden;
         }
 
-        /* Selection highlight for the active item */
-        ._channelSelect_1fnr1_447 {
-            width: 105px;
-            height: 42px;
-            background-color: rgb(177, 44, 73);
-            border-radius: 7px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0;
-        }
-
-        ._channelItemImg_1fnr1_454 {
-            width: 30px;
-            height: 30px;
-            margin-left: 5px;
-            position: relative;
-            z-index: 1;
-        }
-
-        ._channelItemImg_1fnr1_454 img {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        ._lbChannelName_1fnr1_460 {
-            width: 60px;
-            margin-left: 5px;
-            font-size: 12px;
-            color: #fff;
+        /* Individual Tab Item */
+        .GameList__C-item {
+            flex: 1;
+            height: 88px;
             text-align: center;
             position: relative;
-            z-index: 1;
+            cursor: pointer;
+        }
+
+        /* The text and icon container */
+        .GameList__C-item div {
+            height: 100%;
+            padding-top: 54px; /* Space for the background icon */
+            box-sizing: border-box;
+            font-size: 12px;
+            line-height: 1.2;
+            color: rgba(255, 255, 255, 0.45); /* Muted color for non-active */
+            background-image: url("https://www.rajaluck.com/assets/png/time-421c2afa.png");
+            background-size: 44px;
+            background-position: 50% 7px;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+        }
+
+        /* Active State Styles */
+        .GameList__C-item.active {
+            background-image: linear-gradient(rgba(255, 200, 55, 0.25) 0%, rgba(168, 120, 255, 0.1) 100%);
+            border-radius: 10px;
+            box-shadow: inset rgba(255, 200, 55, 0.15) 0px -1px 4px 0px, 
+                        inset rgba(168, 120, 255, 0.2) 0px 1px 4px 0px;
+        }
+
+        /* Active Text & Icon */
+        .GameList__C-item.active div {
+            color: rgb(255, 200, 55); /* Gold color for active */
+            background-image: url("https://www.rajaluck.com/assets/png/time_a-e3e30ad8.png"); /* Colored icon */
+        }
+
+        /* Gold highlight line at the top of active item */
+        .GameList__C-item.active::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 20%;
+            width: 60%;
+            height: 1px;
+            background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(255, 200, 55), rgba(0, 0, 0, 0));
         }
     </style>
 </head>
-
 <body>
 
-    <div class="_payChannelPanel_1fnr1_422">
-        <!-- Item 1 -->
-        <div class="_channelItem_1fnr1_435">
-            <div class="_channelItemImg_1fnr1_454">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAArlBMVEX///////////////////////////9MaXH///////////////////////////////////////////8iMWX+/v9UwfA6uO4TI1sFEk4nNWhKvu/7/f75+fsNG1Tr+P5Cu+8bKV/w8fSyt8nz+/675vmf3PcBBkDJ7PpryvJibZKkqsAir+w/THrDx9V6z/TQ1N/e4Oio4Pd4gaFTX4hwepwvtO2Lk6+ZoLiDi6iEjKrwCYQIAAAAEnRSTlP7B6LlPI3HAAT13bV4rVJkDg0FwV2NAAAACXBIWXMAABYlAAAWJQFJUiTwAAACtklEQVR4nNXX23aiMBQG4KhoRHuY/gkJIQSCWKxaz/b0/i82K0CnnTUzLeJFO/sCt8i3EhKI2YSWMaRD72I86Pk++SB8vzcYX3ju8jJITfs+Goff71Tc4SH1CHhzDOCq1ITSDu2DnERB0HWa0OHpFrUmlHqnW4Dgqmy5jQUIboaE9tEyupTQE+bo9/A7xEPr8MhFe9wn49aWDMigfcsj0muPfeJ/GSbtMfnmmPO/rhWkGcZd/g/MP0D1x3qZV1/4u9MV1rELQEOjzlwC7X4B5/lapDnX7izyBBw6cRdX3VbSWivtIzT2xlqpFsDRmHtwK4tVLkQaBFGqdw/peidEkExTEU2hq5ZZFcUzcJRl9oi5tPeIJQsniQhcCH2bBlHqMndYTl9bZkqGUikTY16EoVTM1tg6vHRaLB0OhMujhygIgl9YzidzyUzGs812+2KY1G+YT3dpEO2mcC3PpmkQrZN1FERVt6FYOMEqZCbm2ExWR8kkf8NALgKRA7dpdAekgZhhJv7EmVZVt2us3T0DiQhEUmMdBWL6DnPX7cXBMsMPRjHLWNltZpVln2KUA2YVkzCMqYNiTMarQpVT0ACXUTzFpr4BGWNfhMaohtiqBbISTxzW2C4WT7YJDifuceOZYeapwnCTtpGN8KJ80mOjlJRutGMcizAMlSo2TTH2r8OU4cUwxpRh4B9jGxYV1thLY4wJD8BzYUwY3sccSJZi6fCDuIMWYjnFbJmmvJrnLMu4rrXOXLi3cVsm5SKSJAk453mu3cG9nS79ZDH4z1fPb4j9L/uX7J2DB+3x6IwNDQbnbaW89tgjQ7/lTHN0zti4XlIy7PCWW+YfQ0LpVbvN+nVVJnTblAnjqkxooQkuqwLF6auTKAeuX0sjpzvdE9omlzdvRVldDvYHI/+zctAfDfpeXc9R+hP3ewnYhSJf6AAAAABJRU5ErkJggg=="
-                    alt="PAYTM">
-            </div>
-            <div class="_lbChannelName_1fnr1_460">PAYTM</div>
-        </div>
-
-        <!-- Item 2 (Active/Selected) -->
-        <div class="_channelItem_1fnr1_435">
-            <div class="_channelSelect_1fnr1_447"></div>
-            <div class="_channelItemImg_1fnr1_454">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAUVBMVEVeJZ9eJZ9eJZ9dJZ5dJZ5dJZ5eJZ9MaXFgJ6BQK5pZFJhfJZ////9FBZD9/P7s5fRTFZhbIJ3l3PA5AoiKYLmWcMFxPqr18fnXyOfFsNytkM40ugyWAAAAC3RSTlP64cdxq0KNAP4EDALCj/IAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAINSURBVHic7dfJcoQgEAbgdkFgAIVBcXn/B02xmMwoMGIuOeQ/pCrGLyqLdgN2oRijpq0r+JCqbhvkTrcBT2kH7HKgo55bTDEqoC7IabC2Y4UYWGs13LEsaMAYnS1RQgihSE4jd9snS4Qw2zAvTGb1gwLuTsflNnMXJnO33mLA5+cVA++t7XuhMhgooMhh8fSazzp3aQRN7LD2uudPnXnsDtrocb0EvaY1qaGO/+Fbb2ldQZX4t3oNehQJDQCpxfWjTWq6IY2J3oJWshQz9q1T0w0ZzIie/HwP+gImbj+8RBu30vhTSCnlcae8Y2Xm4T2LW+U9720GpTJYTjybQfwC9zKHx7Ah7mAiFv+I+49D5txtMyLGadz8maOPGfzjSmNMdsDsZEkxhlv00c8wVupAo4skjFoffhU7Pp7H/vFfweoWHv0KI+oGVu4FwPkkb2Cm9k+N1UqXYeFP5/OopDJTX4RlGDH38tn35lVMxHzezFcxk+b8KriMid3S/U3MiGBh0Dif50LMiNJkW5dl2cbCqfJR0n0zZOEieU8WV7/B9W1MqkRB84KH5JXreCn1ipck7qJF3GsUiX1pXBDQD+NNJFuXdTGRuoTGCteDduVCpCJqMVCqikt1G2APV6zf0cAa3ya06n6bQHF7u0FxrVHplZu9NXJNWVvSlLWPn6bMN4So+9wN2n6wQ6EZxPgLr8GaEZkgA1gAAAAASUVORK5CYII="
-                    alt="PHONE">
-            </div>
-            <div class="_lbChannelName_1fnr1_460">PHONE</div>
-        </div>
-
-        <!-- Item 3 -->
-        <div class="_channelItem_1fnr1_435">
-            <div class="_channelItemImg_1fnr1_454">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAA2FBMVEVMaXH////////+///+///////+///9/f7////////////8///8/P/////8///////u7u7j4+n////+//////8BAEsBAVIAAFYAAG0DAnQAAGQAAD8CAUXHxtMAAFqKh6YAAF/X2Nh6eZ/Bv810cp4+PG+NjKzHxOPc2+acmMCxrsxhXp4AADf39/X29/fu7fIAAC6ppsXQz9uPjMChorTY2NwAACDR0dF5epVoZ5Do6OleXYaBf5uCf66xsL2QjLuYlrJIRI69udtNTn9IRnMXFlOXlqcqJnmsHOgtAAAAE3RSTlMAnBTJthyG/gPgKS1kbmU96+Mj/Pku6wAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAA9ZJREFUeJyll+l24jgQhdUdwDDpmfmh0uIF22BCWExsMw5bWEJmkrz/G80pGduiGxOgL+cII/go+apUkglRapL6X7UWvUCt2o86/r5Qk3yvUWpQI2uqXzRra/cl3SQNauA3F8ow6LecbpIWGHCVDGhlNLL0OhaAZnST/Hk9C0ABR96sXzvmTAb80SSkBjeqRciNgQEo1MmPWwMDNEitcOtX2+iJLih1R1r5pUGNeafT6Txn6jx3VhSeVFeh+Uq7SUpJGTh6t23Htu0QZTt2/ALwNsOeXE4YplpsDYZ3U/oWvpSklD2ARy6zDt93Xdf3zXAAp+CJLc1+N9d67FsIM+vTy3oWi8V6b4nNSfiJyf80NwZ2Boux1tmxRf80zOVD4a8BU5bB7ri4SwMCVgmbDwBPyWg0GgWgwxClo9EoeYav4EHMOWcPJeyPAeYzxpg9Bgic8zCXpin/PYY7TErpdr+OzMxj2L0QlmdhcQEcC1fwB4B2zMY5PI9dIZzlOZghHC08z1tvAVaLdZDDK+xcBF9FLuZZvRtXzLMsM+wYxg8GLqe5zSvhz+2rUn8LEHleu0gSdT3w0h6vhE2TC84PSdIOnZfSsHgJkIbCMivgScyF4AzlIDxD+C0O9wjPEJ4xzsP1SdhIkyQZqdROAoBomLTLdjgFWA2TJMGLE/BRvToYprd5/TFORtZh/S/Kr41qePOPpt1ut8HBb3Y7/ITXWCG6m3aFYYILLnJxFqJhIfrPuL1Uvwli57RhE8eUCnOF7/uuMNXCEKYlXM7ipRpuMKtwe8LNz9EwV9L1fbWq5B47+22A595iu9uddnvCzKMCyBWs2synxAnTKsMmzDwugAf4sDAMSGfxx9Fk/AxD1E/T9HWLxcAvSm/U/8BUCYLVeXjgoEFYAJ0MVrlt82UWn56HeZRZGVLw2yzeYxlyF8W9GqenKqthlqnB0XY7VXAXYPrS6/WWWbZUwFyHD1Z1mN/FJem7omqeM3jmHNbzLHzJh7hyFBxzS1peBay2my2uSfQ2SQYAAxxq98VCeJUEG9ftnzEsd+Uw4Dcbt2pL+l11C3NWDesZlsGP3LQcxpwwWxjTStj2zVdP03oE8Ghb+xWeUIK153kfe3m8uRcHGng3LSFct1iUGO2RHzb3JHSF4K5+rKC0PErRyHGYrrAogAAwxF2WOczTkuyONDSP2kcKBgBPAbaAia26Ir1aNcj3M8fH3HMtp2k5aqjffnClLUKa50KfkQH3eNZv3H5YJ7/zmEB+6wEF6W9X0RSgpj9Y3ZeJ9hVJAVp/Hz/SkXqjdln0u0bxOPg/ESVMVTl+9GMAAAAASUVORK5CYII="
-                    alt="QR">
-            </div>
-            <div class="_lbChannelName_1fnr1_460">QR</div>
-        </div>
+<div class="GameList__C">
+    <!-- 30s Game -->
+    <div class="GameList__C-item">
+        <div>Win Go<br>30s</div>
+    </div>
+    
+    <!-- 1min Game -->
+    <div class="GameList__C-item">
+        <div>Win Go<br>1Min</div>
     </div>
 
-</body>
+    <!-- 3min Game -->
+    <div class="GameList__C-item">
+        <div>Win Go<br>3Min</div>
+    </div>
 
+    <!-- 5min Game (Active) -->
+    <div class="GameList__C-item active">
+        <div>Win Go<br>5Min</div>
+    </div>
+</div>
+
+</body>
 </html>

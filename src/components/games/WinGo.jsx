@@ -6,6 +6,9 @@ import navCs from '@/assets/wingo/nav_cs.png'
 import navSound from '@/assets/wingo/nav_sound.png'
 import walletBalIcon from '@/assets/wingo/wallet_bal_icon.png'
 import refreshIcon from '@/assets/wingo/refresh.webp'
+import timerBg from '@/assets/wingo/timerbg.png'
+import clockIcon from '@/assets/wingo/clockicon.png'
+import clockIconActive from '@/assets/wingo/clockiconative.png'
 import { refreshBalance, useProfile } from '@/hooks/useProfile'
 import { toast } from '@/hooks/use-toast'
 import { wingoService } from '@/services/wingoService'
@@ -309,8 +312,7 @@ export default function WinGo() {
         className={`GameList__C-item${isActive ? ' active' : ''}`}
         onClick={() => setActiveGame(game)}
       >
-        <img className="timer-icon" src={isActive ? timerAct : timerNonAct} alt={game} />
-        <div>Win Go<br />{game}</div>
+        <div style={{ backgroundImage: `url(${isActive ? clockIconActive : clockIcon})` }}>Win Go<br />{game}</div>
       </div>
     )
   }
@@ -332,31 +334,38 @@ export default function WinGo() {
         <div className="navbar__content-center">
           <svg className="brand-logo-svg" viewBox="0 0 388 72" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="blCrown" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#fff1b8" />
-                <stop offset="50%" stopColor="#e8a735" />
-                <stop offset="100%" stopColor="#c68a1d" />
+              <linearGradient id="blCrown_581" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#fff1b8"></stop>
+                <stop offset="50%" stopColor="#e8a735"></stop>
+                <stop offset="100%" stopColor="#c68a1d"></stop>
               </linearGradient>
-              <linearGradient id="blText" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#fff8e1" />
-                <stop offset="20%" stopColor="#ffd54f" />
-                <stop offset="45%" stopColor="#e8a735" />
-                <stop offset="55%" stopColor="#a06a10" />
-                <stop offset="75%" stopColor="#e8a735" />
-                <stop offset="100%" stopColor="#fff1b8" />
+              <linearGradient id="blText_581" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#fff8e1"></stop>
+                <stop offset="20%" stopColor="#ffd54f"></stop>
+                <stop offset="45%" stopColor="#e8a735"></stop>
+                <stop offset="55%" stopColor="#a06a10"></stop>
+                <stop offset="75%" stopColor="#e8a735"></stop>
+                <stop offset="100%" stopColor="#fff1b8"></stop>
               </linearGradient>
-              <filter id="blShadow" x="-10%" y="-10%" width="130%" height="140%">
-                <feDropShadow dx="0" dy="2" stdDeviation="1.5" floodColor="rgba(0,0,0,0.35)" />
+              <linearGradient id="blStroke_581" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="rgba(255,241,184,0.8)"></stop>
+                <stop offset="100%" stopColor="rgba(255,213,79,0.6)"></stop>
+              </linearGradient>
+              <filter id="blShadow_581" x="-10%" y="-10%" width="130%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="1.5" floodColor="rgba(0,0,0,0.35)"></feDropShadow>
               </filter>
-              <linearGradient id="blLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="rgba(232,167,53,0)" />
-                <stop offset="50%" stopColor="#ffd54f" />
-                <stop offset="100%" stopColor="rgba(232,167,53,0)" />
+              <filter id="blCrownS_581" x="-20%" y="-20%" width="150%" height="160%">
+                <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" floodColor="rgba(255,213,79,0.5)"></feDropShadow>
+              </filter>
+              <linearGradient id="blLine_581" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="rgba(232,167,53,0)"></stop>
+                <stop offset="50%" stopColor="#ffd54f"></stop>
+                <stop offset="100%" stopColor="rgba(232,167,53,0)"></stop>
               </linearGradient>
             </defs>
-            <rect x="10" width="368" y="61" height="1.5" rx="0.75" fill="url(#blLine)" opacity="0.6" />
-            <text x="4" y="50" fontSize="46" fontWeight="900" fill="url(#blCrown)" fontFamily="serif">♕</text>
-            <text x="50" y="48" fontSize="38" fontWeight="900" letterSpacing="4" fill="url(#blText)" filter="url(#blShadow)" fontFamily="Georgia, serif">1xKING</text>
+            <rect x="10" width="368" y="61" height="1.5" rx="0.75" fill="url(#blLine_581)" opacity="0.6"></rect>
+            <text x="40" y="50" fontSize="46" fontWeight="900" fill="url(#blCrown_581)" filter="url(#blCrownS_581)" fontFamily="serif">♕</text>
+            <text x="86" y="48" fontSize="38" fontWeight="900" letterSpacing="4" fill="url(#blText_581)" filter="url(#blShadow_581)" fontFamily="Georgia, serif">1xKING</text>
           </svg>
         </div>
         <div className="navbar__content-right">
@@ -391,7 +400,7 @@ export default function WinGo() {
           {GAMES.map(gameItem)}
         </div>
 
-        <div className="TimeLeft__C">
+        <div className="TimeLeft__C" style={{ backgroundImage: `url(${timerBg})` }}>
           <div className="TimeLeft__C-scanline"></div>
           
           <a href="#" className="TimeLeft__C-rule" onClick={(e) => { e.preventDefault(); setShowHowTo(true); }}>How to play</a>
@@ -634,16 +643,26 @@ export default function WinGo() {
                       : b.selectType === 'red' ? 'var(--red)'
                       : 'rgba(255, 255, 255, 0.15)'
 
+                    let leftClass = 'MyGameRecordList__C-item-l'
+                    const selectType = String(b.selectType || '').toLowerCase()
+                    if (selectType === 'green') leftClass += ' MyGameRecordList__C-item-l-green'
+                    else if (selectType === 'violet') leftClass += ' MyGameRecordList__C-item-l-violet'
+                    else if (selectType === 'red') leftClass += ' MyGameRecordList__C-item-l-red'
+                    else if (selectType === 'big') leftClass += ' MyGameRecordList__C-item-l-big'
+                    else if (selectType === 'small') leftClass += ' MyGameRecordList__C-item-l-small'
+                    else if (['1', '3', '7', '9'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
+                    else if (['2', '8'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
+
                     return (
                       <div className="MyGameRecordList__C-item" key={b.orderNumber}>
-                        <div className="MyGameRecordList__C-item-l" style={{ background: leftBg }} />
+                        <div className={leftClass}>{['big', 'small', '1', '2', '3', '7', '8', '9'].includes(selectType) ? selectType : ''}</div>
                         <div className="MyGameRecordList__C-item-m">
                           <div className="MyGameRecordList__C-item-m-top">{b.issueNumber}</div>
                           <div className="MyGameRecordList__C-item-m-bottom">{b.timestamp}</div>
                         </div>
-                        <div className="MyGameRecordList__C-item-r">
-                          <div style={{ color }}>{b.status}</div>
-                          <span style={{ color }}>{amountText}</span>
+                        <div className={`MyGameRecordList__C-item-r${isWon ? ' success' : ''}`}>
+                          <div className={isWon ? 'success' : ''}>{b.status}</div>
+                          <span>{amountText}</span>
                         </div>
                       </div>
                     )

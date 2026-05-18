@@ -1,3 +1,9 @@
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+    
     .wingo-container {
       font-size: 37.5px;
       width: 100%;
@@ -9,6 +15,7 @@
       font-family: var(--font-stack);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      overflow-y: auto;
       box-sizing: border-box;
       position: relative;
       --gold: rgba(255, 200, 55, 0.9);
@@ -35,7 +42,7 @@
       --active-item-bg: linear-gradient(rgba(255, 200, 55, 0.25) 0%, rgba(168, 120, 255, 0.1) 100%);
       --muted-text: rgba(255, 255, 255, 0.45);
       --bg-glass-main: linear-gradient(135deg, rgba(26, 10, 46, 0.88) 0%, rgba(45, 21, 96, 0.78) 50%, rgba(58, 29, 114, 0.88) 100%);
-      --bg-url: url('https://www.rajaluck.com/assets/png/diban-f66383f9.png');
+      --bg-url: none;
       --wingo-section-gap: 8px;
       background-color: var(--bg-deep);
     }
@@ -56,16 +63,16 @@
     .navbar {
       position: relative;
       width: 100%;
-      height: 54.63px;
-      background: rgba(26, 10, 46, 0.95);
-      backdrop-filter: blur(20px);
+      height: 85.223px; /* 65.556 * 1.3 = 85.223 */
+      background: linear-gradient(90deg, rgb(26, 10, 46) 0%, rgb(45, 21, 96) 50%, rgb(58, 29, 114) 100%);
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 0 10.8px;
+      padding: 0 14px;
       box-sizing: border-box;
       z-index: 1000;
       gap: 7.2px;
+      margin-bottom: var(--wingo-section-gap);
     }
 
     .navbar__content-left {
@@ -78,8 +85,8 @@
 
     .back-btn {
       position: relative;
-      width: 37.98px;
-      height: 37.98px;
+      width: 41.778px; /* 37.98 * 1.1 = 41.778 */
+      height: 41.778px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -114,6 +121,8 @@
     .back-btn svg {
       color: #ffffff;
       z-index: 1;
+      width: 20px;
+      height: 20px;
     }
 
     .navbar__content-center {
@@ -121,8 +130,8 @@
       align-items: center;
       justify-content: center;
       width: auto;
-      max-width: 230.4px;
-      height: 42.3px;
+      max-width: 250px;
+      height: 55px;
       min-width: 135px;
     }
 
@@ -139,18 +148,20 @@
       justify-content: flex-end;
       align-items: center;
       min-width: 0;
+      padding-right: 4px;
+      overflow: hidden;
     }
 
     .WinGo__C-head-more {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
     }
 
     .head-more-icon {
-      width: 31.6px;
-      height: 31.6px;
+      width: 34.76px; /* 31.6 * 1.1 = 34.76 */
+      height: 34.76px;
       background-size: contain;
       background-repeat: no-repeat;
       display: block;
@@ -303,112 +314,70 @@
 
     /* ==================== GAME LIST TABS ==================== */
     .GameList__C {
-        width: 100%;
-        min-height: 2.4em;
-        height: 2.4em;
-        margin: 0 auto;
-        padding: 0;
         display: flex;
-        align-items: stretch;
-        box-sizing: border-box;
+        width: 100%;
+        max-width: 350px;
+        height: 90px;
+        margin: 13px auto 0;
         background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-        border: 0.8px solid var(--glass-border);
-        border-radius: 0.26667em;
-        box-shadow: 0 0.05333em 0.32em rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(8.4px);
-        -webkit-backdrop-filter: blur(8.4px);
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 10px 0px;
         position: relative;
         overflow: hidden;
     }
 
-    /* The Tab Item */
+    /* Individual Tab Item */
     .GameList__C-item {
         flex: 1;
-        width: 25%;
-        height: 100%;
-        min-height: 0;
-        padding: 0 0.04em;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        color: rgba(255, 255, 255, 0.45);
-        font-size: 0.32em;
-        font-weight: 500;
+        max-width: 87.5px;
+        min-width: 0;
+        height: 88px;
         text-align: center;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
         cursor: pointer;
-        z-index: 2;
-        box-sizing: border-box;
-        align-self: stretch;
+        border-radius: 10px;
+        transition: background-image 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .timer-icon {
-        width: 1.28em;
-        height: 1.28em;
-        min-width: 40px;
-        min-height: 40px;
-        max-width: 48px;
-        max-height: 48px;
-        margin-bottom: 0.21em;
-        object-fit: contain;
-        flex-shrink: 0;
-        display: block;
-        transition: all 0.3s ease;
-    }
-
-    .GameList__C-item.active .timer-icon {
-        filter: brightness(1.15);
-    }
-
-    /* ACTIVE STATE: full-height highlight */
-    .GameList__C-item.active {
-        color: var(--gold);
-        padding: 0;
-        margin: 0;
+    /* The text and icon container */
+    .GameList__C-item div {
         height: 100%;
-        align-self: stretch;
-        border-radius: 0;
-        background-image: linear-gradient(
-            rgba(255, 200, 55, 0.25) 0%, 
-            rgba(168, 120, 255, 0.1) 100%
-        );
-        box-shadow: 
-            inset 0 -0.02667em 0.10667em rgba(255, 200, 55, 0.15),
-            inset 0 0.02667em 0.10667em rgba(168, 120, 255, 0.2);
+        padding-top: 54px;
+        box-sizing: border-box;
+        font-size: 12px;
+        line-height: 1.2;
+        color: rgba(255, 255, 255, 0.45);
+        background-size: 44px;
+        background-position: 50% 7px;
+        background-repeat: no-repeat;
+        transition: color 0.3s ease, background-image 0.3s ease;
     }
 
-    .GameList__C-item:first-child.active {
-        border-radius: 0.26667em 0 0 0.26667em;
+    /* Active State Styles */
+    .GameList__C-item.active {
+        background-image: linear-gradient(rgba(255, 200, 55, 0.25) 0%, rgba(168, 120, 255, 0.1) 100%);
+        box-shadow: inset rgba(255, 200, 55, 0.15) 0px -1px 4px 0px, 
+                    inset rgba(168, 120, 255, 0.2) 0px 1px 4px 0px;
     }
 
-    .GameList__C-item:last-child.active {
-        border-radius: 0 0.26667em 0.26667em 0;
+    /* Active Text & Icon */
+    .GameList__C-item.active div {
+        color: rgb(255, 200, 55);
     }
 
-    /* Top Light Bar on Active Tab */
+    /* Gold highlight line at the top of active item */
     .GameList__C-item.active::before {
         content: "";
         position: absolute;
         top: 0;
         left: 20%;
-        right: 20%;
+        width: 60%;
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        box-shadow: 0 0 4px var(--gold);
-        z-index: 5;
+        background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(255, 200, 55), rgba(0, 0, 0, 0));
     }
 
-    /* Inactive items hover */
-    .GameList__C-item:not(.active):hover {
-        color: rgba(255, 255, 255, 0.8);
-        background: rgba(255, 255, 255, 0.05);
-    }
-
-    .GameList__C-item div {
-        line-height: 1.3;
+    .timer-icon {
+        display: none;
     }
 
     /* ==================== TIME LEFT TIMER SECTION ==================== */
@@ -417,7 +386,6 @@
         width: 100%;
         aspect-ratio: 434 / 124;
         position: relative;
-        background-image: url('https://www.rajaluck.com/assets/png/diban-f66383f9.png');
         background-size: 100% 100%;
         border-radius: 12px;
         overflow: hidden;
@@ -926,37 +894,37 @@
     @media (max-width: 380px) {
       /* Navbar adjustments */
       .navbar {
-        padding: 0 8px;
-        height: 52px;
+        padding: 0 10px;
+        height: 67.6px; /* 52 * 1.3 = 67.6 */
         gap: 4px;
       }
 
       .back-btn {
-        width: 34px;
-        height: 34px;
+        width: 37.4px; /* 34 * 1.1 = 37.4 */
+        height: 37.4px;
         flex-shrink: 0;
       }
 
       .back-btn svg {
-        width: 14px;
-        height: 14px;
+        width: 16px;
+        height: 16px;
       }
 
       .head-more-icon {
-        width: 24px;
-        height: 24px;
+        width: 26.4px; /* 24 * 1.1 = 26.4 */
+        height: 26.4px;
         flex-shrink: 0;
       }
 
       .navbar__content-center {
         width: 100%;
-        max-width: 180px;
-        height: 35px;
+        max-width: 200px;
+        height: 45px;
         min-width: 150px;
       }
 
       .brand-logo-svg {
-        transform: scale(0.75);
+        transform: scale(0.85);
       }
 
       /* Main container and wallet */
@@ -1012,7 +980,7 @@
       .GameList__C-item {
         min-height: 0;
         height: 100%;
-        padding: 0 2px;
+        padding: 0;
       }
 
       .GameList__C-item.active {
@@ -1427,59 +1395,126 @@
       border-radius: 10px;
     }
 
+    /* Container */
+    .MyGameRecordList__C {
+      display: block;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+    }
+
+    /* List Item */
     .MyGameRecordList__C-item {
       display: flex;
-      align-items: center;
+      width: 100%;
+      height: 68.025px;
       padding: 14px 0;
-      border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      box-sizing: border-box;
     }
 
-    .MyGameRecordList__C-item:last-child {
-      border-bottom: none;
-    }
-
+    /* Left Column: Icons/Indicators */
     .MyGameRecordList__C-item-l {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      margin-right: 12px;
-      flex-shrink: 0;
+      display: block;
+      width: 36.0125px;
+      height: 36.0125px;
+      margin-right: 11.0057px;
+      border-radius: 10.0055px;
+      color: rgb(255, 255, 255);
+      text-align: center;
+      line-height: 36.0192px;
+      flex: 0 0 auto;
     }
 
-    .MyGameRecordList__C-item-l-red {
-      background: var(--primary-red);
+    /* Indicator Variants */
+    .MyGameRecordList__C-item-l-red,
+    .MyGameRecordList__C-item-l-2,
+    .MyGameRecordList__C-item-l-8 {
+      background-color: rgb(251, 78, 78);
+      font-size: 24.0128px;
     }
 
+    .MyGameRecordList__C-item-l-green,
+    .MyGameRecordList__C-item-l-1,
+    .MyGameRecordList__C-item-l-7,
+    .MyGameRecordList__C-item-l-3 {
+      background-color: rgb(92, 186, 71);
+      font-size: 24.0128px;
+    }
+
+    .MyGameRecordList__C-item-l-violet {
+      background-color: rgb(235, 67, 221);
+      font-size: 24.0128px;
+    }
+
+    .MyGameRecordList__C-item-l-big {
+      background-color: rgb(255, 197, 17);
+      font-size: 12.0064px;
+    }
+
+    .MyGameRecordList__C-item-l-small {
+      background-color: rgb(109, 167, 244);
+      font-size: 12.0064px;
+    }
+
+    /* Middle Column: Details */
     .MyGameRecordList__C-item-m {
-      flex: 1;
+      display: block;
+      width: 109.012px;
+      flex: 0 0 auto;
     }
 
     .MyGameRecordList__C-item-m-top {
-      font-size: 14px;
-      margin-bottom: 4px;
-      color: #fff;
-      font-weight: 500;
+      display: block;
+      font-size: 14.0073px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 9.0048px;
+      line-height: 17.0089px;
     }
 
     .MyGameRecordList__C-item-m-bottom {
-      font-size: 11px;
-      color: var(--muted-text);
+      display: block;
+      font-size: 11.0057px;
+      color: rgba(255, 255, 255, 0.5);
     }
 
+    /* Right Column: Status Badge & Amount */
     .MyGameRecordList__C-item-r {
-      text-align: right;
+      flex: 1 1 0%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      font-size: 14px;
+      font-weight: 500;
     }
 
-    .MyGameRecordList__C-item-r div {
-      font-size: 13px;
-      color: var(--red);
-      margin-bottom: 2px;
+    /* THE BORDERLINE (Status Badges) */
+    .MyGameRecordList__C-item-r > div {
+      border: 0.8px solid rgb(253, 86, 92); /* Failed Border */
+      color: rgb(253, 86, 92);
+      padding: 0 18px;
+      border-radius: 5px;
+      margin-bottom: 4px;
+      height: 20px;
+      line-height: 20px;
+      text-transform: capitalize;
+      font-size: 9.8px;
+    }
+
+    .MyGameRecordList__C-item-r.success > div {
+      border-color: rgb(71, 186, 124); /* Success Border */
+      color: rgb(71, 186, 124);
     }
 
     .MyGameRecordList__C-item-r span {
-      font-size: 15px;
-      font-weight: bold;
-      color: var(--red);
+      color: rgb(253, 86, 92);
+    }
+
+    .MyGameRecordList__C-item-r.success span {
+      color: rgb(71, 186, 124);
     }
 
     .MyGameRecord__C-foot {
