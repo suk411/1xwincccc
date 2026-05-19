@@ -21,26 +21,16 @@ const LotteryCard: React.FC<LotteryCardProps> = ({
       onClick={onClick}
       style={{ cursor: onClick ? "pointer" : "default" }}
     >
-      <div className="tab-Lottery__glow"></div>
+      <div className="wg-border"></div>
       <div className="wg-flame wg-flame--1"></div>
       <div className="wg-flame wg-flame--2"></div>
-      <div className="wg-flame wg-flame--3"></div>
-      <div className="wg-halo"></div>
-      <div className="wg-ring wg-ring--1"></div>
-      <div className="wg-ring wg-ring--2"></div>
 
-      {/* Sparkles/Embers */}
-      <i
-        className="wg-ember"
-        style={{ left: "40%", animation: "wgRingExpand-7575de35 2s infinite" }}
-      ></i>
-      <i
-        className="wg-ember"
-        style={{
-          left: "60%",
-          animation: "wgRingExpand-7575de35 2.5s infinite",
-        }}
-      ></i>
+      {/* Embers / Particles */}
+      <div className="wg-ember ember-1"></div>
+      <div className="wg-ember ember-2"></div>
+      <div className="wg-ember ember-3"></div>
+
+      <div className="wg-shine"></div>
 
       <div className="wg-tag">{tag}</div>
 

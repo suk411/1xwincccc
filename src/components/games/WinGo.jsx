@@ -9,6 +9,7 @@ import refreshIcon from '@/assets/wingo/refresh.webp'
 import timerBg from '@/assets/wingo/timerbg.png'
 import clockIcon from '@/assets/wingo/clockicon.png'
 import clockIconActive from '@/assets/wingo/clockiconative.png'
+import noDataImg from '@/assets/wingo/nodata.png'
 import { refreshBalance, useProfile } from '@/hooks/useProfile'
 import { toast } from '@/hooks/use-toast'
 import { wingoService } from '@/services/wingoService'
@@ -46,23 +47,23 @@ function getOriginDots(number) {
   if (n === 0) {
     return (
       <>
-        <div className="GameRecord__C-origin-I" style={{ background: 'var(--red)' }} />
-        <div className="GameRecord__C-origin-I" style={{ background: 'var(--violet)' }} />
+        <div className="GameRecord__C-origin-I red" />
+        <div className="GameRecord__C-origin-I violet" />
       </>
     )
   }
   if (n === 5) {
     return (
       <>
-        <div className="GameRecord__C-origin-I" style={{ background: 'var(--green)' }} />
-        <div className="GameRecord__C-origin-I" style={{ background: 'var(--violet)' }} />
+        <div className="GameRecord__C-origin-I green" />
+        <div className="GameRecord__C-origin-I violet" />
       </>
     )
   }
   if ([1, 3, 7, 9].includes(n)) {
-    return <div className="GameRecord__C-origin-I" style={{ background: 'var(--green)' }} />
+    return <div className="GameRecord__C-origin-I green" />
   }
-  return <div className="GameRecord__C-origin-I" style={{ background: 'var(--red)' }} />
+  return <div className="GameRecord__C-origin-I red" />
 }
 
 const BALANCE_CHIPS = [1, 10, 100, 1000]
@@ -493,26 +494,33 @@ export default function WinGo() {
             </div>
           </div>
 
-          <div className="GameRecord__C-body">
-            {gameRecords.map((item, i) => {
-              const n = item.number
-              const bs = n >= 5 ? 'big' : 'small'
-              return (
-                <div className="van-row" key={i}>
-                  <div className="van-col--8">{item.issueNumber}</div>
-                  <div className="van-col--5">
-                    <div className={`GameRecord__C-body-num ${getNumberColor(n)}`}>{n}</div>
-                  </div>
-                  <div className="van-col--5">{bs}</div>
-                  <div className="van-col--6">
-                    <div className="GameRecord__C-origin">
-                      {getOriginDots(n)}
+          {gameRecords.length === 0 ? (
+            <div className="empty__container">
+              <img src={noDataImg} alt="No data" />
+              <p>No data</p>
+            </div>
+          ) : (
+            <div className="GameRecord__C-body">
+              {gameRecords.map((item, i) => {
+                const n = item.number
+                const bs = n >= 5 ? 'big' : 'small'
+                return (
+                  <div className="van-row" key={i}>
+                    <div className="van-col--8">{item.issueNumber}</div>
+                    <div className="van-col--5">
+                      <div className={`GameRecord__C-body-num ${getNumberColor(n)}`}>{n}</div>
+                    </div>
+                    <div className="van-col--5">{bs}</div>
+                    <div className="van-col--6">
+                      <div className="GameRecord__C-origin">
+                        {getOriginDots(n)}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+          )}
 
           <div className="MyGameRecord__C-foot">
             <div className={`MyGameRecord__C-foot-previous${gamePage <= 1 ? ' disabled' : ''}`}>
@@ -537,71 +545,80 @@ export default function WinGo() {
             </div>
           </div>
 
-          <div className="Trend__C-body1">
-            <div className="Trend__C-body1-line">Betting Assistant (last 100 issues)</div>
+          {trendHistory.length === 0 && trendStats.length === 0 ? (
+            <div className="empty__container">
+              <img src={noDataImg} alt="No data" />
+              <p>No data</p>
+            </div>
+          ) : (
+            <>
+              <div className="Trend__C-body1">
+                <div className="Trend__C-body1-line">Betting Assistant (last 100 issues)</div>
 
-            <div className="Trend__C-body1-line lottery">
-              <div>Winning numbers</div>
-              <div className="Trend__C-body1-line-num">
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => <div key={n}>{n}</div>)}
-              </div>
-            </div>
-            <div className="Trend__C-body1-line">
-              <div>Missing</div>
-              <div className="Trend__C-body1-line-num">
-                {trendStats.map((s, i) => <div key={i}>{s.missingCount}</div>)}
-              </div>
-            </div>
-            <div className="Trend__C-body1-line">
-              <div>Avg Missing</div>
-              <div className="Trend__C-body1-line-num">
-                {trendStats.map((s, i) => <div key={i}>{s.avgMissing}</div>)}
-              </div>
-            </div>
-            <div className="Trend__C-body1-line">
-              <div>Frequency</div>
-              <div className="Trend__C-body1-line-num">
-                {trendStats.map((s, i) => <div key={i}>{s.openCount}</div>)}
-              </div>
-            </div>
-            <div className="Trend__C-body1-line">
-              <div>Max Continued</div>
-              <div className="Trend__C-body1-line-num">
-                {trendStats.map((s, i) => <div key={i}>{s.maxContinuous}</div>)}
-              </div>
-            </div>
-          </div>
-
-          <div className="Trend__C-body2" ref={body2Ref}>
-            <svg className="line-overlay" ref={svgRef}>
-              <path className="trend-path" ref={pathRef} d="" />
-            </svg>
-
-            {trendHistory.map((item, i) => {
-              const n = item.number
-              const bs = n >= 5 ? 'B' : 'S'
-              let numsHtml = ''
-              const numDivs = []
-              for (let j = 0; j < 10; j++) {
-                numDivs.push(
-                  <div key={j} className={`Trend__C-body2-Num-item${j === n ? ` action${j}` : ''}`}>{j}</div>
-                )
-              }
-              return (
-                <div key={i}>
-                  <div className="van-row">
-                    <div className="van-col--8">{item.issueNumber}</div>
-                    <div className="van-col--16">
-                      <div className="Trend__C-body2-Num">
-                        {numDivs}
-                      </div>
-                      <div className={`Trend__C-body2-Num-BS is${bs}`}>{bs}</div>
-                    </div>
+                <div className="Trend__C-body1-line lottery">
+                  <div>Winning numbers</div>
+                  <div className="Trend__C-body1-line-num">
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => <div key={n}>{n}</div>)}
                   </div>
                 </div>
-              )
-            })}
-          </div>
+                <div className="Trend__C-body1-line">
+                  <div>Missing</div>
+                  <div className="Trend__C-body1-line-num">
+                    {trendStats.map((s, i) => <div key={i}>{s.missingCount}</div>)}
+                  </div>
+                </div>
+                <div className="Trend__C-body1-line">
+                  <div>Avg Missing</div>
+                  <div className="Trend__C-body1-line-num">
+                    {trendStats.map((s, i) => <div key={i}>{s.avgMissing}</div>)}
+                  </div>
+                </div>
+                <div className="Trend__C-body1-line">
+                  <div>Frequency</div>
+                  <div className="Trend__C-body1-line-num">
+                    {trendStats.map((s, i) => <div key={i}>{s.openCount}</div>)}
+                  </div>
+                </div>
+                <div className="Trend__C-body1-line">
+                  <div>Max Continued</div>
+                  <div className="Trend__C-body1-line-num">
+                    {trendStats.map((s, i) => <div key={i}>{s.maxContinuous}</div>)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="Trend__C-body2" ref={body2Ref}>
+                <svg className="line-overlay" ref={svgRef}>
+                  <path className="trend-path" ref={pathRef} d="" />
+                </svg>
+
+                {trendHistory.map((item, i) => {
+                  const n = item.number
+                  const bs = n >= 5 ? 'B' : 'S'
+                  let numsHtml = ''
+                  const numDivs = []
+                  for (let j = 0; j < 10; j++) {
+                    numDivs.push(
+                      <div key={j} className={`Trend__C-body2-Num-item${j === n ? ` action${j}` : ''}`}>{j}</div>
+                    )
+                  }
+                  return (
+                    <div key={i}>
+                      <div className="van-row">
+                        <div className="van-col--8">{item.issueNumber}</div>
+                        <div className="van-col--16">
+                          <div className="Trend__C-body2-Num">
+                            {numDivs}
+                          </div>
+                          <div className={`Trend__C-body2-Num-BS is${bs}`}>{bs}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
 
           <div className="MyGameRecord__C-foot">
             <div className="MyGameRecord__C-foot-previous disabled">
@@ -626,8 +643,9 @@ export default function WinGo() {
             <div className="MyGameRecord__C-body">
               <div className="MyGameRecordList__C">
                 {myBets.length === 0 ? (
-                  <div style={{ padding: '18px 0', color: 'rgba(255,255,255,0.6)', textAlign: 'center', fontSize: 13 }}>
-                    No bets yet
+                  <div className="empty__container">
+                    <img src={noDataImg} alt="No data" />
+                    <p>No data</p>
                   </div>
                 ) : (
                   myBets.map((b) => {

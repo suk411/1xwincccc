@@ -3,103 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game List Tabs</title>
+    <title>Empty State Reproduction</title>
     <style>
+        :root {
+            --rem: 37.5px; /* Base rem size for scaling */
+        }
+
         body {
-            background-color: #1a1a1a;
-            margin: 0;
+            background-color: #0d0208;
             display: flex;
             justify-content: center;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        /* Container for the game list */
-        .GameList__C {
+        /* 1. Main Container Layout */
+        .empty__container {
+            width: 100%;
             display: flex;
-            width: 350px;
-            height: 90px;
-            margin: 13px auto 0;
-            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-            border-radius: 10px;
-            box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 10px 0px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Individual Tab Item */
-        .GameList__C-item {
-            flex: 1;
-            height: 88px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            position: relative;
-            cursor: pointer;
         }
 
-        /* The text and icon container */
-        .GameList__C-item div {
-            height: 100%;
-            padding-top: 54px; /* Space for the background icon */
-            box-sizing: border-box;
-            font-size: 12px;
-            line-height: 1.2;
-            color: rgba(255, 255, 255, 0.45); /* Muted color for non-active */
-            background-image: url("https://www.rajaluck.com/assets/png/time-421c2afa.png");
-            background-size: 44px;
-            background-position: 50% 7px;
-            background-repeat: no-repeat;
-            transition: all 0.3s ease;
+        /* 2. Empty State Image */
+        .empty__container img {
+            width: calc(4 * var(--rem)); /* 150px */
+            height: calc(3.71427 * var(--rem)); /* 139px */
+            object-fit: contain;
+            display: block;
+            margin-bottom: 10px;
         }
 
-        /* Active State Styles */
-        .GameList__C-item.active {
-            background-image: linear-gradient(rgba(255, 200, 55, 0.25) 0%, rgba(168, 120, 255, 0.1) 100%);
-            border-radius: 10px;
-            box-shadow: inset rgba(255, 200, 55, 0.15) 0px -1px 4px 0px, 
-                        inset rgba(168, 120, 255, 0.2) 0px 1px 4px 0px;
+        /* 3. Empty State Text */
+        .empty__container p {
+            color: #acafc2;
+            font-size: calc(0.34667 * var(--rem)); /* ~13px */
+            margin: 0;
+            display: block;
         }
 
-        /* Active Text & Icon */
-        .GameList__C-item.active div {
-            color: rgb(255, 200, 55); /* Gold color for active */
-            background-image: url("https://www.rajaluck.com/assets/png/time_a-e3e30ad8.png"); /* Colored icon */
-        }
-
-        /* Gold highlight line at the top of active item */
-        .GameList__C-item.active::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 20%;
-            width: 60%;
-            height: 1px;
-            background-image: linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(255, 200, 55), rgba(0, 0, 0, 0));
-        }
     </style>
 </head>
 <body>
 
-<div class="GameList__C">
-    <!-- 30s Game -->
-    <div class="GameList__C-item">
-        <div>Win Go<br>30s</div>
+    <div class="empty__container">
+        <!-- Exact image asset from the app -->
+        <img src="https://www.rajaluck.com/assets/png/empty-d4d79e54.png" alt="No data">
+        <p>No data</p>
     </div>
-    
-    <!-- 1min Game -->
-    <div class="GameList__C-item">
-        <div>Win Go<br>1Min</div>
-    </div>
-
-    <!-- 3min Game -->
-    <div class="GameList__C-item">
-        <div>Win Go<br>3Min</div>
-    </div>
-
-    <!-- 5min Game (Active) -->
-    <div class="GameList__C-item active">
-        <div>Win Go<br>5Min</div>
-    </div>
-</div>
 
 </body>
 </html>

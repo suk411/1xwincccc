@@ -43,7 +43,7 @@
       --muted-text: rgba(255, 255, 255, 0.45);
       --bg-glass-main: linear-gradient(135deg, rgba(26, 10, 46, 0.88) 0%, rgba(45, 21, 96, 0.78) 50%, rgba(58, 29, 114, 0.88) 100%);
       --bg-url: none;
-      --wingo-section-gap: 8px;
+      --wingo-section-gap: 16px;
       background-color: var(--bg-deep);
     }
 
@@ -552,13 +552,18 @@
         bottom: 11.2px;
         left: 11.2px;
         display: flex;
-        gap: 3.52px;
+        flex-direction: row;
+        height: calc(0.66667 * 37.5px);
+        gap: 5px;
         z-index: 3;
     }
     .TimeLeft__C-num div {
-        width: 28.16px;
-        height: 28.16px;
-        background-size: contain;
+        display: block;
+        width: calc(0.66667 * 37.5px);
+        height: calc(0.66667 * 37.5px);
+        background-size: calc(0.66667 * 37.5px);
+        background-repeat: no-repeat;
+        background-position: center;
     }
     .n0 { background-image: url('../../assets/wingo/ball_0.webp'); }
     .n1 { background-image: url('../../assets/wingo/ball_1.webp'); }
@@ -589,8 +594,10 @@
     /* 2. Colors Row with Sweep Animation */
     .Betting__C-head {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.25rem;
+        justify-content: space-around;
+        gap: 0.15rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
         height: 0.93333em;
         min-height: 35px;
         max-height: 35px;
@@ -598,7 +605,7 @@
 
     /* Base Color Button Style */
     .Betting__C-head > div {
-        width: 31%;
+        width: 27.9%;
         height: 0.93333em;
         min-height: 35px;
         max-height: 35px;
@@ -656,25 +663,33 @@
 
     /* 3. Numbers Grid */
     .Betting__C-numC {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 0.15rem;
-        background: rgba(45, 21, 96, 0.4);
-        padding: 0.2rem;
-        border-radius: 0.25rem;
-        margin-bottom: 0.25rem;
-        border: 1px solid rgba(255, 255, 255, 0.04);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0 0 0.5rem 0;
+        height: auto;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, rgba(45, 21, 96, 0.4) 0%, rgba(26, 10, 46, 0.5) 100%);
+        border-radius: 10px;
+        border: 0.8px solid rgba(168, 120, 255, 0.12);
+        box-sizing: border-box;
+        align-content: space-between;
     }
 
     .Betting__C-numC div {
-        width: 90%;
+        display: block;
+        width: 17%;
         aspect-ratio: 1;
-        justify-self: center;
-        align-self: center;
-        background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        background-size: contain;
+        cursor: pointer;
+        transition: transform 0.1s ease;
+    }
+
+    .Betting__C-numC div:active {
+        transform: scale(0.9);
     }
 
     /* 4. Multipliers Row */
@@ -682,24 +697,25 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.15rem;
-        padding: 0 0.2rem;
-        margin-bottom: 0.3rem;
+        gap: 8px;
+        padding: 0 8px;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
         min-height: 0.85em;
         box-sizing: border-box;
+        width: 100%;
+        overflow: hidden;
     }
 
     .random-btn {
         width: auto;
-        padding: 0 0.3em;
-        height: 0.85em;
-        min-height: 32px;
-        max-height: 32px;
+        padding: 0 10px;
+        height: 32px;
         flex-shrink: 0;
         border: 0.8px solid rgba(255, 200, 55, 0.5);
-        border-radius: 0.22em;
+        border-radius: 8px;
         color: var(--gold);
-        font-size: 0.35em;
+        font-size: 13px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -711,24 +727,23 @@
 
     .multiplier-items {
         display: flex;
-        gap: 0.1em;
-        flex-shrink: 0;
+        gap: 4px;
+        flex: 1;
+        justify-content: flex-end;
+        overflow: hidden;
     }
     .multiplier-btn {
-        width: 0.95em;
-        min-width: 36px;
-        max-width: 36px;
-        height: 0.75em;
-        min-height: 28px;
-        max-height: 28px;
-        flex-shrink: 0;
+        width: 32px;
+        min-width: 0;
+        height: 28px;
+        flex-shrink: 1;
         display: flex;
         align-items: center;
         justify-content: center;
         background: rgba(255, 255, 255, 0.05);
-        border-radius: 0.2em;
+        border-radius: 8px;
         color: rgba(255, 255, 255, 0.5);
-        font-size: 0.32em;
+        font-size: 12px;
         cursor: pointer;
         box-sizing: border-box;
     }
@@ -745,6 +760,7 @@
         min-height: 39px;
         max-height: 39px;
         padding: 0 0.2rem;
+        margin-bottom: 0.5rem;
         box-sizing: border-box;
     }
     .Betting__C-foot > div {
@@ -1014,7 +1030,7 @@
     .Trend__C.active {
       display: flex;
       flex-direction: column;
-      gap: var(--wingo-section-gap);
+      gap: 0;
     }
 
     .GameRecord__C-head,
@@ -1024,11 +1040,12 @@
       display: flex;
       align-items: center;
       background: linear-gradient(135deg, rgba(255, 200, 55, 0.08), rgba(255, 255, 255, 0.04) 50%, rgba(255, 200, 55, 0.06));
-      border-radius: 10px;
+      border-radius: 10px 10px 0 0;
       color: #ffd54f;
       font-weight: 700;
       font-size: 13px;
       border: 1px solid rgba(255, 200, 55, 0.15);
+      border-bottom: none;
       box-sizing: border-box;
       margin-bottom: 0;
       flex-shrink: 0;
@@ -1048,9 +1065,12 @@
 
     .GameRecord__C-body {
       background: linear-gradient(rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01));
-      border-radius: 10px;
+      border-radius: 0 0 10px 10px;
+      border: 1px solid rgba(255, 200, 55, 0.15);
+      border-top: none;
       overflow: hidden;
       color: #fff;
+      box-sizing: border-box;
     }
 
     .Trend__C-head::after {
@@ -1064,14 +1084,19 @@
     }
 
     .van-row {
-      display: flex;
-      width: 100%;
-      align-items: center;
-      min-height: 36px;
-      background: linear-gradient(rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01));
-      border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
-      padding: 0 8px;
-      box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        max-width: 347.575px;
+        margin: 0 auto;
+        height: 40.025px;
+        line-height: 40.0215px;
+        background-color: rgba(255, 255, 255, 0.016);
+        color: rgba(255, 255, 255, 0.9);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        font-size: 12px;
+        text-align: center;
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
     }
 
     .van-row:last-child {
@@ -1079,19 +1104,25 @@
     }
 
     .van-col--8 {
-      width: 33.3%;
+      flex: 0 0 33.3333%;
+      width: 115.85px;
       text-align: center;
       font-size: 12px;
     }
 
     .van-col--5 {
-      width: 20.8%;
+      flex: 0 0 20.8333%;
+      width: 72.4px;
       text-align: center;
       font-size: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .van-col--6 {
-      width: 25.1%;
+      flex: 0 0 25%;
+      width: 86.8875px;
       text-align: center;
       font-size: 12px;
     }
@@ -1103,8 +1134,12 @@
     }
 
     .GameRecord__C-body-num {
-      font-size: 14px;
-      font-weight: 900;
+      display: block;
+      width: 30.0125px;
+      height: 30.0125px;
+      line-height: 30px;
+      font-size: 25.0135px;
+      font-weight: 700;
     }
 
     .num-red {
@@ -1116,27 +1151,44 @@
     }
 
     .num-mixed-5 {
-      background: linear-gradient(#40ad72 51%, #b659fe 51%);
+      background: linear-gradient(#40ad72 50.96%, #b659fe 50.97%);
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .num-mixed-0 {
-      background: linear-gradient(#fd565c 51%, #b659fe 51%);
+      background: linear-gradient(#fd565c 50.96%, #b659fe 50.97%);
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .GameRecord__C-origin {
       display: flex;
+      width: 100%;
+      height: 100%;
       justify-content: center;
-      gap: 3.6px;
+      align-items: center;
     }
 
     .GameRecord__C-origin-I {
-      width: 10.8px;
-      height: 10.8px;
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
+    }
+
+    .GameRecord__C-origin-I.red {
+      background-color: #fd565c;
+      box-shadow: rgba(253, 86, 92, 0.5) 0px 0px 5px 0px;
+    }
+
+    .GameRecord__C-origin-I.green {
+      background-color: #40ad72;
+    }
+
+    .GameRecord__C-origin-I.violet {
+      background-color: #b659fe;
     }
 
     .Trend__C-body1 {
@@ -1145,8 +1197,8 @@
       color: rgba(255, 255, 255, 0.7);
       padding: 0 0 14px 0;
       text-align: center;
-      background: linear-gradient(rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01));
-      border-radius: 10px;
+      background: transparent;
+      border-radius: 0;
     }
 
     .Trend__C-body1-line {
@@ -1332,6 +1384,32 @@
       background: #6da7f4;
     }
 
+    /* Empty State Container */
+    .empty__container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .empty__container img {
+      width: calc(4 * 37.5px);
+      height: calc(3.71427 * 37.5px);
+      object-fit: contain;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .empty__container p {
+      color: #acafc2;
+      font-size: calc(0.34667 * 37.5px);
+      margin: 0;
+      display: block;
+    }
+
     /* Dynamic SVG Line Layer */
     .line-overlay {
       position: absolute;
@@ -1360,7 +1438,7 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: var(--wingo-section-gap);
+      gap: 0;
       background: transparent;
       border-radius: 0;
     }
@@ -1372,11 +1450,13 @@
       height: 45px;
       align-items: center;
       background: linear-gradient(135deg, rgba(255, 200, 55, 0.08), rgba(255, 255, 255, 0.04) 50%, rgba(255, 200, 55, 0.06));
-      border-radius: 10px;
+      border-radius: 10px 10px 0 0;
       border: 1px solid rgba(255, 200, 55, 0.15);
+      border-bottom: none;
       margin-bottom: 0;
       box-sizing: border-box;
       flex-shrink: 0;
+      width: 100%;
     }
 
     .MyGameRecord__C-head-moreB {
@@ -1390,9 +1470,13 @@
     }
 
     .MyGameRecord__C-body {
-      padding: 0 12px;
+      padding: 0;
       background: linear-gradient(rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01));
-      border-radius: 10px;
+      border-radius: 0 0 10px 10px;
+      border: 1px solid rgba(255, 200, 55, 0.15);
+      border-top: none;
+      box-sizing: border-box;
+      width: 100%;
     }
 
     /* Container */
@@ -1402,6 +1486,18 @@
       background-color: rgba(255, 255, 255, 0.03);
       color: rgba(255, 255, 255, 0.9);
       font-size: 12px;
+      box-sizing: border-box;
+    }
+
+    /* Container */
+    .MyGameRecordList__C {
+      display: block;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      box-sizing: border-box;
+      padding: 0 12px;
     }
 
     /* List Item */
@@ -1462,8 +1558,8 @@
     /* Middle Column: Details */
     .MyGameRecordList__C-item-m {
       display: block;
-      width: 109.012px;
-      flex: 0 0 auto;
+      flex: 1;
+      margin-right: 10px;
     }
 
     .MyGameRecordList__C-item-m-top {
