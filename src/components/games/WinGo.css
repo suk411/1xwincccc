@@ -309,7 +309,7 @@
     }
 
     .refresh:active {
-      transform: scale(0.96);
+      transform: scale(0.9);
     }
 
     /* ==================== GAME LIST TABS ==================== */
@@ -1497,7 +1497,6 @@
       color: rgba(255, 255, 255, 0.9);
       font-size: 12px;
       box-sizing: border-box;
-      padding: 0 12px;
     }
 
     /* List Item */
@@ -1505,7 +1504,7 @@
       display: flex;
       width: 100%;
       height: 68.025px;
-      padding: 14px 0;
+      padding: 14px 12px;
       align-items: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       box-sizing: border-box;
@@ -1513,36 +1512,52 @@
 
     /* Left Column: Icons/Indicators */
     .MyGameRecordList__C-item-l {
-      display: block;
-      width: 36.0125px;
-      height: 36.0125px;
-      margin-right: 11.0057px;
-      border-radius: 10.0055px;
-      color: rgb(255, 255, 255);
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
       text-align: center;
-      line-height: 36.0192px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 12.0064px;
+      font-weight: 400;
+      margin-right: 12px;
       flex: 0 0 auto;
     }
 
     /* Indicator Variants */
     .MyGameRecordList__C-item-l-red,
     .MyGameRecordList__C-item-l-2,
+    .MyGameRecordList__C-item-l-4,
+    .MyGameRecordList__C-item-l-6,
     .MyGameRecordList__C-item-l-8 {
       background-color: rgb(251, 78, 78);
-      font-size: 24.0128px;
+      font-size: 12.0064px;
     }
 
     .MyGameRecordList__C-item-l-green,
     .MyGameRecordList__C-item-l-1,
+    .MyGameRecordList__C-item-l-3,
     .MyGameRecordList__C-item-l-7,
-    .MyGameRecordList__C-item-l-3 {
+    .MyGameRecordList__C-item-l-9 {
       background-color: rgb(92, 186, 71);
-      font-size: 24.0128px;
+      font-size: 12.0064px;
     }
 
     .MyGameRecordList__C-item-l-violet {
       background-color: rgb(235, 67, 221);
-      font-size: 24.0128px;
+      font-size: 12.0064px;
+    }
+
+    .MyGameRecordList__C-item-l-0 {
+      background-image: linear-gradient(to bottom right, #fb4e4e 50%, #eb43dd 50%) !important;
+      background-color: transparent !important;
+      font-size: 12.0064px;
+    }
+
+    .MyGameRecordList__C-item-l-5 {
+      background-image: linear-gradient(to bottom right, #5cba47 50%, #eb43dd 50%) !important;
+      background-color: transparent !important;
+      font-size: 12.0064px;
     }
 
     .MyGameRecordList__C-item-l-big {

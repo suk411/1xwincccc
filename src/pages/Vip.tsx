@@ -227,8 +227,13 @@ const Vip = () => {
 
                 <GameButton
                   variant="gold"
-                  size="sm"
-                  className="h-8 w-24"
+                  style={{
+                    height: "30px",
+                    fontSize: "10px",
+                    paddingLeft: "12px",
+                    paddingRight: "12px",
+                    borderRadius: "15px",
+                  }}
                   onClick={handleUpgrade}
                   disabled={busy || upgradeDepositAmount <= 0}
                 >
@@ -256,9 +261,8 @@ const Vip = () => {
               </p>
             </div>
             <GameButton
-              variant="mute"
-              size="sm"
-              className="text-xs h-7 w-20 border border-[rgba(183,69,83,0.5)] flex-shrink-0"
+              variant="gold"
+              className="text-xs border border-[rgba(183,69,83,0.5)] flex-shrink-0"
               onClick={handleUpgrade}
               disabled={busy || upgradeDepositAmount <= 0}
             >
@@ -284,9 +288,14 @@ const Vip = () => {
                 ₹{fmt((vipData?.pendingUpgradeBonus ?? 0) + (vipData?.monthlyCheckinBonus ?? 0))}
               </span>
               <GameButton
-                variant="mute"
-                size="sm"
-                className="text-xs h-6 w-14 border border-[rgba(183,69,83,0.5)]"
+                variant="gold"
+                style={{
+                  height: "28px",
+                  fontSize: "10px",
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                  borderRadius: "14px",
+                }}
                 onClick={handleClaim}
                 disabled={busy || !canClaim}
               >
@@ -305,15 +314,22 @@ const Vip = () => {
                 <p className="text-gray-300 text-xs">To get daily unlimited withdrwal </p>
               </div>
             </div>
-            <GameButton
-              variant="red"
-              size="sm"
-              className="w-full h-10 mt-2"
-              onClick={handleBecomeSvip}
-              disabled={busy || isSvip}
-            >
-              {busy ? "Processing" : isSvip ? "Already SVIP" : `Deposit ₹${fmt(svipDepositAmount)}`}
-            </GameButton>
+            <div className="flex justify-end mt-2">
+              <GameButton
+                variant="red"
+                style={{
+                  height: "36px",
+                  fontSize: "12px",
+                  paddingLeft: "16px",
+                  paddingRight: "16px",
+                  borderRadius: "18px",
+                }}
+                onClick={handleBecomeSvip}
+                disabled={busy || isSvip}
+              >
+                {busy ? "Processing" : isSvip ? "Already SVIP" : `Deposit ₹${fmt(svipDepositAmount)}`}
+              </GameButton>
+            </div>
           </div>
         </GameCard>
 

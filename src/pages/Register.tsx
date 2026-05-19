@@ -11,6 +11,7 @@ import supportIcon from "@/assets/auth/support-icon.png";
 import flagIcon from "@/assets/auth/flag-icon.png";
 import logo from "@/assets/logo.png";
 import { GameInput } from "@/components/GameInput";
+import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
 import { toast } from "@/hooks/use-toast";
 
@@ -102,16 +103,16 @@ const Register = () => {
         </div>
 
         {/* Register Button */}
-        <button
-          onClick={handleRegister}
-          disabled={loading}
-          className="w-full h-12 rounded-full mt-6 font-bold text-lg text-[#5a2d0a] active:scale-95 transition-transform disabled:opacity-60"
-          style={{
-            backgroundImage: "linear-gradient(rgb(255, 246, 230) 1%, rgb(238, 210, 110) 44%, rgb(195, 132, 45) 75%, rgb(195, 132, 45) 86%, rgb(255, 205, 78) 100%)",
-          }}
-        >
-          {loading ? <span className="flex justify-center"><DotPulse size="30" speed="1.3" color="#5a2d0a" /></span> : "Register"}
-        </button>
+        <div className="flex justify-center mt-6">
+          <GameButton
+            variant="gold"
+            type="prompt"
+            onClick={handleRegister}
+            disabled={loading}
+          >
+            {loading ? <span className="flex justify-center"><DotPulse size="30" speed="1.3" color="#5a2d0a" /></span> : "Register"}
+          </GameButton>
+        </div>
 
         {/* Quick Login link */}
         <div className="flex items-center justify-between mt-4 px-2">

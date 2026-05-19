@@ -4,6 +4,7 @@ import {
   GameDialogBody,
   GameDialogFooter,
 } from "@/components/GameDialog";
+import { GameButton } from "@/components/GameButton";
 import { gameService } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -92,17 +93,16 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
           )}
         </GameDialogBody>
         <GameDialogFooter>
-          <button
-            onClick={handleWithdrawAll}
-            disabled={isWithdrawing}
-            className="w-full py-2.5 rounded-lg text-white font-bold text-[14px] transition-all active:scale-95 disabled:cursor-not-allowed whitespace-nowrap"
-            style={{
-              background: "linear-gradient(180deg, #b8860b 0%, #8b6508 100%)",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
-            }}
-          >
-            {isWithdrawing ? (withdrawCountdown > 0 ? `Recalling ${withdrawCountdown}` : "...") : "Recall All"}
-          </button>
+          <div className="flex justify-center w-full">
+            <GameButton
+              variant="gold"
+              type="prompt"
+              onClick={handleWithdrawAll}
+              disabled={isWithdrawing}
+            >
+              {isWithdrawing ? (withdrawCountdown > 0 ? `Recalling ${withdrawCountdown}` : "...") : "Recall All"}
+            </GameButton>
+          </div>
         </GameDialogFooter>
       </GameDialogContent>
     </GameDialog>

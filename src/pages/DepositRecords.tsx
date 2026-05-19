@@ -18,9 +18,30 @@ interface DepositOrder {
 }
 
 const statusStyles: Record<string, string> = {
-  PENDING: "#ff8800",
-  Pending: "#ff8800",
-  pending: "#ff8800",
+  PENDING: "#ffd700",
+  Pending: "#ffd700",
+  pending: "#ffd700",
+  Timeout: "#ff0000",
+  timeout: "#ff0000",
+  TIMEOUT: "#ff0000",
+  Cancelled: "#888888",
+  cancelled: "#888888",
+  CANCELLED: "#888888",
+  success: "#00b341",
+  Success: "#00b341",
+  SUCCESS: "#00b341",
+  completed: "#00b341",
+  Completed: "#00b341",
+  COMPLETED: "#00b341",
+  failed: "#ff0000",
+  Failed: "#ff0000",
+  FAILED: "#ff0000",
+};
+
+const amountStyles: Record<string, string> = {
+  PENDING: "#ffd700",
+  Pending: "#ffd700",
+  pending: "#ffd700",
   Timeout: "#ff0000",
   timeout: "#ff0000",
   TIMEOUT: "#ff0000",
@@ -146,6 +167,7 @@ const DepositRecords = () => {
             const expanded = expandedId === orderId;
             const status = getStatus(order);
             const statusColor = statusStyles[status] || fallbackStyle;
+            const amountColor = amountStyles[status] || fallbackStyle;
             const amount = getAmount(order);
             const bonus = order.bonus || order.bonusAmount || 0;
 
@@ -164,10 +186,10 @@ const DepositRecords = () => {
             return (
               <div
                 key={orderId + idx}
-                className="rounded-xl overflow-hidden w-full max-w-full border"
+                className="rounded-xl overflow-hidden w-full max-w-full"
                 style={{ 
-                  background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
-                  border: '1.5px solid rgba(255, 180, 50, 0.45)',
+                  background: 'rgba(255,255,255,0.03)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}
               >
                 {/* Main row */}
@@ -199,7 +221,7 @@ const DepositRecords = () => {
 
                     {/* Amount Info */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-yellow-400 text-sm font-bold">
+                      <span className="text-sm font-bold" style={{ color: amountColor }}>
                         Cash+ ₹{Number(amount).toLocaleString()}
                       </span>
                       <span className="text-white/70 text-xs">

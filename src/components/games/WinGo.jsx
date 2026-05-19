@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './WinGo.css'
 import timerAct from '@/assets/wingo/timer_act.png'
 import timerNonAct from '@/assets/wingo/timer_nonact.png'
@@ -71,6 +72,7 @@ const MULTIPLIER_CHIPS = ['X1', 'X5', 'X10', 'X20', 'X50', 'X100']
 
 export default function WinGo() {
   const { balance } = useProfile(false)
+  const navigate = useNavigate()
   const [activeGame, setActiveGame] = useState('30s')
   const [timeRemaining, setTimeRemaining] = useState(0)
   const [issueNumber, setIssueNumber] = useState('')
@@ -391,8 +393,8 @@ export default function WinGo() {
             </div>
             <div className="Wallet__C-balance-l2">wallet balance</div>
             <div className="Wallet__C-balance-l3">
-              <div className="glass-btn btn-withdraw">Withdraw</div>
-              <div className="glass-btn btn-deposit">Deposit</div>
+              <div className="glass-btn btn-withdraw" onClick={() => { navigate('/bank', { state: { activeTab: 'withdraw' } }); }}>Withdraw</div>
+              <div className="glass-btn btn-deposit" onClick={() => { navigate('/bank', { state: { activeTab: 'deposit' } }); }}>Deposit</div>
             </div>
           </div>
         </div>
@@ -654,31 +656,25 @@ export default function WinGo() {
                     const isPending = s === 'pending'
                     const profit = typeof b?.result?.profitAmount === 'number' ? b.result.profitAmount : 0
                     const amountText = isWon ? `+₹${profit.toFixed(2)}` : isPending ? `₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}` : `-₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}`
-                    const color = isWon ? 'var(--green)' : isPending ? 'var(--gold)' : 'var(--red)'
-                    const leftBg =
-                      b.selectType === 'green' ? 'var(--green)'
-                      : b.selectType === 'violet' ? 'var(--violet)'
-                      : b.selectType === 'red' ? 'var(--red)'
-                      : 'rgba(255, 255, 255, 0.15)'
-
-                    let leftClass = 'MyGameRecordList__C-item-l'
                     const selectType = String(b.selectType || '').toLowerCase()
+                    
+                    let leftClass = 'MyGameRecordList__C-item-l'
+                    
                     if (selectType === 'green') leftClass += ' MyGameRecordList__C-item-l-green'
                     else if (selectType === 'violet') leftClass += ' MyGameRecordList__C-item-l-violet'
                     else if (selectType === 'red') leftClass += ' MyGameRecordList__C-item-l-red'
                     else if (selectType === 'big') leftClass += ' MyGameRecordList__C-item-l-big'
                     else if (selectType === 'small') leftClass += ' MyGameRecordList__C-item-l-small'
-                    else if (['1', '3', '7', '9'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
-                    else if (['2', '8'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
+                    else if (['0','1','2','3','4','5','6','7','8','9'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
 
                     return (
                       <div className="MyGameRecordList__C-item" key={b.orderNumber}>
-                        <div className={leftClass}>{['big', 'small', '1', '2', '3', '7', '8', '9'].includes(selectType) ? selectType : ''}</div>
+                        <div className={leftClass}>{selectType}</div>
                         <div className="MyGameRecordList__C-item-m">
                           <div className="MyGameRecordList__C-item-m-top">{b.issueNumber}</div>
                           <div className="MyGameRecordList__C-item-m-bottom">{b.timestamp}</div>
                         </div>
-                        <div className={`MyGameRecordList__C-item-r${isWon ? ' success' : ''}`}>
+                        <div className={`MyGameRecordList__C-item-r ${isWon ? 'success' : ''}`}>
                           <div className={isWon ? 'success' : ''}>{b.status}</div>
                           <span>{amountText}</span>
                         </div>
@@ -688,7 +684,6 @@ export default function WinGo() {
                 )}
               </div>
             </div>
-
             <div className="MyGameRecord__C-foot">
               <div className="MyGameRecord__C-foot-previous disabled">
                 <svg className="icon-arrow" viewBox="0 0 24 24">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "@/components/Loader";
 import { GameCard } from "@/components/GameCard";
 import headerBg from "@/assets/bank/header-bg.png";
@@ -51,6 +51,7 @@ const saveCache = (data: any) => {
 
 const Bank = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const { balance, refresh: refreshBalance } = useProfile();
   const cached = loadCache();
@@ -93,6 +94,12 @@ const Bank = () => {
       setLoadingWithdrawInfo(false);
     }
   };
+
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (activeTab === "withdraw") {
@@ -479,9 +486,14 @@ const Bank = () => {
                       </div>
                     </div>
                     <GameButton
-                      size="sm"
                       variant="gold"
-                      className="text-xs px-3 h-8"
+                      style={{
+                        height: "28px",
+                        fontSize: "10px",
+                        paddingLeft: "10px",
+                        paddingRight: "10px",
+                        borderRadius: "14px",
+                      }}
                       onClick={() => setShowViewAccount(true)}
                     >
                       View
@@ -577,9 +589,14 @@ const Bank = () => {
           )}
         </div>
         <GameButton
-          className="rounded-md text-sm h-12 w-36"
-          size="lg"
           variant="gold"
+          style={{
+            height: "38px",
+            fontSize: "13px",
+            paddingLeft: "48px",
+            paddingRight: "48px",
+            borderRadius: "19px",
+          }}
           onClick={activeTab === "deposit" ? handlePay : handleWithdraw}
           disabled={paying || withdrawing}
         >
@@ -617,7 +634,7 @@ const Bank = () => {
               </div>
             </GameDialogBody>
             <GameDialogFooter>
-              <GameButton variant="gold" size="lg" className="flex-1" onClick={() => setShowViewAccount(false)}>
+              <GameButton variant="gold" type="prompt" className="flex-1" onClick={() => setShowViewAccount(false)}>
                 Close
               </GameButton>
             </GameDialogFooter>

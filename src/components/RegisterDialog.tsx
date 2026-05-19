@@ -100,11 +100,11 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
           </button>
         </GameDialogBody>
         <GameDialogFooter>
-          <GameButton variant="red" size="lg" onClick={() => onOpenChange(false)} className="flex-1">
-            Cancel
+          <GameButton variant="dark" type="dialog" onClick={() => onOpenChange(false)} className="flex-1">
+            cancel
           </GameButton>
-          <GameButton variant="gold" size="lg" onClick={handleRegister} className="flex-1" disabled={loading}>
-            {loading ? "..." : "Register"}
+          <GameButton variant="red" type="dialog" onClick={handleRegister} className="flex-1" disabled={loading}>
+            confirm
           </GameButton>
         </GameDialogFooter>
       </GameDialogContent>

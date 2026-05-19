@@ -11,12 +11,42 @@ import pendingIcon from "@/assets/games/pendingicon.png";
 import successIcon from "@/assets/games/success.png";
 
 const statusStyles: Record<string, string> = {
-  PENDING: "#ff8800",
-  Pending: "#ff8800",
-  pending: "#ff8800",
-  AUDITING: "#ff8800",
-  Auditing: "#ff8800",
-  auditing: "#ff8800",
+  PENDING: "#ffd700",
+  Pending: "#ffd700",
+  pending: "#ffd700",
+  AUDITING: "#ffd700",
+  Auditing: "#ffd700",
+  auditing: "#ffd700",
+  APPROVED: "#00b341",
+  Approved: "#00b341",
+  approved: "#00b341",
+  APPROVE: "#00b341",
+  Approve: "#00b341",
+  approve: "#00b341",
+  SUCCESS: "#00b341",
+  Success: "#00b341",
+  success: "#00b341",
+  COMPLETED: "#00b341",
+  Completed: "#00b341",
+  completed: "#00b341",
+  FAILED: "#ff0000",
+  Failed: "#ff0000",
+  failed: "#ff0000",
+  REJECTED: "#ff0000",
+  Rejected: "#ff0000",
+  rejected: "#ff0000",
+  REJECT: "#ff0000",
+  Reject: "#ff0000",
+  reject: "#ff0000",
+};
+
+const amountStyles: Record<string, string> = {
+  PENDING: "#ffd700",
+  Pending: "#ffd700",
+  pending: "#ffd700",
+  AUDITING: "#ffd700",
+  Auditing: "#ffd700",
+  auditing: "#ffd700",
   APPROVED: "#00b341",
   Approved: "#00b341",
   approved: "#00b341",
@@ -156,10 +186,10 @@ const WithdrawalRecords = () => {
             return (
               <div
                 key={String(orderId) + idx}
-                className="rounded-xl overflow-hidden w-full max-w-full border"
+                className="rounded-xl overflow-hidden w-full max-w-full"
                 style={{ 
-                  background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
-                  border: '1.5px solid rgba(255, 180, 50, 0.45)',
+                  background: 'rgba(255,255,255,0.03)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}
               >
                 {/* Main row */}
@@ -191,7 +221,7 @@ const WithdrawalRecords = () => {
 
                     {/* Amount Info */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-yellow-400 text-sm font-bold">
+                      <span className="text-sm font-bold" style={{ color: amountStyles[status] || fallbackStyle }}>
                         Cash- ₹{Number(amount).toLocaleString()}
                       </span>
                       <span className="text-white/70 text-xs">Fee ₹{Number(charge).toLocaleString()}</span>
@@ -270,8 +300,14 @@ const WithdrawalRecords = () => {
         {!loading && total > limit && (
           <div className="flex items-center justify-center gap-3 py-4">
             <GameButton
-              variant="mute"
-              size="sm"
+              variant="dark"
+              style={{
+                height: "30px",
+                fontSize: "10px",
+                paddingLeft: "12px",
+                paddingRight: "12px",
+                borderRadius: "15px",
+              }}
               disabled={page <= 1}
               onClick={() => fetchRecords(page - 1)}
             >
@@ -279,8 +315,14 @@ const WithdrawalRecords = () => {
             </GameButton>
             <span className="text-white/60 text-xs">Page {page}</span>
             <GameButton
-              variant="mute"
-              size="sm"
+              variant="dark"
+              style={{
+                height: "30px",
+                fontSize: "10px",
+                paddingLeft: "12px",
+                paddingRight: "12px",
+                borderRadius: "15px",
+              }}
               disabled={items.length < limit}
               onClick={() => fetchRecords(page + 1)}
             >

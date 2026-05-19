@@ -151,14 +151,48 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
             <div className="flex items-center gap-1">
               <span className="text-white font-medium text-xs">{isSvip ? displayVipLevel : `VIP${vipLevelIndex + 1}`}</span>
-              <GameButton
-                variant="red"
-                size="sm"
-                className="w-16 h-5 text-[8px]"
+              <button
+                className="relative inline-flex items-center justify-center border-0 outline-none cursor-pointer overflow-hidden transition-transform active:scale-96"
+                style={{
+                  background: "linear-gradient(145deg, rgb(255, 122, 92) 0%, rgb(255, 71, 87) 50%, rgb(224, 48, 80) 100%)",
+                  color: "#fff",
+                  boxShadow: "rgba(255, 71, 87, 0.35) 0px 3px 10px 0px, rgba(255, 255, 255, 0.25) 0px 0.5px 0.5px 0px inset",
+                  height: "24px",
+                  fontSize: "9px",
+                  fontWeight: "700",
+                  paddingLeft: "8px",
+                  paddingRight: "8px",
+                  borderRadius: "12px",
+                }}
                 onClick={() => { onOpenChange(false); navigate("/vip"); }}
               >
-                Upgrade
-              </GameButton>
+                <div
+                  style={{
+                    content: "",
+                    position: "absolute",
+                    top: 0,
+                    left: "10%",
+                    width: "80%",
+                    height: "50%",
+                    background: "linear-gradient(rgba(255, 255, 255, 0.3), transparent)",
+                    borderRadius: "12px 12px 50% 50%",
+                    pointerEvents: "none",
+                  }}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: "-100%",
+                    width: "60%",
+                    height: "100%",
+                    background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+                    animation: "redShine 3s ease-in-out infinite",
+                    pointerEvents: "none",
+                  }}
+                />
+                <span className="relative z-10">Upgrade</span>
+              </button>
             </div>
           </div>
 
@@ -196,7 +230,6 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               { icon: languageIcon, label: "Language", value: "English" },
               { icon: accountIcon, label: "Account Settings" },
               { icon: versionIcon, label: "Version Info", value: `v${appVersion}` },
-              { icon: logout, label: "Logout" },
             ].map((item, index) => (
               <button
                 key={index}
@@ -217,11 +250,27 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 </div>
               </button>
             ))}
+            
+            {/* Logout button with new UI */}
+            <div className="mt-4 flex justify-center">
+              <GameButton
+                variant="dark"
+                onClick={() => handleMenuClick("Logout")}
+              >
+                Logout
+              </GameButton>
+            </div>
           </div>
 
           {/* App Version Display removed to use the new menu item instead */}
         </div>
       </SheetContent>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes redShine {
+          0%, 70% { left: -100%; }
+          100% { left: 200%; }
+        }
+      `}} />
     </Sheet>
   );
 };

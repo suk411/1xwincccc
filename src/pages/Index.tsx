@@ -34,6 +34,7 @@ import appStoreBadge from "@/assets/download/app-store.png";
 import LotteryCard from "@/components/LotteryCard";
 import GameConfirmDialog from "@/components/GameConfirmDialog";
 import Loader from "@/components/Loader";
+import { GameButton } from "@/components/GameButton";
 
 import phoneMockup from "@/assets/download/phone-mockup.png";
 import promoCharacter from "@/assets/download/promo-character.png";
@@ -250,6 +251,12 @@ const Index = () => {
 
   return (
     <PageLayout>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes goldShine {
+          0% { left: -100%; }
+          50%, 100% { left: 200%; }
+        }
+      `}} />
       <div className="flex-1 flex flex-col gap-0 pb-12 -mt-4">
         {/* Video Banner */}
         <div className="relative w-full rounded-lg overflow-hidden">
@@ -303,18 +310,18 @@ const Index = () => {
             <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
             <span className="text-white font-bold text-[14px]">{balance.toFixed(2)}</span>
           </div>
-          <div className="flex items-center gap-4 mr-3">
-            <button onClick={() => navigate("/bank")} className="flex flex-col items-center gap-0.5">
-              <img src={depositIcon} alt="Deposit" className="w-5 h-5 object-contain" />
-              <span className="text-[8px]">Deposit</span>
+          <div className="flex items-center gap-2 mr-2">
+            <button onClick={() => navigate("/bank")} className="flex flex-col items-center gap-0.3">
+              <img src={depositIcon} alt="Deposit" className="w-4 h-4 object-contain" />
+              <span className="text-[6px]">Deposit</span>
             </button>
-            <button onClick={() => navigate("/bank")}  className="flex flex-col items-center gap-0.5">
-              <img src={withdrawIcon} alt="Withdraw" className="w-5 h-5 object-contain" />
-              <span className="text-[8px]">Withdraw</span>
+            <button onClick={() => navigate("/bank")}  className="flex flex-col items-center gap-0.3">
+              <img src={withdrawIcon} alt="Withdraw" className="w-4 h-4 object-contain" />
+              <span className="text-[6px]">Withdraw</span>
             </button>
-            <button onClick={() => navigate("/vip")} className="flex flex-col items-center gap-0.5">
-              <img src={vipIcon} alt="VIP" className="w-5 h-5 object-contain" />
-              <span className="text-[8px]">VIP</span>
+            <button onClick={() => navigate("/vip")} className="flex flex-col items-center gap-0.3">
+              <img src={vipIcon} alt="VIP" className="w-4 h-4 object-contain" />
+              <span className="text-[6px]">VIP</span>
             </button>
           </div>
         </div>
@@ -383,17 +390,52 @@ const Index = () => {
             </button>
 
             {/* Button on lower right side */}
-            <button
-              onClick={handleWithdrawAll}
-              disabled={isWithdrawing}
-              className="absolute bottom-2 right-2 px-2 py-1.5 rounded-sm text-white font-bold text-[8px] transition-all active:scale-95 disabled:cursor-not-allowed whitespace-nowrap"
-              style={{
-                background: "linear-gradient(180deg, #b8860b 0%, #8b6508 100%)",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
-              }}
-            >
-              {isWithdrawing ? (withdrawCountdown > 0 ? `Recalling ${withdrawCountdown}` : "...") : "Withdraw"}
-            </button>
+            <div className="absolute bottom-2 right-2">
+              <button
+                onClick={handleWithdrawAll}
+                disabled={isWithdrawing}
+                className="relative inline-flex items-center justify-center border-0 outline-none cursor-pointer overflow-hidden transition-transform active:scale-96 disabled:opacity-60"
+                style={{
+                  background: "linear-gradient(145deg, rgb(255, 215, 0) 0%, rgb(240, 184, 0) 40%, rgb(232, 165, 58) 100%)",
+                  color: "rgb(139, 69, 19)",
+                  boxShadow: "rgba(228, 165, 58, 0.45) 0px 3px 12px 0px, rgba(255, 255, 255, 0.5) 0px 1px 2px 0px inset, rgba(255, 215, 0, 0.3) 0px 0px 0px 1px",
+                  height: "24px",
+                  fontSize: "8px",
+                  fontWeight: "700",
+                  paddingLeft: "8px",
+                  paddingRight: "8px",
+                  borderRadius: "12px",
+                }}
+              >
+                <div
+                  style={{
+                    content: "",
+                    position: "absolute",
+                    top: 0,
+                    left: "8%",
+                    width: "84%",
+                    height: "50%",
+                    background: "linear-gradient(rgba(255, 255, 255, 0.5), transparent)",
+                    borderRadius: "12px 12px 50% 50%",
+                    pointerEvents: "none",
+                  }}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: "-100%",
+                    width: "50%",
+                    height: "100%",
+                    background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent)",
+                    animation: "goldShine 2.5s ease-in-out infinite",
+                  }}
+                />
+                <span className="relative z-10">
+                  {isWithdrawing ? (withdrawCountdown > 0 ? `${withdrawCountdown}` : "...") : "Withdraw"}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 

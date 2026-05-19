@@ -92,11 +92,11 @@ icon={<Phone size={18} />}
           </button>
         </GameDialogBody>
         <GameDialogFooter>
-          <GameButton variant="red" size="lg" onClick={() => onOpenChange(false)} className="flex-1">
-            Cancel
+          <GameButton variant="dark" type="dialog" onClick={() => onOpenChange(false)} className="flex-1">
+            cancel
           </GameButton>
-          <GameButton variant="gold" size="lg" onClick={handleLogin} className="flex-1" disabled={loading}>
-            {loading ? "..." : "Login"}
+          <GameButton variant="red" type="dialog" onClick={handleLogin} className="flex-1" disabled={loading}>
+            confirm
           </GameButton>
         </GameDialogFooter>
       </GameDialogContent>

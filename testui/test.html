@@ -3,56 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empty State Reproduction</title>
+    <title>Complete Button Effects</title>
     <style>
         :root {
-            --rem: 37.5px; /* Base rem size for scaling */
+            --font-main: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            
+            /* Gold Theme */
+            --gold-bg: linear-gradient(145deg, rgb(255, 215, 0) 0%, rgb(240, 184, 0) 40%, rgb(232, 165, 58) 100%);
+            --gold-shadow: rgba(228, 165, 58, 0.45) 0px 3px 12px 0px, 
+                           rgba(255, 255, 255, 0.5) 0px 1px 2px 0px inset, 
+                           rgba(255, 215, 0, 0.3) 0px 0px 0px 1px;
+
+            /* Red Theme */
+            --red-bg: linear-gradient(145deg, rgb(255, 122, 92) 0%, rgb(255, 71, 87) 50%, rgb(224, 48, 80) 100%);
+            --red-shadow: rgba(255, 71, 87, 0.35) 0px 3px 10px 0px, 
+                          rgba(255, 255, 255, 0.25) 0px 0.5px 0.5px 0px inset;
         }
 
         body {
-            background-color: #0d0208;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        /* 1. Main Container Layout */
-        .empty__container {
-            width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            text-align: center;
-        }
-
-        /* 2. Empty State Image */
-        .empty__container img {
-            width: calc(4 * var(--rem)); /* 150px */
-            height: calc(3.71427 * var(--rem)); /* 139px */
-            object-fit: contain;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        /* 3. Empty State Text */
-        .empty__container p {
-            color: #acafc2;
-            font-size: calc(0.34667 * var(--rem)); /* ~13px */
+            align-items: center;
+            gap: 60px;
+            min-height: 100vh;
+            background-color: #f4f4f4;
             margin: 0;
-            display: block;
+            font-family: var(--font-main);
         }
 
+        /* Common Button Reset */
+        button {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        /* =========================================
+           1. PROMPT CARD BUTTON (GOLD)
+           ========================================= */
+        .prompt-card__btn {
+            width: 304px;
+            height: 45px;
+            border-radius: 22.5px;
+            background: var(--gold-bg);
+            box-shadow: var(--gold-shadow);
+            color: rgb(139, 69, 19);
+            font-family: Arial-Black, Arial, sans-serif;
+            font-size: 16.5px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-shadow: rgba(255, 255, 255, 0.4) 0px 0.5px 1px;
+        }
+
+        /* Glossy reflection for Gold */
+        .prompt-card__btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 8%; width: 84%; height: 50%;
+            background: linear-gradient(rgba(255, 255, 255, 0.5), transparent);
+            border-radius: 22.5px 22.5px 50% 50%;
+            pointer-events: none;
+        }
+
+        /* Shine sweep for Gold */
+        .prompt-card__btn-shine {
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: goldShine 2.5s ease-in-out infinite;
+        }
+
+        @keyframes goldShine {
+            0% { left: -100%; }
+            50%, 100% { left: 200%; }
+        }
+
+
+        /* =========================================
+           2. DIALOG BUTTONS (CANCEL / CONFIRM)
+           ========================================= */
+        .dialog-footer {
+            display: flex;
+            gap: 12px;
+            width: 280px;
+        }
+
+        .dialog-btn {
+            height: 42px;
+            border-radius: 21px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .btn-cancel {
+            width: 115px;
+            background-color: #fff;
+            color: rgb(255, 84, 84);
+            border: 0.8px solid rgba(255, 84, 84, 0.3);
+            box-shadow: rgba(255, 84, 84, 0.08) 0px 1px 4px 0px;
+        }
+
+        .btn-confirm {
+            width: 143px;
+            background: var(--red-bg);
+            color: #fff;
+            box-shadow: var(--red-shadow);
+            text-shadow: rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px;
+        }
+
+        /* Glossy reflection for Red Confirm */
+        .btn-confirm::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 10%; width: 80%; height: 50%;
+            background: linear-gradient(rgba(255, 255, 255, 0.3), transparent);
+            border-radius: 21px 21px 50% 50%;
+            pointer-events: none;
+        }
+
+        /* Shine sweep for Red Confirm */
+        .btn-confirm::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: redShine 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes redShine {
+            0%, 70% { left: -100%; }
+            100% { left: 200%; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="empty__container">
-        <!-- Exact image asset from the app -->
-        <img src="https://www.rajaluck.com/assets/png/empty-d4d79e54.png" alt="No data">
-        <p>No data</p>
+    <!-- Original Gold Button -->
+    <button class="prompt-card__btn">
+        <span class="prompt-card__btn-shine"></span> 
+        CONFIRM
+    </button>
+
+    <!-- Dialog Footer Buttons -->
+    <div class="dialog-footer">
+        <button class="dialog-btn btn-cancel">cancel</button>
+        <button class="dialog-btn btn-confirm">confirm</button>
     </div>
 
 </body>

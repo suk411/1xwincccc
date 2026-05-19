@@ -1,5 +1,5 @@
 import { GameDialog, GameDialogContent, GameDialogBody, GameDialogFooter } from "@/components/GameDialog";
-import { Button } from "@/components/ui/button";
+import { GameButton } from "@/components/GameButton";
 import { GameObject } from "@/services/gameService";
 
 interface GameConfirmDialogProps {
@@ -56,21 +56,24 @@ const GameConfirmDialog: React.FC<GameConfirmDialogProps> = ({
 
         <GameDialogFooter>
           <div className="flex gap-2 w-full px-4 pb-4">
-            <Button
+            <GameButton
+              variant="dark"
+              type="dialog"
               onClick={onCancel}
               disabled={isLoading}
               className="flex-1"
-              variant="outline"
             >
               Cancel
-            </Button>
-            <Button
+            </GameButton>
+            <GameButton
+              variant="red"
+              type="dialog"
               onClick={handleConfirm}
               disabled={isLoading}
               className="flex-1"
             >
               Confirm
-            </Button>
+            </GameButton>
           </div>
         </GameDialogFooter>
       </GameDialogContent>

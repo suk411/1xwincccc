@@ -149,7 +149,8 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
         <div className="w-full px-8 z-10 space-y-3">
           <GameButton
             variant="gold"
-            className="w-full h-12 text-lg font-bold shadow-lg"
+            type="prompt"
+            className="w-full"
             onClick={handleWatchNow}
             disabled={loading}
           >
@@ -165,7 +166,8 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
 
           <GameButton
             variant="red"
-            className="w-full h-12 text-lg font-bold shadow-lg"
+            type="prompt"
+            className="w-full"
             onClick={() => {
               onClose();
               navigate("/bank");

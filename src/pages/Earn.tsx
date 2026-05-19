@@ -483,7 +483,17 @@ const Earn = () => {
               </button>
             </div>
             <div className="flex justify-center mt-2">
-              <GameButton size="sm" variant="gold" className="w-36" onClick={handleShareInvite}>
+              <GameButton
+                variant="gold"
+                style={{
+                  height: "32px",
+                  fontSize: "11px",
+                  paddingLeft: "14px",
+                  paddingRight: "14px",
+                  borderRadius: "16px",
+                }}
+                onClick={handleShareInvite}
+              >
                 Invite Friends
               </GameButton>
             </div>
@@ -508,8 +518,13 @@ const Earn = () => {
                 </div>
                 <GameButton
                   variant="gold"
-                  size="sm"
-                  className="w-36 rounded-md"
+                  style={{
+                    height: "32px",
+                    fontSize: "11px",
+                    paddingLeft: "14px",
+                    paddingRight: "14px",
+                    borderRadius: "16px",
+                  }}
                   onClick={handleClaimBonus}
                   disabled={claiming || unclaimedBonus <= 0}
                 >
@@ -545,8 +560,13 @@ const Earn = () => {
                 </div>
                 <GameButton
                   variant="gold"
-                  size="sm"
-                  className="w-36 rounded-md"
+                  style={{
+                    height: "32px",
+                    fontSize: "11px",
+                    paddingLeft: "14px",
+                    paddingRight: "14px",
+                    borderRadius: "16px",
+                  }}
                   onClick={handleClaimBonus}
                   disabled={claiming || unclaimedBonus <= 0}
                 >
