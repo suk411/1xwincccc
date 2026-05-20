@@ -2,7 +2,6 @@ import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 import RecordTabs from "@/components/RecordTabs";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Copy, ChevronDown } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
@@ -10,8 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import pendingIcon from "@/assets/games/pendingicon.png";
 import successIcon from "@/assets/games/success.png";
-
-type OrderStatus = "Pending" | "Timeout" | "Cancelled" | "success" | string;
 
 interface DepositOrder {
   [key: string]: any;
@@ -78,7 +75,6 @@ const saveCache = (data: { items: DepositOrder[]; total: number; page: number })
 const DepositRecords = () => {
   const { toast } = useToast();
   const { copyToClipboard } = useCopyToClipboard();
-  const navigate = useNavigate();
   const cached = loadCache();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [orders, setOrders] = useState<DepositOrder[]>(cached?.items || []);
@@ -143,7 +139,7 @@ const DepositRecords = () => {
   const handlePayOrder = (order: DepositOrder) => {
     const url = getPaymentLink(order);
     if (url) {
-      navigate("/payment", { state: { paymentUrl: url } });
+      window.open(url, "_blank");
     } else {
       toast({ description: "No payment URL available", variant: "destructive" });
     }
@@ -289,13 +285,25 @@ const DepositRecords = () => {
                     )}
                     {(status.toLowerCase() === "pending") && !isOlderThan15Min(order) && (
                       <div className="flex gap-2 mt-3 pt-3 border-t border-white/10">
-                        <GameButton variant="mute" size="sm" className="flex-1 h-7 text-xs">
+                        <GameButton variant="mute" className="flex-1 h-7 text-xs" style={{
+                          height: "28px",
+                          fontSize: "10px",
+                          paddingLeft: "12px",
+                          paddingRight: "12px",
+                          borderRadius: "14px",
+                        }}>
                           Cancel
                         </GameButton>
                         <GameButton
                           variant="gold"
-                          size="sm"
                           className="flex-1 h-7 text-xs"
+                          style={{
+                            height: "28px",
+                            fontSize: "10px",
+                            paddingLeft: "12px",
+                            paddingRight: "12px",
+                            borderRadius: "14px",
+                          }}
                           onClick={() => handlePayOrder(order)}
                         >
                           Pay
@@ -314,7 +322,13 @@ const DepositRecords = () => {
           <div className="flex items-center justify-center gap-3 py-4">
             <GameButton
               variant="mute"
-              size="sm"
+              style={{
+                height: "28px",
+                fontSize: "10px",
+                paddingLeft: "12px",
+                paddingRight: "12px",
+                borderRadius: "14px",
+              }}
               disabled={page <= 1}
               onClick={() => fetchOrders(page - 1)}
             >
@@ -323,7 +337,13 @@ const DepositRecords = () => {
             <span className="text-white/60 text-xs">Page {page}</span>
             <GameButton
               variant="mute"
-              size="sm"
+              style={{
+                height: "28px",
+                fontSize: "10px",
+                paddingLeft: "12px",
+                paddingRight: "12px",
+                borderRadius: "14px",
+              }}
               disabled={orders.length < 15}
               onClick={() => fetchOrders(page + 1)}
             >

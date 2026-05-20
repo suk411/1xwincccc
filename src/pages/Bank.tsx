@@ -172,7 +172,7 @@ const Bank = () => {
     try {
       const res = await authService.deposit(depositAmount, activeChannel);
       if (res.paymentUrl) {
-        navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
+        window.open(res.paymentUrl, "_blank");
         toast({ description: "Opening payment..." });
       } else {
         toast({ description: res.msg || "Deposit initiated", variant: "destructive" });
@@ -634,7 +634,10 @@ const Bank = () => {
               </div>
             </GameDialogBody>
             <GameDialogFooter>
-              <GameButton variant="gold" buttonType="prompt" className="flex-1" onClick={() => setShowViewAccount(false)}>
+              <GameButton variant="mute" buttonType="prompt" style={{ 
+                transform: "scale(0.5, 0.6)",
+                transformOrigin: "center"
+              }} onClick={() => setShowViewAccount(false)}>
                 Close
               </GameButton>
             </GameDialogFooter>

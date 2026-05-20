@@ -26,10 +26,10 @@ const buttonVariants: Record<string, ButtonVariantConfig> = {
     border: "0.8px solid rgba(255, 159, 167, 0.3)",
   },
   mute: {
-    background: "linear-gradient(145deg, rgb(40, 40, 40) 0%, rgb(25, 25, 25) 50%, rgb(15, 15, 15) 100%)",
-    color: "#fff",
-    boxShadow: "rgba(0, 0, 0, 0.35) 0px 3px 10px 0px, rgba(255, 255, 255, 0.1) 0px 0.5px 0.5px 0px inset",
-    border: "0.8px solid rgba(255, 255, 255, 0.1)",
+    background: "linear-gradient(145deg, rgb(70, 70, 70) 0%, rgb(55, 55, 55) 50%, rgb(45, 45, 45) 100%)",
+    color: "rgba(255, 255, 255, 0.7)",
+    boxShadow: "rgba(0, 0, 0, 0.2) 0px 2px 6px 0px",
+    border: "0.8px solid rgba(255, 255, 255, 0.15)",
   },
 };
 
@@ -112,7 +112,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
           {...props}
         >
           {/* Glossy reflection overlay */}
-          {(variant === "gold" || variant === "red" || variant === "dark" || variant === "mute") && (
+          {(variant === "gold" || variant === "red" || variant === "dark") && (
             <div
               style={{
                 content: "",
@@ -146,7 +146,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
               }}
             />
           )}
-          {(variant === "red" || variant === "dark" || variant === "mute") && (
+          {(variant === "red" || variant === "dark") && (
             <span
               style={{
                 position: "absolute",

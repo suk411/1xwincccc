@@ -87,7 +87,7 @@ const Vip = () => {
     try {
       const res = await authService.deposit(upgradeDepositAmount);
       if (res.paymentUrl) {
-        navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
+        window.location.href = res.paymentUrl;
         toast({ description: "Opening payment..." });
       } else {
         toast({ description: res.msg || "Deposit initiated", variant: "destructive" });
@@ -106,7 +106,7 @@ const Vip = () => {
     try {
       const res = await authService.deposit(svipDepositAmount);
       if (res.paymentUrl) {
-        navigate("/payment", { state: { paymentUrl: res.paymentUrl } });
+        window.open(res.paymentUrl, "_blank");
         toast({ description: "Opening payment..." });
       } else {
         toast({ description: res.msg || "Deposit initiated", variant: "destructive" });
@@ -226,7 +226,7 @@ const Vip = () => {
 />        </div>
 
                 <GameButton
-                  variant="gold"
+                  variant={upgradeDepositAmount > 0 ? "gold" : "mute"}
                   style={{
                     height: "30px",
                     fontSize: "10px",
@@ -261,7 +261,7 @@ const Vip = () => {
               </p>
             </div>
             <GameButton
-              variant="gold"
+              variant={upgradeDepositAmount > 0 ? "gold" : "mute"}
               className="text-xs border border-[rgba(183,69,83,0.5)] flex-shrink-0"
               onClick={handleUpgrade}
               disabled={busy || upgradeDepositAmount <= 0}
@@ -288,7 +288,7 @@ const Vip = () => {
                 ₹{fmt((vipData?.pendingUpgradeBonus ?? 0) + (vipData?.monthlyCheckinBonus ?? 0))}
               </span>
               <GameButton
-                variant="gold"
+                variant={canClaim ? "gold" : "mute"}
                 style={{
                   height: "28px",
                   fontSize: "10px",
@@ -316,7 +316,7 @@ const Vip = () => {
             </div>
             <div className="flex justify-end mt-2">
               <GameButton
-                variant="red"
+                variant={isSvip ? "mute" : "red"}
                 style={{
                   height: "36px",
                   fontSize: "12px",
