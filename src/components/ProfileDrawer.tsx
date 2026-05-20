@@ -255,7 +255,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             <div className="mt-12 pt-4 border-t border-white/10 flex justify-center">
               <GameButton
                 variant="red"
-                style={{ width: "150%" }}
+                style={{ width: "120%" }}
                 onClick={() => handleMenuClick("Logout")}
               >
                 Logout
