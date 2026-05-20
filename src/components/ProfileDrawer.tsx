@@ -252,9 +252,10 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             ))}
             
             {/* Logout button with new UI */}
-            <div className="mt-4 flex justify-center">
+            <div className="mt-12 pt-4 border-t border-white/10 flex justify-center">
               <GameButton
-                variant="dark"
+                variant="red"
+                style={{ width: "150%" }}
                 onClick={() => handleMenuClick("Logout")}
               >
                 Logout

@@ -103,10 +103,10 @@ const AddAccountDialog = ({ open, onOpenChange, onConfirm }: AddAccountDialogPro
           </div>
         </GameDialogBody>
         <GameDialogFooter>
-          <GameButton variant="dark" type="dialog" onClick={() => onOpenChange(false)} className="flex-1">
+          <GameButton variant="dark" buttonType="dialog" onClick={() => onOpenChange(false)} className="flex-1">
             cancel
           </GameButton>
-          <GameButton variant="red" type="dialog" onClick={handleConfirm} className="flex-1">
+          <GameButton variant="red" buttonType="dialog" onClick={handleConfirm} className="flex-1">
             confirm
           </GameButton>
         </GameDialogFooter>

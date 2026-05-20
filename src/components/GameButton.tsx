@@ -1,7 +1,14 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-const buttonVariants = {
+interface ButtonVariantConfig {
+  background: string;
+  color: string;
+  boxShadow: string;
+  border?: string;
+}
+
+const buttonVariants: Record<string, ButtonVariantConfig> = {
   gold: {
     background: "linear-gradient(145deg, rgb(255, 215, 0) 0%, rgb(240, 184, 0) 40%, rgb(232, 165, 58) 100%)",
     color: "rgb(139, 69, 19)",
@@ -18,19 +25,25 @@ const buttonVariants = {
     boxShadow: "rgba(177, 44, 73, 0.35) 0px 3px 10px 0px, rgba(255, 255, 255, 0.15) 0px 0.5px 0.5px 0px inset",
     border: "0.8px solid rgba(255, 159, 167, 0.3)",
   },
+  mute: {
+    background: "linear-gradient(145deg, rgb(40, 40, 40) 0%, rgb(25, 25, 25) 50%, rgb(15, 15, 15) 100%)",
+    color: "#fff",
+    boxShadow: "rgba(0, 0, 0, 0.35) 0px 3px 10px 0px, rgba(255, 255, 255, 0.1) 0px 0.5px 0.5px 0px inset",
+    border: "0.8px solid rgba(255, 255, 255, 0.1)",
+  },
 };
 
 export interface GameButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "gold" | "red" | "dark";
-  type?: "default" | "prompt" | "dialog";
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+  variant?: "gold" | "red" | "dark" | "mute";
+  buttonType?: "default" | "prompt" | "dialog";
   children: React.ReactNode;
 }
 
 const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
-  ({ className, variant = "gold", type = "default", children, style: userStyle, ...props }, ref) => {
+  ({ className, variant = "gold", buttonType = "default", children, style: userStyle, ...props }, ref) => {
     const getStyle = () => {
-      if (type === "prompt") {
+      if (buttonType === "prompt") {
         return {
           width: "100%",
           maxWidth: "304px",
@@ -40,9 +53,9 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
           fontFamily: "Arial-Black, Arial, sans-serif",
           fontWeight: "900",
           letterSpacing: "clamp(1px, 0.4vw, 1.5px)",
-          textShadow: variant === "gold" ? "rgba(255, 255, 255, 0.4) 0px 0.5px 1px" : variant === "red" || variant === "dark" ? "rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px" : "none",
+          textShadow: variant === "gold" ? "rgba(255, 255, 255, 0.4) 0px 0.5px 1px" : variant === "red" || variant === "dark" || variant === "mute" ? "rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px" : "none",
         };
-      } else if (type === "dialog") {
+      } else if (buttonType === "dialog") {
         return {
           width: "100%",
           maxWidth: "clamp(110px, 38vw, 143px)",
@@ -50,7 +63,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
           borderRadius: "clamp(17.5px, 5.5vw, 21px)",
           fontSize: "clamp(12px, 4vw, 15px)",
           fontWeight: "700",
-          textShadow: variant === "red" || variant === "dark" ? "rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px" : "none",
+          textShadow: variant === "red" || variant === "dark" || variant === "mute" ? "rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px" : "none",
         };
       } else {
         return {
@@ -99,7 +112,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
           {...props}
         >
           {/* Glossy reflection overlay */}
-          {(variant === "gold" || variant === "red" || variant === "dark") && (
+          {(variant === "gold" || variant === "red" || variant === "dark" || variant === "mute") && (
             <div
               style={{
                 content: "",
@@ -111,7 +124,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
                 background: variant === "gold" 
                   ? "linear-gradient(rgba(255, 255, 255, 0.5), transparent)"
                   : "linear-gradient(rgba(255, 255, 255, 0.3), transparent)",
-                borderRadius: type === "prompt" 
+                borderRadius: buttonType === "prompt" 
                   ? "clamp(19px, 6vw, 22.5px) clamp(19px, 6vw, 22.5px) 50% 50%" 
                   : "clamp(17.5px, 5.5vw, 21px) clamp(17.5px, 5.5vw, 21px) 50% 50%",
                 pointerEvents: "none",
@@ -133,7 +146,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
               }}
             />
           )}
-          {(variant === "red" || variant === "dark") && (
+          {(variant === "red" || variant === "dark" || variant === "mute") && (
             <span
               style={{
                 position: "absolute",

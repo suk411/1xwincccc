@@ -634,7 +634,7 @@ const Bank = () => {
               </div>
             </GameDialogBody>
             <GameDialogFooter>
-              <GameButton variant="gold" type="prompt" className="flex-1" onClick={() => setShowViewAccount(false)}>
+              <GameButton variant="gold" buttonType="prompt" className="flex-1" onClick={() => setShowViewAccount(false)}>
                 Close
               </GameButton>
             </GameDialogFooter>
