@@ -11,6 +11,8 @@ import timerBg from '@/assets/wingo/timerbg.png'
 import clockIcon from '@/assets/wingo/clockicon.png'
 import clockIconActive from '@/assets/wingo/clockiconative.png'
 import noDataImg from '@/assets/wingo/nodata.png'
+import di1Sound from '@/assets/wingo/mp3/di1.mp3'
+import di2Sound from '@/assets/wingo/mp3/di2.mp3'
 import { refreshBalance, useProfile } from '@/hooks/useProfile'
 import { toast } from '@/hooks/use-toast'
 import { wingoService } from '@/services/wingoService'
@@ -97,6 +99,11 @@ export default function WinGo() {
   const [cdD1, setCdD1] = useState('0')
   const [cdD2, setCdD2] = useState('5')
   const [gamePage, setGamePage] = useState(1)
+  const [totalPage, setTotalPage] = useState(1)
+  const [myBetsPage, setMyBetsPage] = useState(1)
+  const [myBetsTotal, setMyBetsTotal] = useState(0)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const lastRefreshTimeRef = useRef(0)
 
   const svgRef = useRef(null)
   const pathRef = useRef(null)
@@ -107,8 +114,28 @@ export default function WinGo() {
   const syncingRef = useRef(false)
   const lastSyncEndRef = useRef(0)
   const historyDelayRef = useRef(null)
+  const di1AudioRef = useRef(new Audio(di1Sound))
+  const di2AudioRef = useRef(new Audio(di2Sound))
+  const lastPlayedSecondRef = useRef(null)
 
   const total = (selectedBalanceIdx >= 0 ? BALANCE_CHIPS[selectedBalanceIdx] : 1) * qty
+
+  const handleRefreshBalance = async () => {
+    const now = Date.now()
+    if (now - lastRefreshTimeRef.current < 10000) {
+      return
+    }
+    lastRefreshTimeRef.current = now
+    setIsRefreshing(true)
+    try {
+      await refreshBalance()
+      toast({ title: 'Refresh success' })
+    } catch (err) {
+      console.error('Refresh balance failed:', err)
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
 
   async function syncCurrent() {
     const res = await wingoService.getCurrent()
@@ -119,11 +146,14 @@ export default function WinGo() {
     setTimeRemaining(Math.max(0, Math.floor((res.current.endTime - Date.now()) / 1000)))
   }
 
-  async function loadHistory() {
-    const res = await wingoService.getHistory(1)
+  async function loadHistory(page = 1) {
+    const res = await wingoService.getHistory(page)
     const list = res?.data?.list || []
     setGameRecords(list)
     setTrendHistory(list.slice(0, 100))
+    if (res?.data?.totalPage) {
+      setTotalPage(res.data.totalPage)
+    }
   }
 
   async function loadTrends() {
@@ -131,13 +161,17 @@ export default function WinGo() {
     setTrendStats(res?.data || [])
   }
 
-  async function loadMyBets() {
+  async function loadMyBets(page = 1) {
     if (!localStorage.getItem('auth_token')) {
       setMyBets([])
+      setMyBetsTotal(0)
       return
     }
-    const res = await wingoService.getMyBets({ page: 1, limit: 25 })
+    const res = await wingoService.getMyBets({ page, limit: 25 })
     setMyBets(res?.items || [])
+    if (res?.total) {
+      setMyBetsTotal(Math.ceil(res.total / 25))
+    }
   }
 
   async function submitBet() {
@@ -157,6 +191,7 @@ export default function WinGo() {
 
     const selectType = typeof betType === 'number' ? String(betType) : String(betType)
 
+    setShowBetOverlay(false)
     setBetSubmitting(true)
     try {
       await wingoService.placeBet({
@@ -164,8 +199,7 @@ export default function WinGo() {
         betamount: total,
         selectType,
       })
-      setShowBetOverlay(false)
-      toast({ title: 'Bet placed', description: `₹${total.toFixed(2)} on ${selectType}` })
+      toast({ title: 'Bet Success' })
       const tasks = [refreshBalance()]
       if (recordTab === 'my') tasks.push(loadMyBets())
       await Promise.allSettled(tasks)
@@ -176,8 +210,8 @@ export default function WinGo() {
   }
 
   useEffect(() => {
-    Promise.allSettled([syncCurrent(), loadHistory()]).catch(() => {})
-  }, [])
+    Promise.allSettled([syncCurrent(), loadHistory(gamePage)]).catch(() => {})
+  }, [gamePage])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -213,31 +247,42 @@ export default function WinGo() {
 
   useEffect(() => {
     if (recordTab === 'my') {
-      loadMyBets().catch(() => {})
+      loadMyBets(myBetsPage).catch(() => {})
     }
     if (recordTab === 'game') {
-      loadHistory().catch(() => {})
+      loadHistory(gamePage).catch(() => {})
     }
     if (recordTab === 'trend' && trendStats.length === 0) {
       loadTrends().catch(() => {})
     }
   }, [recordTab])
+  
+  useEffect(() => {
+    if (recordTab === 'my') {
+      loadMyBets(myBetsPage).catch(() => {})
+    }
+  }, [myBetsPage])
 
   useEffect(() => {
     if (timeRemaining <= 5 && timeRemaining >= 1) {
       setCdActive(true)
       setCdD1('0')
       setCdD2(String(timeRemaining))
-    } else if (timeRemaining === 0) {
-      setCdD1('0')
-      setCdD2('0')
-      setCdActive(true)
-      const t = setTimeout(() => {
-        setCdActive(false)
-      }, 500)
-      return () => clearTimeout(t)
+      
+      if (lastPlayedSecondRef.current !== timeRemaining) {
+        lastPlayedSecondRef.current = timeRemaining
+        
+        if (timeRemaining >= 2) {
+          di1AudioRef.current.currentTime = 0
+          di1AudioRef.current.play().catch(() => {})
+        } else if (timeRemaining === 1) {
+          di2AudioRef.current.currentTime = 0
+          di2AudioRef.current.play().catch(() => {})
+        }
+      }
     } else {
       setCdActive(false)
+      lastPlayedSecondRef.current = null
     }
   }, [timeRemaining])
 
@@ -386,8 +431,8 @@ export default function WinGo() {
           <div className="Wallet__C-balance">
             <div className="Wallet__C-balance-l1">
               <img src={walletBalIcon} alt="Wallet Icon" />
-              <div>₹{Number(balance || 0).toFixed(2)}</div>
-              <button type="button" className="refresh" aria-label="Refresh balance" onClick={refreshBalance}>
+              <div>₹{isRefreshing ? '***' : Number(balance || 0).toFixed(2)}</div>
+              <button type="button" className="refresh" aria-label="Refresh balance" onClick={handleRefreshBalance}>
                 <img src={refreshIcon} alt="" />
               </button>
             </div>
@@ -525,17 +570,25 @@ export default function WinGo() {
           )}
 
           <div className="MyGameRecord__C-foot">
-            <div className={`MyGameRecord__C-foot-previous${gamePage <= 1 ? ' disabled' : ''}`}>
-              <svg className="icon-arrow" viewBox="0 0 24 24">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            <button 
+              className={`back-btn${gamePage <= 1 ? ' disabled' : ''}`}
+              disabled={gamePage <= 1}
+              onClick={() => { if (gamePage > 1) setGamePage(p => p - 1) }}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
-            <div className="MyGameRecord__C-foot-page">1/1</div>
-            <div className="MyGameRecord__C-foot-next disabled">
-              <svg className="icon-arrow" viewBox="0 0 24 24">
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </button>
+            <div className="MyGameRecord__C-foot-page">{gamePage}/{totalPage}</div>
+            <button 
+              className={`back-btn${gamePage >= totalPage ? ' disabled' : ''}`}
+              disabled={gamePage >= totalPage}
+              onClick={() => { if (gamePage < totalPage) setGamePage(p => p + 1) }}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
+                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -623,17 +676,25 @@ export default function WinGo() {
           )}
 
           <div className="MyGameRecord__C-foot">
-            <div className="MyGameRecord__C-foot-previous disabled">
-              <svg className="icon-arrow" viewBox="0 0 24 24">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            <button 
+              className={`back-btn${gamePage <= 1 ? ' disabled' : ''}`}
+              disabled={gamePage <= 1}
+              onClick={() => { if (gamePage > 1) setGamePage(p => p - 1) }}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
-            <div className="MyGameRecord__C-foot-page">1/1</div>
-            <div className="MyGameRecord__C-foot-next disabled">
-              <svg className="icon-arrow" viewBox="0 0 24 24">
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </button>
+            <div className="MyGameRecord__C-foot-page">{gamePage}/{totalPage}</div>
+            <button 
+              className={`back-btn${gamePage >= totalPage ? ' disabled' : ''}`}
+              disabled={gamePage >= totalPage}
+              onClick={() => { if (gamePage < totalPage) setGamePage(p => p + 1) }}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
+                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -654,6 +715,7 @@ export default function WinGo() {
                     const s = String(b.status || '').toLowerCase()
                     const isWon = s === 'won'
                     const isPending = s === 'pending'
+                    const isLost = s === 'lost'
                     const profit = typeof b?.result?.profitAmount === 'number' ? b.result.profitAmount : 0
                     const amountText = isWon ? `+₹${profit.toFixed(2)}` : isPending ? `₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}` : `-₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}`
                     const selectType = String(b.selectType || '').toLowerCase()
@@ -667,6 +729,10 @@ export default function WinGo() {
                     else if (selectType === 'small') leftClass += ' MyGameRecordList__C-item-l-small'
                     else if (['0','1','2','3','4','5','6','7','8','9'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
 
+                    let displayStatus = b.status
+                    if (isWon) displayStatus = 'success'
+                    if (isLost) displayStatus = 'failed'
+
                     return (
                       <div className="MyGameRecordList__C-item" key={b.orderNumber}>
                         <div className={leftClass}>{selectType}</div>
@@ -674,10 +740,12 @@ export default function WinGo() {
                           <div className="MyGameRecordList__C-item-m-top">{b.issueNumber}</div>
                           <div className="MyGameRecordList__C-item-m-bottom">{b.timestamp}</div>
                         </div>
-                        <div className={`MyGameRecordList__C-item-r ${isWon ? 'success' : ''}`}>
-                          <div className={isWon ? 'success' : ''}>{b.status}</div>
-                          <span>{amountText}</span>
-                        </div>
+                        {!isPending && (
+                          <div className={`MyGameRecordList__C-item-r ${isWon ? 'success' : ''}`}>
+                            <div className={isWon ? 'success' : ''}>{displayStatus}</div>
+                            <span>{amountText}</span>
+                          </div>
+                        )}
                       </div>
                     )
                   })
@@ -685,17 +753,25 @@ export default function WinGo() {
               </div>
             </div>
             <div className="MyGameRecord__C-foot">
-              <div className="MyGameRecord__C-foot-previous disabled">
-                <svg className="icon-arrow" viewBox="0 0 24 24">
-                  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+              <button 
+                className={`back-btn${myBetsPage <= 1 ? ' disabled' : ''}`}
+                disabled={myBetsPage <= 1}
+                onClick={() => { if (myBetsPage > 1) setMyBetsPage(p => p - 1) }}
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </div>
-              <div className="MyGameRecord__C-foot-page">1/1</div>
-              <div className="MyGameRecord__C-foot-next disabled">
-                <svg className="icon-arrow" viewBox="0 0 24 24">
-                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+              </button>
+              <div className="MyGameRecord__C-foot-page">{myBetsPage}/{myBetsTotal || 1}</div>
+              <button 
+                className={`back-btn${myBetsPage >= myBetsTotal ? ' disabled' : ''}`}
+                disabled={myBetsPage >= myBetsTotal}
+                onClick={() => { if (myBetsPage < myBetsTotal) setMyBetsPage(p => p + 1) }}
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
+                  <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </div>
+              </button>
             </div>
           </div>
         </div>

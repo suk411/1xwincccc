@@ -14,7 +14,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] flex flex-col gap-1 items-center justify-center",
+      "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2001] flex flex-col gap-1 items-center justify-center",
       className,
     )}
     {...props}
@@ -23,18 +23,16 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex flex-col items-stretch justify-center " +
-  "rounded-md px-5 py-4 shadow-lg transition-all text-center " +
-  "w-[320px] max-w-[90vw] break-words whitespace-normal " +
-  // enter animation
-  "data-[state=open]:animate-in data-[state=open]:fade-in-20 data-[state=open]:slide-in-from-top-6 " +
-  // exit animation (fade only, no slide)
-  "data-[state=closed]:animate-out data-[state=closed]:fade-out-60",
+  "pointer-events-auto relative flex flex-col items-center justify-center " +
+  "rounded-lg px-3 py-2 transition-opacity text-center " +
+  "box-content w-fit max-w-[70%] min-w-[96px] " +
+  "data-[state=open]:opacity-100 " +
+  "data-[state=closed]:opacity-0",
   {
     variants: {
       variant: {
-        default: "bg-black/60 text-white border-none",
-        destructive: "bg-black/60 text-white border-none",
+        default: "bg-black/70 text-white border-none",
+        destructive: "bg-black/70 text-white border-none",
       },
     },
     defaultVariants: {
@@ -46,7 +44,7 @@ const toastVariants = cva(
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> & VariantProps<typeof toastVariants>
->(({ className, variant, duration = 3000, ...props }, ref) => {
+>(({ className, variant, duration = 2000, ...props }, ref) => {
   return (
     <ToastPrimitives.Root
       ref={ref}
@@ -76,31 +74,13 @@ ToastAction.displayName = ToastPrimitives.Action.displayName;
 const ToastClose = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Close>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Close>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Close
-    ref={ref}
-    className={cn(
-      "absolute right-1 top-1/2 -translate-y-1/2 rounded-none p-1 text-white/70 opacity-0 transition-opacity group-hover:opacity-100 hover:text-white focus:opacity-100 focus:outline-none",
-      className,
-    )}
-    toast-close=""
-    {...props}
-  >
-
-  </ToastPrimitives.Close>
-));
+>(({ className, ...props }, ref) => null);
 ToastClose.displayName = ToastPrimitives.Close.displayName;
 
 const ToastTitle = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Title>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Title
-    ref={ref}
-    className={cn("w-full max-w-full whitespace-normal break-words text-sm font-medium text-white text-center", className)}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => null);
 ToastTitle.displayName = ToastPrimitives.Title.displayName;
 
 const ToastDescription = React.forwardRef<
@@ -109,7 +89,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn("w-full max-w-full whitespace-normal break-words text-sm text-white/90 text-center", className)}
+    className={cn("block text-white text-[14px] leading-[20px] whitespace-pre-wrap break-normal text-center", className)}
     {...props}
   />
 ));

@@ -3,7 +3,7 @@ import { useToast } from "./use-toast";
 export function useCopyToClipboard() {
   const { toast } = useToast();
 
-  const copyToClipboard = async (text: string, successMessage = "Copied to clipboard!") => {
+  const copyToClipboard = async (text: string, successMessage = "Copied Success") => {
     try {
       await navigator.clipboard.writeText(text);
       toast({

@@ -1,163 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Button Effects</title>
     <style>
         :root {
-            --font-main: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
-            
-            /* Gold Theme */
-            --gold-bg: linear-gradient(145deg, rgb(255, 215, 0) 0%, rgb(240, 184, 0) 40%, rgb(232, 165, 58) 100%);
-            --gold-shadow: rgba(228, 165, 58, 0.45) 0px 3px 12px 0px, 
-                           rgba(255, 255, 255, 0.5) 0px 1px 2px 0px inset, 
-                           rgba(255, 215, 0, 0.3) 0px 0px 0px 1px;
-
-            /* Red Theme */
-            --red-bg: linear-gradient(145deg, rgb(255, 122, 92) 0%, rgb(255, 71, 87) 50%, rgb(224, 48, 80) 100%);
-            --red-shadow: rgba(255, 71, 87, 0.35) 0px 3px 10px 0px, 
-                          rgba(255, 255, 255, 0.25) 0px 0.5px 0.5px 0px inset;
+            --text-white: #ffffff;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --red-gradient: linear-gradient(to right, rgba(162, 23, 46, 0.9) 30%, rgba(162, 23, 46, 0.5) 50%, rgba(162, 23, 46, 0));
         }
 
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 60px;
-            min-height: 100vh;
-            background-color: #f4f4f4;
-            margin: 0;
+            background-color: #0b0b0b; /* Dark theme background */
+            padding: 40px;
             font-family: var(--font-main);
         }
 
-        /* Common Button Reset */
-        button {
-            border: none;
-            outline: none;
-            cursor: pointer;
+        /* Main Container */
+        ._userInfo_11e33_45 {
+            width: 346px;
+            height: 46px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease;
+            color: var(--text-white);
         }
 
-        button:active {
-            transform: scale(0.96);
+        /* 1. Avatar Section */
+        ._userAvatarWrap_11e33_70 {
+            width: 40px;
+            height: 40px;
+            position: relative;
         }
 
-        /* =========================================
-           1. PROMPT CARD BUTTON (GOLD)
-           ========================================= */
-        .prompt-card__btn {
-            width: 304px;
-            height: 45px;
-            border-radius: 22.5px;
-            background: var(--gold-bg);
-            box-shadow: var(--gold-shadow);
-            color: rgb(139, 69, 19);
-            font-family: Arial-Black, Arial, sans-serif;
-            font-size: 16.5px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-shadow: rgba(255, 255, 255, 0.4) 0px 0.5px 1px;
+        ._userAvatar_11e33_70 img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
         }
 
-        /* Glossy reflection for Gold */
-        .prompt-card__btn::before {
-            content: "";
+        ._userSwitchIcon_11e33_88 {
             position: absolute;
-            top: 0; left: 8%; width: 84%; height: 50%;
-            background: linear-gradient(rgba(255, 255, 255, 0.5), transparent);
-            border-radius: 22.5px 22.5px 50% 50%;
-            pointer-events: none;
+            bottom: -2px;
+            right: -2px;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Shine sweep for Gold */
-        .prompt-card__btn-shine {
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-            animation: goldShine 2.5s ease-in-out infinite;
+        ._userSwitchIcon_11e33_88 img {
+            width: 12px;
+            height: 12px;
         }
 
-        @keyframes goldShine {
-            0% { left: -100%; }
-            50%, 100% { left: 200%; }
+        /* 2. Currency Section */
+        ._currencyWrap_11e33_100 {
+            height: 24px;
+            display: flex;
+            align-items: center;
+            margin: 0 16px 0 10px;
+            background-image: var(--red-gradient);
+            padding-right: 20px; /* Fade out effect */
+            flex-grow: 1;
         }
 
+        ._currencyWrapBtn_11e33_110 {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
 
-        /* =========================================
-           2. DIALOG BUTTONS (CANCEL / CONFIRM)
-           ========================================= */
-        .dialog-footer {
+        ._currency_11e33_100 {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            gap: 6px;
+        }
+
+        ._currency_11e33_100 img {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 3. Shortcut Actions Section */
+        ._shortcutWrap_11e33_128 {
             display: flex;
             gap: 12px;
-            width: 280px;
         }
 
-        .dialog-btn {
-            height: 42px;
-            border-radius: 21px;
-            font-size: 15px;
-            font-weight: 700;
+        ._shortcutItem_11e33_131 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.1s ease;
         }
 
-        .btn-cancel {
-            width: 115px;
-            background-color: #fff;
-            color: rgb(255, 84, 84);
-            border: 0.8px solid rgba(255, 84, 84, 0.3);
-            box-shadow: rgba(255, 84, 84, 0.08) 0px 1px 4px 0px;
+        ._shortcutItem_11e33_131:active {
+            transform: scale(0.92);
         }
 
-        .btn-confirm {
-            width: 143px;
-            background: var(--red-bg);
-            color: #fff;
-            box-shadow: var(--red-shadow);
-            text-shadow: rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px;
+        ._icon_11e33_141 img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
         }
 
-        /* Glossy reflection for Red Confirm */
-        .btn-confirm::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 10%; width: 80%; height: 50%;
-            background: linear-gradient(rgba(255, 255, 255, 0.3), transparent);
-            border-radius: 21px 21px 50% 50%;
-            pointer-events: none;
-        }
-
-        /* Shine sweep for Red Confirm */
-        .btn-confirm::after {
-            content: "";
-            position: absolute;
-            top: 0; left: -100%; width: 60%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: redShine 3s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes redShine {
-            0%, 70% { left: -100%; }
-            100% { left: 200%; }
+        ._shortcutItem_11e33_131 span {
+            font-size: 10px;
+            text-transform: uppercase;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
 
-    <!-- Original Gold Button -->
-    <button class="prompt-card__btn">
-        <span class="prompt-card__btn-shine"></span> 
-        CONFIRM
-    </button>
-
-    <!-- Dialog Footer Buttons -->
-    <div class="dialog-footer">
-        <button class="dialog-btn btn-cancel">cancel</button>
-        <button class="dialog-btn btn-confirm">confirm</button>
+<div class="_userInfo_11e33_45">
+    <!-- Avatar -->
+    <div class="_userAvatarWrap_11e33_70">
+        <div class="_userAvatar_11e33_70">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="avatar">
+        </div>
+        <div class="_userSwitchIcon_11e33_88">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAMAAAANmfvwAAAAw1BMVEVMaXEkGholHx8iZ2UkLS0lGxslGxslFhckT08lIyMlBAQmCAklFBQlHR0lHh4kFRUkFBQkLi4gnpodnZkfqKQjoZ0fpKAkJibv+vojRkRc5OBT29Yws68Ol5IglJDm9vUosKwlCwsgjotpzckhX10np6MXmpYgamg7wbwiPTtfurdD0c193tsTmZS55OMrqqdL1dAkLy5Lsq4kHBxmvbo0ubX9//8hc3Ehf3w9ycUjTUyj2Ndnvrtt2NWT1NLM8fB9xsTcouzqAAAAEnRSTlMArnInQ3yQ3xGe3Pj7KUvNzUfahnVWAAAACXBIWXMAABYlAAAWJQFJUiTwAAACIUlEQVR4nG2U2ZKiMBRAwUYQ97rZjNC0IGHpGRBwGJdWe/7/q6ZIQLHL8wincpO7adqD0Ww+ME3THMxno97nnmAM9YUlWehD44Vk2NaUlWnKeZqWbGrZxs8jhmOf8fAQACHEO4Yp88eDp4Pe7Mmex4GoT4XjOMXJhTjdT+y3nqH7LAxwUqw7ijoIma/fnZHtszjanJy7sV47JxIz3+5iDScsRrvEWTsP1tKZDNu3jPchwm5R/OpROEWNwv1Yvmtk+zygInGuv3tciyLZBFyFMix2oCCS6/eqx/f1lGzgwCyjyciUexjtkm3+0SPfJsmOenw6HGkznYVAkaiT7RNJUgsKIdNn2nxRHilBxHU3La6krl0C9Fgu59rASgMMCET7qzNdVwDgILUGmmlxDwMgVN3yhq+L2EkEIMAet0zNtM5Sea8+/kpulAohBAUEgL2zZXcKRLt/Xw23z6bYhDSGVMwuEADKsiiKoixCCKEINUYbSF23Ud4VUowipcjrqkcDIFJdLn9aLpeKIACiHq1SByir8tWqy+1qlVcZgjZ1qgCt8iBvFKwKoMpIm0CfPSqCgFJVRtUMmADK2vtKMgQEd80gWwpkgvsAYOhaSjUmwQSeILjXmE2oMgZM+wbFEJeP9m6HhOImP/IEiunzkLSjdvCAYgkl3oE/j1o3sPEx8DzPC44xZ/64ycirsefnM3899u3yWKrlsXy9PO4ryP65gv4DIORiVOIb7ZUAAAAASUVORK5CYII=" alt="switch">
+        </div>
     </div>
+
+    <!-- Currency -->
+    <div class="_currencyWrap_11e33_100">
+        <div class="_currencyWrapBtn_11e33_110">
+            <div class="_currency_11e33_100">
+                <img src="https://flagcdn.com/w40/in.png" alt="INR">
+                <span>50.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shortcuts -->
+    <div class="_shortcutWrap_11e33_128">
+        <div class="_shortcutItem_11e33_131">
+            <div class="_icon_11e33_141">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAACWFBMVEVMaXHrrT3+4qLqrzrzv0r/25/944jrqD/xyEX2uEDgnTfajijvrEH/3EL921PajyjZjyr1u0L/2kryuUL0vEn+3VH/3bDuqUHlmznsq0T+2Uf+2UL921L80k7mqTf7z0LfnDrfmi/gmTf910z0vkLopkLppTn/5rL900L503brpUD81kj70Ur/3ob/3nD82mHbkS7bkCr93KD/3lz/47L/3qn/3kz+21X5yEP1uULjpDnakirmsFbclC/ssz/+20n+55r62n/+36X/9+DbkS3npEX+4bb+3JbsqD7/3qL/3V3wrULajinww3L6yELppTv/4KD4wUL0v0T2wkX9263/3WD/34nysELZjyj0x0n1y0r/3ov73Zr41nf/3nH/3qj947PywlLvrEHzs0L/3Zz/3pX7xkT/4Vbho0jprzvnsFH99db/9c772Gj3z2XemDDfnDLclS3bkSv/3kz/3l3/3kLyyWT7z0L/3q3ajijwxV/nr0nkp0HywkbsvVbzzmjioTP2zEv40E3lq0bhoTvuwVvsuVP102z61E/0yEnwvkT42XT53XfkpjX/3oL/3qXvqUH74Xv85X/orzv82FH/3rLxrkP77tjjpD731nD6yEL4wkL/3m72u0L/3nP0tEP+8cD+7Jf+2kL91UL/+un/3onrtD3mqjj/3pXos0z+6YX/9snqojzlmzfqtlDtuUD955D/353glTH43ordki3/76f/3Zz//fr/+dj447PptE7xyYfqum7y0pXz2K3psD/wyXPqs13tu0L/3pX/87T53KvqulvmqzxgdirxAAAAb3RSTlMADQ0SCgMIBAEH/vdc9/7xX/Zh6Rb2+PUgSLl60yf+9LbxckLOiTUU+CHtch328Kef4VH1IPHnkory9U31iuA3/vGg/CpmbvKr0PpQvGL10TPzq2WGUnjzyvjpyvrV3OG9oaFvrOhQeaDD35bs+fEJ3RO7AAAACXBIWXMAABYlAAAWJQFJUiTwAAAEm0lEQVR4nO3W+VcaVxQHcGaYmfcGMMiigIpG2Srgvu9b3LVal9g2+97tHBW3oIY0FU2rVrPUok0XSWlzlJgSK63GJZpu/1bPLMCw2f7Q059yf/+c+7jvvu/A472u/6FwnCAwuggA4b8zkEDRdFW97r2TVGVX1KuUCIb/I8bR9PZLHxhLSwWCgf7+QYtFKBSKc7LTlCh+PGvPKi+fmJianFy2M3TLYrVahUJxWyw/OiVyz43bbM9erAXRQQtlrcK3y9AozlBbMzo+PW2zzTxbW5uiqZ1Lxdn8iEMxXKy5e3t0dHycpRNhVNgWSZIfVs+t3OXQF+yB7YIBZk5WqzCbDG+Y/5Fnfo6mtyk6TdG1iakpmrIjtoqV4Q0b3NX378/Pz62ssNQWoMt2gYA+sDANhMGeOu/6Aw6l5zQzw6ED/YMCXdhZQXud27n+ICqdpKi9PDasIxA1utzO9QjURlF6TpNHEaHE63J7qaZ+Gnw7E0d7e8KIcMzj2l71BroGRmyzzfy5d7i/Z4kCR4ZXXdvu371OD2UDdPTwcHf/YHd5KyJUlYyNDA0vrLpo63U6PR7Pz0ydXdzZ2Z3a2NyyisvCII8vo+C3PzxfctTVuba33e5Vptyrf+wePd3Y2NzcsuRE2DmyO4WGv9xcWlp8Xl3tdFJNF+ZGZ768d+8pA8XhJ+VBPlkcw8Kbi78tfD08NPL4+7GvHn3ZnR+KKzAyLAqAio9JC1uOgzmxJC88QoCoGAPmosyMKFCQmq0EkEQQOR/BuAcGIokJg0T66eaC+PgQqFAYO9KUJI9QF2tlMlllk4gfoEAkSSmSA0ig+Q21zddqMvPiYmLeSHnzrRJZx+X6UwjJg+aid9+5NfvTjw+TSzvKMO4CxCT1ojiEOBWQml6p1CSVXteYEeZoUJ30yZ3PaPjk849TKxAfbJWMjQzlnTudjxJUnOEAABIAOlABCSj3KQcOpFb4HpicWYCMxuae3HwUxQiSKgxDEGWrTgX4SV8EwX7/nWJXfAsQH19w7UxWUSJVxV1aWZ/CKAemOAa+esXCQXaLcGXIArQww3lEXUcTJi88wXbc33+YTEM2RshWM2aKsgCKeqiJ80GH4yUDLW30fICoiw/UWREXQKEHN1g4O+twsB0tYvqsQCS5JOdFXgCjnMg6wXa85XC8/CuZgafokYskKQlqAhJoZ8PVC40ZgQXoq2xCfND1K10uexAcGyksSidwSBCoobNXakMTDR1X9fLEQxiLNzZ2XG5Dg4OuB3pBGjJvJprQAkcQgDoewQ4pO6fvMEdzhPub+QhWiYBzhZc7MnNN6AI/SVHEL66VaeCVRzoG04bs6+4yp8A8QWNNeeTEqjSykr6+hRNGJoUdh3+1QHSQjpz/Nfx2P8ejUpcym7ObOjmULIqKY8LAw9ZoSOxhJBdTS0LpAHkS89HTgCjHppDXkda0OcHoLm1FyIlQBoJzQl3OO8xNjS2cMLQ2VB7JpAAMu3lK3qEgDwe3+RPgJN6EOGfD04QKCpXV2k0miq1HEH8mUjKu7u0lZXv6/TYMX+YIITM+w/6KRiCIEh4uL6u/7L+Bt+qqkVPKmDwAAAAAElFTkSuQmCC" alt="dep">
+            </div>
+            <span>Deposit</span>
+        </div>
+        <div class="_shortcutItem_11e33_131">
+            <div class="_icon_11e33_141">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAABQVBMVEVMaXHXlD7Ffiv/01Tdm0jenEntqznpx0X19NC5fRH/+JPtx5Lwx4PPizLMiSr/3G/93XD/22v/4nv/4nn/4HbcnEnlp0DWkTvEhCC0egj/1lv/0lL/5Yj/43//5YHAggv+z1T/43v/4G/cmkbvvTv/2WD50GXhqzSweRKscQLvu0zSjjf/0l7/1mB1RQL/1F0YBwnamUb/5YL/5YX/437/2WncoikiFAz/12X/1F/enkr96pWLWRL/wzL/33RpRCJzQwD/3G3/4nv/4Xj/zUv+xjnrzFz/0VT/3XD/yUD/01j/6o7+z1AbCgr/y0b40FzNiTHPjDPSkDr/6Y6OXBN/TgjCkzXXlT/1yVWicCDtwFLktkn31mTerkD802GwfSjzvzO4hyPptDDRoj6BVSUqGA5UNRzdozNqSRdrUCiVdDbEGIbgAAAAUXRSTlMA3SsVePQTCRbkEQIF2+rvMEXz427qYbecW4jX8IvKv/Cuwfyf7LregYfr6f////////////////////////////////////////////////5j0h6iAAAACXBIWXMAABYlAAAWJQFJUiTwAAAECUlEQVR4nO2Va3OiSBSGCcnqjBpNzH03l8k4ey2wQSXARFmRGJF4ARQFGVFzm5n9/z9g63QDmq3Z1Pphv81TFU1BP+e83Q0tRX3nfyKdXI906CXprfWgk8TbOvhhPQ62wMwcHhQ+rgVfODjMUFTiqMCvRYEvFI6SFJXY4Hnefvzzv/Jo8zy/kSDi+LmL4V6ni3keR+KYt0VyQ3ydLh4ljvkxiJsb47EtQjXxq3/7Kn/BME60xy9EThz1A5n9N2QZdZr3eFws2mMLLjzdskyE/BKGYVo3zVpt/qXLgWiHom2JHNf92ocBhP5LmE6vWQNGIFp2LJoix4mjAEWe61Wrw5BqteqFWq12L66I25ZtPnGcuEzqejA8wnGm7Uicf+G4J9O2toloWY9i9/k2Tur6vj+djjzQZv502ms3I3Mhio+WtRTNmfcQxDNkJiPMsFp1irPFYnEVebW5NzNDMXlsmqZlWq6M1xKWFKZIcOr1erFYvGo2m80atj+blmmax/B60NumaZp2IIUe059Vydo4ReIN582Yexi8TcO7nKaPstnsx0CSwkn2J4A/ecDe4v5+3mwDxMxms0fYo6h0IkHTvwixyLiTyWQ6mkHOujPHEhbx5yGdSERnB0VRm3uCEHpyH6boQLt63fncbvdCiP6BnBshmd2cKkWPmzvEi1KvF4ueD8YNodeDGj9trorJs1zUkGH8Kp7c0Bv5oXLTAW5wjXe7K0Gp1LkaL43r437F0VIhtHDvzo8rWdM7OT1M2nfdzpSYC7BaK/RwndWsyf28Qjq6bqfTisyZ2zIMhBBjEEih1aypy7wmwP73oYNhGHgL60XPZWQZIYQMXMDAN/srWd/slSqKIEmoQ1ogNCK74bksi02EEPwHBdhl1szuablc0gSjZTAMjJHZIDSHE3xq4Isyi1hkIPbnnfjH4+y0XG4IhoHkIMAnjCR9mhGzOoFnGCaKGBmxLGIlKc6aOi+XFAmPFySMIAiR6fgSNJURwyBZklhJUN+nos04beiqKgiqsMonD4t1ZxqwbDhNqKiquTBrcj+v67qiKArWBSFs2x8Ss/gQhAskCaqqqnpun2RNXYKkaJqmYVcFXZIk6XZYxDgjmLkM/XQVOpCs6c09cDSt0Wg0NEXXdSwLkDYinLcKwTRN28NZM7t5UBqNRqUCJlZ10plALuDpkPJ5nDV1lq/EQFNN0XD2GBJI0xoaFIdRl5A1dV4pLc1lAaDyLUqVyt4OfjMq5RIm/HpJ+VuXcvsUlTyclK/LazG4fveBopInvyqlwd3d3d2AfJLvwWD5F98k9wblyh/HFJWhL6ZB6XoNBrqfPYEH5+Tiak3e/k7DPtK/Xbxdj+MT/MxlUm/WJJVZPem+Q/2DvwH+8eKqql1iugAAAABJRU5ErkJggg==" alt="with">
+            </div>
+            <span>Withdraw</span>
+        </div>
+        <div class="_shortcutItem_11e33_131">
+            <div class="_icon_11e33_141">
+                <img src="data:image/png;base64,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" alt="vip">
+            </div>
+            <span>VIP</span>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

@@ -398,7 +398,7 @@ const Earn = () => {
 
   const handleCopyUrl = async () => {
     if (!inviteUrl) return;
-    copyToClipboard(inviteUrl, "Invite link copied!");
+    copyToClipboard(inviteUrl, "Copied Success");
   };
 
   const handleShareInvite = async () => {

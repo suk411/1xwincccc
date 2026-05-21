@@ -147,6 +147,12 @@ const DepositRecords = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes statusShine {
+          0% { left: -100%; }
+          50%, 100% { left: 200%; }
+        }
+      `}} />
       <div className="sticky top-0 z-50">
         <PageHeader title="Deposit Records" backPath="/" />
       </div>
@@ -184,69 +190,80 @@ const DepositRecords = () => {
                 key={orderId + idx}
                 className="rounded-xl overflow-hidden w-full max-w-full"
                 style={{ 
-                  background: 'rgba(255,255,255,0.03)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                  background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+                  border: "1px solid rgba(255,180,50,0.25)",
                 }}
               >
-                {/* Main row */}
+                {/* Top Bar */}
+                <div className="flex items-center justify-between px-4 py-2" style={{
+                  background: statusColor + '20'
+                }}>
+                  {/* Order ID + Copy Button */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-white text-xs truncate">{orderId}</span>
+                    <button
+                      className="text-white flex-shrink-0 hover:text-yellow-400 transition"
+                      onClick={() => {
+                        copyToClipboard(orderId, "Copied Success");
+                      }}
+                    >
+                      <Copy size={12} />
+                    </button>
+                  </div>
+                  
+                  {/* Status with Shine Effect Only on Text */}
+                  <span className="relative inline-block overflow-hidden">
+                    <span style={{
+                      position: "absolute",
+                      top: 0,
+                      left: "-100%",
+                      width: "60%",
+                      height: "100%",
+                      background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+                      animation: "statusShine 2.5s ease-in-out infinite",
+                      pointerEvents: "none",
+                    }} />
+                    <span className="text-xs font-bold whitespace-nowrap relative z-10" style={{ color: statusColor }}>
+                      {status.toLowerCase() === "pending" ? "IN PROGRESS" : status}
+                    </span>
+                  </span>
+                </div>
+                
+                {/* Card Body */}
                 <div className="flex gap-3 px-4 py-3">
-                  {/* Icon */}
+                  {/* Icon on Left */}
                   <div className="text-2xl flex-shrink-0 flex items-center justify-center">
                     {getStatusIcon()}
                   </div>
 
-                  {/* Left Content - Vertical */}
-                  <div className="flex-1 min-w-0 flex flex-col gap-1">
-                    {/* Order ID & Copy */}
-                    <div className="flex items-center gap-1">
-                      <span className="text-white text-xs flex-1 truncate">Order id.{orderId}</span>
-                      <button
-                        className="text-white flex-shrink-0 hover:text-yellow-400 transition"
-                        onClick={() => {
-                          copyToClipboard(orderId, "Order ID copied");
-                        }}
-                      >
-                        <Copy size={12} />
-                      </button>
-                    </div>
-
+                  {/* Details on Right */}
+                  <div className="flex-1 min-w-0 flex flex-col gap-2">
                     {/* Date & Time */}
                     <div className="text-white/70 text-xs">
                       {getDate(order)}
                     </div>
 
-                    {/* Amount Info */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-bold" style={{ color: amountColor }}>
-                        Cash+ ₹{Number(amount).toLocaleString()}
-                      </span>
-                      <span className="text-white/70 text-xs">
-                        Bonus+ ₹{Number(bonus).toLocaleString()}
-                      </span>
+                    {/* Amount Info + Details Button */}
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-bold" style={{ color: amountColor }}>
+                          Cash+ ₹{Number(amount).toLocaleString()}
+                        </span>
+                        <span className="text-white/70 text-xs">
+                          Bonus+ ₹{Number(bonus).toLocaleString()}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setExpandedId(expanded ? null : orderId)}
+                        className="text-white hover:text-white transition flex items-center gap-1 text-xs flex-shrink-0"
+                      >
+                        <span>{expanded ? "Hide" : "Details"}</span>
+                        <ChevronDown 
+                          size={12} 
+                          className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
+                        />
+                      </button>
                     </div>
-                  </div>
-
-                  {/* Right Status Column - Vertical */}
-                  <div className="flex flex-col items-end justify-between flex-shrink-0 min-w-[80px]">
-                    {/* Status Text */}
-                    <span
-                      className="text-xs font-bold text-center whitespace-nowrap mt-1"
-                      style={{ color: statusColor }}
-                    >
-                      {status}
-                    </span>
-
-                    {/* Details Button with Arrow */}
-                    <button
-                      onClick={() => setExpandedId(expanded ? null : orderId)}
-                      className="text-white hover:text-white transition flex items-center gap-1 text-xs mt-1"
-                    >
-                      <span>{expanded ? "Hide" : "Details"}</span>
-                      <ChevronDown 
-                        size={12} 
-                        className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
-                      />
-                    </button>
                   </div>
                 </div>
 

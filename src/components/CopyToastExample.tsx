@@ -7,7 +7,7 @@ export function CopyToastExample() {
   const [copiedText] = useState("Hello! This text can be copied to clipboard.");
 
   const handleCopy = () => {
-    copyToClipboard(copiedText, "Text copied successfully!");
+    copyToClipboard(copiedText, "Copied Success");
   };
 
   return (

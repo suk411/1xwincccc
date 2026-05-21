@@ -310,18 +310,18 @@ const Index = () => {
             <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
             <span className="text-white font-bold text-[14px]">{balance.toFixed(2)}</span>
           </div>
-          <div className="flex items-center gap-2 mr-2">
+          <div className="flex items-center gap-4 mr-2">
             <button onClick={() => navigate("/bank")} className="flex flex-col items-center gap-0.3">
-              <img src={depositIcon} alt="Deposit" className="w-4 h-4 object-contain" />
-              <span className="text-[6px]">Deposit</span>
+              <img src={depositIcon} alt="Deposit" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
+              <span className="text-[7.2px]">Deposit</span>
             </button>
             <button onClick={() => navigate("/bank")}  className="flex flex-col items-center gap-0.3">
-              <img src={withdrawIcon} alt="Withdraw" className="w-4 h-4 object-contain" />
-              <span className="text-[6px]">Withdraw</span>
+              <img src={withdrawIcon} alt="Withdraw" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
+              <span className="text-[7.2px]">Withdraw</span>
             </button>
             <button onClick={() => navigate("/vip")} className="flex flex-col items-center gap-0.3">
-              <img src={vipIcon} alt="VIP" className="w-4 h-4 object-contain" />
-              <span className="text-[6px]">VIP</span>
+              <img src={vipIcon} alt="VIP" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
+              <span className="text-[7.2px]">VIP</span>
             </button>
           </div>
         </div>

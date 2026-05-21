@@ -121,7 +121,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 <button
                   onClick={() => {
                     if (userId) {
-                      copyToClipboard(userId, "User ID copied to clipboard");
+                      copyToClipboard(userId, "Copied Success");
                     }
                   }}
                   className="ml-1 p-0.5"

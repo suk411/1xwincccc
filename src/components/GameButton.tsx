@@ -58,11 +58,12 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
       } else if (buttonType === "dialog") {
         return {
           width: "100%",
-          maxWidth: "clamp(110px, 38vw, 143px)",
-          height: "clamp(35px, 11vw, 42px)",
-          borderRadius: "clamp(17.5px, 5.5vw, 21px)",
-          fontSize: "clamp(12px, 4vw, 15px)",
+          height: "clamp(32px, 10vw, 40px)",
+          borderRadius: "clamp(16px, 5vw, 20px)",
+          fontSize: "clamp(11px, 3.5vw, 14px)",
           fontWeight: "700",
+          paddingLeft: "clamp(12px, 4vw, 20px)",
+          paddingRight: "clamp(12px, 4vw, 20px)",
           textShadow: variant === "red" || variant === "dark" || variant === "mute" ? "rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px" : "none",
         };
       } else {

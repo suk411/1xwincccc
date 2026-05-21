@@ -23,7 +23,7 @@ const CommunityEvent = () => {
   const telegramLink = "https://t.me/+EM8kxuQpfMJmZTRl";
 
   const handleCopy = () => {
-    copyToClipboard(telegramLink, "Link copied to clipboard");
+    copyToClipboard(telegramLink, "Copied Success");
   };
 
   const handleJoin = () => {

@@ -11,7 +11,7 @@ export function CopyToClipboard({
   text,
   label = "Copy",
   className = "text-blue-600 cursor-pointer hover:text-blue-800 transition-colors",
-  successMessage = "Copied to clipboard!",
+  successMessage = "Copied Success",
 }: CopyToClipboardProps) {
   const { copyToClipboard } = useCopyToClipboard();
 
