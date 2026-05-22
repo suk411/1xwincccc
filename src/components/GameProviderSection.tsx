@@ -8,9 +8,11 @@ const providerLogos: Record<string, string> = {
   jdb: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JDB_LOGO.avif",
   spribe: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/SPRIBE_LOGO.avif",
   turbo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
+  ibc: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png",
 };
 
 const providerNames: Record<string, string> = {
+  ibc: "IBC",
   jili: "JILI",
   pg: "PG",
   jdb: "JDB",
@@ -21,13 +23,14 @@ const providerNames: Record<string, string> = {
 const GAMES_PER_PAGE = 6;
 
 const getProviderSections = () => {
-  const providers = ["jili", "pg", "jdb", "spribe", "turbo"];
+  const providers = ["jili", "pg", "jdb", "spribe", "turbo", "ibc"];
   const gameNames: Record<string, string[]> = {
     jili: ["Money Coming", "Fortune Gems 2", "Black Jack", "Mega Ace", "Super Ace", "Dragon Tiger"],
     pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko"],
     jdb: ["Mines 2", "Trump Card", "Bull Treasure", "Fortune Neko", "Super Niubi Deluxe", "Lucky Color Game"],
     spribe: ["Aviator", "Mines", "Plinko", "Goal", "Hilo", "Dice"],
     turbo: ["Vortex", "Chicken Route", "Limbo Rider", "Vortex Halloween", "Mysteco", "Turbo Plinko"],
+    ibc: ["SABAPLAY"],
   };
 
   return providers.map((provider) => {

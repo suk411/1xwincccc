@@ -6,6 +6,7 @@ interface LotteryCardProps {
   hint?: string;
   tag?: string;
   onClick?: () => void;
+  rightIcon?: string;
 }
 
 const LotteryCard: React.FC<LotteryCardProps> = ({
@@ -14,6 +15,7 @@ const LotteryCard: React.FC<LotteryCardProps> = ({
   hint = "Guess the number",
   tag = "HOT",
   onClick,
+  rightIcon,
 }) => {
   return (
     <div
@@ -42,6 +44,11 @@ const LotteryCard: React.FC<LotteryCardProps> = ({
         <p className="tab-Lottery__name">{name}</p>
         <p className="tab-Lottery__hint">{hint}</p>
       </div>
+      {rightIcon && (
+        <div style={{ position: "relative", left: "-40px", flexShrink: 0, zIndex: 3 }}>
+          <img src={rightIcon} alt="" style={{ width: "60px", height: "60px", objectFit: "contain" }} />
+        </div>
+      )}
     </div>
   );
 };

@@ -97,7 +97,7 @@ const Login = () => {
         <div className="flex justify-center mt-6">
           <GameButton
             variant="gold"
-            type="prompt"
+            buttonType="prompt"
             onClick={handleLogin}
             disabled={loading}
           >

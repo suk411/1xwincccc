@@ -106,9 +106,10 @@ const Register = () => {
         <div className="flex justify-center mt-6">
           <GameButton
             variant="gold"
-            type="prompt"
+            buttonType="prompt"
             onClick={handleRegister}
             disabled={loading}
+            style={{ width: "84%" }}
           >
             {loading ? <span className="flex justify-center"><DotPulse size="30" speed="1.3" color="#5a2d0a" /></span> : "Register"}
           </GameButton>

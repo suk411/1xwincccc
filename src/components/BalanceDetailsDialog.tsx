@@ -16,6 +16,7 @@ const PROVIDER_ICONS: Record<string, string> = {
   JD: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JDB_LOGO.avif",
   SPRIBE: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/SPRIBE_LOGO.avif",
   TU: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/TURBO_LOGO.png",
+  IB: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png",
 };
 
 interface BalanceDetailsDialogProps {
@@ -33,7 +34,7 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
     if (isWithdrawing) return;
     setIsWithdrawing(true);
 
-    const providers = ["JE", "PG", "TU", "JD"];
+    const providers = ["JE", "PG", "TU", "JD", "IB"];
 
     // 1. Trigger API calls immediately
     const apiPromise = (async () => {
@@ -73,18 +74,18 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
     <GameDialog open={isOpen} onOpenChange={onClose}>
       <GameDialogContent title="Wallet">
         <GameDialogBody>
-          <div className="grid grid-cols-2 gap-3 w-full">
+          <div className="grid grid-cols-3 gap-2 w-full">
             {Object.entries(balances).map(([code, amount]) => (
               <div 
                 key={code}
-                className="flex flex-col items-center justify-center p-3 rounded-xl bg-black/40 border border-white/5 gap-2"
+                className="flex flex-col items-center justify-center p-2 rounded-xl bg-black/40 border border-white/5 gap-1"
               >
                 <img 
                   src={PROVIDER_ICONS[code]} 
                   alt={code} 
-                  className="w-12 h-12 object-contain rounded-lg"
+                  className="w-10 h-10 object-contain rounded-lg"
                 />
-                <span className="text-[12px] text-yellow-500 font-mono font-bold">₹{amount.toFixed(2)}</span>
+                <span className="text-[11px] text-yellow-500 font-mono font-bold">₹{amount.toFixed(2)}</span>
               </div>
             ))}
           </div>

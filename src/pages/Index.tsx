@@ -80,6 +80,26 @@ const winMessages = [
   "Magnificent! User Justin won ₹13000 on Wheel of Fortune.",
 ];
 
+const WINGO_GAME: GameObject = {
+  name: "Win Go",
+  logo: "https://www.rajaluck.com/assets/png/WinGo-b9c59235.png",
+  provider: "1XKING",
+  provider_code: "WINGO",
+  game_id: "wingo",
+  type: "wingo",
+  category: "lottery",
+};
+
+const SABAPLAY_GAME: GameObject = {
+  name: "SABAPLAY",
+  logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png",
+  provider: "IBC",
+  provider_code: "IB",
+  game_id: "0",
+  type: "SL",
+  category: "sport",
+};
+
 const categoryTabs = [
   { icon: giftIcon, label: "1ST DEPOSIT" },
   { icon: telegramIcon, label: "GROUP" },
@@ -143,7 +163,7 @@ const Index = () => {
     if (isWithdrawing) return;
     setIsWithdrawing(true);
 
-    const providers = ["JE", "PG", "TU", "JD"];
+    const providers = ["JE", "PG", "TU", "JD", "IB"];
 
     // 1. Trigger API calls immediately
     const apiPromise = (async () => {
@@ -204,15 +224,22 @@ const Index = () => {
     
     // Close dialog immediately
     setShowGameConfirm(false);
+    const game = gameForConfirm;
     setGameForConfirm(null);
+    
+    // Handle Wingo separately (built-in game, no launch API)
+    if (game.game_id === "wingo") {
+      navigate("/wingo");
+      return;
+    }
     
     // Start loading overlay
     setIsLaunching(true);
-    setLaunchingGame(gameForConfirm.game_id);
+    setLaunchingGame(game.game_id);
     
     try {
       // Backend request is ONLY made if user is VIP 1 or more
-      const result = await gameService.launch(gameForConfirm);
+      const result = await gameService.launch(game);
       // Only refresh profile if necessary (e.g. to update balance)
       await refreshProfile();
       
@@ -498,7 +525,26 @@ const Index = () => {
               name="Win Go" 
               hint="Guess the number"
               tag="HOT"
-              onClick={() => navigate("/wingo")}
+              onClick={() => handleGameLaunch(WINGO_GAME)}
+            />
+          </div>
+        </div>
+
+        {/* SABAPLAY Card Section */}
+        <div className="mt-3 rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
+          <div className="flex items-center justify-between px-2 py-2">
+            <div className="flex items-center gap-2">
+              <span className="text-white text-sm font-bold tracking-wider">SPORT BOOK</span>
+            </div>
+          </div>
+          <div className="px-2 pb-3">
+            <LotteryCard 
+              icon="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png"
+              name="SABAPLAY" 
+              hint="Sports betting"
+              tag="NEW"
+              rightIcon="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/IPL.png"
+              onClick={() => handleGameLaunch(SABAPLAY_GAME)}
             />
           </div>
         </div>

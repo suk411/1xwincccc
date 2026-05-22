@@ -94,7 +94,6 @@ export default function WinGo() {
   const [trendStats, setTrendStats] = useState([])
   const [trendHistory, setTrendHistory] = useState([])
   const [myBets, setMyBets] = useState([])
-  const [betSubmitting, setBetSubmitting] = useState(false)
   const [cdActive, setCdActive] = useState(false)
   const [cdD1, setCdD1] = useState('0')
   const [cdD2, setCdD2] = useState('5')
@@ -175,7 +174,6 @@ export default function WinGo() {
   }
 
   async function submitBet() {
-    if (betSubmitting) return
     if (!agreed) {
       toast({ title: 'WinGo', description: 'Please agree to the Pre-sale rules' })
       return
@@ -188,25 +186,26 @@ export default function WinGo() {
       toast({ title: 'WinGo', description: 'Betting closed for this round' })
       return
     }
+    if (total > Number(balance || 0)) {
+      toast({ title: 'Insufficient balance' })
+      return
+    }
 
     const selectType = typeof betType === 'number' ? String(betType) : String(betType)
 
     setShowBetOverlay(false)
-    setBetSubmitting(true)
-    try {
-      await wingoService.placeBet({
-        issueNumber: issueRef.current,
-        betamount: total,
-        selectType,
-      })
+    wingoService.placeBet({
+      issueNumber: issueRef.current,
+      betamount: total,
+      selectType,
+    }).then(() => {
       toast({ title: 'Bet Success' })
       const tasks = [refreshBalance()]
       if (recordTab === 'my') tasks.push(loadMyBets())
-      await Promise.allSettled(tasks)
-    } catch (err) {
+      Promise.allSettled(tasks)
+    }).catch((err) => {
       toast({ title: 'Bet failed', description: err?.message || 'Failed to place bet' })
-    }
-    setBetSubmitting(false)
+    })
   }
 
   useEffect(() => {
@@ -717,7 +716,7 @@ export default function WinGo() {
                     const isPending = s === 'pending'
                     const isLost = s === 'lost'
                     const profit = typeof b?.result?.profitAmount === 'number' ? b.result.profitAmount : 0
-                    const amountText = isWon ? `+₹${profit.toFixed(2)}` : isPending ? `₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}` : `-₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}`
+                    const amountText = isWon ? `+₹${profit.toFixed(2)}` : isPending ? `₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}` : `-₹${Number(b.betamount || 0).toFixed(2)}`
                     const selectType = String(b.selectType || '').toLowerCase()
                     
                     let leftClass = 'MyGameRecordList__C-item-l'
@@ -889,7 +888,7 @@ export default function WinGo() {
 
           <div className="popup-foot">
             <button className="foot-cancel" onClick={() => setShowBetOverlay(false)}>cancel</button>
-            <button className="foot-submit" id="footSubmit" style={{ background: currentFootBg }} onClick={submitBet} disabled={betSubmitting}>
+            <button className="foot-submit" id="footSubmit" style={{ background: currentFootBg }} onClick={submitBet}>
               Total amount ₹{total.toFixed(2)}
             </button>
           </div>

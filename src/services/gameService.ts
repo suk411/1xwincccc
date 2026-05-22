@@ -1221,7 +1221,17 @@ export const GAME_LIST: GameObject[] = [
     game_id: "vortexsafari",
     type: "SL",
     category: "slot",
-  }
+  },
+  {
+    name: "SABAPLAY",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png",
+    provider_code: "IB",
+    provider: "IBC",
+    game_id: "0",
+    type: "SL",
+    category: "sport",
+  },
+
 
 ];
 
@@ -1281,25 +1291,6 @@ export const gameService = {
     const data = Array.isArray(rawData) ? rawData[0] : rawData;
     if (!res.ok || data.status !== "success") {
       throw new Error(data.msg || data.error || data.message || "Game launch failed");
-    }
-    return data;
-  },
-
-  async watch(game: GameObject): Promise<GameLaunchResponse> {
-    const params = new URLSearchParams({
-      g_id: String(game.game_id),
-      p_code: game.provider_code,
-      type: game.type || "SL",
-      html5: "1",
-      lang: "en-US",
-    });
-    const res = await fetch(`${API_BASE}/api/game/watch?${params}`, {
-      headers: authHeaders(),
-    });
-    handleUnauthorized(res);
-    const data = await res.json();
-    if (!res.ok || data.status !== "success") {
-      throw new Error(data.msg || data.error || data.message || "Game watch failed");
     }
     return data;
   },

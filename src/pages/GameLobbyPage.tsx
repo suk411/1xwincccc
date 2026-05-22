@@ -6,6 +6,8 @@ import { GameObject, gameService } from "@/services/gameService";
 import { useProfile, refreshProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
 import VipLockModal from "@/components/VipLockModal";
+import GameConfirmDialog from "@/components/GameConfirmDialog";
+import Loader from "@/components/Loader";
 
 const GameLobbyPage = () => {
   const navigate = useNavigate();
@@ -14,6 +16,9 @@ const GameLobbyPage = () => {
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
   const [showVipModal, setShowVipModal] = useState(false);
   const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
+  const [showGameConfirm, setShowGameConfirm] = useState(false);
+  const [gameForConfirm, setGameForConfirm] = useState<GameObject | null>(null);
+  const [isLaunching, setIsLaunching] = useState(false);
 
   const { vipLevel } = useProfile();
 
@@ -32,17 +37,34 @@ const GameLobbyPage = () => {
       return;
     }
 
-    setLaunchingGame(game.game_id);
+    // Show confirmation dialog
+    setGameForConfirm(game);
+    setShowGameConfirm(true);
+  };
+
+  const handleConfirmGameLaunch = async () => {
+    if (!gameForConfirm) return;
+    
+    // Close dialog immediately
+    setShowGameConfirm(false);
+    setGameForConfirm(null);
+    
+    // Start loading overlay
+    setIsLaunching(true);
+    setLaunchingGame(gameForConfirm.game_id);
+    
     try {
       // Backend request is ONLY made if user is VIP 1 or more
-      const result = await gameService.launch(game);
+      const result = await gameService.launch(gameForConfirm);
       await refreshProfile();
+      
       if (result.gameUrl) {
         navigate("/game", { state: { gameUrl: result.gameUrl } });
       }
     } catch (e: any) {
       toast({ title: "Launch failed", description: e.message, variant: "destructive" });
     } finally {
+      setIsLaunching(false);
       setLaunchingGame(null);
     }
   };
@@ -69,6 +91,24 @@ const GameLobbyPage = () => {
           handleGameLaunch={handleGameLaunch}
         />
       </div>
+
+      <GameConfirmDialog
+        isOpen={showGameConfirm}
+        game={gameForConfirm}
+        isLoading={isLaunching}
+        onConfirm={handleConfirmGameLaunch}
+        onCancel={() => {
+          setShowGameConfirm(false);
+          setGameForConfirm(null);
+        }}
+      />
+
+      {isLaunching && (
+        <Loader
+          overlay
+          label="Launching game..."
+        />
+      )}
 
       <VipLockModal
         isOpen={showVipModal}
