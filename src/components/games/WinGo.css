@@ -34,7 +34,7 @@
       --primary-violet: #eb43dd;
       --bg-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
       --sweep-color: rgba(255, 255, 255, 0.2);
-      --font-stack: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
       --glass-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
       --gold-grad: linear-gradient(135deg, #FFC837 0%, #E8A820 100%);
       --purple-grad: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
@@ -1099,7 +1099,7 @@
         line-height: 40.0215px;
         background-color: rgba(255, 255, 255, 0.016);
         color: rgba(255, 255, 255, 0.9);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
         font-size: 12px;
         text-align: center;
         border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
@@ -2365,7 +2365,7 @@
       display: block;
       height: 17.333vw;
       color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
       margin-top: 5vw;
     }
 

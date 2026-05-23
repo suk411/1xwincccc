@@ -50,7 +50,7 @@ const GameButton = React.forwardRef<HTMLButtonElement, GameButtonProps>(
           height: "clamp(38px, 12vw, 45px)",
           borderRadius: "clamp(19px, 6vw, 22.5px)",
           fontSize: "clamp(14px, 4.5vw, 16.5px)",
-          fontFamily: "Arial-Black, Arial, sans-serif",
+          fontFamily: "-apple-system, BlinkMacSystemFont, \"Helvetica Neue\", Helvetica, \"Segoe UI\", Arial, Roboto, \"PingFang SC\", miui, \"Hiragino Sans GB\", \"Microsoft Yahei\", sans-serif",
           fontWeight: "900",
           letterSpacing: "clamp(1px, 0.4vw, 1.5px)",
           textShadow: variant === "gold" ? "rgba(255, 255, 255, 0.4) 0px 0.5px 1px" : variant === "red" || variant === "dark" || variant === "mute" ? "rgba(0, 0, 0, 0.15) 0px 0.5px 1.5px" : "none",

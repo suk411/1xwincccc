@@ -500,8 +500,8 @@ export default function WinGo() {
               </linearGradient>
             </defs>
             <rect x="10" width="368" y="61" height="1.5" rx="0.75" fill="url(#blLine_581)" opacity="0.6"></rect>
-            <text x="40" y="50" fontSize="46" fontWeight="900" fill="url(#blCrown_581)" filter="url(#blCrownS_581)" fontFamily="serif">♕</text>
-            <text x="86" y="48" fontSize="38" fontWeight="900" letterSpacing="4" fill="url(#blText_581)" filter="url(#blShadow_581)" fontFamily="Georgia, serif">1xKING</text>
+            <text x="40" y="50" fontSize="46" fontWeight="900" fill="url(#blCrown_581)" filter="url(#blCrownS_581)" fontFamily="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, Roboto, 'PingFang SC', miui, 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif">♕</text>
+            <text x="86" y="48" fontSize="38" fontWeight="900" letterSpacing="4" fill="url(#blText_581)" filter="url(#blShadow_581)" fontFamily="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, Roboto, 'PingFang SC', miui, 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif">1xKING</text>
           </svg>
         </div>
         <div className="navbar__content-right">
