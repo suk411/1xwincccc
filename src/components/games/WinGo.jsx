@@ -87,6 +87,7 @@ export default function WinGo() {
   const [selectedBalanceIdx, setSelectedBalanceIdx] = useState(0)
   const [selectedMulIdx, setSelectedMulIdx] = useState(0)
   const [qty, setQty] = useState(1)
+  const [qtyInput, setQtyInput] = useState('1')
   const [agreed, setAgreed] = useState(true)
   const [showHowTo, setShowHowTo] = useState(false)
   const [showPresale, setShowPresale] = useState(false)
@@ -116,6 +117,13 @@ export default function WinGo() {
   const di1AudioRef = useRef(new Audio(di1Sound))
   const di2AudioRef = useRef(new Audio(di2Sound))
   const lastPlayedSecondRef = useRef(null)
+  const betIssueRef = useRef('')
+  const [showWinPopup, setShowWinPopup] = useState(false)
+  const [winData, setWinData] = useState({ result: 0, winamt: [], issue: '' })
+  const [winAutoClose, setWinAutoClose] = useState(true)
+  const winCloseTimerRef = useRef(null)
+  const winCloseCountdownRef = useRef(3)
+  const [winCountdown, setWinCountdown] = useState(3)
 
   const total = (selectedBalanceIdx >= 0 ? BALANCE_CHIPS[selectedBalanceIdx] : 1) * qty
 
@@ -142,7 +150,7 @@ export default function WinGo() {
     endTimeRef.current = res.current.endTime
     nextRef.current = res.next || null
     setIssueNumber(res.current.issueNumber)
-    setTimeRemaining(Math.max(0, Math.floor((res.current.endTime - Date.now()) / 1000)))
+    setTimeRemaining(Math.max(0, Math.ceil((res.current.endTime - Date.now()) / 1000)))
   }
 
   async function loadHistory(page = 1) {
@@ -194,6 +202,7 @@ export default function WinGo() {
     const selectType = typeof betType === 'number' ? String(betType) : String(betType)
 
     setShowBetOverlay(false)
+    betIssueRef.current = issueRef.current
     wingoService.placeBet({
       issueNumber: issueRef.current,
       betamount: total,
@@ -223,6 +232,9 @@ export default function WinGo() {
         if (lastSyncEndRef.current !== end && !syncingRef.current) {
           lastSyncEndRef.current = end
           syncingRef.current = true
+
+          const finishedIssue = issueRef.current
+
           Promise.allSettled([syncCurrent()])
             .finally(() => { syncingRef.current = false })
 
@@ -230,6 +242,17 @@ export default function WinGo() {
           historyDelayRef.current = setTimeout(() => {
             loadHistory().catch(() => {})
           }, 2000)
+
+          if (betIssueRef.current && betIssueRef.current === finishedIssue) {
+            betIssueRef.current = ''
+            wingoService.checkWin(finishedIssue).then(res => {
+              if (res.winamt && res.winamt.length > 0) {
+                setWinData({ result: res.result, winamt: res.winamt, issue: res.issue })
+                setShowWinPopup(true)
+                startWinCloseCountdown()
+              }
+            }).catch(() => {})
+          }
         }
 
         setTimeRemaining(0)
@@ -329,6 +352,7 @@ export default function WinGo() {
     setBetType(key)
     setSelectedBalanceIdx(0)
     setQty(1)
+    setQtyInput('1')
     setSelectedMulIdx(0)
     setShowBetOverlay(true)
   }
@@ -341,14 +365,79 @@ export default function WinGo() {
     setSelectedMulIdx(idx)
     const val = parseInt(MULTIPLIER_CHIPS[idx].replace('X', ''))
     setQty(val)
+    setQtyInput(String(val))
   }
 
   function changeQty(d) {
-    setQty(prev => Math.max(1, prev + d))
+    setQty(prev => {
+      const next = Math.max(1, prev + d)
+      setQtyInput(String(next))
+      return next
+    })
   }
 
   function toggleAgree() {
     setAgreed(prev => !prev)
+  }
+
+  const WIN_RESULT_MAP = {
+    0: { color: 'color_red', label: 'Red', type: 'Small', cssClass: 'color_half_red_violet' },
+    1: { color: 'color_green', label: 'Green', type: 'Small', cssClass: 'color_green' },
+    2: { color: 'color_red', label: 'Red', type: 'Small', cssClass: 'color_red' },
+    3: { color: 'color_green', label: 'Green', type: 'Small', cssClass: 'color_green' },
+    4: { color: 'color_red', label: 'Red', type: 'Small', cssClass: 'color_red' },
+    5: { color: 'color_green', label: 'Green', type: 'Big', cssClass: 'color_half_green_violet' },
+    6: { color: 'color_red', label: 'Red', type: 'Big', cssClass: 'color_red' },
+    7: { color: 'color_green', label: 'Green', type: 'Big', cssClass: 'color_green' },
+    8: { color: 'color_red', label: 'Red', type: 'Big', cssClass: 'color_red' },
+    9: { color: 'color_green', label: 'Green', type: 'Big', cssClass: 'color_green' },
+  }
+
+  function closeWinPopup() {
+    if (winCloseTimerRef.current) {
+      clearInterval(winCloseTimerRef.current)
+      winCloseTimerRef.current = null
+    }
+    setShowWinPopup(false)
+  }
+
+  function toggleWinAutoClose() {
+    setWinAutoClose(prev => {
+      if (prev) {
+        if (winCloseTimerRef.current) {
+          clearInterval(winCloseTimerRef.current)
+          winCloseTimerRef.current = null
+        }
+      } else {
+        winCloseCountdownRef.current = 3
+        setWinCountdown(3)
+        winCloseTimerRef.current = setInterval(() => {
+          winCloseCountdownRef.current -= 1
+          setWinCountdown(winCloseCountdownRef.current)
+          if (winCloseCountdownRef.current <= 0) {
+            clearInterval(winCloseTimerRef.current)
+            winCloseTimerRef.current = null
+            setShowWinPopup(false)
+          }
+        }, 1000)
+      }
+      return !prev
+    })
+  }
+
+  function startWinCloseCountdown() {
+    winCloseCountdownRef.current = 3
+    setWinCountdown(3)
+    if (winCloseTimerRef.current) clearInterval(winCloseTimerRef.current)
+    winCloseTimerRef.current = setInterval(() => {
+      winCloseCountdownRef.current -= 1
+      setWinCountdown(winCloseCountdownRef.current)
+      if (winCloseCountdownRef.current <= 0) {
+        clearInterval(winCloseTimerRef.current)
+        winCloseTimerRef.current = null
+        setShowWinPopup(false)
+      }
+    }, 1000)
   }
 
   const gameItem = (game) => {
@@ -855,7 +944,7 @@ export default function WinGo() {
               <span className="body-label">Quantity</span>
               <div className="qty-ctrl">
                 <button className="qty-btn" id="qtyMinus" style={{ background: currentAc }} onClick={() => changeQty(-1)}>−</button>
-                <input className="qty-input" type="number" id="qtyInput" value={qty} min="1" onChange={e => setQty(Math.max(1, parseInt(e.target.value) || 1))} />
+                <input className="qty-input" type="number" id="qtyInput" value={qtyInput} min="1" onChange={e => setQtyInput(e.target.value)} onBlur={e => { const num = parseInt(e.target.value, 10); if (isNaN(num) || num < 1) { setQtyInput('1'); setQty(1) } else { const clamped = Math.max(1, num); setQtyInput(String(clamped)); setQty(clamped) } }} />
                 <button className="qty-btn" id="qtyPlus" style={{ background: currentAc }} onClick={() => changeQty(1)}>+</button>
               </div>
             </div>
@@ -892,6 +981,40 @@ export default function WinGo() {
               Total amount ₹{total.toFixed(2)}
             </button>
           </div>
+        </div>
+      </div>
+
+      <div className={`winning${showWinPopup ? '' : ''}`} id="winPopup" style={{ display: showWinPopup ? 'flex' : 'none' }}>
+        <div className="winning-body isWin">
+          <div className="sprinkle-overlay"></div>
+          <div className="winning-main">
+            <div className="winning-wrap">
+              <div className="winning-wrap-l1">Congratulations</div>
+              <div className="winning-wrap-l2">
+                <div className="winner_box">
+                  <span>Lottery results</span>
+                  <div className="winner_result" id="winnerResult">
+                    <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultColor">{WIN_RESULT_MAP[winData.result]?.label || ''}</div>
+                    <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultNumber">{winData.result}</div>
+                    <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultType">{WIN_RESULT_MAP[winData.result]?.type || ''}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="winning-wrap-l3">
+                <div className="head">Bonus</div>
+                <div className="bonus">₹{winData.winamt.reduce((a, b) => a + b, 0).toFixed(2)}</div>
+                <div className="gameDetail">
+                  Period: WinGo 30sec
+                  <p>{winData.issue}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="winning-wrap-l4">
+            <div className={`acitveBtn${winAutoClose ? ' active' : ''}`} id="checkMark" onClick={toggleWinAutoClose}></div>
+            <span id="countdownText">{winCountdown} seconds auto close</span>
+          </div>
+          <div className="closeBtn" id="popupClose" onClick={closeWinPopup}></div>
         </div>
       </div>
     </div>

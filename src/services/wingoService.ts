@@ -135,6 +135,16 @@ export const wingoService = {
     return data;
   },
 
+  async checkWin(issue: string): Promise<{ status: string; issue: string; result: number; winamt: number[] }> {
+    const res = await fetch(`${API_BASE}/api/wingo/iswin?issue=${issue}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to check win"));
+    return data;
+  },
+
   async placeBet(payload: WingoBetRequest): Promise<WingoBetResponse> {
     const res = await fetch(`${API_BASE}/api/wingo/bet`, {
       method: "POST",

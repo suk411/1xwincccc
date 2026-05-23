@@ -1,9 +1,8 @@
 # Wingo API Documentation
 
 ## Base URL
-
 ```
-https://backend-ledger-0ra6.onrender.com/api/wingo
+http://localhost:3000/api/wingo
 ```
 
 ---
@@ -17,7 +16,6 @@ Returns the current active round with previous/next round timings. Frontend call
 **Authentication:** None
 
 ### Response Example
-
 ```json
 {
   "gameCode": "WinGo_30S",
@@ -42,14 +40,13 @@ Returns the current active round with previous/next round timings. Frontend call
 ```
 
 ### Fields
-
-| Field          | Description                            |
-| -------------- | -------------------------------------- |
-| intervalMinute | Round duration (0.5 = 30s)             |
-| state          | Game state (1 = running)               |
-| previous       | Finished round details                 |
-| current        | Active betting round — use issueNumber |
-| next           | Upcoming round                         |
+| Field            | Description                                |
+|------------------|--------------------------------------------|
+| intervalMinute   | Round duration (0.5 = 30s)                 |
+| state            | Game state (1 = running)                   |
+| previous         | Finished round details                     |
+| current          | Active betting round — use issueNumber     |
+| next             | Upcoming round                             |
 
 ---
 
@@ -62,23 +59,20 @@ Places a bet on the current active round. Rejects if round is closed or betting 
 **Authentication:** Bearer token
 
 ### Request Body
-
-| Field       | Type   | Required | Description                                                                 |
-| ----------- | ------ | -------- | --------------------------------------------------------------------------- |
-| issueNumber | string | Yes      | Must match current round from `/current`                                    |
-| betamount   | number | Yes      | Amount to bet (minimum 1)                                                   |
-| selectType  | string | Yes      | One of: number `0`-`9`, size `big`/`small`, or color `red`/`green`/`violet` |
+| Field        | Type   | Required | Description                                      |
+|--------------|--------|----------|--------------------------------------------------|
+| issueNumber  | string | Yes      | Must match current round from `/current`         |
+| betamount    | number | Yes      | Amount to bet (minimum 1)                        |
+| selectType   | string | Yes      | One of: number `0`-`9`, size `big`/`small`, or color `red`/`green`/`violet` |
 
 ### Valid selectType Values
-
-| Category | Values                                           |
-| -------- | ------------------------------------------------ |
+| Category | Values |
+|----------|--------|
 | Number   | `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9` |
-| Size     | `big`, `small`                                   |
-| Color    | `red`, `green`, `violet`                         |
+| Size     | `big`, `small` |
+| Color    | `red`, `green`, `violet` |
 
 ### Request Example
-
 ```json
 {
   "issueNumber": "20260502302413",
@@ -88,7 +82,6 @@ Places a bet on the current active round. Rejects if round is closed or betting 
 ```
 
 ### Response (201 Created)
-
 ```json
 {
   "status": "success"
@@ -96,9 +89,7 @@ Places a bet on the current active round. Rejects if round is closed or betting 
 ```
 
 ### Error Responses
-
 **400 - Round mismatch**
-
 ```json
 {
   "status": "failed",
@@ -107,7 +98,6 @@ Places a bet on the current active round. Rejects if round is closed or betting 
 ```
 
 **400 - Betting period closed**
-
 ```json
 {
   "status": "failed",
@@ -116,7 +106,6 @@ Places a bet on the current active round. Rejects if round is closed or betting 
 ```
 
 **400 - Insufficient balance**
-
 ```json
 {
   "status": "failed",
@@ -124,17 +113,7 @@ Places a bet on the current active round. Rejects if round is closed or betting 
 }
 ```
 
-**400 - Duplicate bet**
-
-```json
-{
-  "status": "failed",
-  "msg": "Bet already placed for this issue and selection"
-}
-```
-
 **400 - Invalid input**
-
 ```json
 {
   "status": "failed",
@@ -143,7 +122,6 @@ Places a bet on the current active round. Rejects if round is closed or betting 
 ```
 
 **401 - Missing token**
-
 ```json
 {
   "msg": "Authentication token is missing",
@@ -162,16 +140,14 @@ Returns the authenticated user's bet history with pagination.
 **Authentication:** Bearer token
 
 ### Query Parameters
-
-| Parameter   | Type   | Required | Description                            |
-| ----------- | ------ | -------- | -------------------------------------- |
-| page        | number | No       | Page number (default: 1)               |
-| limit       | number | No       | Items per page (default: 25, max: 100) |
-| status      | string | No       | Filter: `pending`, `won`, `lost`       |
-| issueNumber | string | No       | Filter by specific issue               |
+| Parameter     | Type   | Required | Description                          |
+|---------------|--------|----------|--------------------------------------|
+| page          | number | No       | Page number (default: 1)             |
+| limit         | number | No       | Items per page (default: 25, max: 100) |
+| status        | string | No       | Filter: `pending`, `won`, `lost`     |
+| issueNumber   | string | No       | Filter by specific issue             |
 
 ### Response Example
-
 ```json
 {
   "status": "success",
@@ -212,19 +188,23 @@ Returns paginated draw results with winning numbers.
 **Authentication:** None
 
 ### Query Parameters
-
-| Parameter | Type   | Required | Description              |
-| --------- | ------ | -------- | ------------------------ |
-| pageNo    | number | No       | Page number (default: 1) |
+| Parameter | Type   | Required | Description                  |
+|-----------|--------|----------|------------------------------|
+| pageNo    | number | No       | Page number (default: 1)     |
 
 ### Response Example
-
 ```json
 {
   "data": {
     "list": [
-      { "issueNumber": "202605100000010", "number": 7 },
-      { "issueNumber": "202605100000009", "number": 3 }
+      {
+        "issueNumber": "202605100000010",
+        "number": 7
+      },
+      {
+        "issueNumber": "202605100000009",
+        "number": 3
+      }
     ],
     "pageNo": 1,
     "totalPage": 50,
@@ -239,7 +219,38 @@ Returns paginated draw results with winning numbers.
 
 ---
 
-## 5. Trend Statistics
+## 5. Check Win Amount
+
+Returns the winning amount(s) for the authenticated user on a specific round.
+
+**Endpoint:** `GET /api/wingo/iswin`
+
+**Authentication:** Bearer token
+
+### Query Parameters
+| Parameter | Type   | Required | Description                  |
+|-----------|--------|----------|------------------------------|
+| issue     | string | Yes      | The issue number to check    |
+
+### Response Example
+```json
+{
+  "status": "success",
+  "issue": "2026052300397",
+  "result": 3,
+  "winamt": [196, 196]
+}
+```
+
+### Fields
+| Field    | Description                                      |
+|----------|--------------------------------------------------|
+| result   | Winning number (`null` if not yet settled)       |
+| winamt   | Array of profit amounts per won bet (empty `[]` if none) |
+
+---
+
+## 6. Trend Statistics
 
 Returns statistical data for each number (0-9) to show hot/cold patterns.
 
@@ -248,7 +259,6 @@ Returns statistical data for each number (0-9) to show hot/cold patterns.
 **Authentication:** None
 
 ### Response Example
-
 ```json
 {
   "data": [
@@ -275,39 +285,35 @@ Returns statistical data for each number (0-9) to show hot/cold patterns.
 ```
 
 ### Fields
-
-| Field         | Description                           |
-| ------------- | ------------------------------------- |
-| missingCount  | Current gap since last appearance     |
-| avgMissing    | Average rounds between appearances    |
-| openCount     | Frequency count in sample             |
-| maxContinuous | Longest consecutive appearance streak |
+| Field          | Description                                |
+|----------------|--------------------------------------------|
+| missingCount   | Current gap since last appearance          |
+| avgMissing     | Average rounds between appearances         |
+| openCount      | Frequency count in sample                  |
+| maxContinuous  | Longest consecutive appearance streak      |
 
 ---
 
-## 6. Settle Bets (Webhook)
+## 7. Settle Bets (Webhook)
 
-Settles all pending bets for a given round. Called by the game engine after each draw. Credits winnings to user wallets.
+Settles all pending bets for a given round. Called by the game engine or external system after each draw. Credits winnings to user wallets.
 
 **Endpoint:** `POST /api/wingo/settle`
 
 **Authentication:** `x-api-key` header
 
 ### Headers
-
-| Header    | Value         | Required | Description    |
-| --------- | ------------- | -------- | -------------- |
-| x-api-key | admingm123456 | Yes      | API secret key |
+| Header      | Value            | Required | Description           |
+|-------------|------------------|----------|-----------------------|
+| x-api-key   | admingm123456    | Yes      | API secret key        |
 
 ### Request Body
-
-| Field         | Type   | Required | Description          |
-| ------------- | ------ | -------- | -------------------- |
-| issueNumber   | string | Yes      | The round to settle  |
-| result.number | number | Yes      | Winning number (0-9) |
+| Field          | Type   | Required | Description                    |
+|----------------|--------|----------|--------------------------------|
+| issueNumber    | string | Yes      | The round to settle            |
+| result.number  | number | Yes      | Winning number (0-9)           |
 
 ### Request Example
-
 ```json
 {
   "issueNumber": "202604280045",
@@ -316,7 +322,6 @@ Settles all pending bets for a given round. Called by the game engine after each
 ```
 
 ### Response Example
-
 ```json
 {
   "status": "success",
@@ -326,15 +331,14 @@ Settles all pending bets for a given round. Called by the game engine after each
   "result": {
     "number": "3",
     "colour": "green",
+    "size": "small",
     "timestamp": "2026-05-02 20:06:13"
   }
 }
 ```
 
 ### Error Responses
-
 **401 - Missing API key**
-
 ```json
 {
   "status": "failed",
@@ -343,7 +347,6 @@ Settles all pending bets for a given round. Called by the game engine after each
 ```
 
 **403 - Invalid API key**
-
 ```json
 {
   "status": "failed",
@@ -352,7 +355,6 @@ Settles all pending bets for a given round. Called by the game engine after each
 ```
 
 **400 - Missing fields**
-
 ```json
 {
   "status": "failed",
@@ -362,67 +364,119 @@ Settles all pending bets for a given round. Called by the game engine after each
 
 ---
 
+## 8. Admin APIs
+
+### 7.1 Set Result Mode
+
+Sets the result generation mode. Applies from the **next** issue only.
+
+**Endpoint:** `POST /api/admin/wingo/result-mode`
+
+**Authentication:** Bearer token (admin)
+
+### Request Body
+| Field | Type   | Required | Description                              |
+|-------|--------|----------|------------------------------------------|
+| mode  | string | Yes      | `RANDOM`, `MAX_PROFIT`, or `MAX_LOSS`    |
+
+### Request Example
+```json
+{
+  "mode": "MAX_PROFIT"
+}
+```
+
+### Response Example
+```json
+{
+  "success": true,
+  "currentIssue": "202605100000600",
+  "applyIssue": "202605100000601"
+}
+```
+
+### 7.2 Get Result Mode
+
+**Endpoint:** `GET /api/admin/wingo/result-mode`
+
+**Authentication:** Bearer token (admin)
+
+### Response Example
+```json
+{
+  "success": true,
+  "mode": "RANDOM"
+}
+```
+
+---
+
 ## Game Rules
 
 ### Round Cycle (30 seconds)
-
 ```
-0s ─────────────── 25s ────────────── 30s
-     Betting Open          Closed
-     (place bets)      (draw happens)
+0s ─────────── 25s ─── 27s ───────── 30s
+  Betting Open    Closed   Result + Settlement
+  (place bets)   (no bets) (last 3s)
 ```
 
 ### Winning Multipliers
-
-| Bet Type     | Condition            | Multiplier | Example (Bet 100) |
-| ------------ | -------------------- | ---------- | ----------------- |
-| Number (0-9) | Exact match          | 9x         | Win 882           |
-| Big          | Result 5, 6, 7, 8, 9 | 2x         | Win 196           |
-| Small        | Result 0, 1, 2, 3, 4 | 2x         | Win 196           |
-| Violet       | Result 0 or 5        | 4.5x       | Win 441           |
-| Green        | Result 1, 3, 7, 9    | 2x         | Win 196           |
-| Green        | Result 5             | 1.5x       | Win 147           |
-| Red          | Result 2, 4, 6, 8    | 2x         | Win 196           |
-| Red          | Result 0             | 1.5x       | Win 147           |
+| Bet Type       | Condition                  | Multiplier | Example (Bet 100) |
+|----------------|----------------------------|------------|-------------------|
+| Number (0-9)   | Exact match                | 9x         | Win 882           |
+| Big            | Result 5, 6, 7, 8, 9       | 2x         | Win 196           |
+| Small          | Result 0, 1, 2, 3, 4       | 2x         | Win 196           |
+| Violet         | Result 0 or 5              | 4.5x       | Win 441           |
+| Green          | Result 1, 3, 7, 9          | 2x         | Win 196           |
+| Green          | Result 5                   | 1.5x       | Win 147           |
+| Red            | Result 2, 4, 6, 8          | 2x         | Win 196           |
+| Red            | Result 0                   | 1.5x       | Win 147           |
 
 ### Fee Deduction
-
 Every bet incurs a **2% fee**:
-
 ```
 realAmount = betAmount - (betAmount * 0.02)
 ```
 
-### Number to Colour Mapping
+### Number to Colour & Size Mapping
+| Number | Colour       | Size    |
+|--------|--------------|---------|
+| 0      | red,violet   | small   |
+| 1      | green        | small   |
+| 2      | red          | small   |
+| 3      | green        | small   |
+| 4      | red          | small   |
+| 5      | green,violet | big     |
+| 6      | red          | big     |
+| 7      | green        | big     |
+| 8      | red          | big     |
+| 9      | green        | big     |
 
-| Number | Colour       |
-| ------ | ------------ |
-| 0      | red,violet   |
-| 1      | green        |
-| 2      | red          |
-| 3      | green        |
-| 4      | red          |
-| 5      | green,violet |
-| 6      | red          |
-| 7      | green        |
-| 8      | red          |
-| 9      | green        |
+### Result Generation Modes
+
+| Mode        | Description                                                                 |
+|-------------|-----------------------------------------------------------------------------|
+| RANDOM      | System randomly selects a number 0-9                                        |
+| MAX_PROFIT  | System simulates all 10 possible results and picks the one with lowest payout (house-friendly) |
+| MAX_LOSS    | System simulates all 10 possible results and picks the one with highest payout (player-friendly) |
+
+MAX_PROFIT and MAX_LESS modes simulate payouts for every possible result (0-9) based on current
+pending bets and choose the optimal outcome for the house or player respectively.
 
 ### Bet Status Flow
-
 ```
 pending → won  (if selection matches result)
 pending → lost (if selection doesn't match)
 ```
 
 - Bets start as `pending`, result is `null` until settlement
-- Settlement happens automatically after each draw
+- Settlement happens automatically during the last 3 seconds (27s–30s) of each round
 - Winnings are credited directly to user wallet
+- Turnover requirement is reduced by bet amount on placement
 
 ---
 
 ## Environment Variables
-
 ```env
 WINGO_API_KEY=admingm123456
 WINGO_API_SECRET=1234567890
