@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Exact styles for the label wrapper */
+        .fun-tab-item__label {
+            display: block;
+            position: static;
+            width: 100.05px;
+            height: 50.025px;
+            background-color: rgba(0, 0, 0, 0);
+            color: rgb(22, 119, 255);
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+            font-size: 8px;
+            font-weight: 400;
+            line-height: normal;
+            text-align: center;
+            box-sizing: border-box;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Exact styles for the active tab item child */
+        .tab_item.tab_active {
+            display: flex;
+            position: static;
+            width: 95.05px;
+            height: 50.025px;
+            margin: 0px 2.50146px;
+            padding: 0px;
+            background-color: rgba(0, 0, 0, 0);
+            color: rgb(255, 255, 255); /* White text as per computed styles */
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+            font-size: 8px;
+            font-weight: 400;
+            line-height: normal;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: visible;
+            border-radius: 8.00414px;
+            white-space: nowrap;
+        }
+
+        /* Exact styles for the SVG icon */
+        .svg-icon {
+            display: block;
+            position: static;
+            width: 25.0125px;
+            height: 25.0125px;
+            margin: 0px;
+            padding: 0px;
+            background-color: rgba(0, 0, 0, 0);
+            color: rgb(255, 255, 255);
+            box-sizing: border-box;
+            overflow: hidden;
+            flex-shrink: 0;
+            fill: currentColor; /* Ensuring icon matches text color */
+        }
+
+        /* Exact styles for the span label */
+        .tab_item span {
+            display: block;
+            position: static;
+            width: 36.6875px;
+            height: 13.6px;
+            margin: 0px;
+            padding: 0px;
+            background-color: rgba(0, 0, 0, 0);
+            color: rgb(255, 255, 255);
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+            font-size: 12.0064px;
+            font-weight: 400;
+            line-height: normal;
+            text-align: center;
+            box-sizing: border-box;
+            white-space: nowrap;
+            text-overflow: clip;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fun-tab-item__label">
+        <div class="tab_item tab_active">
+            <!-- Exact SVG implementation logic -->
+            <svg class="svg-icon" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" fill="none" stroke-width="2"/>
+                <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+                <circle cx="16" cy="16" r="1.5" fill="currentColor"/>
+                <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+            </svg>
+            <span>Lottery</span>
+        </div>
+    </div>
+
+</body>
+</html>

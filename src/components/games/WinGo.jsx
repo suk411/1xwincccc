@@ -102,6 +102,7 @@ export default function WinGo() {
   const [totalPage, setTotalPage] = useState(1)
   const [myBetsPage, setMyBetsPage] = useState(1)
   const [myBetsTotal, setMyBetsTotal] = useState(0)
+  const [selectedBet, setSelectedBet] = useState(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const lastRefreshTimeRef = useRef(0)
 
@@ -351,9 +352,6 @@ export default function WinGo() {
     setCurrentGrad(c.grad)
     setBetType(key)
     setSelectedBalanceIdx(0)
-    setQty(1)
-    setQtyInput('1')
-    setSelectedMulIdx(0)
     setShowBetOverlay(true)
   }
 
@@ -821,17 +819,91 @@ export default function WinGo() {
                     if (isWon) displayStatus = 'success'
                     if (isLost) displayStatus = 'failed'
 
+                    const isExpanded = selectedBet?.orderNumber === b.orderNumber
                     return (
-                      <div className="MyGameRecordList__C-item" key={b.orderNumber}>
-                        <div className={leftClass}>{selectType}</div>
-                        <div className="MyGameRecordList__C-item-m">
-                          <div className="MyGameRecordList__C-item-m-top">{b.issueNumber}</div>
-                          <div className="MyGameRecordList__C-item-m-bottom">{b.timestamp}</div>
+                      <div className={`MyGameRecordList__C-item${isExpanded ? ' expanded' : ''}`} key={b.orderNumber} onClick={() => setSelectedBet(isExpanded ? null : b)}>
+                        <div className="MyGameRecordList__C-item-main">
+                          <div className={leftClass}>{selectType}</div>
+                          <div className="MyGameRecordList__C-item-m">
+                            <div className="MyGameRecordList__C-item-m-top">{b.issueNumber}</div>
+                            <div className="MyGameRecordList__C-item-m-bottom">{b.timestamp}</div>
+                          </div>
+                          {!isPending && (
+                            <div className={`MyGameRecordList__C-item-r ${isWon ? 'success' : ''}`}>
+                              <div className={isWon ? 'success' : ''}>{displayStatus}</div>
+                              <span>{amountText}</span>
+                            </div>
+                          )}
                         </div>
-                        {!isPending && (
-                          <div className={`MyGameRecordList__C-item-r ${isWon ? 'success' : ''}`}>
-                            <div className={isWon ? 'success' : ''}>{displayStatus}</div>
-                            <span>{amountText}</span>
+                        {isExpanded && (
+                          <div className="MyGameRecordList__C-detail">
+                            <div className="MyGameRecordList__C-detail-text">details</div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>order number</span>
+                              <div>{b.orderNumber}<svg className="copy-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(b.orderNumber).then(() => toast({ title: 'Copy success' })).catch(() => {}) }} style={{ cursor: 'pointer' }}><path d="M16 1H9a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5zM9 5H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-5-5H9V5z"/></svg></div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>betting series</span>
+                              <div>{b.issueNumber}</div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>purchase price</span>
+                              <div>₹{Number(b.betamount || 0).toFixed(2)}</div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>Buy quantity</span>
+                              <div>{Number(b.betamount || 0).toFixed(0)}</div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>Amount after tax</span>
+                              <div className={!isWon && !isPending ? 'red' : ''}>₹{Number(b.realAmount || b.betamount || 0).toFixed(2)}</div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>tax</span>
+                              <div>₹{Number(b.fee || 0).toFixed(2)}</div>
+                            </div>
+                            {b?.result && (() => {
+                              const n = parseInt(b.result.number)
+                              const isSmall = n >= 0 && n <= 4
+                              const isBig = n >= 5 && n <= 9
+                              return (
+                                <div className="MyGameRecordList__C-detail-line">
+                                  <span>results</span>
+                                  <div>
+                                    {b.result.number != null && <span className="MyGameRecordList__C-inlineB">{b.result.number}</span>}
+                                    {(() => {
+                                      const showViolet = n === 0 || n === 5
+                                      const displayColour = showViolet ? 'violet' : b.result.colour
+                                      return displayColour && <span className={`MyGameRecordList__C-inlineB purpleColor`}>{displayColour}</span>
+                                    })()}
+                                    {isSmall && <span className="MyGameRecordList__C-inlineB small">small</span>}
+                                    {isBig && <span className="MyGameRecordList__C-inlineB big">big</span>}
+                                  </div>
+                                </div>
+                              )
+                            })()}
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>choose</span>
+                              <div>{b.selectType}</div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>status</span>
+                              <div className={isLost ? 'red' : isWon ? 'green' : ''}>{isWon ? 'success' : isLost ? 'failed' : b.status}</div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>win lose</span>
+                              <div className={isWon ? 'green' : isLost ? 'red' : ''}>
+                                {isWon
+                                  ? `+ ₹${Number(b.result?.profitAmount || 0).toFixed(2)}`
+                                  : isLost
+                                    ? `- ₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}`
+                                    : '-'}
+                              </div>
+                            </div>
+                            <div className="MyGameRecordList__C-detail-line">
+                              <span>time of creation</span>
+                              <div>{b.timestamp}</div>
+                            </div>
                           </div>
                         )}
                       </div>

@@ -1,18 +1,19 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Copy, Users } from "lucide-react";
-import PageHeader from "@/components/PageHeader";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { GameCard } from "@/components/GameCard";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import earnBanner from "@/assets/earn/earn-banner.png";
-import goldBorder from "@/assets/events/gold-border.png";
-import emptyBox from "@/assets/events/empty-box.png";
-import level1Bg from "@/assets/earn/level1-bg.png";
-import level2Bg from "@/assets/earn/level2-bg.png";
-import level3Bg from "@/assets/earn/level3-bg.png";
+import iconTeamPartner from "@/assets/earn/team_partner.svg";
+import iconCopyCode from "@/assets/earn/copy_Code.svg";
+import iconTeamPort from "@/assets/earn/team_port.svg";
+import iconCommission from "@/assets/earn/commission.svg";
+import iconInviteReg from "@/assets/earn/invite_reg.svg";
+import iconServer from "@/assets/earn/server.svg";
+import iconRebateRatio from "@/assets/earn/rebateRatio.svg";
+import iconCopy from "@/assets/earn/copy.svg";
+
 import agentMapTree from "@/assets/earn/agent-map-tree.png";
 
 interface ReferralUser {
@@ -58,237 +59,8 @@ interface DailyBonus {
   level3: DailyBonusLevel;
 }
 
-const maskMobile = (mobile: string) => {
-  if (!mobile || mobile.length < 4) return mobile;
-  return mobile.slice(0, 2) + "****" + mobile.slice(-4);
-};
-
-const getUserIdFromToken = (): string => {
-  try {
-    const token = authService.getToken();
-    if (!token) return "";
-    const parts = token.split(".");
-    if (parts.length < 2) return "";
-    const payload = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
-    return (payload?.userId || payload?.sub || payload?.id || payload?.user?.id || "") as string;
-  } catch {
-    return "";
-  }
-};
-
-const InviteRow = ({
-  icon,
-  label,
-  values,
-  reward,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  values: [number, number, number];
-  reward: string;
-}) => (
-  <div
-    className="flex items-center justify-between rounded-lg px-3 py-2"
-    style={{ backgroundColor: "rgb(112, 28, 50)" }}
-  >
-    <div className="flex items-center gap-2">
-      <div className="w-8 h-8 flex items-center justify-center">{icon}</div>
-      <div>
-        <div className="flex items-center gap-1.5">
-          <span className="text-white text-sm font-bold">{values[0]}</span>
-          <span
-            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium"
-            style={{ backgroundColor: "rgb(5, 121, 45)" }}
-          >
-            <svg width="8" height="8" viewBox="0 0 10 10" fill="none"><path d="M5.168.073L8.559 3.958a.15.15 0 01-.16.352H6.732a.15.15 0 00-.21.131c-.125.905-.877 4.905-4.45 5.497a.1.1 0 01-.133-.06.1.1 0 01.014-.118c.612-.48 1.412-1.41 1.637-3.063.086-.672.128-1.349.125-2.026a.15.15 0 00-.212-.152H1.615a.15.15 0 01-.16-.352L4.848.073a.15.15 0 01.32 0z" fill="white"/></svg>
-            +{values[1]}
-          </span>
-          <span
-            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] text-white font-medium"
-            style={{ backgroundColor: "#d97706" }}
-          >
-            +{values[2]}
-          </span>
-        </div>
-        <span className="text-white/90 text-xs">{label}</span>
-      </div>
-    </div>
-    <div className="flex items-center gap-2">
-      <span className="text-white text-sm font-medium">{reward}</span>
-      <div className="w-5 h-5 rounded-full flex items-center justify-center border border-white/30">
-        <span className="text-white/60 text-[10px]">?</span>
-      </div>
-    </div>
-  </div>
-);
-
-const RecordsCard = ({ data, loadMore, hasMore, loadingMore }: {
-  data: ReferralData | null;
-  loadMore: () => void;
-  hasMore: boolean;
-  loadingMore: boolean;
-}) => {
-  const [recordTab, setRecordTab] = useState<"invitation" | "daily">("invitation");
-
-  return (
-    <GameCard className="p-3 flex flex-col gap-3">
-      <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: "#1a0a10" }}>
-        {(["invitation", "daily"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setRecordTab(tab)}
-            className="flex-1 py-2 rounded-md text-sm font-medium transition-colors"
-            style={
-              recordTab === tab
-                ? { backgroundColor: "rgb(177, 44, 73)", color: "white" }
-                : { color: "rgba(255,255,255,0.5)" }
-            }
-          >
-            {tab === "invitation" ? "Invitation Records" : "Daily Bonus Records"}
-          </button>
-        ))}
-      </div>
-
-      {recordTab === "invitation" ? (
-        <>
-          <div className="flex items-center justify-between px-2 py-1">
-            <span className="text-white/60 text-xs flex-1">Joined Date</span>
-            <span className="text-white/60 text-xs flex-1 text-center">User ID</span>
-            <span className="text-white/60 text-xs flex-1 text-right">Mobile</span>
-          </div>
-
-          {data && data.users.length > 0 ? (
-            <>
-              {data.users.map((user, i) => (
-                <div key={String(user.userId) + i} className="flex items-center justify-between px-2 py-2 rounded-md" style={{ backgroundColor: i % 2 === 0 ? "rgba(112,28,50,0.3)" : "transparent" }}>
-                  <span className="text-white/70 text-xs flex-1">
-                    {new Date(user.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "2-digit" })}
-                  </span>
-                  <span className="text-white/80 text-xs flex-1 text-center font-mono">
-                    {String(user.userId || "").slice(0, 8)}
-                  </span>
-                  <span className="text-white/70 text-xs flex-1 text-right">
-                    {maskMobile(user.mobile)}
-                  </span>
-                </div>
-              ))}
-              {hasMore && (
-                <button
-                  onClick={loadMore}
-                  disabled={loadingMore}
-                  className="text-[#FA829D] text-xs text-center py-2"
-                >
-                  {loadingMore ? "Loading..." : "Load More"}
-                </button>
-              )}
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-8 gap-3">
-              <img src={emptyBox} alt="No records" className="w-24 h-24 object-contain opacity-50" />
-              <span className="text-white/40 text-sm">No referrals yet — share your link!</span>
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <div className="flex items-center justify-between px-2 py-1">
-            <span className="text-white/60 text-xs">Date</span>
-            <span className="text-white/60 text-xs">Invites</span>
-            <span className="text-white/60 text-xs">Regular</span>
-            <span className="text-white/60 text-xs">Depositor</span>
-            <span className="text-white/60 text-xs">Reward</span>
-          </div>
-          <div className="flex flex-col items-center justify-center py-8 gap-3">
-            <img src={emptyBox} alt="No records" className="w-24 h-24 object-contain opacity-50" />
-            <span className="text-white/40 text-sm">No Invite Records</span>
-          </div>
-        </>
-      )}
-    </GameCard>
-  );
-};
-
-const CommissionRecordsCard = ({
-  records,
-  filter,
-  onFilterChange,
-  loadMore,
-  hasMore,
-  loadingMore,
-}: {
-  records: CommissionRecord[];
-  filter: "unclaimed" | "claimed";
-  onFilterChange: (filter: "unclaimed" | "claimed") => void;
-  loadMore: () => void;
-  hasMore: boolean;
-  loadingMore: boolean;
-}) => {
-  return (
-    <GameCard className="p-3 flex flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z" fill="#AC4059"/>
-          <path d="M5.73329 11.0669C6.32239 11.0669 6.79996 10.5894 6.79996 10.0003C6.79996 9.41117 6.32239 8.93359 5.73329 8.93359C5.14419 8.93359 4.66663 9.41117 4.66663 10.0003C4.66663 10.5894 5.14419 11.0669 5.73329 11.0669Z" stroke="#FA829D" strokeLinejoin="round"/>
-          <path d="M12.1332 5.20068H8.93323V14.8007H12.1332" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M6.79999 10H12.1333" stroke="#FA829D" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span className="text-white font-bold text-sm">Payout Records</span>
-      </div>
-
-      <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: "#1a0a10" }}>
-        {(["unclaimed", "claimed"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => onFilterChange(tab)}
-            className="flex-1 py-1.5 rounded-md text-xs font-medium transition-colors"
-            style={
-              filter === tab
-                ? { backgroundColor: "rgb(177, 44, 73)", color: "white" }
-                : { color: "rgba(255,255,255,0.5)" }
-            }
-          >
-            {tab === "unclaimed" ? "Pending" : "Claimed"}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-between px-2 py-1">
-        <span className="text-white/60 text-xs">Date</span>
-        <span className="text-white/60 text-xs">From User</span>
-        <span className="text-white/60 text-xs">Deposit</span>
-        <span className="text-white/60 text-xs">Commission</span>
-      </div>
-
-      {records.length > 0 ? (
-        <>
-          {records.map((rec, i) => (
-            <div key={i} className="flex items-center justify-between px-2 py-2 rounded-md" style={{ backgroundColor: i % 2 === 0 ? "rgba(112,28,50,0.3)" : "transparent" }}>
-              <span className="text-white/70 text-xs">
-                {new Date(rec.timestamp).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}
-              </span>
-              <span className="text-white/80 text-xs font-mono">{String(rec.fromUser).slice(0, 8)}</span>
-              <span className="text-white/70 text-xs">₹{rec.depositAmt}</span>
-              <span className="text-[#f5c842] text-xs font-bold">₹{rec.amount.toFixed(2)}</span>
-            </div>
-          ))}
-          {hasMore && (
-            <button onClick={loadMore} disabled={loadingMore} className="text-[#FA829D] text-xs text-center py-2">
-              {loadingMore ? "Loading..." : "Load More"}
-            </button>
-          )}
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-6 gap-2">
-          <img src={emptyBox} alt="No records" className="w-20 h-20 object-contain opacity-50" />
-          <span className="text-[#FA829D] text-sm">No commission records</span>
-        </div>
-      )}
-    </GameCard>
-  );
-};
-
 const Earn = () => {
-  const [activeTab, setActiveTab] = useState<"referral" | "commission">("referral");
+  const [activeTab, setActiveTab] = useState<"referral" | "commission" | "rebateratio">("referral");
   const [referralData, setReferralData] = useState<ReferralData | null>(null);
   const [allUsers, setAllUsers] = useState<ReferralUser[]>([]);
   const [page, setPage] = useState(1);
@@ -311,10 +83,11 @@ const Earn = () => {
   const [yr, setYr] = useState(2026);
   const [mo, setMo] = useState(5);
   const [dd, setDd] = useState(22);
+  const [rebateLevelTab, setRebateLevelTab] = useState(0);
 
   const { userId } = useProfile();
   const { copyToClipboard } = useCopyToClipboard();
-  const tokenUserId = useMemo(() => getUserIdFromToken(), []);
+  const tokenUserId = useMemo(() => authService.getUserIdFromToken(), []);
   const effectiveUserId = userId || tokenUserId;
 
   // Generate invite URL from userId
@@ -432,9 +205,8 @@ const Earn = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
-      <PageHeader title="Agency" />
-
       <div className="flex flex-col gap-2 px-2 pt-2">
+        {activeTab !== "rebateratio" && <>
         {/* Referral Bonus / Commission tabs */}
         <GameCard className="flex gap-1">
           <button
@@ -468,6 +240,7 @@ const Earn = () => {
             Subordinate data
           </button>
         </GameCard>
+        </>}
 
         <style>{`
   .container {
@@ -477,16 +250,16 @@ const Earn = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px 0;
+    padding: 12px 0;
     box-sizing: border-box;
     color: #ffffff;
     border-radius: 10px;
     box-shadow: none;
   }
   .amount {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
   }
   .amount_txt {
     background-color: rgba(255,255,255,0.15);
@@ -494,12 +267,12 @@ const Earn = () => {
     font-size: 13px;
     padding: 4px 12px;
     border-radius: 20px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .tip {
     font-size: 11px;
     opacity: 0.9;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   .info_content {
     width: 92%;
@@ -511,7 +284,7 @@ const Earn = () => {
   }
   .info {
     flex: 1;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
     text-align: center;
   }
   .info .head {
@@ -535,7 +308,7 @@ const Earn = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 45px;
+    min-height: 32px;
   }
   .info:first-child [class^="line"] {
     border-right: 1px solid rgba(255,255,255,0.1);
@@ -575,7 +348,7 @@ const Earn = () => {
   .TeamReport__C-head-line2 {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 6px;
     gap: 10px;
   }
   .TeamReport__C-head-line2 > div {
@@ -595,54 +368,11 @@ const Earn = () => {
     position: relative;
     cursor: pointer;
   }
-  .level-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background: #2a0510;
-    border: 1px solid rgba(255,180,50,0.25);
-    border-radius: 6px;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(-6px);
-    pointer-events: none;
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-    z-index: 10;
-  }
-  .level-dropdown-menu.open {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  .level-dropdown-item {
-    padding: 8px 10px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.8);
-    transition: background 0.15s;
-  }
-  .level-dropdown-item:hover {
-    background: rgba(255,255,255,0.1);
-  }
   .date-dropdown {
     position: relative;
     cursor: pointer;
   }
-  .date-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 50%;
-    transform: translateX(-50%) translateY(-6px);
-    background: #2a0510;
-    border: 1px solid rgba(255,180,50,0.25);
-    border-radius: 8px;
-    padding: 10px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-    z-index: 10;
-    min-width: 180px;
-  }
+
   .date-dropdown-menu.open {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -692,11 +422,11 @@ const Earn = () => {
   .header-container {
     background: linear-gradient(rgba(53,3,12,0.6), rgba(53,3,12,0.6)) no-repeat top / 200% 100%, url("https://www.82bet22.com/assets/png/promotionbg-1203267e.webp") no-repeat top / 200% 100%, linear-gradient(180deg, #35030c 0%, #5b0116 100%);
     border-radius: 10px;
-    padding: 20px 0;
-    margin: 20px 0 15px;
+    padding: 10px 0;
+    margin: 10px 0;
     display: flex;
     flex-wrap: wrap;
-    row-gap: 24px;
+    row-gap: 10px;
     border: 1px solid rgba(255,180,50,0.25);
   }
   .header-container > div {
@@ -718,29 +448,29 @@ const Earn = () => {
     background-color: rgba(255,255,255,0.06);
     border-radius: 5px;
     padding: 0 10px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     border: 1px solid rgba(255,180,50,0.1);
   }
   .TeamReport__C-body-item-head {
-    height: 35px;
-    padding-top: 5px;
+    height: 30px;
+    padding-top: 3px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     border-bottom: 0.8px solid rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.9);
     font-size: 16px;
   }
   .TeamReport__C-body-item-detail {
-    padding: 11px 0;
-    font-size: 13px;
+    padding: 6px 0;
+    font-size: 12px;
   }
   .TeamReport__C-body-item-detail > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 15px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     color: rgba(255,255,255,0.6);
   }
   .TeamReport__C-body-item-detail > div:last-child {
@@ -753,6 +483,401 @@ const Earn = () => {
     height: 16px;
     fill: rgba(255,255,255,0.4);
     cursor: pointer;
+  }
+  .van-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 2004;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.7);
+  }
+  .van-popup {
+    position: fixed;
+    left: 0; bottom: 0;
+    z-index: 2004;
+    width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    background-color: #2a0510;
+    transition: transform 0.3s;
+  }
+  .van-popup--round {
+    border-radius: 16px 16px 0 0;
+  }
+  .van-picker {
+    position: relative;
+    background-color: #2a0510;
+    user-select: none;
+  }
+  .van-picker__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 44px;
+    padding: 0 16px;
+  }
+  .van-picker__cancel, .van-picker__confirm {
+    height: 100%;
+    padding: 0 16px;
+    font-size: 14px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .van-picker__cancel { color: rgba(255,255,255,0.5); }
+  .van-picker__confirm { color: #f2413b; }
+  .van-picker__title {
+    max-width: 50%;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.9);
+  }
+  .van-picker__columns {
+    position: relative;
+    display: flex;
+    height: 264px;
+    overflow: hidden;
+  }
+  .van-picker-column {
+    flex: 1;
+    overflow: hidden;
+    font-size: 16px;
+    text-align: center;
+    touch-action: none;
+  }
+  .van-picker-column__wrapper {
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    touch-action: none;
+  }
+  .van-picker-column__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    color: rgba(255,255,255,0.4);
+    height: 44px;
+    cursor: pointer;
+  }
+  .van-picker-column__item--selected {
+    color: rgba(255,255,255,0.95);
+    font-weight: 500;
+  }
+  .van-picker__mask {
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 2;
+    width: 100%; height: 100%;
+    background-image: linear-gradient(180deg, rgba(42,5,16,0.95) 0%, rgba(42,5,16,0.4) 40%, transparent 40%, transparent 60%, rgba(42,5,16,0.4) 60%, rgba(42,5,16,0.95) 100%);
+    pointer-events: none;
+  }
+  .van-picker__frame {
+    position: absolute;
+    top: 110px;
+    left: 16px;
+    right: 16px;
+    z-index: 3;
+    height: 44px;
+    pointer-events: none;
+    border-top: 1px solid rgba(255,180,50,0.2);
+    border-bottom: 1px solid rgba(255,180,50,0.2);
+  }
+  .svg-icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+  }
+  .promote__cell {
+    width: 100%;
+  }
+  .promote__cell-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    border: 1px solid rgba(255,180,50,0.1);
+    transition: background 0.15s;
+  }
+  .promote__cell-item:active {
+    background-color: rgba(255,255,255,0.1);
+  }
+  .promote__cell-item .label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.9);
+  }
+  .promote__cell-item .arrow {
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+  }
+  .promote__cell-item .arrow i {
+    font-style: normal;
+    font-size: 18px;
+    margin-left: 5px;
+    color: rgba(255,255,255,0.2);
+  }
+
+  .commission {
+    width: 100%;
+    background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 12px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255,180,50,0.1);
+  }
+  .commission > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .commission > div:first-child {
+    display: block;
+    margin-bottom: 14px;
+  }
+  .commission > div > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .commission > div > span {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .commission > div > div > span:first-child {
+    font-size: 22px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    line-height: 1.2;
+  }
+  .commission > div > div > span:last-child {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+  .commission > div:first-child > span {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .icon-copy-small {
+    width: 18px;
+    height: 18px;
+    opacity: 0.5;
+  }
+  .rebate-ratio-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(180deg, #2a0510 0%, #1a030a 100%);
+  }
+  .x-page {
+    --main-color: #f2413b;
+    min-height: calc(100vh - 120px);
+    color: #fff;
+  }
+  .x-page .navbar {
+    display: block;
+    position: static;
+    width: 100%;
+    height: 46px;
+    box-sizing: border-box;
+    z-index: 100;
+    background: none;
+  }
+  .x-page .navbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 46px;
+    background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+    color: #fff;
+    z-index: 101;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .x-page .navbar__content {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+  .x-page .navbar__content-left {
+    position: absolute;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    cursor: pointer;
+  }
+  .x-page .van-icon-arrow-left {
+    font-size: 18px;
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+  .x-page .navbar__content-center {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  .x-page .navbar__content-title {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: #fff;
+    text-align: center;
+  }
+  .x-page .navbar__content-right {
+    position: absolute;
+    right: 12px;
+  }
+  .x-page .back-arrow {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .x-page .bet-container-sticky .van-sticky > div {
+    display: flex;
+    flex-direction: column;
+  }
+  .x-page .fun-tabs__tab-list {
+    display: flex;
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    align-items: center;
+    padding: 0 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .x-page .fun-tabs__tab-list::-webkit-scrollbar {
+    display: none;
+  }
+  .x-page .fun-tab-item__label {
+    display: block;
+    width: 100.05px;
+    height: 50.025px;
+    box-sizing: border-box;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .x-page .fun-tab-item__label .tab_item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 95.05px;
+    height: 50.025px;
+    margin: 0 2.5px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15), 1px 0 3px rgba(0,0,0,0.08), -1px 0 3px rgba(0,0,0,0.08);
+    border-radius: 8px;
+  }
+  .x-page .fun-tab-item__label .tab_item.tab_active {
+    opacity: 1;
+    background-image: linear-gradient(90deg, rgb(206, 2, 4) 0%, rgb(242, 64, 58) 100%);
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .x-page .fun-tab-item__label .tab_item svg {
+    display: block;
+    width: 25px;
+    height: 25px;
+    fill: currentColor;
+    margin-bottom: 2px;
+  }
+  .x-page .fun-tab-item__label .tab_item span {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: normal;
+    color: rgba(255,255,255,0.7);
+  }
+  .x-page .fun-tab-item__label .tab_item.tab_active span {
+    color: #fff;
+  }
+  .x-page .x-page-list {
+    padding: 12px 0 24px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .x-page .x-page-list .item {
+    margin-bottom: 14px;
+    background: linear-gradient(rgba(53,3,12,0.6), rgba(53,3,12,0.6)) no-repeat top / 200% 100%, url("https://www.82bet22.com/assets/png/promotionbg-1203267e.webp") no-repeat top / 200% 100%, linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+    border-radius: 10px;
+    padding: 0;
+    border: 1px solid rgba(255,180,50,0.25);
+  }
+  .x-page .x-page-list .title {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    padding: 10px 16px;
+  }
+  .x-page .x-page-list .title span {
+    color: #f2413b;
+    font-weight: 700;
+  }
+  .x-page .x-page-list .box {
+    padding: 6px 0;
+  }
+  .x-page .x-page-list .box .li {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .x-page .x-page-list .box .li svg {
+    flex-shrink: 0;
+  }
+  .x-page .x-page-list .box .li > div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .x-page .x-page-list .box .li .sum {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+  .x-page .x-page-list .box .li .num {
+    font-size: 15px;
+    color: rgba(255,255,255,0.9);
   }
 `}</style>
         {activeTab === "referral" ? (
@@ -778,61 +903,109 @@ const Earn = () => {
     </div>
   </div>
 </div>
-            {/* Invite Stats Card */}
-            <GameCard className="p-3 flex flex-col gap-2">
-              <InviteRow icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.333 6.667a2.333 2.333 0 100-4.667 2.333 2.333 0 000 4.667z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.333 13.599V14h10v-.401c0-1.494 0-2.24-.291-2.811a2.67 2.67 0 00-1.166-1.165c-.57-.291-1.317-.291-2.81-.291H5.6c-1.494 0-2.24 0-2.811.29a2.67 2.67 0 00-1.166 1.166c-.29.57-.29 1.317-.29 2.81z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M12.667 4.332v4M10.667 6.332h4" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Total Invites" values={[referralData?.total || 0, 0, 0]} reward=" 👤" />
-              <InviteRow icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.333 6.667a2.333 2.333 0 100-4.667 2.333 2.333 0 000 4.667z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M10.667 5.334l2 2 2-2" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.333 13.601V14h10v-.399c0-1.494 0-2.24-.291-2.811a2.67 2.67 0 00-1.166-1.165c-.57-.291-1.317-.291-2.81-.291H5.6c-1.494 0-2.24 0-2.811.29a2.67 2.67 0 00-1.166 1.166c-.29.57-.29 1.317-.29 2.81z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Valid Invites" values={[0, 0, 0]} reward=" 👤" />
-              <InviteRow icon={<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M7.333 2.666v4c0 .736-1.343 1.333-3 1.333s-3-.597-3-1.333v-4" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M7.333 4.666c0 .736-1.343 1.333-3 1.333s-3-.597-3-1.333" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M7.333 2.667c0 .737-1.343 1.334-3 1.334s-3-.597-3-1.334C1.333 1.93 2.677 1.334 4.333 1.334s3 .597 3 1.333z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M10.667 2h2a1.333 1.333 0 011.333 1.333v2" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M5.333 14H3.333A1.333 1.333 0 012 12.666v-2" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M11.667 11.333a1.667 1.667 0 100-3.333 1.667 1.667 0 000 3.333z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/><path d="M14.667 14.666H8.667c0-1.657 1.343-3 3-3s3 1.343 3 3z" stroke="white" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Deposit Invites" values={[0, 0, 0]} reward="👤" />
-              <InviteRow icon={<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="10" fill="#B12C49"/><path fillRule="evenodd" clipRule="evenodd" d="M10 14.375a4.375 4.375 0 004.375-4.375H10V5.625A4.375 4.375 0 005.625 10 4.375 4.375 0 0010 14.375z" stroke="#FF9FA7" strokeWidth="1.01" strokeLinecap="round" strokeLinejoin="round"/><path fillRule="evenodd" clipRule="evenodd" d="M11.458 8.542V5.875a4.38 4.38 0 012.667 2.667h-2.667z" stroke="#FF9FA7" strokeWidth="1.01" strokeLinecap="round" strokeLinejoin="round"/></svg>} label="Core Users" values={[0, 0, 0]} reward=" 👤" />
-            </GameCard>
-
-            {/* Invitation Records */}
-            <RecordsCard
-              data={displayData}
-              loadMore={() => fetchReferrals(page + 1, true)}
-              hasMore={hasMore}
-              loadingMore={loadingMore}
-            />
+            <div className="promote__cell">
+              <div className="promote__cell-item" onClick={() => {}}>
+                <div className="label"><img src={iconTeamPartner} className="svg-icon" alt="" /><span>Partner rewards</span></div>
+                <div className="arrow"><i>&#10095;</i></div>
+              </div>
+              <div className="promote__cell-item" onClick={() => handleCopyUrl()}>
+                <div className="label"><img src={iconCopyCode} className="svg-icon" alt="" /><span>Copy invitation code</span></div>
+                <div className="arrow"><img src={iconCopy} className="icon-copy-small" alt="" /></div>
+              </div>
+              <div className="promote__cell-item" onClick={() => setActiveTab("commission")}>
+                <div className="label"><img src={iconTeamPort} className="svg-icon" alt="" /><span>Subordinate data</span></div>
+                <div className="arrow"><i>&#10095;</i></div>
+              </div>
+              <div className="promote__cell-item" onClick={() => {}}>
+                <div className="label"><img src={iconCommission} className="svg-icon" alt="" /><span>Commission detail</span></div>
+                <div className="arrow"><i>&#10095;</i></div>
+              </div>
+              <div className="promote__cell-item" onClick={() => {}}>
+                <div className="label"><img src={iconInviteReg} className="svg-icon" alt="" /><span>Invitation rules</span></div>
+                <div className="arrow"><i>&#10095;</i></div>
+              </div>
+              <div className="promote__cell-item" onClick={() => {}}>
+                <div className="label"><img src={iconServer} className="svg-icon" alt="" /><span>Agent line customer service</span></div>
+                <div className="arrow"><i>&#10095;</i></div>
+              </div>
+              <div className="promote__cell-item" onClick={() => setActiveTab("rebateratio")}>
+                <div className="label"><img src={iconRebateRatio} className="svg-icon" alt="" /><span>Rebate ratio</span></div>
+                <div className="arrow"><i>&#10095;</i></div>
+              </div>
+            </div>
+            <div className="commission">
+              <div><span>promotion data</span></div>
+              <div>
+                <div><span>0</span><span>This Week</span></div>
+                <span></span>
+                <div><span>0</span><span>Total commission</span></div>
+              </div>
+              <div>
+                <div><span>0</span><span>direct subordinate</span></div>
+                <span></span>
+                <div><span>0</span><span>Total number of subordinates in the team</span></div>
+              </div>
+            </div>
           </>
+        ) : activeTab === "rebateratio" ? (
+          <div className="x-page">
+            <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setActiveTab("referral")}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Rebate ratio</div></div><div className="navbar__content-right"></div></div></div></div>
+            <div className="bet-container-sticky"><div className="van-sticky"><div><div className="fun-tabs tabs"><div className="fun-tabs__tab-list">
+              {["Lottery", "Casino", "Rummy", "Slots"].map((tab, i) => (
+                <div key={tab} className="fun-tab-item funtab_item"><div className="fun-tab-item__wrap"><div className="fun-tab-item__label"><div className={`tab_item${i === rebateLevelTab ? " tab_active" : ""}`} onClick={() => setRebateLevelTab(i)}>
+                  {tab === "Lottery" && <svg className="svg-icon icon-lottery" viewBox="0 0 48 48"><mask id="mask0_2094_41544" maskUnits="userSpaceOnUse" x="6" y="6" width="36" height="36"><circle cx="24" cy="24" r="18" fill="#D9D9D9"></circle></mask><g mask="url(#mask0_2094_41544)"><path fill-rule="evenodd" clip-rule="evenodd" d="M20.4705 12.992C17.2079 14.0478 13.802 13.3906 11.2254 11.5176C8.65115 14.157 6.94305 17.5424 6.35131 21.184C9.24189 22.2447 11.6331 24.5757 12.6547 27.7324C13.6762 30.8888 13.1042 34.1786 11.3832 36.7317C14.3198 39.6583 18.2092 41.4967 22.3564 41.8918C23.627 39.7355 25.661 38.0177 28.2295 37.1865C30.8181 36.3488 33.4945 36.5589 35.7997 37.5825C38.9641 34.833 41.0645 31.0476 41.7397 26.9331C39.0138 25.7686 36.7873 23.4755 35.8028 20.4338C34.7996 17.3337 35.2977 14.1078 36.8953 11.5428C34.2573 8.83606 30.8169 7.02579 27.0991 6.38029C26.1085 9.40788 23.7332 11.9361 20.4705 12.992ZM28.0728 35.9093C33.8105 34.0525 36.9566 27.8958 35.0998 22.158C33.243 16.4202 27.0863 13.2741 21.3485 15.131C15.6107 16.9879 12.4646 23.1445 14.3215 28.8823C16.1784 34.62 22.335 37.7661 28.0728 35.9093Z" fill="currentColor"></path><path d="M27.0008 29.6018C26.7496 29.841 26.425 30.0249 26.0271 30.1538C25.6331 30.2812 25.2622 30.3223 24.9146 30.2768C24.5659 30.2276 24.2672 30.1024 24.0184 29.9012C23.7686 29.6961 23.5893 29.4254 23.4805 29.0894C23.3692 28.7456 23.3561 28.4148 23.441 28.0971C23.5286 27.7743 23.6987 27.4887 23.9513 27.2406C24.2026 26.9885 24.5195 26.8006 24.9019 26.6768C25.2882 26.5518 25.6551 26.5184 26.0026 26.5767C26.3488 26.6311 26.652 26.7635 26.9122 26.9737C27.171 27.1801 27.3561 27.4554 27.4674 27.7992C27.5761 28.1352 27.5874 28.4602 27.5012 28.774C27.4176 29.0828 27.2508 29.3587 27.0008 29.6018Z" fill="currentColor"></path><path d="M25.1322 24.3616C24.9171 24.5807 24.6434 24.7439 24.3113 24.8514C23.979 24.959 23.6616 24.987 23.359 24.9356C23.0564 24.8841 22.7929 24.7623 22.5686 24.5703C22.3443 24.3784 22.1815 24.1259 22.0802 23.8129C21.9802 23.5039 21.9642 23.2103 22.0321 22.9322C22.1026 22.6491 22.2461 22.3999 22.4624 22.1849C22.6775 21.9659 22.953 21.802 23.2892 21.6932C23.6291 21.5832 23.9485 21.5546 24.2472 21.6073C24.5447 21.6561 24.805 21.7745 25.0281 21.9627C25.2499 22.147 25.4108 22.3937 25.5108 22.7027C25.612 23.0157 25.6281 23.3157 25.5588 23.6027C25.4895 23.8897 25.3473 24.1427 25.1322 24.3616Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M27.4489 33.9791C32.1208 32.4673 34.6824 27.4544 33.1705 22.7825C31.6586 18.1106 26.6457 15.549 21.9739 17.0608C17.302 18.5727 14.7403 23.5857 16.2522 28.2575C17.7641 32.9294 22.777 35.4911 27.4489 33.9791ZM24.1012 32.3326C24.8904 32.3974 25.7311 32.2853 26.6234 31.9965C27.5159 31.7077 28.261 31.3066 28.8588 30.793C29.4591 30.2743 29.8745 29.6982 30.1047 29.0647C30.335 28.431 30.3483 27.793 30.1446 27.1504C29.9807 26.6571 29.716 26.2413 29.3504 25.903C28.9874 25.5596 28.5665 25.3138 28.0875 25.1658C27.6112 25.0126 27.123 24.9743 26.6227 25.0509L26.5965 24.9697C27.1772 24.6409 27.5878 24.1688 27.8282 23.5532C28.0686 22.9377 28.085 22.3029 27.8776 21.6487C27.6762 21.0396 27.3183 20.5536 26.8041 20.1909C26.2885 19.8242 25.6709 19.6037 24.9512 19.5294C24.2353 19.4537 23.4775 19.5453 22.6778 19.8041C21.8781 20.0629 21.2084 20.4332 20.6687 20.9152C20.1316 21.392 19.7617 21.9301 19.5586 22.5292C19.3543 23.1245 19.3516 23.7293 19.5504 24.3435C19.7605 24.9926 20.1419 25.4986 20.6947 25.8617C21.2463 26.221 21.8595 26.3619 22.5343 26.2843L22.5605 26.3655C22.1026 26.599 21.7237 26.918 21.4235 27.3224C21.1221 27.723 20.9249 28.1688 20.8319 28.6597C20.7417 29.1456 20.7766 29.6358 20.9366 30.1303C21.1441 30.7716 21.5268 31.2815 22.0846 31.66C22.6425 32.0386 23.3146 32.2628 24.1012 32.3326Z" fill="currentColor"></path><path d="M-5.27379 33.5341C-3.83367 37.9843 0.941276 40.4243 5.39135 38.9841C9.8414 37.5441 12.2814 32.7691 10.8414 28.319C9.4012 23.869 4.62629 21.4289 0.176219 22.869C-4.27386 24.3092 -6.71391 29.0841 -5.27379 33.5341Z" fill="currentColor"></path><path d="M14.6506 -4.99372C10.3306 -3.59569 8.01311 1.19803 9.47439 5.71338C10.9356 10.2287 15.6222 12.7558 19.9422 11.3577C24.2622 9.95969 26.5796 5.16597 25.1185 0.650652C23.6572 -3.86467 18.9706 -6.39174 14.6506 -4.99372Z" fill="currentColor"></path><path d="M34.1591 55.51C29.4706 57.0272 24.4777 54.5736 23.0072 50.0295C21.5368 45.4855 24.1454 40.5719 28.8339 39.0546C33.5223 37.5373 38.5152 39.991 39.9857 44.535C41.4562 49.079 38.8476 53.9928 34.1591 55.51Z" fill="currentColor"></path><path d="M54.1353 14.5011C55.6056 19.0444 53.1145 23.9194 48.5712 25.3896C44.028 26.8598 39.1531 24.3687 37.6829 19.8255C36.2125 15.2823 38.7036 10.4074 43.2469 8.93712C47.7902 7.46678 52.6651 9.9579 54.1353 14.5011Z" fill="currentColor"></path></g></svg>}
+                  {tab === "Casino" && <svg className="svg-icon icon-video" viewBox="0 0 48 48"><path d="M16.6044 8.59427C16.3396 8.03582 16.5807 7.36986 17.1427 7.10682C17.7048 6.84378 18.3751 7.08325 18.6399 7.6417L21.6149 13.9168C21.8796 14.4752 21.6386 15.1412 21.0765 15.4042C20.5144 15.6673 19.8441 15.4278 19.5794 14.8693L16.6044 8.59427Z" fill="currentColor"></path><path d="M30.9957 8.59427C31.2605 8.03582 31.0194 7.36986 30.4573 7.10682C29.8953 6.84378 29.225 7.08325 28.9602 7.6417L25.9605 13.9689C25.6958 14.5274 25.9368 15.1933 26.4989 15.4564C27.061 15.7194 27.7313 15.4799 27.996 14.9215L30.9957 8.59427Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M11.625 13.8957C8.5184 13.8957 6 16.3978 6 19.4843V36.2501C6 39.3366 8.5184 41.8387 11.625 41.8387H36.375C39.4816 41.8387 42 39.3366 42 36.2501V19.4843C42 16.3978 39.4816 13.8957 36.375 13.8957H11.625ZM14.4375 16.1312C11.3309 16.1312 8.8125 18.6333 8.8125 21.7198V34.0147C8.8125 37.1012 11.3309 39.6033 14.4375 39.6033H33.5625C36.6691 39.6033 39.1875 37.1012 39.1875 34.0147V21.7198C39.1875 18.6333 36.6691 16.1312 33.5625 16.1312H14.4375Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M16.8065 17.8086C13.5996 17.8086 11 20.4082 11 23.615V32.1211C11 35.3279 13.5996 37.9275 16.8065 37.9275H31.0685C34.2754 37.9275 36.875 35.3279 36.875 32.1211V23.615C36.875 20.4082 34.2754 17.8086 31.0685 17.8086H16.8065ZM27.3776 29.5791C28.8784 28.6765 28.8784 26.5008 27.3776 25.5982L23.5195 23.2782C21.9715 22.3473 20 23.4623 20 25.2686L20 29.9087C20 31.715 21.9715 32.83 23.5195 31.8991L27.3776 29.5791Z" fill="currentColor"></path></svg>}
+                  {tab === "Rummy" && <svg className="svg-icon icon-chess" viewBox="0 0 48 48"><ellipse cx="24" cy="24.005" rx="18" ry="17.8488" stroke="currentColor"></ellipse><path fill-rule="evenodd" clip-rule="evenodd" d="M24 41.8538C33.9411 41.8538 42 33.8626 42 24.005C42 14.1474 33.9411 6.15625 24 6.15625C14.0589 6.15625 6 14.1474 6 24.005C6 33.8626 14.0589 41.8538 24 41.8538ZM27.695 20.2582C29.1348 21.6473 30.605 23.0657 30.9686 24.2357C31.8261 26.9953 30.214 29.1047 27.5731 29.1047C26.3543 29.1047 25.5007 28.5988 24.9348 28.0538C24.8988 28.3954 24.9022 28.8583 25.0286 29.3597C25.2343 30.1757 25.8001 30.8896 26.0572 31.1446V31.6546H21.9429V31.1446C22.2001 30.8896 22.6806 30.2252 22.9715 29.3597C23.1357 28.8713 23.1601 28.383 23.1117 28.0273C22.5608 28.5822 21.7345 29.1047 20.5764 29.1047C18.107 29.1047 16.0833 27.1281 17.0437 24.2357C17.4482 23.0175 18.9112 21.6047 20.3334 20.2313C20.6173 19.9571 20.8996 19.6846 21.1715 19.4154C22.613 17.9885 23.7554 16.6492 23.9699 16.3978C23.9935 16.3701 24.0058 16.3556 24.0061 16.3556C24.0064 16.3556 24.0181 16.3694 24.0404 16.3959C24.2493 16.6429 25.3886 17.9907 26.8286 19.4154C27.1097 19.6935 27.4019 19.9754 27.695 20.2582Z" fill="currentColor"></path><path d="M18.4797 7.06917C18.444 6.91493 18.5358 6.76114 18.6883 6.72516C19.2212 6.59948 20.5013 6.32678 22.2273 6.15328C23.9533 5.97978 25.2626 5.99219 25.81 6.00927C25.9667 6.01417 26.0878 6.14656 26.084 6.30476L25.9992 9.91235C25.9961 10.0424 25.909 10.1543 25.7839 10.185C25.3094 10.3016 24.087 10.5796 22.6941 10.7196C21.3013 10.8596 20.0475 10.8306 19.559 10.8108C19.4302 10.8055 19.3223 10.7133 19.293 10.5865L18.4797 7.06917Z" fill="#B8DBC8"></path><path d="M29.4974 40.9561C29.5324 41.1105 29.44 41.2639 29.2874 41.2993C28.754 41.423 27.4729 41.6908 25.7462 41.8577C24.0196 42.0247 22.7104 42.0073 22.163 41.9881C22.0063 41.9826 21.8858 41.8498 21.8901 41.6916L21.9889 38.0844C21.9925 37.9543 22.08 37.8428 22.2052 37.8125C22.6802 37.6977 23.9037 37.4244 25.2971 37.2897C26.6905 37.155 27.9441 37.1888 28.4325 37.2104C28.5613 37.2162 28.6689 37.3089 28.6977 37.4358L29.4974 40.9561Z" fill="#B8DBC8"></path><path d="M41.4839 28.0003C41.6328 28.0476 41.7161 28.2035 41.6691 28.3532C41.506 28.8727 41.0896 30.1027 40.3604 31.6618C39.6312 33.2209 38.9531 34.3306 38.6586 34.7896C38.5737 34.9219 38.3998 34.9595 38.2673 34.8774L35.1728 32.9594C35.0633 32.8915 35.0122 32.76 35.0498 32.6359C35.1914 32.1699 35.5735 30.9877 36.1615 29.7307C36.7494 28.4737 37.4128 27.4207 37.6801 27.0126C37.7512 26.9039 37.8856 26.8576 38.0085 26.8967L41.4839 28.0003Z" fill="#B8DBC8"></path><path d="M40.5726 17.1763C40.7119 17.1047 40.7682 16.9368 40.6967 16.7973C40.4482 16.3124 39.8299 15.1688 38.8475 13.7526C37.865 12.3364 37.009 11.3549 36.6412 10.9514C36.5353 10.8353 36.3571 10.8275 36.2399 10.9309L33.5144 13.3345C33.4176 13.4199 33.3892 13.5581 33.4471 13.6738C33.6652 14.1094 34.2418 15.2119 35.0341 16.3538C35.8263 17.4958 36.6584 18.424 36.9907 18.7817C37.079 18.8767 37.2193 18.8998 37.3343 18.8407L40.5726 17.1763Z" fill="#B8DBC8"></path><path d="M7.53066 31.2649C7.3933 31.3402 7.34138 31.5095 7.41662 31.6471C7.67806 32.1251 8.327 33.252 9.34734 34.6417C10.3677 36.0313 11.2499 36.9898 11.6284 37.3834C11.7374 37.4966 11.9158 37.4996 12.0302 37.3931L14.6897 34.9182C14.7842 34.8303 14.8089 34.6914 14.7479 34.5773C14.5182 34.1477 13.912 33.0609 13.0892 31.9402C12.2664 30.8196 11.4095 29.9138 11.0677 29.5651C10.977 29.4724 10.836 29.4531 10.7227 29.5153L7.53066 31.2649Z" fill="#B8DBC8"></path><path d="M6.40816 20.1019C6.25952 20.054 6.17679 19.8977 6.22441 19.7482C6.38965 19.2295 6.81106 18.0011 7.5467 16.445C8.28233 14.8888 8.96491 13.7819 9.26132 13.3241C9.34673 13.1921 9.52082 13.1552 9.65301 13.2379L12.7396 15.1683C12.8488 15.2366 12.8994 15.3684 12.8612 15.4922C12.7178 15.9577 12.3308 17.1384 11.7377 18.393C11.1446 19.6476 10.4769 20.6979 10.2079 21.105C10.1363 21.2133 10.0018 21.2591 9.87898 21.2195L6.40816 20.1019Z" fill="#B8DBC8"></path><mask id="mask0_2094_41589" maskUnits="userSpaceOnUse" x="11" y="11" width="26" height="26"><path fill-rule="evenodd" clip-rule="evenodd" d="M23.9978 36.7541C31.0986 36.7541 36.8549 31.0461 36.8549 24.005C36.8549 16.9638 31.0986 11.2559 23.9978 11.2559C16.897 11.2559 11.1406 16.9638 11.1406 24.005C11.1406 31.0461 16.897 36.7541 23.9978 36.7541ZM23.9978 35.7342C30.5305 35.7342 35.8263 30.4828 35.8263 24.005C35.8263 17.5271 30.5305 12.2758 23.9978 12.2758C17.465 12.2758 12.1692 17.5271 12.1692 24.005C12.1692 30.4828 17.465 35.7342 23.9978 35.7342Z" fill="currentColor"></path></mask><g mask="url(#mask0_2094_41589)"><path d="M21.4299 11.0021L24.5148 10.9336L24.5609 12.9729L21.4759 13.0415L21.4299 11.0021Z" fill="#B8DBC8"></path><path d="M28.3322 11.3949L31.1971 12.5315L30.4329 14.4254L27.568 13.2888L28.3322 11.3949Z" fill="#B8DBC8"></path><path d="M17.4308 12.2151L14.9296 14.007L16.1343 15.6604L18.6355 13.8685L17.4308 12.2151Z" fill="#B8DBC8"></path><path d="M12.3368 17.3762L11.14 20.1965L13.0361 20.9876L14.2329 18.1673L12.3368 17.3762Z" fill="#B8DBC8"></path><path d="M10.8828 23.7507L10.8828 26.8105L12.94 26.8105V23.7507L10.8828 23.7507Z" fill="#B8DBC8"></path><path d="M12.5203 30.4231L14.2092 32.9839L15.9309 31.8674L14.242 29.3066L12.5203 30.4231Z" fill="#B8DBC8"></path><path d="M16.7971 35.5881L19.6607 36.7279L20.427 34.8348L17.5634 33.6951L16.7971 35.5881Z" fill="#B8DBC8"></path><path d="M23.4828 37.2646L26.5682 37.3118L26.5999 35.2722L23.5146 35.225L23.4828 37.2646Z" fill="#B8DBC8"></path><path d="M30.5929 35.8649L33.1037 34.0863L31.9079 32.4264L29.3971 34.205L30.5929 35.8649Z" fill="#B8DBC8"></path><path d="M35.2458 31.0912L36.5971 28.3404L34.7477 27.4471L33.3964 30.1979L35.2458 31.0912Z" fill="#B8DBC8"></path><path d="M37.392 24.5156L37.3686 21.4559L35.3115 21.4714L35.335 24.5311L37.392 24.5156Z" fill="#B8DBC8"></path><path d="M35.824 17.7544L34.0818 15.2289L32.3839 16.3806L34.1261 18.9061L35.824 17.7544Z" fill="#B8DBC8"></path></g></svg>}
+                  {tab === "Slots" && <svg className="svg-icon icon-slot" viewBox="0 0 48 48"><path fill-rule="evenodd" clip-rule="evenodd" d="M44.3345 12.4706C44.3345 12.5712 44.3284 12.6703 44.3166 12.7677C45.1351 13.5954 45.7981 14.8116 46.551 16.8628C47.3071 18.9227 47.4185 21.2382 47.3249 23.112C47.4636 23.6175 47.5791 24.1858 47.6596 24.8235V26.4706V28.1176C47.6596 31.1373 45.997 33.0588 45.997 33.0588C45.997 33.0588 45.178 33.8702 44.3529 34.1507C43.2807 37.1286 41.7029 38 41.0047 38H32.4196C32.4196 38 34.3592 36.6275 34.3592 26.4706C34.3592 16.3137 32.1425 14.9412 32.1425 14.9412H41.0047C41.7436 14.9412 43.4678 15.9172 44.5351 19.3333H44.8887C44.8887 19.3333 45.1166 19.4463 45.4446 19.7445C45.0423 18.0423 43.024 15.3901 42.1176 14.9412L42.112 14.9355L42.1045 14.9275C42.0178 14.9365 41.9298 14.9412 41.8407 14.9412C40.4634 14.9412 39.3469 13.8351 39.3469 12.4706C39.3469 11.1061 40.4634 10 41.8407 10C43.218 10 44.3345 11.1061 44.3345 12.4706ZM3.19266 34.1086C2.40779 33.7971 1.66254 33.0588 1.66254 33.0588C1.66254 33.0588 0 31.1373 0 28.1176V26.4706V24.8235C0.554181 20.4314 2.77091 19.3333 2.77091 19.3333H3.1877C3.72876 17.677 4.54266 16.2484 5.73962 15.4199C6.2972 15.034 6.97712 14.9412 7.6573 14.9412H15.7942C15.7942 14.9412 13.3003 15.6103 13.3003 26.4706C13.3003 37.3309 15.5171 38 15.5171 38H7.65711C6.97693 38 6.30146 37.9043 5.72691 37.5436C4.54065 36.799 3.73188 35.6083 3.19266 34.1086ZM14.1316 26.4706C14.1316 16.0392 16.3483 14.9412 16.3483 14.9412H31.4844C31.4844 14.9412 33.7011 16.0392 33.7011 26.4706C33.7011 36.902 31.5883 38 31.5883 38H16.0713C16.0713 38 14.1316 36.902 14.1316 26.4706ZM16.6658 18.809C16.9429 18.5345 18.4295 18.8795 19.1595 19.3581C19.2651 19.4274 19.4042 19.3209 19.6288 19.1489C19.997 18.8669 20.5952 18.4088 21.6533 18.26C22.4623 18.1462 23.9874 18.4453 25.3594 18.7143C26.3399 18.9066 27.2422 19.0835 27.7493 19.0835C28.9129 19.0836 29.758 18.7737 30.2448 18.5344C30.6653 18.3276 30.9773 19.2982 31.234 20.0966C31.5467 21.0326 31.3319 21.4747 31.091 21.9706C30.9879 22.183 30.8799 22.4053 30.7973 22.6522C30.613 23.203 30.1752 23.9704 29.789 24.6474C29.5978 24.9824 29.4195 25.295 29.2906 25.5484C29.2026 25.7216 29.1039 25.9059 28.9999 26.1003C28.5289 26.9802 27.9487 28.0643 27.7493 29.2404L27.7379 29.3079C27.5295 30.536 27.3821 31.4051 27.6211 33.7554C27.6211 33.8537 27.6236 33.9412 27.6259 34.0181C27.6346 34.3158 27.6387 34.456 27.4722 34.4561C26.4988 34.4567 22.2316 34.4577 20.4469 34.4561C20.2909 34.4559 20.2772 34.0312 20.2706 33.8259L20.2695 33.7923C20.269 33.7783 20.2685 33.7659 20.2679 33.7554C19.9924 28.6912 24.1488 24.5736 26.9181 22.9267C27.4493 22.6108 27.1952 22.6522 27.1952 22.6522C27.1952 22.6522 25.5326 23.4757 24.4242 23.4757C23.5301 23.4757 22.6857 23.1532 21.9679 22.8791C21.3511 22.6435 20.8278 22.4436 20.4469 22.5149C19.7137 22.6522 19.7137 23.4757 19.9908 23.7502C20.0966 23.8551 20.1882 23.9411 20.2664 24.0147C20.3929 24.1336 20.4844 24.2197 20.545 24.2992C20.6869 24.4856 20.1979 25.2068 19.7137 25.3973C19.2295 25.5877 17.4985 25.9463 16.9428 24.8482C16.3171 23.3992 16.7617 22.3209 17.0179 21.6997C17.1014 21.4971 17.1649 21.3431 17.1647 21.2407C17.1645 21.1684 17.1844 21.0557 17.2078 20.9226C17.2628 20.6105 17.3375 20.1863 17.2207 19.9071C17.0687 19.4563 16.8728 19.2136 16.7507 19.0625C16.6497 18.9375 16.5993 18.875 16.6658 18.809Z" fill="currentColor"></path></svg>}
+                  <span>{tab}</span>
+                </div></div></div></div>
+              ))}
+            </div></div></div></div></div>
+            <div className="x-page-list">
+              {[
+                { level: "L0", items: ["0.3%", "0.09%", "0.027%", "0.0081%", "0.00243%", "0.000729%"] },
+                { level: "L1", items: ["0.35%", "0.1225%", "0.042875%", "0.015006%", "0.005252%", "0.001838%"] },
+                { level: "L2", items: ["0.375%", "0.140625%", "0.052734%", "0.019775%", "0.007416%", "0.002781%"] },
+                { level: "L3", items: ["0.4%", "0.16%", "0.064%", "0.0256%", "0.01024%", "0.004096%"] },
+                { level: "L4", items: ["0.425%", "0.180625%", "0.076766%", "0.032625%", "0.013866%", "0.005893%"] },
+                { level: "L5", items: ["0.45%", "0.2025%", "0.091125%", "0.041006%", "0.018453%", "0.008304%"] },
+                { level: "L6", items: ["0.5%", "0.25%", "0.125%", "0.0625%", "0.03125%", "0.015625%"] },
+              ].map(group => (
+                <div key={group.level} className="item">
+                  <div className="title">Rebate level <span>{group.level}</span></div>
+                  <div className="box">
+                    {group.items.map((val, j) => (
+                      <div key={j} className="li">
+                        <svg className="svg-icon icon-round img img" viewBox="0 0 20 20">
+                          <circle cx="10" cy="10" r="9.4" fill="white" stroke="var(--main-color)" strokeWidth="1.2" />
+                          <circle cx="10" cy="10" r="5" fill="var(--main-color)" />
+                        </svg>
+                        <div>
+                          <span className="sum">{j + 1} level lower level commission rebate</span>
+                          <span className="num">{val}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
           <>
             <div className="TeamReport__C">
               <div className="searchbar-container">
                 <input type="text" className="searchbar-container__searchbar" placeholder="Search subordinate UID" />
-<GameButton variant="red" style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", width: "64px", height: "32px", borderRadius: "19px", padding: "0", fontSize: "0", minWidth: "64px" }}><svg width="18" height="18" viewBox="0 0 1024 1024" fill="white"><path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z"></path></svg></GameButton>
+<GameButton variant="dark" style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", width: "64px", height: "32px", borderRadius: "19px", padding: "0", fontSize: "0", minWidth: "64px" }}><svg width="18" height="18" viewBox="0 0 1024 1024" fill="white"><path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z"></path></svg></GameButton>
               </div>
               <div className="TeamReport__C-head-line2">
                 <div className="level-dropdown" onClick={() => setLevelOpen(o => !o)}>
                   <span>{levelVal}</span>
                   <svg width="12" height="12" viewBox="0 0 1024 1024"><path d="M884 311.6c-9.4-9.4-24.6-9.4-33.9 0L512 649.7 173.9 311.6c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l355.1 355.1c9.4 9.4 24.6 9.4 33.9 0L884 345.5c9.4-9.4 9.4-24.6 0-33.9z"></path></svg>
-                  <div className={`level-dropdown-menu ${levelOpen ? "open" : ""}`}>
-                    {["All", "Level 1", "Level 2", "Level 3"].map(opt => (
-                      <div key={opt} className="level-dropdown-item" onClick={e => { e.stopPropagation(); setLevelVal(opt); setLevelOpen(false); }}>{opt}</div>
-                    ))}
-                  </div>
                 </div>
                 <div className="date-dropdown" onClick={() => setDateOpen(o => !o)}>
                   <span>{`${yr}-${String(mo).padStart(2,"0")}-${String(dd).padStart(2,"0")}`}</span>
                   <svg width="12" height="12" viewBox="0 0 1024 1024"><path d="M884 311.6c-9.4-9.4-24.6-9.4-33.9 0L512 649.7 173.9 311.6c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l355.1 355.1c9.4 9.4 24.6 9.4 33.9 0L884 345.5c9.4-9.4 9.4-24.6 0-33.9z"></path></svg>
-                  <div className={`date-dropdown-menu ${dateOpen ? "open" : ""}`}>
-                    <div className="date-picker-cols">
-                      <div className="scroll-col">
-                        <div className="scroll-val scroll-val-prev" onClick={e => { e.stopPropagation(); setYr(y => Math.min(y + 1, 2030)); }}>{yr + 1 > 2030 ? "" : yr + 1}</div>
-                        <div className="scroll-val scroll-val-cur">{yr}</div>
-                        <div className="scroll-val scroll-val-next" onClick={e => { e.stopPropagation(); setYr(y => Math.max(y - 1, 2020)); }}>{yr - 1 < 2020 ? "" : yr - 1}</div>
-                      </div>
-                      <div className="scroll-col">
-                        <div className="scroll-val scroll-val-prev" onClick={e => { e.stopPropagation(); setMo(m => m % 12 + 1); }}>{String(mo % 12 + 1).padStart(2, "0")}</div>
-                        <div className="scroll-val scroll-val-cur">{String(mo).padStart(2, "0")}</div>
-                        <div className="scroll-val scroll-val-next" onClick={e => { e.stopPropagation(); setMo(m => m === 1 ? 12 : m - 1); }}>{String(mo === 1 ? 12 : mo - 1).padStart(2, "0")}</div>
-                      </div>
-                      <div className="scroll-col">
-                        <div className="scroll-val scroll-val-prev" onClick={e => { e.stopPropagation(); setDd(d => d % 31 + 1); }}>{String(dd % 31 + 1).padStart(2, "0")}</div>
-                        <div className="scroll-val scroll-val-cur">{String(dd).padStart(2, "0")}</div>
-                        <div className="scroll-val scroll-val-next" onClick={e => { e.stopPropagation(); setDd(d => d === 1 ? 31 : d - 1); }}>{String(dd === 1 ? 31 : dd - 1).padStart(2, "0")}</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -847,8 +1020,8 @@ const Earn = () => {
 
               <div className="TeamReport__C-body-item">
                 <div className="TeamReport__C-body-item-head">
-                  <div>UID:3540850</div>
-                  <svg className="icon-copy" viewBox="0 0 1024 1024"><path d="M768 832V256H192v576h576m0-640a64 64 0 0 1 64 64v576a64 64 0 0 1-64 64H192a64 64 0 0 1-64-64V256a64 64 0 0 1 64-64h576m-128-128v64H128v576H64V128a64 64 0 0 1 64-64h512z"></path></svg>
+                  <span>UID:3540850</span>
+                  <svg className="icon-copy" viewBox="0 0 1024 1024" style={{ marginLeft: "6px" }}><path d="M768 832V256H192v576h576m0-640a64 64 0 0 1 64 64v576a64 64 0 0 1-64 64H192a64 64 0 0 1-64-64V256a64 64 0 0 1 64-64h576m-128-128v64H128v576H64V128a64 64 0 0 1 64-64h512z"></path></svg>
                 </div>
                 <div className="TeamReport__C-body-item-detail">
                   <div>Level <span>1</span></div>
@@ -858,10 +1031,74 @@ const Earn = () => {
                 </div>
               </div>
             </div>
+
+            {dateOpen && (
+              <>
+                <div className="van-overlay" onClick={() => setDateOpen(false)}></div>
+                <div className="van-popup van-popup--round van-popup--bottom">
+                  <div className="van-picker">
+                    <div className="van-picker__toolbar">
+                      <button type="button" className="van-picker__cancel" onClick={() => setDateOpen(false)}>Cancel</button>
+                      <div className="van-picker__title">Choose a date</div>
+                      <button type="button" className="van-picker__confirm" onClick={() => setDateOpen(false)}>Confirm</button>
+                    </div>
+                    <div className="van-picker__columns">
+                      <div className="van-picker-column">
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((yr - 2020) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); setYr(y => Math.max(2020, Math.min(2030, y + (e.deltaY > 0 ? 1 : -1)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) setYr(y => Math.max(2020, Math.min(2030, y + (diff > 0 ? 1 : -1)))); }}>
+                          {Array.from({ length: 11 }, (_, i) => 2020 + i).map(y => (
+                            <div key={y} className={`van-picker-column__item${y === yr ? " van-picker-column__item--selected" : ""}`}>{String(y)}</div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="van-picker-column">
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((mo - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); setMo(m => Math.max(1, Math.min(12, m + (e.deltaY > 0 ? 1 : -1)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) setMo(m => Math.max(1, Math.min(12, m + (diff > 0 ? 1 : -1)))); }}>
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                            <div key={m} className={`van-picker-column__item${m === mo ? " van-picker-column__item--selected" : ""}`}>{String(m).padStart(2, "0")}</div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="van-picker-column">
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((dd - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); setDd(d => Math.max(1, Math.min(31, d + (e.deltaY > 0 ? 1 : -1)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) setDd(d => Math.max(1, Math.min(31, d + (diff > 0 ? 1 : -1)))); }}>
+                          {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                            <div key={d} className={`van-picker-column__item${d === dd ? " van-picker-column__item--selected" : ""}`}>{String(d).padStart(2, "0")}</div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="van-picker__mask"></div>
+                      <div className="van-picker__frame"></div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            {levelOpen && (
+              <>
+                <div className="van-overlay" onClick={() => setLevelOpen(false)}></div>
+                <div className="van-popup van-popup--round van-popup--bottom">
+                  <div className="van-picker">
+                    <div className="van-picker__toolbar">
+                      <button type="button" className="van-picker__cancel" onClick={() => setLevelOpen(false)}>Cancel</button>
+                      <div className="van-picker__title">Select Level</div>
+                      <button type="button" className="van-picker__confirm" onClick={() => setLevelOpen(false)}>Confirm</button>
+                    </div>
+                    <div className="van-picker__columns">
+                      <div className="van-picker-column">
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((levelVal === "All" ? 0 : levelVal === "Level 1" ? 1 : levelVal === "Level 2" ? 2 : 3) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const opts = ["All","Level 1","Level 2","Level 3"]; const idx = opts.indexOf(levelVal); const next = Math.max(0, Math.min(3, idx + (e.deltaY > 0 ? 1 : -1))); setLevelVal(opts[next]); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const opts = ["All","Level 1","Level 2","Level 3"]; const idx = opts.indexOf(levelVal); const next = Math.max(0, Math.min(3, idx + (diff > 0 ? 1 : -1))); setLevelVal(opts[next]); } }}>
+                          {["All", "Level 1", "Level 2", "Level 3"].map(opt => (
+                            <div key={opt} className={`van-picker-column__item${opt === levelVal ? " van-picker-column__item--selected" : ""}`}>{opt}</div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="van-picker__mask"></div>
+                      <div className="van-picker__frame"></div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
-
     </main>
   );
 };
