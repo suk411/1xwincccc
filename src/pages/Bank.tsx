@@ -5,12 +5,13 @@ import { GameCard } from "@/components/GameCard";
 import headerBg from "@/assets/bank/header-bg.png";
 import bankIcon from "@/assets/bank/bank-icon.png";
 import depositBadge from "@/assets/bank/deposit-badge.png";
-import upiLogo from "@/assets/bank/upi-logo.png";
+import upiLogo from "@/assets/bank/upi-logo.jpg";
 import usdtLogo from "@/assets/bank/usdt-logo.png";
 import upayLogo from "@/assets/bank/upay-logo.png";
+import bankLogo from "@/assets/bank/bank-logo.png";
 import giftBox from "@/assets/bank/gift-box-small.png";
 import eventBg from "@/assets/bank/event-bg.png";
-import { Info, ClipboardCheck, ChevronRight, Check, PlusCircle, Wallet, CreditCard, CheckCircle } from "lucide-react";
+import { ClipboardCheck } from "lucide-react";
 import AddAccountDialog, { type BankAccount } from "@/components/bank/AddAccountDialog";
 import { GameButton } from "@/components/GameButton";
 import { useProfile } from "@/hooks/useProfile";
@@ -60,6 +61,9 @@ const Bank = () => {
   const [customAmount, setCustomAmount] = useState("");
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
   const [activeChannel, setActiveChannel] = useState("upi");
+  const [activeWithdrawMethod, setActiveWithdrawMethod] = useState("bank_card");
+  const [withdrawAmountInput, setWithdrawAmountInput] = useState("");
+  const [depositAmountInput, setDepositAmountInput] = useState("");
   const [showAddAccount, setShowAddAccount] = useState(false);
   const [showViewAccount, setShowViewAccount] = useState(false);
   const [bindAccount, setBindAccount] = useState<BankAccount | null>(cached?.data?.bindAccount || null);
@@ -73,6 +77,12 @@ const Bank = () => {
     { id: "upi", label: "UPI", icon: upiLogo },
     { id: "usdt", label: "USDT", icon: usdtLogo },
     { id: "upay", label: "UPAY", icon: upayLogo },
+  ];
+
+  const WITHDRAW_METHODS = [
+    { id: "bank_card", label: "BANK CARD", icon: bankLogo },
+    { id: "upi", label: "UPI", icon: upiLogo },
+    { id: "usdt", label: "UPAY", icon: upayLogo },
   ];
 
   const loadWithdrawInfo = async () => {
@@ -139,6 +149,24 @@ const Bank = () => {
     }
   };
 
+  const handleWithdrawAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "");
+    setWithdrawAmountInput(val);
+    setSelectedWithdrawAmount(val ? parseInt(val) : 0);
+  };
+
+  const handleAllWithdraw = () => {
+    const bal = Math.floor(walletBalance);
+    setWithdrawAmountInput(String(bal));
+    setSelectedWithdrawAmount(bal);
+  };
+
+  const handleDepositAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "");
+    setDepositAmountInput(val);
+    setCustomAmount(val);
+  };
+
   const walletBalance = withdrawInfo?.data?.walletBalance ?? withdrawInfo?.data?.balance ?? balance;
   const withdrawableAmount = withdrawInfo?.data?.totalAvailable ?? withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   const turnoverRequirement = withdrawInfo?.data?.turnover?.total_required ?? withdrawInfo?.data?.turnover?.requirement ?? (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
@@ -149,6 +177,7 @@ const Bank = () => {
   const remainingLimit = withdrawInfo?.data?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
   
   const feeAmount = (selectedWithdrawAmount * 0.035) + 6;
+  const withdrawReceivedAmount = Math.max(0, selectedWithdrawAmount - feeAmount);
   
   const currentEffectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
   const selectedDepositBonus = [...DEPOSIT_OPTIONS]
@@ -266,7 +295,7 @@ const Bank = () => {
         <GameCard className="flex gap-1">
           <button
             onClick={() => setActiveTab("deposit")}
-            className="flex-1 h-8 rounded-sm text-sm transition-all"
+            className="flex-1 h-8 rounded-sm text-sm transition-all border border-white/10"
             style={
               activeTab === "deposit"
                 ? { backgroundImage: "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)", color: "#5a2d0a" }
@@ -277,7 +306,7 @@ const Bank = () => {
           </button>
           <button
             onClick={() => setActiveTab("withdraw")}
-            className="flex-1 h-8 rounded-md text-sm transition-all"
+            className="flex-1 h-8 rounded-md text-sm transition-all border border-white/10"
             style={
               activeTab === "withdraw"
                 ? { backgroundImage: "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)", color: "#5a2d0a" }
@@ -326,7 +355,7 @@ const Bank = () => {
                     <button
                       key={ch.id}
                       onClick={() => setActiveChannel(ch.id)}
-                      className="relative flex items-center justify-center rounded-[7px] cursor-pointer overflow-hidden transition-all"
+                      className="relative flex items-center justify-center rounded-[7px] cursor-pointer overflow-hidden transition-all border border-white/10"
                       style={{
                         width: "105px",
                         height: "42px",
@@ -370,7 +399,7 @@ const Bank = () => {
                         setSelectedAmount(opt.deposit);
                         setCustomAmount("");
                       }}
-                      className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
+                      className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
                       style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                     >
                       <img src={depositBadge} alt="" className="absolute top-0 left-0 w-12 h-5 object-contain" />
@@ -386,22 +415,18 @@ const Bank = () => {
                   );
                 })}
               </div>
-              <div className="mt-2 flex flex-col gap-1.5">
-                <span className="text-white/70 text-xs">Custom Amount</span>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-bold">₹</span>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={customAmount}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, ""); // Remove any non-digits
-                      setCustomAmount(value);
-                    }}
-                    placeholder="100-20000"
-                    className="w-full bg-black/20 border border-white/10 rounded-md py-2.5 pl-7 pr-3 text-white text-sm focus:outline-none focus:border-primary transition-colors"
-                  />
-                </div>
+              <div
+                className="flex items-center rounded-[30px] h-11 px-3"
+                style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
+              >
+                <span className="text-primary text-lg font-medium">₹</span>
+                <input
+                  type="text"
+                  placeholder="Custom amount"
+                  className="bg-transparent border-none outline-none w-full h-full ml-3 text-sm text-white placeholder-white/50"
+                  value={depositAmountInput}
+                  onChange={handleDepositAmountChange}
+                />
               </div>
             </GameCard>
 
@@ -437,126 +462,112 @@ const Bank = () => {
           </>
         ) : (
           <>
-            <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white text-sm">Select Amount</span>
-              <div className="grid grid-cols-3 gap-2">
-                {WITHDRAW_AMOUNTS.map((amount) => {
-                  const isActive = selectedWithdrawAmount === amount;
-                  return (
-                    <div
-                      key={amount}
-                      onClick={() => setSelectedWithdrawAmount(amount)}
-                      className="relative rounded-md overflow-hidden flex flex-col cursor-pointer"
-                      style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
-                    >
-                      {amount === 110 && (
-                        <>
-                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-10 h-5 object-contain" />
-                          <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
-                        </>
-                      )}
-                      <span className="text-white text-base text-center py-2">{amount.toLocaleString()}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </GameCard>
-
-            <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white text-sm">Withdrawal Account</span>
-              {withdrawInfo?.data?.isBankBound ? (
-                <>
+            {/* Withdraw method selector - from withdrwalui.html */}
+            <div className="flex gap-2 justify-start">
+              {WITHDRAW_METHODS.map((method) => {
+                const isActive = activeWithdrawMethod === method.id;
+                return (
                   <div
-                    className="flex items-center justify-between rounded-md px-3 py-2.5"
-                    style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
+                    key={method.id}
+                    onClick={() => setActiveWithdrawMethod(method.id)}
+                    className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all border border-white/10"
+                    style={{
+                      backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
+                      color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
+                    }}
                   >
-                    <div className="flex items-center gap-2">
-                      <img 
-                        src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/bankcardicon.png" 
-                        alt="Bank" 
-                        className="w-6 h-6 object-contain"
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-white text-sm">{withdrawInfo?.data?.bindAccount?.bankName || bindAccount?.bankName || "Linked Bank"}</span>
-                        {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber) && (
-                          <span className="text-white text-xs">
-                            **** **** **** {(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber || "").slice(-4)}
-                          </span>
-                        )}
-                      </div>
+                    <div className="flex justify-center items-center w-full h-[35px]">
+                      <img src={method.icon} alt={method.label} className="w-[35px] h-[35px] object-contain" />
                     </div>
-                    <GameButton
-                      variant="gold"
-                      style={{
-                        height: "28px",
-                        fontSize: "10px",
-                        paddingLeft: "10px",
-                        paddingRight: "10px",
-                        borderRadius: "14px",
-                      }}
-                      onClick={() => setShowViewAccount(true)}
-                    >
-                      View
-                    </GameButton>
+                    <span className="text-xs font-medium">{method.label}</span>
                   </div>
-                  <p className="text-[11px] text-white">
-                    Bank account can only be bound once per user. Contact support to change details.
-                  </p>
-                </>
-              ) : (
-                <div
-                  onClick={() => setShowAddAccount(true)}
-                  className="flex items-center justify-between rounded-md px-3 py-2.5 cursor-pointer"
-                  style={{ backgroundColor: "rgba(211, 54, 93, 0.2)" }}
-                >
-                  <div className="flex items-center gap-2">
-                    <img 
-                      src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/bankcardicon.png" 
-                      alt="Bank" 
-                      className="w-6 h-6 object-contain"
-                    />
-                    <span className="text-yellow-400 text-sm">Add Account</span>
-                  </div>
-                  <PlusCircle size={20} className="text-white" />
-                </div>
-              )}
+                );
+              })}
+            </div>
+
+            {/* Add account section - from withdrwalui.html */}
+            <GameCard className="p-3">
+              <div
+                className="flex flex-col items-center justify-center gap-2 h-24 cursor-pointer border border-white/10 rounded-md"
+                onClick={() => setShowAddAccount(true)}
+              >
+                <img
+                  src="https://yaarwin.org/assets/png/add-1ad7f3f5.webp"
+                  alt="Add"
+                  className="w-11 h-11 object-contain opacity-80"
+                />
+                <span className="text-white/70 text-xs">{activeWithdrawMethod === "upi" ? "Add a UPI account information" : "Add a bank account information"}</span>
+              </div>
+              <p className="text-primary text-[11px] text-center mt-2">
+                Need to add beneficiary information to be able to withdraw money
+              </p>
             </GameCard>
 
-           
-
-            <div className="mt-4 px-2 space-y-3 pb-4">
-              <div className="flex flex-col gap-1">
-                <div className="flex gap-2">
-                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
-                  <p className="text-white text-[15px] leading-relaxed italic">Need to bet ₹{remainingTurnover.toFixed(0)} to be able to withdraw</p>
+            {/* Amount input section - from withdrwalui.html */}
+            <GameCard className="p-3">
+              <div
+                className="flex items-center rounded-[30px] h-11 px-3 mb-2.5"
+                style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
+              >
+                <span className="text-primary text-lg font-medium">₹</span>
+                <input
+                  type="text"
+                  placeholder="Please enter the amount"
+                  className="bg-transparent border-none outline-none w-full h-full ml-3 text-sm text-white placeholder-white/50"
+                  value={withdrawAmountInput}
+                  onChange={handleWithdrawAmountChange}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5 ml-0.5">
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="text-white/50">
+                    Withdrawable balance <span className="text-yellow-500 font-bold">₹{walletBalance.toFixed(2)}</span>
+                  </span>
+                  <button
+                    onClick={handleAllWithdraw}
+                    className="bg-transparent text-primary text-[11px] cursor-pointer px-2.5 py-0.5 font-normal border border-primary/40 rounded"
+                  >
+                    All
+                  </button>
                 </div>
-                <div className="flex gap-2">
-                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
-                  <p className="text-white text-[15px] leading-relaxed italic">Betting turnover has a 10-minute delay, please wait patiently for updates</p>
-                </div>
-                <div className="flex gap-2">
-                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
-                  <p className="text-white text-[15px] leading-relaxed italic">Withdraw time 00:00–23:59</p>
-                </div>
-                <div className="flex gap-2">
-                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
-                  <p className="text-white text-[15px] leading-relaxed italic">Daily withdrawal limit {remainingLimit === -1 ? "Unlimited" : `₹${remainingLimit.toFixed(0)}`}/{dailyLimit === -1 ? "Unlimited" : `₹${dailyLimit.toFixed(0)}`}</p>
-                </div>
-                <div className="flex gap-2">
-                  <span className="text-primary text-[15px] font-bold shrink-0">•</span>
-                  <p className="text-white text-[15px] leading-relaxed italic">Reminder: When you withdraw the funds, a 3.5% + ₹6 processing fee will be automatically deducted from the withdrawal, and the remaining amount will be safely deposited into your account.</p>
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="text-white/50">Withdrawal amount received</span>
+                  <span className="text-yellow-500 font-bold text-right">₹{withdrawReceivedAmount.toFixed(2)}</span>
                 </div>
               </div>
+            </GameCard>
 
-              <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
-                <p className="text-yellow-500 text-[15px] leading-relaxed font-medium">
+            {/* Rules section - from withdrwalui.html */}
+            <GameCard className="p-3">
+              <div className="space-y-1.5">
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  Need to bet <span className="text-primary">₹{remainingTurnover.toFixed(0)}</span> to be able to withdraw
+                </p>
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  Withdraw time <span className="text-primary">00:00-23:55</span>
+                </p>
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  Inday Remaining Withdrawal Times <span className="text-primary">3</span>
+                </p>
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  Withdrawal amount range <span className="text-primary">₹110.00-₹10,000,000.00</span>
+                </p>
+              </div>
+              <div className="border-t border-white/5 mt-3 pt-3 space-y-1.5">
+                <p className="text-white/80 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
                   Please confirm your beneficial account information before withdrawing. If your information is incorrect, our company will not be liable for the amount of loss.
                 </p>
-                <p className="text-white  text-[15px] leading-relaxed italic">
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
                   If your beneficial information is incorrect, please contact customer service.
                 </p>
               </div>
-            </div>
+            </GameCard>
           </>
         )}
       </div>
@@ -606,6 +617,7 @@ const Bank = () => {
 
       <AddAccountDialog
         open={showAddAccount}
+        method={activeWithdrawMethod}
         onOpenChange={setShowAddAccount}
         onConfirm={handleBindAccount}
       />

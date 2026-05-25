@@ -85,7 +85,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
             />
             <GameInput
               icon={<Gift size={18} />}
-              placeholder="Invite code (optional)"
+              placeholder="Invitation code (optional)"
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
               

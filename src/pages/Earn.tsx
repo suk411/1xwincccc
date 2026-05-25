@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { GameCard } from "@/components/GameCard";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
@@ -16,76 +16,74 @@ import iconCopy from "@/assets/earn/copy.svg";
 
 import agentMapTree from "@/assets/earn/agent-map-tree.png";
 
-interface ReferralUser {
-  userId: string;
-  mobile: string;
+interface AgencyDailyLevel {
+  bets: number;
+  deposit: number;
+  regCount: number;
+  depositCount: number;
+  firstDepositCount: number;
+}
+
+interface AgencyDaily {
+  status: string;
+  date: string;
+  level1: AgencyDailyLevel;
+  level2: AgencyDailyLevel;
+  level3: AgencyDailyLevel;
+}
+
+interface AgencyCommissionItem {
+  _id: string;
+  userId: number;
+  date: string;
+  rebateLevel: number;
+  l1Bets: number;
+  l2Bets: number;
+  l3Bets: number;
+  l1Rate: number;
+  l2Rate: number;
+  l3Rate: number;
+  l1Amount: number;
+  l2Amount: number;
+  l3Amount: number;
+  totalAmount: number;
+  status: string;
+  creditedAt: string;
   createdAt: string;
 }
 
-interface ReferralData {
-  inviteCode: string;
-  inviteLink: string;
-  total: number;
-  page: number;
-  limit: number;
-  users: ReferralUser[];
-}
-
-interface CommissionRecord {
-  recUser: number;
-  fromUser: number;
-  depositAmt: number;
-  amount: number;
-  claim: boolean;
-  timestamp: string;
-}
-
-interface BonusSummary {
+interface AgencyTeamMember {
   userId: number;
-  unclaimedBonus: number;
-  updatedAt: string;
-}
-
-interface DailyBonusLevel {
-  deposit: number;
-  commission: number;
-  count: number;
-}
-
-interface DailyBonus {
-  date: string;
-  level1: DailyBonusLevel;
-  level2: DailyBonusLevel;
-  level3: DailyBonusLevel;
+  mobile: string;
+  registeredAt: string;
+  tier: number;
+  totalDeposit?: number;
 }
 
 const Earn = () => {
   const [activeTab, setActiveTab] = useState<"referral" | "commission" | "rebateratio">("referral");
-  const [referralData, setReferralData] = useState<ReferralData | null>(null);
-  const [allUsers, setAllUsers] = useState<ReferralUser[]>([]);
-  const [page, setPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  // Agent data
-  const [bonusSummary, setBonusSummary] = useState<BonusSummary | null>(null);
-  const [dailyBonus, setDailyBonus] = useState<DailyBonus | null>(null);
-  const [commissionRecords, setCommissionRecords] = useState<CommissionRecord[]>([]);
-  const [commFilter, setCommFilter] = useState<"unclaimed" | "claimed">("unclaimed");
+  const [agencyDaily, setAgencyDaily] = useState<AgencyDaily | null>(null);
+  const [agencyCommissions, setAgencyCommissions] = useState<AgencyCommissionItem[]>([]);
   const [commPage, setCommPage] = useState(1);
   const [commTotal, setCommTotal] = useState(0);
+  const [commLoading, setCommLoading] = useState(false);
+  const [agencyTeam, setAgencyTeam] = useState<AgencyTeamMember[]>([]);
+  const [teamPage, setTeamPage] = useState(1);
+  const [teamTotal, setTeamTotal] = useState(0);
+  const [teamLoading, setTeamLoading] = useState(false);
 
-  const [commLoadingMore, setCommLoadingMore] = useState(false);
-  const [claiming, setClaiming] = useState(false);
   const [levelOpen, setLevelOpen] = useState(false);
   const [levelVal, setLevelVal] = useState("All");
   const [dateOpen, setDateOpen] = useState(false);
-  const [yr, setYr] = useState(2026);
-  const [mo, setMo] = useState(5);
-  const [dd, setDd] = useState(22);
+  const today = new Date();
+  const [yr, setYr] = useState(today.getFullYear());
+  const [mo, setMo] = useState(today.getMonth() + 1);
+  const [dd, setDd] = useState(today.getDate());
   const [rebateLevelTab, setRebateLevelTab] = useState(0);
+  const [searchUid, setSearchUid] = useState("");
+  const [showCommissionDetail, setShowCommissionDetail] = useState(false);
 
-  const { userId } = useProfile();
+  const { userId } = useProfile(false);
   const { copyToClipboard } = useCopyToClipboard();
   const tokenUserId = useMemo(() => authService.getUserIdFromToken(), []);
   const effectiveUserId = userId || tokenUserId;
@@ -93,51 +91,22 @@ const Earn = () => {
   // Generate invite URL from userId
   const inviteUrl = effectiveUserId ? `https://1xking.vercel.app/register?ref=${effectiveUserId}` : "";
 
-  const fetchReferrals = useCallback(async (p = 1, append = false) => {
+  const fetchAgencyDaily = useCallback(async (date?: string) => {
     try {
-      if (p > 1) setLoadingMore(true);
-      else setLoading(true);
-      const data = await authService.getReferrals(p, 20);
-      setReferralData(data);
-      setAllUsers(prev => append ? [...prev, ...data.users] : data.users);
-      setPage(p);
+      const data = await authService.getAgencyDaily(date);
+      setAgencyDaily(data);
     } catch (err: any) {
       if (!err.message?.includes("Session expired")) {
-        toast({ description: err.message || "Something went wrong", variant: "destructive" });
-      }
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  }, []);
-
-  const fetchBonusSummary = useCallback(async () => {
-    try {
-      const data = await authService.getBonusSummary();
-      setBonusSummary(data);
-    } catch (err: any) {
-      if (!err.message?.includes("Session expired")) {
-        console.error("Bonus summary error:", err);
+        console.error("Agency daily error:", err);
       }
     }
   }, []);
 
-  const fetchDailyBonus = useCallback(async (date?: string) => {
+  const fetchAgencyCommissions = useCallback(async (p = 1, append = false) => {
     try {
-      const data = await authService.getDailyBonus(date);
-      setDailyBonus(data);
-    } catch (err: any) {
-      if (!err.message?.includes("Session expired")) {
-        console.error("Daily bonus error:", err);
-      }
-    }
-  }, []);
-
-  const fetchCommissions = useCallback(async (p = 1, append = false, claim?: boolean) => {
-    try {
-      if (p > 1) setCommLoadingMore(true);
-      const data = await authService.getCommissions(claim, p, 25);
-      setCommissionRecords(prev => append ? [...prev, ...(data.items || [])] : (data.items || []));
+      setCommLoading(true);
+      const data = await authService.getAgencyCommissions(p, 25);
+      setAgencyCommissions(prev => append ? [...prev, ...data.items] : data.items);
       setCommTotal(data.total || 0);
       setCommPage(p);
     } catch (err: any) {
@@ -145,36 +114,39 @@ const Earn = () => {
         console.error("Commissions error:", err);
       }
     } finally {
-      setCommLoadingMore(false);
+      setCommLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    fetchReferrals(1);
-    fetchBonusSummary();
-    fetchDailyBonus();
-    // Initially show unclaimed commissions.
-    fetchCommissions(1, false, false);
-  }, [fetchReferrals, fetchBonusSummary, fetchDailyBonus, fetchCommissions]);
-
-  const hasMore = referralData ? allUsers.length < referralData.total : false;
-  const displayData = referralData ? { ...referralData, users: allUsers } : null;
-  const commHasMore = commissionRecords.length < commTotal;
-
-  const handleClaimBonus = async () => {
-    if (claiming) return;
-    setClaiming(true);
+  const fetchAgencyTeam = useCallback(async (p = 1, append = false) => {
     try {
-      const result = await authService.claimBonus();
-      toast({ description: `Claimed ₹${result.claimedAmount}! New balance: ₹${result.newBalance}` });
-      fetchBonusSummary();
-      fetchCommissions(1, false, commFilter === "claimed");
+      setTeamLoading(true);
+      const params: any = { page: p, limit: 25 };
+      if (levelVal !== "All") params.tier = levelVal === "Level 1" ? 1 : levelVal === "Level 2" ? 2 : 3;
+      if (searchUid) params.userId = parseInt(searchUid);
+      const data = await authService.getAgencyTeam(params);
+      setAgencyTeam(prev => append ? [...prev, ...data.items] : data.items);
+      setTeamTotal(data.total || 0);
+      setTeamPage(p);
     } catch (err: any) {
-      toast({ description: err.message || "Claim failed", variant: "destructive" });
+      if (!err.message?.includes("Session expired")) {
+        toast({ description: err.message || "Something went wrong", variant: "destructive" });
+      }
     } finally {
-      setClaiming(false);
+      setTeamLoading(false);
     }
-  };
+  }, [levelVal, searchUid]);
+
+  useEffect(() => {
+    fetchAgencyDaily();
+  }, [fetchAgencyDaily]);
+
+  useEffect(() => {
+    if (showCommissionDetail) fetchAgencyCommissions(1);
+  }, [showCommissionDetail, fetchAgencyCommissions]);
+
+  const commHasMore = agencyCommissions.length < commTotal;
+  const teamHasMore = agencyTeam.length < teamTotal;
 
   const handleCopyUrl = async () => {
     if (!inviteUrl) return;
@@ -200,8 +172,6 @@ const Earn = () => {
       handleCopyUrl();
     }
   };
-
-  const unclaimedBonus = bonusSummary?.unclaimedBonus ?? 0;
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
@@ -435,7 +405,7 @@ const Earn = () => {
     color: #fff;
   }
   .header-container .num {
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 700;
     margin-bottom: 3px;
     display: block;
@@ -659,7 +629,7 @@ const Earn = () => {
     flex-shrink: 0;
   }
   .commission > div > div > span:first-child {
-    font-size: 22px;
+    font-size: 11px;
     font-weight: 700;
     color: rgba(255,255,255,0.95);
     line-height: 1.2;
@@ -804,7 +774,8 @@ const Earn = () => {
     cursor: pointer;
     opacity: 0.5;
     transition: opacity 0.2s;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15), 1px 0 3px rgba(0,0,0,0.08), -1px 0 3px rgba(0,0,0,0.08);
+    background: rgba(0,0,0,0.5);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4), 2px 0 6px rgba(0,0,0,0.25), -2px 0 6px rgba(0,0,0,0.25);
     border-radius: 8px;
   }
   .x-page .fun-tab-item__label .tab_item.tab_active {
@@ -881,25 +852,60 @@ const Earn = () => {
   }
 `}</style>
         {activeTab === "referral" ? (
+          showCommissionDetail ? (
+            <div style={{ width: "100%" }}>
+              <div className="x-page" style={{ minHeight: "auto" }}>
+                <div className="navbar"><div className="navbar-fixed" style={{ position: "static" }}><div className="navbar__content"><div className="navbar__content-left" onClick={() => setShowCommissionDetail(false)}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Commission detail</div></div><div className="navbar__content-right"></div></div></div></div>
+              </div>
+              {commLoading && agencyCommissions.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>Loading...</div>
+              ) : agencyCommissions.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>No commission records</div>
+              ) : (
+                agencyCommissions.map((c) => (
+                  <div key={c._id} style={{ background: "rgba(255,255,255,0.06)", borderRadius: "8px", padding: "12px 14px", marginBottom: "8px", border: "1px solid rgba(255,180,50,0.1)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>{c.date?.slice(0, 10)}</span>
+                      <span style={{ fontSize: "11px", color: c.status === "CREDITED" ? "#18b660" : "rgba(255,255,255,0.4)", background: c.status === "CREDITED" ? "rgba(24,182,96,0.15)" : "rgba(255,255,255,0.08)", padding: "2px 8px", borderRadius: "10px" }}>{c.status}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
+                      <span style={{ color: "rgba(255,255,255,0.6)" }}>Level {c.rebateLevel}</span>
+                      <span style={{ color: "#feaa57", fontWeight: 600 }}>₹{c.totalAmount}</span>
+                    </div>
+                    <div style={{ display: "flex", gap: "12px", marginTop: "6px", fontSize: "11px", color: "rgba(255,255,255,0.4)" }}>
+                      <span>L1: ₹{c.l1Amount}</span>
+                      <span>L2: ₹{c.l2Amount}</span>
+                      <span>L3: ₹{c.l3Amount}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+              {commHasMore && (
+                <GameButton variant="dark" onClick={() => fetchAgencyCommissions(commPage + 1, true)} disabled={commLoading} style={{ width: "100%", marginTop: "8px", height: "36px", borderRadius: "19px" }}>
+                  {commLoading ? "Loading..." : "Load more"}
+                </GameButton>
+              )}
+            </div>
+          ) : (
           <>
             <div className="container">
-  <div className="amount">0</div>
+  <div className="amount">{agencyCommissions.length > 0 ? agencyCommissions[0].totalAmount : 0}</div>
   <div className="amount_txt">Yesterday's total commission</div>
   <div className="tip">Upgrade the level to increase commission income</div>
   <div className="info_content">
     <div className="info">
       <div className="head">Direct subordinates</div>
-      <div className="line1"><div>0</div>number of register</div>
-      <div className="line2"><div>0</div>Deposit number</div>
-      <div className="line3"><div>0</div>Deposit amount</div>
-      <div className="line1"><div>0</div> Number of people making first deposit</div>
+      <div className="line1"><div>{agencyDaily?.level1?.regCount ?? 0}</div>number of register</div>
+      <div className="line2"><div>{agencyDaily?.level1?.depositCount ?? 0}</div>Deposit number</div>
+      <div className="line3"><div>{agencyDaily?.level1?.deposit ?? 0}</div>Deposit amount</div>
+      <div className="line1"><div>{agencyDaily?.level1?.firstDepositCount ?? 0}</div> Number of people making first deposit</div>
     </div>
     <div className="info">
       <div className="head u2">Team subordinates</div>
-      <div className="line1"><div>0</div>number of register</div>
-      <div className="line2"><div>0</div>Deposit number</div>
-      <div className="line3"><div>0</div>Deposit amount</div>
-      <div className="line1"><div>0</div> Number of people making first deposit</div>
+      <div className="line1"><div>{((agencyDaily?.level1?.regCount ?? 0) + (agencyDaily?.level2?.regCount ?? 0) + (agencyDaily?.level3?.regCount ?? 0))}</div>number of register</div>
+      <div className="line2"><div>{((agencyDaily?.level1?.depositCount ?? 0) + (agencyDaily?.level2?.depositCount ?? 0) + (agencyDaily?.level3?.depositCount ?? 0))}</div>Deposit number</div>
+      <div className="line3"><div>{((agencyDaily?.level1?.deposit ?? 0) + (agencyDaily?.level2?.deposit ?? 0) + (agencyDaily?.level3?.deposit ?? 0))}</div>Deposit amount</div>
+      <div className="line1"><div>{((agencyDaily?.level1?.firstDepositCount ?? 0) + (agencyDaily?.level2?.firstDepositCount ?? 0) + (agencyDaily?.level3?.firstDepositCount ?? 0))}</div> Number of people making first deposit</div>
     </div>
   </div>
 </div>
@@ -908,15 +914,15 @@ const Earn = () => {
                 <div className="label"><img src={iconTeamPartner} className="svg-icon" alt="" /><span>Partner rewards</span></div>
                 <div className="arrow"><i>&#10095;</i></div>
               </div>
-              <div className="promote__cell-item" onClick={() => handleCopyUrl()}>
+              <div className="promote__cell-item" onClick={() => copyToClipboard(effectiveUserId || "", "Copied Success")}>
                 <div className="label"><img src={iconCopyCode} className="svg-icon" alt="" /><span>Copy invitation code</span></div>
-                <div className="arrow"><img src={iconCopy} className="icon-copy-small" alt="" /></div>
+                <div className="arrow"><span style={{ fontSize: "13px", marginRight: "6px", opacity: 0.7 }}>{effectiveUserId}</span><img src={iconCopy} className="icon-copy-small" alt="" /></div>
               </div>
               <div className="promote__cell-item" onClick={() => setActiveTab("commission")}>
                 <div className="label"><img src={iconTeamPort} className="svg-icon" alt="" /><span>Subordinate data</span></div>
                 <div className="arrow"><i>&#10095;</i></div>
               </div>
-              <div className="promote__cell-item" onClick={() => {}}>
+              <div className="promote__cell-item" onClick={() => setShowCommissionDetail(true)}>
                 <div className="label"><img src={iconCommission} className="svg-icon" alt="" /><span>Commission detail</span></div>
                 <div className="arrow"><i>&#10095;</i></div>
               </div>
@@ -936,18 +942,18 @@ const Earn = () => {
             <div className="commission">
               <div><span>promotion data</span></div>
               <div>
-                <div><span>0</span><span>This Week</span></div>
+                <div><span>{agencyDaily?.level1?.bets ?? 0}</span><span>Today's Bets</span></div>
                 <span></span>
-                <div><span>0</span><span>Total commission</span></div>
+                <div><span>{agencyCommissions.length > 0 ? agencyCommissions[0].totalAmount : 0}</span><span>Total commission</span></div>
               </div>
               <div>
-                <div><span>0</span><span>direct subordinate</span></div>
+                <div><span>{agencyDaily?.level1?.regCount ?? 0}</span><span>direct subordinate</span></div>
                 <span></span>
-                <div><span>0</span><span>Total number of subordinates in the team</span></div>
+                <div><span>{agencyDaily ? (agencyDaily.level1.regCount + agencyDaily.level2.regCount + agencyDaily.level3.regCount) : 0}</span><span>Total number of subordinates in the team</span></div>
               </div>
             </div>
           </>
-        ) : activeTab === "rebateratio" ? (
+        )) : activeTab === "rebateratio" ? (
           <div className="x-page">
             <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setActiveTab("referral")}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Rebate ratio</div></div><div className="navbar__content-right"></div></div></div></div>
             <div className="bet-container-sticky"><div className="van-sticky"><div><div className="fun-tabs tabs"><div className="fun-tabs__tab-list">
@@ -995,8 +1001,8 @@ const Earn = () => {
           <>
             <div className="TeamReport__C">
               <div className="searchbar-container">
-                <input type="text" className="searchbar-container__searchbar" placeholder="Search subordinate UID" />
-<GameButton variant="dark" style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", width: "64px", height: "32px", borderRadius: "19px", padding: "0", fontSize: "0", minWidth: "64px" }}><svg width="18" height="18" viewBox="0 0 1024 1024" fill="white"><path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z"></path></svg></GameButton>
+                <input type="text" className="searchbar-container__searchbar" placeholder="Search subordinate UID" value={searchUid} onChange={e => setSearchUid(e.target.value)} onKeyDown={e => e.key === "Enter" && fetchAgencyTeam(1)} />
+<GameButton variant="dark" style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", width: "64px", height: "32px", borderRadius: "19px", padding: "0", fontSize: "14px", minWidth: "64px", color: "rgba(255,255,255,0.7)" }} onClick={() => fetchAgencyTeam(1)} disabled={teamLoading}>{teamLoading ? "..." : <svg width="18" height="18" viewBox="0 0 1024 1024" fill="white"><path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z"></path></svg>}</GameButton>
               </div>
               <div className="TeamReport__C-head-line2">
                 <div className="level-dropdown" onClick={() => setLevelOpen(o => !o)}>
@@ -1010,26 +1016,32 @@ const Earn = () => {
               </div>
 
               <div className="header-container">
-                <div><span className="num">0</span><span className="label">Deposit number</span></div>
-                <div><span className="num">0</span><span className="label">Deposit amount</span></div>
-                <div><span className="num">0</span><span className="label">Number of bettors</span></div>
-                <div><span className="num">0</span><span className="label">Total bet</span></div>
-                <div><span className="num">0</span><span className="label">First deposit number</span></div>
+                <div><span className="num">{agencyDaily?.level1?.depositCount ?? 0}</span><span className="label">Deposit number</span></div>
+                <div><span className="num">{agencyDaily?.level1?.deposit ?? 0}</span><span className="label">Deposit amount</span></div>
+                <div><span className="num">{agencyDaily?.level1?.regCount ?? 0}</span><span className="label">Number of bettors</span></div>
+                <div><span className="num">{agencyDaily?.level1?.bets ?? 0}</span><span className="label">Total bet</span></div>
+                <div><span className="num">{agencyDaily?.level1?.firstDepositCount ?? 0}</span><span className="label">First deposit number</span></div>
                 <div><span className="num">0</span><span className="label">First deposit amount</span></div>
               </div>
 
-              <div className="TeamReport__C-body-item">
-                <div className="TeamReport__C-body-item-head">
-                  <span>UID:3540850</span>
-                  <svg className="icon-copy" viewBox="0 0 1024 1024" style={{ marginLeft: "6px" }}><path d="M768 832V256H192v576h576m0-640a64 64 0 0 1 64 64v576a64 64 0 0 1-64 64H192a64 64 0 0 1-64-64V256a64 64 0 0 1 64-64h576m-128-128v64H128v576H64V128a64 64 0 0 1 64-64h512z"></path></svg>
+              {agencyTeam.map((member) => (
+                <div key={member.userId} className="TeamReport__C-body-item">
+                  <div className="TeamReport__C-body-item-head">
+                    <span>UID:{member.userId}</span>
+                  </div>
+                  <div className="TeamReport__C-body-item-detail">
+                    <div>Level <span>{member.tier}</span></div>
+                    <div>Deposit amount <span className="val-light">{member.totalDeposit ?? 0}</span></div>
+                    <div>Mobile <span className="val-light">{member.mobile}</span></div>
+                    <div>Register Time <span className="val-light">{member.registeredAt?.slice(0, 10)}</span></div>
+                  </div>
                 </div>
-                <div className="TeamReport__C-body-item-detail">
-                  <div>Level <span>1</span></div>
-                  <div>Deposit amount <span className="val-orange">0</span></div>
-                  <div>Commission <span className="val-orange">0</span></div>
-                  <div>Register Time <span className="val-light">2026-05-22</span></div>
-                </div>
-              </div>
+              ))}
+              {agencyTeam.length > 0 && agencyTeam.length < teamTotal && (
+                <GameButton variant="dark" onClick={() => fetchAgencyTeam(teamPage + 1, true)} disabled={teamLoading} style={{ width: "100%", marginTop: "8px", height: "36px", borderRadius: "19px" }}>
+                  {teamLoading ? "Loading..." : "Load more"}
+                </GameButton>
+              )}
             </div>
 
             {dateOpen && (

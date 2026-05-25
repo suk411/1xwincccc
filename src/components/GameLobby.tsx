@@ -53,14 +53,33 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     }
   }, [location.state]);
 
+  const providers = useMemo(() => {
+    let games = [...GAME_LIST];
+    if (activeTab !== "all" && activeTab !== "top") {
+      const categoryMapping: Record<string, string> = {
+        slots: "slot",
+        slot: "slot",
+        casino: "casino",
+        fish: "fish",
+        sport: "sport",
+        live: "live",
+      };
+      const targetCategory = categoryMapping[activeTab.toLowerCase()] || activeTab.toLowerCase();
+      games = games.filter((g) => g.category.toLowerCase() === targetCategory);
+    }
+    const codes = new Set(games.map((g) => g.provider.toLowerCase()));
+    return Array.from(codes);
+  }, [activeTab]);
+
   useEffect(() => {
     setVisibleCount(GAMES_PER_PAGE);
   }, [selectedProvider, selectedFilter, activeTab]);
 
-  const providers = useMemo(() => {
-    const codes = new Set(GAME_LIST.map((g) => g.provider.toLowerCase()));
-    return Array.from(codes);
-  }, []);
+  useEffect(() => {
+    if (providers.length > 0 && !providers.includes(selectedProvider)) {
+      setSelectedProvider(providers[0]);
+    }
+  }, [providers, selectedProvider]);
 
   const filteredGames = useMemo(() => {
     let games = [...GAME_LIST];

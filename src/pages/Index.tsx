@@ -110,7 +110,7 @@ const Index = () => {
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
-  const [tickerText, setTickerText] = useState("");
+  const [tickerIndex, setTickerIndex] = useState(0);
   const [activeGameTab, setActiveGameTab] = useState("top");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);
   const [pendingGame, setPendingGame] = useState<GameObject | null>(null);
@@ -255,10 +255,9 @@ const Index = () => {
   };
 
 
-  useEffect(() => {
-    const repeated = [...winMessages, ...winMessages, ...winMessages].join("      ");
-    setTickerText(repeated);
-  }, []);
+  const handleTickerEnd = () => {
+    setTickerIndex((prev) => (prev + 1) % winMessages.length);
+  };
 
   const handleGroupClick = (label: string) => {
     if (label === "GROUP") {
@@ -314,9 +313,11 @@ const Index = () => {
           <div className="overflow-hidden flex-1 relative">
             <div
               ref={tickerRef}
+              key={tickerIndex}
+              onAnimationEnd={handleTickerEnd}
               className="whitespace-nowrap animate-ticker text-xs text-muted-foreground"
             >
-              {tickerText}
+              {winMessages[tickerIndex]}
             </div>
           </div>
         </div>
@@ -429,8 +430,8 @@ const Index = () => {
                   height: "24px",
                   fontSize: "8px",
                   fontWeight: "700",
-                  paddingLeft: "8px",
-                  paddingRight: "8px",
+                  paddingLeft: "14px",
+                  paddingRight: "14px",
                   borderRadius: "12px",
                 }}
               >
@@ -459,7 +460,7 @@ const Index = () => {
                   }}
                 />
                 <span className="relative z-10">
-                  {isWithdrawing ? (withdrawCountdown > 0 ? `${withdrawCountdown}` : "...") : "Withdraw"}
+                  {isWithdrawing ? (withdrawCountdown > 0 ? `${withdrawCountdown}` : "...") : "Recall"}
                 </span>
               </button>
             </div>

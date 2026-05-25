@@ -23,7 +23,7 @@ const providerNames: Record<string, string> = {
 const GAMES_PER_PAGE = 6;
 
 const getProviderSections = () => {
-  const providers = ["jili", "pg", "jdb", "spribe", "turbo", "ibc"];
+  const providers = ["jili", "pg", "jdb", "spribe", "turbo", ];
   const gameNames: Record<string, string[]> = {
     jili: ["Money Coming", "Fortune Gems 2", "Black Jack", "Mega Ace", "Super Ace", "Dragon Tiger"],
     pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko"],

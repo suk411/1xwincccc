@@ -1,6 +1,5 @@
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
-import RecordTabs from "@/components/RecordTabs";
 import { useState, useEffect } from "react";
 import { Copy, ChevronDown } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
@@ -156,8 +155,6 @@ const DepositRecords = () => {
       <div className="sticky top-0 z-50">
         <PageHeader title="Deposit Records" backPath="/" />
       </div>
-      <RecordTabs />
-
       <div className="flex flex-col gap-2 px-2 mt-4">
         {loading ? (
           <Loader label="Loading records..." />

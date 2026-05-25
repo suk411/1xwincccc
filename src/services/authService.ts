@@ -388,20 +388,21 @@ export const authService = {
     return !!localStorage.getItem(TOKEN_KEY);
   },
 
-  async getReferrals(page = 1, limit = 20): Promise<any> {
-    const res = await fetch(`${API_BASE}/api/auth/referrals?page=${page}&limit=${limit}`, {
+  async getAgencyDaily(date?: string): Promise<any> {
+    const params = new URLSearchParams();
+    if (date) params.set("date", date);
+    const query = params.toString();
+    const res = await fetch(`${API_BASE}/api/agency/daily${query ? `?${query}` : ""}`, {
       headers: authHeaders(),
     });
     handleUnauthorized(res);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch referrals"));
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch daily stats"));
     return data;
   },
 
-  async getCommissions(claim?: boolean, page = 1, limit = 25): Promise<any> {
-    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
-    if (claim !== undefined) params.set("claim", String(claim));
-    const res = await fetch(`${API_BASE}/api/agent/commissions?${params}`, {
+  async getAgencyCommissions(page = 1, limit = 25): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/agency/commissions?page=${page}&limit=${limit}`, {
       headers: authHeaders(),
     });
     handleUnauthorized(res);
@@ -410,39 +411,20 @@ export const authService = {
     return data;
   },
 
-  async getBonusSummary(): Promise<any> {
-    const res = await fetch(`${API_BASE}/api/agent/bonus/summary`, {
+  async getAgencyTeam(params?: { tier?: number; userId?: number; fromDate?: string; toDate?: string; page?: number; limit?: number }): Promise<any> {
+    const searchParams = new URLSearchParams();
+    if (params?.tier) searchParams.set("tier", String(params.tier));
+    if (params?.userId) searchParams.set("userId", String(params.userId));
+    if (params?.fromDate) searchParams.set("fromDate", params.fromDate);
+    if (params?.toDate) searchParams.set("toDate", params.toDate);
+    searchParams.set("page", String(params?.page || 1));
+    searchParams.set("limit", String(params?.limit || 25));
+    const res = await fetch(`${API_BASE}/api/agency/team?${searchParams}`, {
       headers: authHeaders(),
     });
     handleUnauthorized(res);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch bonus summary"));
-    return data;
-  },
-
-  async getDailyBonus(date?: string): Promise<any> {
-    const params = new URLSearchParams();
-    if (date) params.set("date", date);
-    const query = params.toString();
-    const res = await fetch(`${API_BASE}/api/agent/bonus/daily${query ? `?${query}` : ""}`, {
-      headers: authHeaders(),
-    });
-    handleUnauthorized(res);
-    const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch daily bonus"));
-    return data;
-  },
-
-  async claimBonus(upTo?: string): Promise<any> {
-    const body = upTo ? JSON.stringify({ upTo }) : undefined;
-    const res = await fetch(`${API_BASE}/api/agent/bonus/claim`, {
-      method: "POST",
-      headers: authHeaders(),
-      body,
-    });
-    handleUnauthorized(res);
-    const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Claim failed"));
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch team"));
     return data;
   },
 
