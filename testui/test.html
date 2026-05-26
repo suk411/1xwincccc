@@ -1,716 +1,207 @@
-
-        <style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
         :root {
-            --text_color_L2: rgb(107, 143, 127);
+            --primary-text: rgb(34, 57, 53);
+            --secondary-text: rgb(107, 143, 127);
+            --status-orange: rgb(233, 134, 19);
+            --win-green: rgb(24, 182, 96);
+            --border-light: rgb(216, 235, 228);
+            --card-bg: rgb(255, 255, 255);
+            --font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
         }
 
-        .withdrawWay {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-start;
-            width: 360px;
-            background-color: transparent;
-        }
-
-        .withdraw-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            width: 31%;
-            height: 80px;
-            padding: 10px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            color: var(--text_color_L2);
-            text-align: center;
-            font-size: 12px;
-            box-sizing: border-box;
-            transition: transform 0.2s ease;
-            cursor: pointer;
-        }
-
-        .withdraw-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .icon-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 35px;
-        }
-
-        .icon-wrapper img {
-            width: 35px;
-            height: 35px;
-            object-fit: contain;
-        }
-
-        .label {
-            display: block;
-            width: 100%;
-            line-height: 20px;
-            font-weight: 500;
-            font-size: 11px;
-        }
-        </style>
-
-        <style>
-        :root {
-            --text_color_L2: rgb(107, 143, 127);
-            --norm_red-color: rgb(210, 56, 56);
-        }
-
-        .container {
-            width: 345px;
-        }
-
-        .addWithdrawType {
-            display: block;
-            text-align: center;
-            width: 100%;
-        }
-
-        .addWithdrawType-top {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            height: 100px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            color: var(--text_color_L2);
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .addWithdrawType-top img {
-            width: 44px;
-            height: 44px;
-        }
-
-        .addWithdrawType-top span {
-            font-size: 12px;
-            font-weight: 400;
-        }
-
-        .addWithdrawType-text {
-            display: block;
-            color: var(--norm_red-color);
-            font-size: 11px;
-            font-weight: 400;
-            line-height: 20px;
-            text-align: center;
-            margin-top: 8px;
-        }
-        </style>
-
-        <style>
-        :root {
-            --text-color-primary: rgb(34, 57, 53);
-            --text-color-muted: rgb(107, 143, 127);
-            --brand-green: rgb(12, 215, 129);
-            --bg-gray: rgb(242, 242, 241);
-            --yellow-accent: rgb(255, 171, 0);
-        }
-
-        .explain {
-            background-color: #ffffff;
-            border-radius: 10px 10px 0 0;
-            padding: 12.5px 10px 0 10px;
-            box-sizing: border-box;
-            width: 100%;
-            height: 116.5px;
-        }
-
-        .input {
-            display: flex;
-            align-items: center;
-            position: relative;
-            background-color: var(--bg-gray);
-            border-radius: 30px;
-            height: 44px;
-            padding: 10px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-
-        .place-div {
-            color: var(--brand-green);
-            font-size: 21px;
-            font-weight: 500;
-            position: absolute;
-            left: 15px;
-        }
-
-        .inp {
-            border: none;
-            background: transparent;
-            outline: none;
-            width: 100%;
-            height: 15px;
-            margin-left: 50px;
-            font-size: 12px;
-            color: var(--text-color-primary);
-            padding: 1px 2px 0 10px;
-            box-sizing: border-box;
-        }
-
-        .inp::placeholder {
-            color: var(--text-color-muted);
-            opacity: 0.8;
-        }
-
-        .balance {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 50px;
-            margin-top: 10px;
-            margin-left: 2.5px;
-            box-sizing: border-box;
-        }
-
-        .balance > div {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            font-size: 11px;
-            color: var(--text-color-muted);
-        }
-
-        .yellow {
-            color: var(--yellow-accent);
-            font-weight: bold;
-            display: inline;
-        }
-
-        h6.yellow {
-            display: inline;
+        body {
+            background-color: #f2f2f2;
+            padding: 15px;
+            font-family: var(--font-family);
             margin: 0;
-            font-size: 11px;
         }
 
-        input[type="button"] {
-            background: transparent;
-            border: none;
-            color: var(--brand-green);
-            font-size: 11px;
+        /* Section Container */
+        .bet-container-lottery-items {
+            display: block;
+            width: 100%;
+            max-width: 465px;
+            margin-bottom: 15.9px;
+        }
+
+        /* Electric Card Variant */
+        .bet-container-lottery-card.electric-card {
+            display: block;
+            background: var(--card-bg);
+            padding: 17.22px 15.9px;
+            border-radius: 6.62px;
+            box-sizing: border-box;
+        }
+
+        /* Header */
+        .bet-container-lottery-card-header {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding-bottom: 7.95px;
+        }
+
+        .ar-1px-b::after {
+            content: " ";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            border-bottom: 0.8px solid var(--border-light);
+            transform: scaleY(0.5);
+            transform-origin: 0 100%;
+        }
+
+        .bet-container-lottery-card-header h1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+        }
+
+        .bet-container-lottery-card-header h2 {
+            margin: 0;
+            padding-bottom: 5.3px;
+            font-size: 19.87px;
+            font-weight: 700;
+            color: var(--primary-text);
+        }
+
+        .bet-container-lottery-card-header span {
+            font-size: 18.55px;
+            color: var(--status-orange);
+        }
+
+        .bet-container-lottery-card-header p {
+            margin: 0;
+            font-size: 14.57px;
+            color: var(--secondary-text);
+        }
+
+        /* Info List */
+        .bet-container-lottery-card-info {
+            display: flex;
+            margin-top: 16.56px;
+        }
+
+        .bet-container-lottery-card-info ul {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin: 0;
             padding: 0;
-            cursor: pointer;
-            font-weight: 400;
+            list-style: none;
         }
 
-        .rightD {
+        .bet-container-lottery-card-info li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 6.62px;
+            font-size: 15.9px;
+            color: var(--secondary-text);
+        }
+
+        .bet-container-lottery-card-info li:last-child {
+            padding-bottom: 0;
+        }
+
+        .bet-container-lottery-card-info h2 {
+            display: flex;
+            align-items: center;
+            gap: 6.62px;
+            margin: 0;
+            font-size: 15.9px;
+            font-weight: 400;
+            color: var(--secondary-text);
+        }
+
+        .bet-container-lottery-card-info span {
+            color: var(--primary-text);
             text-align: right;
         }
-        </style>
 
-        <style>
-        :root {
-            --main-color: rgb(12, 215, 129);
-            --text_color_L2: rgb(107, 143, 127);
-            --norm_red-color: rgb(210, 56, 56);
+        /* Order Number Specific Style */
+        .electric-orderNo {
+            word-break: break-all;
+            max-width: 60%;
         }
 
-        .Recharge__container-intro {
-            display: block;
-            background-color: rgb(255, 255, 255);
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            padding: 12.5px 10px;
-            box-sizing: border-box;
-            width: 100%;
-            text-align: center;
+        /* Winning Color */
+        .color2AAB79 {
+            color: var(--win-green) !important;
         }
 
-        .br {
-            width: 100%;
+        /* SVG Icon */
+        .svg-icon {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
         }
+    </style>
+</head>
+<body>
 
-        .Recharge__container-intro p {
-            text-align: left;
-            position: relative;
-            padding-left: 20px;
-            font-weight: 400;
-            font-size: 12px;
-            color: var(--text_color_L2);
-            line-height: 20px;
-            margin: 7.5px 0;
-        }
-
-        .Recharge__container-intro p::after {
-            position: absolute;
-            content: "";
-            width: 5px;
-            height: 5px;
-            background: var(--main-color);
-            transform: rotate(45deg);
-            left: 7.5px;
-            top: 7px;
-        }
-
-        .Recharge__container-intro p span.red {
-            color: var(--norm_red-color);
-            margin: 0 4px;
-        }
-        </style>
-
-        <style>
-        :root {
-            --text_color_L1: rgb(34, 57, 53);
-            --text_color_L2: rgb(107, 143, 127);
-            --text_color_L4: rgb(255, 255, 255);
-            --main-color: rgb(12, 215, 129);
-            --bg_color: rgb(240, 240, 240);
-            --input_bg: rgb(255, 255, 255);
-            --disabled_bg: rgb(204, 206, 220);
-        }
-
-        .addupi_C {
-            display: block;
-            width: 100%;
-            padding: 10px 10px 65px;
-            box-sizing: border-box;
-        }
-
-        .navbar {
-            height: 46px;
-            width: 100%;
-            background-color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            box-sizing: border-box;
-        }
-
-        .navbar__content-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--text_color_L1);
-        }
-
-        .addupi_C-header {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text_color_L1);
-            margin-top: 20px;
-            display: block;
-        }
-
-        .addupi_C-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--text_color_L1);
-            margin-top: 25px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .upi-input {
-            display: flex;
-            align-items: center;
-            height: 35px;
-            background-color: var(--input_bg);
-            border-radius: 4px;
-            padding: 0 10px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .upi-input input {
-            border: none;
-            background: transparent;
-            width: 100%;
-            height: 100%;
-            font-size: 14px;
-            color: var(--text_color_L2);
-            outline: none;
-        }
-
-        .upi-input input::placeholder {
-            color: var(--text_color_L2);
-            opacity: 0.7;
-        }
-
-        .tip {
-            color: var(--main-color);
-            font-size: 11px;
-            margin: 10px 5px 20px 5px;
-            display: block;
-            line-height: 1.4;
-        }
-
-        .addupi_C_number {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .bind-bank-sumbit {
-            width: 100%;
-            height: 60px;
-            line-height: 60px;
-            text-align: center;
-            font-size: 15px;
-            color: var(--text_color_L4);
-            background-color: var(--disabled_bg);
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        .bind-bank-sumbit.active {
-            background-color: var(--main-color);
-        }
-        </style>
-
-        <style>
-        :root {
-            --text-primary: rgb(34, 57, 53);
-            --text-muted: rgb(107, 143, 127);
-            --bg-page: rgb(242, 242, 241);
-            --brand-green-start: #0cd781;
-            --brand-green-end: #00e989;
-            --disabled-gray: rgb(204, 206, 220);
-        }
-
-        .addBankCard__container {
-            padding: 5px 12px 15px;
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        .navbar2 {
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .navbar-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .addBankCard__container-content-top {
-            display: flex;
-            align-items: center;
-            background-color: #ffffff;
-            padding: 5px 20px;
-            border-radius: 30px;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 10px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
-        .addBankCard__container-content-top img {
-            width: 17.5px;
-            height: 17.5px;
-            margin-right: 10px;
-        }
-
-        .addBankCard__container-content-item {
-            margin: 35px 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .bank-label {
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .bank-label svg {
-            width: 16px;
-            height: 16px;
-            margin-right: 8px;
-            fill: var(--text-primary);
-        }
-
-        .selectB {
-            height: 35px;
-            background: linear-gradient(90deg, var(--brand-green-start) 0%, var(--brand-green-end) 100%);
-            border-radius: 5px;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10px;
-            font-size: 14px;
-            cursor: pointer;
-            box-sizing: border-box;
-        }
-
-        .selectB i.arrow {
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            display: inline-block;
-            padding: 3px;
-            transform: rotate(-45deg);
-        }
-
-        .input-field {
-            height: 40px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            padding: 5px 13px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            color: var(--text-primary);
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        .input-field::placeholder {
-            color: var(--text-muted);
-            opacity: 0.6;
-        }
-
-        .addBankCard__container-content-btn button {
-            width: 100%;
-            height: 40px;
-            background-color: var(--disabled-gray);
-            color: #ffffff;
-            border: none;
-            border-radius: 40px;
-            font-size: 15px;
-            margin-top: 20px;
-            font-weight: 500;
-        }
-
-        .icon { width: 16px; height: 16px; display: inline-block; }
-
-        /* Page switching */
-        .page {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            background-color: #f0f0f0;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .page.active-page {
-            display: flex;
-        }
-
-        .full-page-wrap {
-            background-color: #f0f0f0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        </style>
-
-    <!-- PAGE 1: Withdraw -->
-    <div class="page active-page" id="page-withdraw">
-
-        <div class="withdrawWay">
-            <div class="withdraw-card" onclick="showBankPage()">
-                <div class="icon-wrapper">
-                    <img src="https://ossimg.yaaprwipayn.com/yaarwin/payNameIcon/WithBeforeImgIcon_20260428231308t3bx.png" alt="Bank Card">
-                </div>
-                <span class="label">BANK CARD</span>
-            </div>
-            <div class="withdraw-card" onclick="showUpiPage()">
-                <div class="icon-wrapper">
-                    <img src="https://ossimg.yaaprwipayn.com/yaarwin/payNameIcon/WithBeforeImgIcon_20260428231343x5ar.jpg" alt="UPI">
-                </div>
-                <span class="label">UPI</span>
-            </div>
-            <div class="withdraw-card">
-                <div class="icon-wrapper">
-                    <img src="https://ossimg.yaaprwipayn.com/yaarwin/payNameIcon/WithBeforeImgIcon_20260428231407g24p.png" alt="USDT">
-                </div>
-                <span class="label">USDT</span>
-            </div>
+<div class="bet-container-lottery-items">
+    <div class="bet-container-lottery-card electric-card">
+        <!-- Header -->
+        <div class="bet-container-lottery-card-header ar-1px-b">
+            <h1>
+                <h2>JILI</h2>
+                <span>Paid</span>
+            </h1>
+            <p>2026-05-26 08:45:51</p>
         </div>
 
-        <div class="container">
-            <div class="addWithdrawType">
-                <div class="addWithdrawType-top" onclick="showBankPage()">
-                    <img src="https://yaarwin.org/assets/png/add-1ad7f3f5.webp" alt="Add Icon">
-                    <span>Add a bank account number</span>
-                </div>
-                <div class="addWithdrawType-text">
-                    Need to add beneficiary information to be able to withdraw money
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="explain">
-                <div class="input">
-                    <div class="place-div">₹</div>
-                    <input type="text" placeholder="Please enter the amount" class="inp">
-                </div>
-                <div class="balance bank">
-                    <div>
-                        <span>Withdrawable balance <h6 class="yellow">₹0.00</h6></span>
-                        <input type="button" value="All">
-                    </div>
-                    <div>
-                        <span>Withdrawal amount received</span>
-                        <div class="rightD">
-                            <span class="yellow">₹0.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="Recharge__container-intro">
-                <div class="br">
-                    <p>Need to bet <span class="red">₹0.00</span> to be able to withdraw</p>
-                    <p>Withdraw time <span class="red">00:00-23:55</span></p>
-                    <p>Inday Remaining Withdrawal Times <span class="red">3</span></p>
-                    <p>Withdrawal amount range <span class="red">₹110.00-₹10,000,000.00</span></p>
-                    <p>Please confirm your beneficial account information before withdrawing. If your information is incorrect, our company will not be liable for the amount of loss</p>
-                    <p>If your beneficial information is incorrect, please contact customer service</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- PAGE 2: Add UPI -->
-    <div class="page" id="page-upi">
-        <div class="full-page-wrap">
-            <div class="addupi_C">
-                <div class="navbar">
-                    <span style="font-size: 20px; cursor: pointer;" onclick="showWithdrawPage()">&larr;</span>
-                    <div class="navbar__content-title">Payment method</div>
-                    <div></div>
-                </div>
-
-                <div class="addupi_C-header">Information UPI</div>
-
-                <div class="addupi_C-title">UPI Name</div>
-                <div class="upi-input">
-                    <input type="text" placeholder="Please enter UPI name">
-                </div>
-
-                <div class="addupi_C_number">
-                    <div class="addupi_C-title">phone number</div>
-                </div>
-                <div class="upi-input">
-                    <input type="text" placeholder="Please enter the phone number">
-                </div>
-                <div class="tip">For the security of your account, please fill in your real mobile phone number</div>
-
-                <div class="addupi_C-title">UPI ID</div>
-                <div class="upi-input">
-                    <input type="text" placeholder="Please enter your UPI ID">
-                </div>
-
-                <div class="addupi_C-title">Confirm UPI ID</div>
-                <div class="upi-input">
-                    <input type="text" placeholder="Please enter your UPI ID">
-                </div>
-
-                <div class="bind-bank-sumbit disable">Save</div>
-            </div>
+        <!-- Info List -->
+        <div class="bet-container-lottery-card-info">
+            <ul>
+                <li>
+                    <h2>
+                        <svg class="svg-icon" viewBox="0 0 48 48">
+                            <mask id="m1" maskUnits="userSpaceOnUse" x="6" y="6" width="36" height="36"><circle cx="24" cy="24" r="18" fill="#D9D9D9"></circle></mask>
+                            <g mask="url(#m1)">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.4705 12.992C17.2079 14.0478 13.802 13.3906 11.2254 11.5176C8.65115 14.157 6.94305 17.5424 6.35131 21.184C9.24189 22.2447 11.6331 24.5757 12.6547 27.7324C13.6762 30.8888 13.1042 34.1786 11.3832 36.7317C14.3198 39.6583 18.2092 41.4967 22.3564 41.8918C23.627 39.7355 25.661 38.0177 28.2295 37.1865C30.8181 36.3488 33.4945 36.5589 35.7997 37.5825C38.9641 34.833 41.0645 31.0476 41.7397 26.9331C39.0138 25.7686 36.7873 23.4755 35.8028 20.4338C34.7996 17.3337 35.2977 14.1078 36.8953 11.5428C34.2573 8.83606 30.8169 7.02579 27.0991 6.38029C26.1085 9.40788 23.7332 11.9361 20.4705 12.992ZM28.0728 35.9093C33.8105 34.0525 36.9566 27.8958 35.0998 22.158C33.243 16.4202 27.0863 13.2741 21.3485 15.131C15.6107 16.9879 12.4646 23.1445 14.3215 28.8823C16.1784 34.62 22.335 37.7661 28.0728 35.9093Z" fill="currentColor"></path>
+                            </g>
+                        </svg>
+                        Type
+                    </h2>
+                    <span>Fortune Gems</span>
+                </li>
+                <li>
+                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Order number</h2>
+                    <span class="electric-orderNo">13511_21819-225302-87100109</span>
+                </li>
+                <li>
+                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Total bet</h2>
+                    <span>₹2.00</span>
+                </li>
+                <li>
+                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Handling fee</h2>
+                    <span>₹0.00</span>
+                </li>
+                <li>
+                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Actual amount</h2>
+                    <span>₹2.00</span>
+                </li>
+                <li>
+                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Winnings</h2>
+                    <span>₹18.00</span>
+                </li>
+                <li>
+                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Profit/loss</h2>
+                    <span class="color2AAB79">+₹16.00</span>
+                </li>
+            </ul>
         </div>
     </div>
+</div>
 
-    <!-- PAGE 3: Add Bank Card -->
-    <div class="page" id="page-bank">
-        <div class="full-page-wrap">
-            <div class="addBankCard__container">
-                <div class="navbar2">
-                    <span style="font-size: 20px; cursor: pointer;" onclick="showWithdrawPage()">&#8592;</span>
-                    <div class="navbar-title">Add bank card</div>
-                    <div style="width: 20px;"></div>
-                </div>
-
-                <div class="addBankCard__container-content">
-                    <div class="addBankCard__container-content-top">
-                        <img src="https://yaarwin.org/assets/png/hint-c6828dc5.webp" alt="hint">
-                        <span>To ensure the safety of your funds, please bind your bank account</span>
-                    </div>
-
-                    <div class="addBankCard__container-content-item">
-                        <div class="bank-label">
-                            <svg viewBox="0 0 24 24" class="icon"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/></svg>
-                            Choose a bank
-                        </div>
-                        <div class="selectB">
-                            Please select a bank
-                            <i class="arrow"></i>
-                        </div>
-                    </div>
-
-                    <div class="addBankCard__container-content-item">
-                        <div class="bank-label">
-                            <svg viewBox="0 0 24 24" class="icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                            Full recipient's name
-                        </div>
-                        <input type="text" class="input-field" placeholder="Please enter the recipient's name">
-                    </div>
-
-                    <div class="addBankCard__container-content-item">
-                        <div class="bank-label">
-                            <svg viewBox="0 0 24 24" class="icon"><path d="M21 4H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H3V6h18v12zm-9-7H5v2h7v-2zm-4 3H5v2h3v-2zm8-3h-6v2h6v-2zm0 3h-6v2h6v-2z"/></svg>
-                            Bank account number
-                        </div>
-                        <input type="text" class="input-field" placeholder="Please enter your bank account number">
-                    </div>
-
-                    <div class="addBankCard__container-content-item">
-                        <div class="bank-label">
-                            <svg viewBox="0 0 24 24" class="icon"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-                            Phone number
-                        </div>
-                        <input type="text" class="input-field" placeholder="Please enter your phone number">
-                    </div>
-
-                    <div class="addBankCard__container-content-item">
-                        <div class="bank-label">
-                            <svg viewBox="0 0 24 24" class="icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                            IFSC code
-                        </div>
-                        <input type="text" class="input-field" placeholder="Please enter IFSC code">
-                    </div>
-
-                    <div class="addBankCard__container-content-btn">
-                        <button>Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function showUpiPage() {
-            document.getElementById('page-withdraw').classList.remove('active-page');
-            document.getElementById('page-bank').classList.remove('active-page');
-            document.getElementById('page-upi').classList.add('active-page');
-        }
-        function showBankPage() {
-            document.getElementById('page-withdraw').classList.remove('active-page');
-            document.getElementById('page-upi').classList.remove('active-page');
-            document.getElementById('page-bank').classList.add('active-page');
-        }
-        function showWithdrawPage() {
-            document.getElementById('page-upi').classList.remove('active-page');
-            document.getElementById('page-bank').classList.remove('active-page');
-            document.getElementById('page-withdraw').classList.add('active-page');
-        }
-    </script>
+</body>
+</html>

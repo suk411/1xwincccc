@@ -676,9 +676,10 @@ const Earn = () => {
   .x-page .navbar-fixed {
     position: fixed;
     top: 0;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    max-width: var(--app-max-width);
     height: 46px;
     background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
     color: #fff;

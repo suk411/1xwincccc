@@ -280,11 +280,13 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start bg-black/60">
+    <>
+      <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }`}</style>
+      <div className="fixed inset-0 z-50 flex items-start bg-black/60">
       <div className="w-full max-w-[var(--app-max-width)] mx-auto h-full flex flex-col" style={{ backgroundColor: "#3a0611" }}>
         {/* Navbar - same as earn rebate ratio tab */}
         <div className="navbar" style={{ display: "block", position: "static", width: "100%", height: "46px", zIndex: 100, background: "none" }}>
-          <div className="navbar-fixed" style={{ position: "fixed", top: 0, left: 0, right: 0, width: "100%", height: "46px", background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)", color: "#fff", zIndex: 101, boxSizing: "border-box", userSelect: "none" }}>
+          <div className="navbar-fixed" style={{ position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: "var(--app-max-width)", height: "46px", background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)", color: "#fff", zIndex: 101, boxSizing: "border-box", userSelect: "none" }}>
             <div className="navbar__content" style={{ display: "flex", position: "relative", alignItems: "center", justifyContent: "center", height: "100%", width: "100%" }}>
               <div className="navbar__content-left" style={{ position: "absolute", left: "12px", display: "flex", alignItems: "center", justifyContent: "center", height: "100%", cursor: "pointer" }} onClick={() => onOpenChange(false)}>
                 <svg className="back-arrow" viewBox="0 0 24 24" style={{ width: "20px", height: "20px", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }}>
@@ -300,7 +302,7 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-3 py-4">
+        <div className="flex-1 overflow-y-auto px-3 py-4 hide-scrollbar">
           {/* Hint */}
           <div className="flex items-center gap-2 rounded-[30px] px-5 py-1.5 mb-5 text-xs"
             style={{ backgroundColor: "rgba(211, 54, 93, 0.2)", color: "rgba(255,255,255,0.6)" }}
@@ -470,6 +472,7 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
         </div>
       </div>
     </div>
+    </>
   );
 };
 
