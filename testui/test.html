@@ -5,201 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
-            --primary-text: rgb(34, 57, 53);
-            --secondary-text: rgb(107, 143, 127);
-            --status-orange: rgb(233, 134, 19);
-            --win-green: rgb(24, 182, 96);
-            --border-light: rgb(216, 235, 228);
+            --main-color: #0CD781;
+            --text-secondary: rgb(107, 143, 127);
             --card-bg: rgb(255, 255, 255);
-            --font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, "Segoe UI", Arial, Roboto, "PingFang SC", miui, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+            --font-family: 'Inter', -apple-system, sans-serif;
         }
 
         body {
             background-color: #f2f2f2;
-            padding: 15px;
+            padding: 20px;
             font-family: var(--font-family);
-            margin: 0;
         }
 
-        /* Section Container */
-        .bet-container-lottery-items {
+        .bankInfo {
             display: block;
             width: 100%;
-            max-width: 465px;
-            margin-bottom: 15.9px;
-        }
-
-        /* Electric Card Variant */
-        .bet-container-lottery-card.electric-card {
-            display: block;
-            background: var(--card-bg);
-            padding: 17.22px 15.9px;
-            border-radius: 6.62px;
+            max-width: 456px;
+            margin: 13.65px 0;
             box-sizing: border-box;
         }
 
-        /* Header */
-        .bet-container-lottery-card-header {
+        .bankInfoItem.type1 {
+            display: flex;
+            align-items: center;
+            padding: 13.65px;
+            background: var(--card-bg);
+            border-radius: 13.65px;
+            height: 101.7px;
+            box-sizing: border-box;
+        }
+
+        /* Left Section (Icon + Bank Name) */
+        .bankInfoItem > div:first-child {
             display: flex;
             flex-direction: column;
-            position: relative;
-            padding-bottom: 7.95px;
-        }
-
-        .ar-1px-b::after {
-            content: " ";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            border-bottom: 0.8px solid var(--border-light);
-            transform: scaleY(0.5);
-            transform-origin: 0 100%;
-        }
-
-        .bet-container-lottery-card-header h1 {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin: 0;
+            justify-content: center;
+            width: 124px;
+            height: 74px;
         }
 
-        .bet-container-lottery-card-header h2 {
-            margin: 0;
-            padding-bottom: 5.3px;
-            font-size: 19.87px;
-            font-weight: 700;
-            color: var(--primary-text);
-        }
-
-        .bet-container-lottery-card-header span {
-            font-size: 18.55px;
-            color: var(--status-orange);
-        }
-
-        .bet-container-lottery-card-header p {
-            margin: 0;
-            font-size: 14.57px;
-            color: var(--secondary-text);
-        }
-
-        /* Info List */
-        .bet-container-lottery-card-info {
-            display: flex;
-            margin-top: 16.56px;
-        }
-
-        .bet-container-lottery-card-info ul {
+        /* Right Section (Account Number) */
+        .bankInfoItem > div:nth-child(2) {
             display: flex;
             flex-direction: column;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            list-style: none;
+            padding-left: 34.13px;
+            flex: 1;
+            /* Recreating the vertical divider line seen in the style extract */
+            background: url("https://yaarwin.org/assets/png/line-0198e433.webp") no-repeat 0 50% / contain;
         }
 
-        .bet-container-lottery-card-info li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 6.62px;
-            font-size: 15.9px;
-            color: var(--secondary-text);
-        }
-
-        .bet-container-lottery-card-info li:last-child {
-            padding-bottom: 0;
-        }
-
-        .bet-container-lottery-card-info h2 {
-            display: flex;
-            align-items: center;
-            gap: 6.62px;
-            margin: 0;
-            font-size: 15.9px;
-            font-weight: 400;
-            color: var(--secondary-text);
-        }
-
-        .bet-container-lottery-card-info span {
-            color: var(--primary-text);
-            text-align: right;
-        }
-
-        /* Order Number Specific Style */
-        .electric-orderNo {
-            word-break: break-all;
-            max-width: 60%;
-        }
-
-        /* Winning Color */
-        .color2AAB79 {
-            color: var(--win-green) !important;
-        }
-
-        /* SVG Icon */
         .svg-icon {
-            width: 15px;
-            height: 15px;
-            fill: currentColor;
+            width: 32px;
+            height: 32px;
+            margin-bottom: 4px;
+        }
+
+        .bankInfoItem span {
+            color: var(--text-secondary);
+            font-size: 19.11px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        /* Adjusting font size for smaller labels */
+        .bankInfoItem div:first-child span {
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* Arrow Icon (Vant UI fallback) */
+        .van-icon-arrow {
+            position: relative;
+            font-size: 20.48px;
+            color: var(--text-secondary);
+            width: 21px;
+            height: 20px;
+        }
+
+        .van-icon-arrow::before {
+            content: "\203A"; /* Standard chevron character fallback */
+            font-weight: bold;
+            display: block;
+            transform: scale(1.5);
+        }
+
+        /* SBI Logo SVG Colors */
+        .icon-1 path {
+            fill: var(--main-color);
         }
     </style>
 </head>
 <body>
 
-<div class="bet-container-lottery-items">
-    <div class="bet-container-lottery-card electric-card">
-        <!-- Header -->
-        <div class="bet-container-lottery-card-header ar-1px-b">
-            <h1>
-                <h2>JILI</h2>
-                <span>Paid</span>
-            </h1>
-            <p>2026-05-26 08:45:51</p>
+<div class="bankInfo">
+    <div class="bankInfoItem type1">
+        <!-- Bank Logo & Name -->
+        <div>
+            <svg class="svg-icon icon-1" viewBox="0 0 62 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M42.7474 21.041C43.8798 22.8892 44.446 25.0217 44.5875 27.1542C55.0621 29.8554 62.1395 35.6843 61.9979 42.0819C61.9979 51.4651 48.1262 59 30.999 59C13.8717 59 0 51.4651 0 42.0819C0 35.4 7.21894 29.5711 17.5519 26.8699C17.5519 29.4289 18.1181 31.9879 19.392 34.2626L29.1588 51.1807C29.8666 52.4602 30.4328 53.8819 30.7159 55.3036L31.1405 54.5928C33.5468 50.4699 33.5468 45.2096 31.1405 41.0867L23.3554 27.5807C20.9491 23.3157 20.9491 18.1976 23.3554 14.0747L23.78 13.3639C24.0631 14.7855 24.6293 16.2072 25.337 17.4867L29.8666 25.4482L36.944 37.8169C37.6517 39.0964 38.2179 40.5181 38.501 41.9398L38.9256 41.2289C41.3319 37.106 41.3319 31.8458 38.9256 27.7229L31.1405 14.2169C28.7342 10.094 28.7342 4.83373 31.1405 0.710843L31.5651 0C31.8482 1.42169 32.4144 2.84337 33.1222 4.12289L42.7474 21.041Z" fill="#0CD781"/>
+            </svg>
+            <span>State Bank of India</span>
         </div>
 
-        <!-- Info List -->
-        <div class="bet-container-lottery-card-info">
-            <ul>
-                <li>
-                    <h2>
-                        <svg class="svg-icon" viewBox="0 0 48 48">
-                            <mask id="m1" maskUnits="userSpaceOnUse" x="6" y="6" width="36" height="36"><circle cx="24" cy="24" r="18" fill="#D9D9D9"></circle></mask>
-                            <g mask="url(#m1)">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.4705 12.992C17.2079 14.0478 13.802 13.3906 11.2254 11.5176C8.65115 14.157 6.94305 17.5424 6.35131 21.184C9.24189 22.2447 11.6331 24.5757 12.6547 27.7324C13.6762 30.8888 13.1042 34.1786 11.3832 36.7317C14.3198 39.6583 18.2092 41.4967 22.3564 41.8918C23.627 39.7355 25.661 38.0177 28.2295 37.1865C30.8181 36.3488 33.4945 36.5589 35.7997 37.5825C38.9641 34.833 41.0645 31.0476 41.7397 26.9331C39.0138 25.7686 36.7873 23.4755 35.8028 20.4338C34.7996 17.3337 35.2977 14.1078 36.8953 11.5428C34.2573 8.83606 30.8169 7.02579 27.0991 6.38029C26.1085 9.40788 23.7332 11.9361 20.4705 12.992ZM28.0728 35.9093C33.8105 34.0525 36.9566 27.8958 35.0998 22.158C33.243 16.4202 27.0863 13.2741 21.3485 15.131C15.6107 16.9879 12.4646 23.1445 14.3215 28.8823C16.1784 34.62 22.335 37.7661 28.0728 35.9093Z" fill="currentColor"></path>
-                            </g>
-                        </svg>
-                        Type
-                    </h2>
-                    <span>Fortune Gems</span>
-                </li>
-                <li>
-                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Order number</h2>
-                    <span class="electric-orderNo">13511_21819-225302-87100109</span>
-                </li>
-                <li>
-                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Total bet</h2>
-                    <span>₹2.00</span>
-                </li>
-                <li>
-                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Handling fee</h2>
-                    <span>₹0.00</span>
-                </li>
-                <li>
-                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Actual amount</h2>
-                    <span>₹2.00</span>
-                </li>
-                <li>
-                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Winnings</h2>
-                    <span>₹18.00</span>
-                </li>
-                <li>
-                    <h2><svg class="svg-icon" viewBox="0 0 48 48"><use xlink:href="#m1"></use></svg>Profit/loss</h2>
-                    <span class="color2AAB79">+₹16.00</span>
-                </li>
-            </ul>
+        <!-- Divider & Details -->
+        <div>
+            <span></span> <!-- Placeholder for name if needed -->
+            <span>637710****699</span>
         </div>
+
+        <!-- Arrow -->
+        <i class="van-badge__wrapper van-icon van-icon-arrow"></i>
     </div>
 </div>
 

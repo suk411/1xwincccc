@@ -82,7 +82,7 @@ const Bank = () => {
   const WITHDRAW_METHODS = [
     { id: "bank_card", label: "BANK CARD", icon: bankLogo },
     { id: "upi", label: "UPI", icon: upiLogo },
-    { id: "usdt", label: "UPAY", icon: upayLogo },
+    { id: "upay", label: "UPAY", icon: upayLogo },
   ];
 
   const loadWithdrawInfo = async () => {
@@ -121,29 +121,30 @@ const Bank = () => {
     if (bindingAccount) return;
     setBindingAccount(true);
     try {
-      const res = await authService.bindBankAccount({
-        bankName: account.bankName,
-        bankCode: account.bankCode,
-        accountNumber: account.accountNumber,
-        accountHolder: account.accountHolder,
-      });
-      setBindAccount((res.bindAccount as BankAccount) || account);
-      setWithdrawInfo((prev) =>
-        prev
-          ? {
-            ...prev,
-            data: {
-              ...prev.data,
-              isBankBound: true,
-              bindAccount: (res.bindAccount as BankAccount) || account,
-            },
-          }
-          : null,
-      );
-      toast({ description: res.msg || "Bank account bound successfully" });
+      let res: any;
+      if (activeWithdrawMethod === "upi") {
+        res = await authService.addPaymentMethod("UPI", {
+          upiId: account.accountNumber,
+          holderName: account.accountHolder,
+        });
+      } else if (activeWithdrawMethod === "upay") {
+        res = await authService.addPaymentMethod("UPAY", {
+          rplId: account.rplId || account.accountNumber,
+          holderName: account.accountHolder,
+        });
+      } else {
+        res = await authService.addPaymentMethod("BANK", {
+          accountNo: account.accountNumber,
+          ifsc: account.bankCode,
+          bankName: account.bankName,
+          holderName: account.accountHolder,
+        });
+      }
+      toast({ description: res.msg || "Payment method added successfully" });
       setShowAddAccount(false);
+      loadWithdrawInfo();
     } catch (err: any) {
-      toast({ description: err?.message || "Failed to bind bank account", variant: "destructive" });
+      toast({ description: err?.message || "Failed to add payment method", variant: "destructive" });
     } finally {
       setBindingAccount(false);
     }
@@ -156,9 +157,9 @@ const Bank = () => {
   };
 
   const handleAllWithdraw = () => {
-    const bal = Math.floor(walletBalance);
-    setWithdrawAmountInput(String(bal));
-    setSelectedWithdrawAmount(bal);
+    const val = Math.floor(walletBalance);
+    setWithdrawAmountInput(String(val));
+    setSelectedWithdrawAmount(val);
   };
 
   const handleDepositAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,15 +170,30 @@ const Bank = () => {
 
   const walletBalance = withdrawInfo?.data?.walletBalance ?? withdrawInfo?.data?.balance ?? balance;
   const withdrawableAmount = withdrawInfo?.data?.totalAvailable ?? withdrawInfo?.data?.withdrawable ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
+
+  const getCurrentPaymentMethod = () => {
+    const methods = withdrawInfo?.data?.paymentMethods;
+    if (!methods) return null;
+    if (activeWithdrawMethod === "bank_card") return methods.bank;
+    if (activeWithdrawMethod === "upi") return methods.upi;
+    if (activeWithdrawMethod === "upay") return methods.upay;
+    return null;
+  };
+
+  const hasPaymentMethod = () => {
+    const method = getCurrentPaymentMethod();
+    return method?.isActive === true;
+  };
+
   const turnoverRequirement = withdrawInfo?.data?.turnover?.total_required ?? withdrawInfo?.data?.turnover?.requirement ?? (withdrawInfo?.data as any)?.turnover_requirement ?? 0;
   const turnoverCompleted = withdrawInfo?.data?.turnover?.completed ?? 0;
   const remainingTurnover = Math.max(0, turnoverRequirement - turnoverCompleted);
   const turnoverProgress = withdrawInfo?.data?.turnover?.progress ?? (withdrawInfo?.data as any)?.turnover_progress ?? 0;
-  const dailyLimit = withdrawInfo?.data?.vipMeta?.dailyWithdrawLimit ?? withdrawInfo?.data?.dailyLimit ?? withdrawInfo?.data?.vipLimit ?? 0;
-  const remainingLimit = withdrawInfo?.data?.remainingDailyLimit ?? withdrawInfo?.data?.canWithdrawAmount ?? 0;
-  
+  const limits = withdrawInfo?.data?.limits;
+  const methodLimits = activeWithdrawMethod === "upi" ? limits?.UPI : activeWithdrawMethod === "upay" ? limits?.UPAY : limits?.BANK;
+
   const feeAmount = (selectedWithdrawAmount * 0.035) + 6;
-  const withdrawReceivedAmount = Math.max(0, selectedWithdrawAmount - feeAmount);
+  const withdrawReceivedAmount = selectedWithdrawAmount;
   
   const currentEffectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
   const selectedDepositBonus = [...DEPOSIT_OPTIONS]
@@ -216,8 +232,8 @@ const Bank = () => {
 
   const handleWithdraw = async () => {
     if (withdrawing) return;
-    if (!withdrawInfo?.data?.isBankBound && !bindAccount) {
-      toast({ description: "Please bind a bank account first", variant: "destructive" });
+    if (!hasPaymentMethod() && !bindAccount) {
+      toast({ description: "Please add a payment method first", variant: "destructive" });
       return;
     }
 
@@ -229,25 +245,40 @@ const Bank = () => {
       return;
     }
 
+    if (selectedWithdrawAmount <= 0) {
+      toast({ description: "Please enter a valid amount", variant: "destructive" });
+      return;
+    }
+
     if (selectedWithdrawAmount > walletBalance) {
       toast({ 
-        description: `Insufficient balance`, 
+        description: `Insufficient balance. Have ₹${walletBalance.toFixed(2)}`, 
         variant: "destructive" 
       });
       return;
     }
 
-    if (remainingLimit !== -1 && selectedWithdrawAmount > remainingLimit) {
-      toast({ 
-        description: `Daily withdrawal limit exceeded, upgrade vip level to increase limit `, 
-        variant: "destructive" 
-      });
+    if (methodLimits) {
+      if (selectedWithdrawAmount < methodLimits.min) {
+        toast({ description: `Minimum withdrawal for this method is ₹${methodLimits.min}`, variant: "destructive" });
+        return;
+      }
+      if (selectedWithdrawAmount > methodLimits.max) {
+        toast({ description: `Maximum withdrawal for this method is ₹${methodLimits.max}`, variant: "destructive" });
+        return;
+      }
+    }
+
+    if (limits && limits.remainingToday !== undefined && limits.remainingToday <= 0) {
+      toast({ description: "Daily withdrawal limit reached (max 3 per day)", variant: "destructive" });
       return;
     }
-    
+
+    const apiType = activeWithdrawMethod === "bank_card" ? "BANK" : activeWithdrawMethod === "upay" ? "UPAY" : "UPI";
+
     setWithdrawing(true);
     try {
-      const res = await authService.requestWithdraw(selectedWithdrawAmount);
+      const res = await authService.requestWithdraw(selectedWithdrawAmount, apiType);
       if (res.status === "success") {
         toast({ description: res.msg || "Withdrawal request submitted" });
         refreshBalance();
@@ -485,22 +516,108 @@ const Bank = () => {
               })}
             </div>
 
-            {/* Add account section - from withdrwalui.html */}
+            {/* Payment method info card — from testui/test.html */}
             <GameCard className="p-3">
-              <div
-                className="flex flex-col items-center justify-center gap-2 h-24 cursor-pointer border border-white/10 rounded-md"
-                onClick={() => setShowAddAccount(true)}
-              >
-                <img
-                  src="https://yaarwin.org/assets/png/add-1ad7f3f5.webp"
-                  alt="Add"
-                  className="w-11 h-11 object-contain opacity-80"
-                />
-                <span className="text-white/70 text-xs">{activeWithdrawMethod === "upi" ? "Add a UPI account information" : "Add a bank account information"}</span>
-              </div>
-              <p className="text-primary text-[11px] text-center mt-2">
-                Need to add beneficiary information to be able to withdraw money
-              </p>
+              {hasPaymentMethod() ? (
+                <div className="bankInfo" style={{ display: "block", width: "100%", maxWidth: 456, margin: "13.65px 0", boxSizing: "border-box" }}>
+                  <div
+                    className="bankInfoItem type1 cursor-pointer"
+                    onClick={() => setShowViewAccount(true)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "12.285px",
+                      background: "rgba(255,255,255,0.05)",
+                      borderRadius: "12.285px",
+                      height: "91.53px",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    {/* Left: Icon + Name */}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 111.6, height: 66.6 }}>
+                      {activeWithdrawMethod === "upi" ? (
+                        <img src={upiLogo} alt="" className="svg-icon" style={{ width: 28.8, height: 28.8, marginBottom: 3.6, objectFit: "contain" }} />
+                      ) : activeWithdrawMethod === "upay" ? (
+                        <img src={upayLogo} alt="" className="svg-icon" style={{ width: 28.8, height: 28.8, marginBottom: 3.6, objectFit: "contain" }} />
+                      ) : (
+                        <svg className="svg-icon icon-1" viewBox="0 0 62 59" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 28.8, height: 28.8, marginBottom: 3.6 }}>
+                          <path d="M42.7474 21.041C43.8798 22.8892 44.446 25.0217 44.5875 27.1542C55.0621 29.8554 62.1395 35.6843 61.9979 42.0819C61.9979 51.4651 48.1262 59 30.999 59C13.8717 59 0 51.4651 0 42.0819C0 35.4 7.21894 29.5711 17.5519 26.8699C17.5519 29.4289 18.1181 31.9879 19.392 34.2626L29.1588 51.1807C29.8666 52.4602 30.4328 53.8819 30.7159 55.3036L31.1405 54.5928C33.5468 50.4699 33.5468 45.2096 31.1405 41.0867L23.3554 27.5807C20.9491 23.3157 20.9491 18.1976 23.3554 14.0747L23.78 13.3639C24.0631 14.7855 24.6293 16.2072 25.337 17.4867L29.8666 25.4482L36.944 37.8169C37.6517 39.0964 38.2179 40.5181 38.501 41.9398L38.9256 41.2289C41.3319 37.106 41.3319 31.8458 38.9256 27.7229L31.1405 14.2169C28.7342 10.094 28.7342 4.83373 31.1405 0.710843L31.5651 0C31.8482 1.42169 32.4144 2.84337 33.1222 4.12289L42.7474 21.041Z" fill="#ffb753"/>
+                        </svg>
+                      )}
+                      <span style={{ fontSize: 14.4, textAlign: "center", color: "rgba(255,255,255,0.7)" }}>
+                        {(() => {
+                          const pm = getCurrentPaymentMethod();
+                          if (activeWithdrawMethod === "bank_card") return (pm as any)?.bankName || "Bank";
+                          if (activeWithdrawMethod === "upi") return "UPI";
+                          if (activeWithdrawMethod === "upay") return "UPAY";
+                          return "";
+                        })()}
+                      </span>
+                    </div>
+
+                    {/* Middle: Divider + Details */}
+                    <div style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      paddingLeft: "30.717px",
+                      flex: 1,
+                      background: 'url("https://yaarwin.org/assets/png/line-0198e433.webp") no-repeat 0 50% / contain',
+                    }}>
+                      <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 400, lineHeight: 1.4 }}>
+                        {(() => {
+                          const pm = getCurrentPaymentMethod();
+                          if (!pm) return "";
+                          if (activeWithdrawMethod === "bank_card") return (pm as any)?.holderName || "";
+                          if (activeWithdrawMethod === "upi") return (pm as any)?.holderName || "";
+                          if (activeWithdrawMethod === "upay") return (pm as any)?.holderName || "";
+                          return "";
+                        })()}
+                      </span>
+                      <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "17.199px", fontWeight: 400, lineHeight: 1.4 }}>
+                        {(() => {
+                          const pm = getCurrentPaymentMethod();
+                          if (!pm) return "-";
+                          if (activeWithdrawMethod === "bank_card") {
+                            const acc = (pm as any).accountNo || "";
+                            return acc.length > 4 ? "****" + acc.slice(-4) : acc || "-";
+                          }
+                          if (activeWithdrawMethod === "upi") return (pm as any).upiId || "-";
+                          if (activeWithdrawMethod === "upay") return (pm as any).rplId || "-";
+                          return "-";
+                        })()}
+                      </span>
+                    </div>
+
+                    {/* Arrow */}
+                    <svg viewBox="0 0 24 24" style={{ width: "18px", height: "18px", fill: "none", stroke: "rgba(255,255,255,0.5)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }}>
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="flex flex-col items-center justify-center gap-2 h-24 cursor-pointer border border-white/10 rounded-md"
+                  onClick={() => setShowAddAccount(true)}
+                >
+                  <img
+                    src="https://yaarwin.org/assets/png/add-1ad7f3f5.webp"
+                    alt="Add"
+                    className="w-11 h-11 object-contain opacity-80"
+                  />
+                  <span className="text-white/70 text-xs">
+                    {activeWithdrawMethod === "upi"
+                      ? "Add a UPI account information"
+                      : activeWithdrawMethod === "upay"
+                        ? "Add a UPAY account information"
+                        : "Add a bank account information"}
+                  </span>
+                </div>
+              )}
+              {!hasPaymentMethod() && (
+                <p className="text-primary text-[11px] text-center mt-2">
+                  Need to add beneficiary information to be able to withdraw money
+                </p>
+              )}
             </GameCard>
 
             {/* Amount input section - from withdrwalui.html */}
@@ -550,11 +667,11 @@ const Bank = () => {
                 </p>
                 <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
                   <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
-                  Inday Remaining Withdrawal Times <span className="text-primary">3</span>
+                  Inday Remaining Withdrawal Times <span className="text-primary">{limits?.remainingToday ?? 3}</span>
                 </p>
                 <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
                   <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
-                  Withdrawal amount range <span className="text-primary">₹110.00-₹10,000,000.00</span>
+                  Withdrawal amount range <span className="text-primary">₹{(methodLimits?.min ?? 110).toFixed(2)}-₹{(methodLimits?.max ?? 50000).toFixed(2)}</span>
                 </p>
               </div>
               <div className="border-t border-white/5 mt-3 pt-3 space-y-1.5">
@@ -622,27 +739,56 @@ const Bank = () => {
         onConfirm={handleBindAccount}
       />
 
-      {withdrawInfo?.data?.isBankBound && (
+      {hasPaymentMethod() && (
         <GameDialog open={showViewAccount} onOpenChange={setShowViewAccount}>
-          <GameDialogContent title="Bank Account Details">
+          <GameDialogContent title="Payment Method Details">
             <GameDialogBody>
               <div className="w-full flex flex-col gap-2 text-left text-sm">
-                <div className="flex justify-between">
-                  <span className="text-white/70">Account Holder</span>
-                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.accountHolder || bindAccount?.accountHolder) ?? "-"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Bank Name</span>
-                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.bankName || bindAccount?.bankName) ?? "-"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Account Number</span>
-                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.accountNumber || bindAccount?.accountNumber) ?? "-"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">IFSC / Bank Code</span>
-                  <span className="text-white font-medium">{(withdrawInfo?.data?.bindAccount?.bankCode || bindAccount?.bankCode) ?? "-"}</span>
-                </div>
+                {(() => {
+                  const pm = getCurrentPaymentMethod();
+                  if (!pm) return <span className="text-white/70">No payment method details</span>;
+                  const methodName = activeWithdrawMethod === "upi" ? "UPI" : activeWithdrawMethod === "upay" ? "UPAY" : "Bank";
+                  return (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-white/70">Type</span>
+                        <span className="text-white font-medium">{methodName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-white/70">Account Holder</span>
+                        <span className="text-white font-medium">{pm.holderName || "-"}</span>
+                      </div>
+                      {activeWithdrawMethod === "bank_card" && (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Bank Name</span>
+                            <span className="text-white font-medium">{(pm as any).bankName || "-"}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-white/70">Account Number</span>
+                            <span className="text-white font-medium">{(pm as any).accountNo || "-"}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-white/70">IFSC</span>
+                            <span className="text-white font-medium">{(pm as any).ifsc || "-"}</span>
+                          </div>
+                        </>
+                      )}
+                      {activeWithdrawMethod === "upi" && (
+                        <div className="flex justify-between">
+                          <span className="text-white/70">UPI ID</span>
+                          <span className="text-white font-medium">{(pm as any).upiId || "-"}</span>
+                        </div>
+                      )}
+                      {activeWithdrawMethod === "upay" && (
+                        <div className="flex justify-between">
+                          <span className="text-white/70">RLP Address</span>
+                          <span className="text-white font-medium">{(pm as any).rplId || "-"}</span>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </GameDialogBody>
             <GameDialogFooter>

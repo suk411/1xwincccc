@@ -85,6 +85,34 @@ export interface BindBankResponse {
 export interface WithdrawInfoResponse {
   success: boolean;
   data: {
+    paymentMethods?: {
+      bank?: {
+        accountNo?: string;
+        ifsc?: string;
+        bankName?: string;
+        holderName?: string;
+        isDefault?: boolean;
+        isActive?: boolean;
+        createdAt?: string;
+        updatedAt?: string;
+      } | null;
+      upi?: {
+        upiId?: string;
+        holderName?: string;
+        isDefault?: boolean;
+        isActive?: boolean;
+        createdAt?: string;
+        updatedAt?: string;
+      } | null;
+      upay?: {
+        rplId?: string;
+        holderName?: string;
+        isDefault?: boolean;
+        isActive?: boolean;
+        createdAt?: string;
+        updatedAt?: string;
+      } | null;
+    };
     bindAccount?: BankAccountDetails | null;
     isBankBound?: boolean;
     balance: number;
@@ -105,10 +133,19 @@ export interface WithdrawInfoResponse {
       progress: number;
       canWithdraw: boolean;
     };
-    dailyLimit?: number;
-    usedToday?: number;
-    remainingDailyLimit?: number;
-    maxWithdraw?: number;
+    chargeInfo?: {
+      percentage: number;
+      flat: number;
+      description: string;
+    };
+    limits?: {
+      BANK: { min: number; max: number };
+      UPI: { min: number; max: number };
+      UPAY: { min: number; max: number };
+      perDay: number;
+      usedToday: number;
+      remainingToday: number;
+    };
   };
 }
 
@@ -116,7 +153,45 @@ export interface WithdrawResponse {
   status: string;
   msg?: string;
   newBalance: number;
-  newWithdrawable: number;
+  orderId?: string;
+  paymentMethod?: string;
+  bankDetails?: {
+    accountNumber?: string;
+    accountHolder?: string;
+  };
+}
+
+export interface PaymentMethodResponse {
+  status: string;
+  data?: {
+    _id: string;
+    type: string;
+    upiId?: string;
+    rplId?: string;
+    accountNo?: string;
+    ifsc?: string;
+    bankName?: string;
+    holderName: string;
+    isDefault: boolean;
+    isActive: boolean;
+  };
+  msg?: string;
+}
+
+export interface ListPaymentMethodsResponse {
+  status: string;
+  data: Array<{
+    _id: string;
+    type: "UPI" | "BANK" | "UPAY";
+    upiId?: string;
+    rplId?: string;
+    accountNo?: string;
+    ifsc?: string;
+    bankName?: string;
+    holderName: string;
+    isDefault: boolean;
+    isActive: boolean;
+  }>;
 }
 
 export interface WithdrawalRecord {
@@ -324,11 +399,13 @@ export const authService = {
     return data;
   },
 
-  async requestWithdraw(amount: number): Promise<WithdrawResponse> {
+  async requestWithdraw(amount: number, type?: string): Promise<WithdrawResponse> {
+    const body: Record<string, any> = { amount };
+    if (type) body.type = type;
     const res = await fetch(`${API_BASE}/api/account/withdraw`, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({ amount }),
+      body: JSON.stringify(body),
     });
     handleUnauthorized(res);
     const data = await res.json();
@@ -365,6 +442,39 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to bind bank account"));
+    return data;
+  },
+
+  async addPaymentMethod(type: "UPI" | "BANK" | "UPAY", data: Record<string, string>): Promise<PaymentMethodResponse> {
+    const res = await fetch(`${API_BASE}/api/account/payment-methods`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ type, ...data }),
+    });
+    handleUnauthorized(res);
+    const result = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(result, "Failed to add payment method"));
+    return result;
+  },
+
+  async listPaymentMethods(): Promise<ListPaymentMethodsResponse> {
+    const res = await fetch(`${API_BASE}/api/account/payment-methods`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch payment methods"));
+    return data;
+  },
+
+  async setDefaultPaymentMethod(id: string): Promise<{ status: string; data: any }> {
+    const res = await fetch(`${API_BASE}/api/account/payment-methods/${id}/default`, {
+      method: "PATCH",
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to set default payment method"));
     return data;
   },
 

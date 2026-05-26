@@ -210,6 +210,7 @@ export interface BankAccount {
   bankCode: string;
   accountNumber: string;
   accountHolder: string;
+  rplId?: string;
 }
 
 interface AddAccountDialogProps {
@@ -221,6 +222,8 @@ interface AddAccountDialogProps {
 
 const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm }: AddAccountDialogProps) => {
   const isUpi = method === "upi";
+  const isUpay = method === "upay";
+  const methodLabel = isUpay ? "RLP" : "UPI";
   const [bankName, setBankName] = useState("");
   const [bankCode, setBankCode] = useState("");
   const [accountHolder, setAccountHolder] = useState("");
@@ -228,13 +231,18 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
   const [phone, setPhone] = useState("");
   const [ifsc, setIfsc] = useState("");
   const [upiId, setUpiId] = useState("");
+  const [rplId, setRplId] = useState("");
   const [showBankPicker, setShowBankPicker] = useState(false);
   const [bankSearch, setBankSearch] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (isUpi) {
+    if (isUpay) {
+      if (!rplId.trim()) e.rplId = "Please enter RLP address";
+      if (!accountHolder.trim()) e.accountHolder = "Please enter the recipient's name";
+      if (!phone.trim()) e.phone = "Please enter your phone number";
+    } else if (isUpi) {
       if (!upiId.trim()) e.upiId = "Please enter UPI ID";
       if (!accountHolder.trim()) e.accountHolder = "Please enter the recipient's name";
       if (!phone.trim()) e.phone = "Please enter your phone number";
@@ -252,10 +260,11 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
   const handleSave = () => {
     if (validate()) {
       onConfirm({
-        bankName: isUpi ? "UPI" : bankName,
-        bankCode: isUpi ? "UPI" : ifsc.toUpperCase(),
-        accountNumber: isUpi ? upiId : accountNumber,
+        bankName: isUpi ? "UPI" : isUpay ? "UPAY" : bankName,
+        bankCode: isUpi ? "UPI" : isUpay ? "UPAY" : ifsc.toUpperCase(),
+        accountNumber: isUpi ? upiId : isUpay ? rplId : accountNumber,
         accountHolder: accountHolder.trim(),
+        rplId: isUpay ? rplId : undefined,
       });
       setBankName("");
       setBankCode("");
@@ -264,6 +273,7 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
       setPhone("");
       setIfsc("");
       setUpiId("");
+      setRplId("");
       setErrors({});
       onOpenChange(false);
     }
@@ -294,7 +304,7 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
                 </svg>
               </div>
               <div className="navbar__content-center" style={{ display: "flex", alignItems: "center", height: "100%" }}>
-                <div className="navbar__content-title" style={{ fontSize: "18px", fontWeight: 400, lineHeight: 1.2, color: "#fff", textAlign: "center" }}>{isUpi ? "Add UPI" : "Add bank card"}</div>
+                <div className="navbar__content-title" style={{ fontSize: "18px", fontWeight: 400, lineHeight: 1.2, color: "#fff", textAlign: "center" }}>{isUpi ? "Add UPI" : isUpay ? "Add UPAY" : "Add bank card"}</div>
               </div>
               <div className="navbar__content-right" style={{ position: "absolute", right: "12px" }}></div>
             </div>
@@ -310,7 +320,7 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
             <svg viewBox="0 0 24 24" className="w-[17.5px] h-[17.5px] shrink-0" fill="rgba(255,255,255,0.5)">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
             </svg>
-            <span>To ensure the safety of your funds, please bind your {isUpi ? "UPI" : "bank"} account</span>
+            <span>To ensure the safety of your funds, please bind your {isUpay ? "RLP" : isUpi ? "UPI" : "bank"} account</span>
           </div>
 
           {isUpi ? (
@@ -330,6 +340,25 @@ const AddAccountDialog = ({ open, method = "bank_card", onOpenChange, onConfirm 
                   onChange={(e) => setUpiId(e.target.value)}
                 />
                 {errors.upiId && <p className="text-primary text-[11px] mt-1 ml-1">{errors.upiId}</p>}
+              </div>
+            </>
+          ) : isUpay ? (
+            <>
+              {/* RLP address */}
+              <div className="mb-9">
+                <div className="flex items-center gap-2 mb-3">
+                  <img src={iconBank} alt="" className="w-6 h-6 ml-1" />
+                  <span className="text-white/70 text-xs font-medium">RLP address</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Please enter RLP address"
+                  className="w-full h-10 px-3 rounded-md text-sm text-white outline-none border border-white/10"
+                  style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
+                  value={rplId}
+                  onChange={(e) => setRplId(e.target.value)}
+                />
+                {errors.rplId && <p className="text-primary text-[11px] mt-1 ml-1">{errors.rplId}</p>}
               </div>
             </>
           ) : (

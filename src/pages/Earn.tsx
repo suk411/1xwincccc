@@ -13,6 +13,8 @@ import iconInviteReg from "@/assets/earn/invite_reg.svg";
 import iconServer from "@/assets/earn/server.svg";
 import iconRebateRatio from "@/assets/earn/rebateRatio.svg";
 import iconCopy from "@/assets/earn/copy.svg";
+import iconSubordinate from "@/assets/earn/icon-subordinate.svg";
+import noDataImg from "@/assets/wingo/nodata.png";
 
 import agentMapTree from "@/assets/earn/agent-map-tree.png";
 
@@ -61,7 +63,7 @@ interface AgencyTeamMember {
 }
 
 const Earn = () => {
-  const [activeTab, setActiveTab] = useState<"referral" | "commission" | "rebateratio">("referral");
+  const [activeTab, setActiveTab] = useState<"referral" | "commission" | "rebateratio" | "subordinate" | "rules">("referral");
   const [agencyDaily, setAgencyDaily] = useState<AgencyDaily | null>(null);
   const [agencyCommissions, setAgencyCommissions] = useState<AgencyCommissionItem[]>([]);
   const [commPage, setCommPage] = useState(1);
@@ -76,11 +78,14 @@ const Earn = () => {
   const [levelVal, setLevelVal] = useState("All");
   const [dateOpen, setDateOpen] = useState(false);
   const today = new Date();
-  const [yr, setYr] = useState(today.getFullYear());
-  const [mo, setMo] = useState(today.getMonth() + 1);
-  const [dd, setDd] = useState(today.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const [yr, setYr] = useState(yesterday.getFullYear());
+  const [mo, setMo] = useState(yesterday.getMonth() + 1);
+  const [dd, setDd] = useState(yesterday.getDate());
   const [rebateLevelTab, setRebateLevelTab] = useState(0);
   const [searchUid, setSearchUid] = useState("");
+  const [subDateFilter, setSubDateFilter] = useState("today");
   const [showCommissionDetail, setShowCommissionDetail] = useState(false);
 
   const { userId } = useProfile(false);
@@ -118,12 +123,14 @@ const Earn = () => {
     }
   }, []);
 
-  const fetchAgencyTeam = useCallback(async (p = 1, append = false) => {
+  const fetchAgencyTeam = useCallback(async (p = 1, append = false, dateRange?: { fromDate?: string; toDate?: string }) => {
     try {
       setTeamLoading(true);
       const params: any = { page: p, limit: 25 };
       if (levelVal !== "All") params.tier = levelVal === "Level 1" ? 1 : levelVal === "Level 2" ? 2 : 3;
       if (searchUid) params.userId = parseInt(searchUid);
+      if (dateRange?.fromDate) params.fromDate = dateRange.fromDate;
+      if (dateRange?.toDate) params.toDate = dateRange.toDate;
       const data = await authService.getAgencyTeam(params);
       setAgencyTeam(prev => append ? [...prev, ...data.items] : data.items);
       setTeamTotal(data.total || 0);
@@ -144,6 +151,30 @@ const Earn = () => {
   useEffect(() => {
     if (showCommissionDetail) fetchAgencyCommissions(1);
   }, [showCommissionDetail, fetchAgencyCommissions]);
+
+  useEffect(() => {
+    if (activeTab !== "subordinate") return;
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, "0");
+    const d = String(today.getDate()).padStart(2, "0");
+    const dateStr = `${y}-${m}-${d}`;
+    let fromDate: string, toDate: string;
+    if (subDateFilter === "today") {
+      fromDate = dateStr; toDate = dateStr;
+    } else if (subDateFilter === "yesterday") {
+      const yest = new Date(today);
+      yest.setDate(yest.getDate() - 1);
+      fromDate = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, "0")}-${String(yest.getDate()).padStart(2, "0")}`;
+      toDate = fromDate;
+    } else {
+      fromDate = `${y}-${m}-01`;
+      toDate = dateStr;
+    }
+    setLevelVal("All");
+    setSearchUid("");
+    fetchAgencyTeam(1, false, { fromDate, toDate });
+  }, [subDateFilter, activeTab, fetchAgencyTeam]);
 
   const commHasMore = agencyCommissions.length < commTotal;
   const teamHasMore = agencyTeam.length < teamTotal;
@@ -176,7 +207,7 @@ const Earn = () => {
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
       <div className="flex flex-col gap-2 px-2 pt-2">
-        {activeTab !== "rebateratio" && <>
+        {activeTab !== "rebateratio" && activeTab !== "subordinate" && activeTab !== "rules" && !showCommissionDetail && <>
         {/* Referral Bonus / Commission tabs */}
         <GameCard className="flex gap-1">
           <button
@@ -192,7 +223,7 @@ const Earn = () => {
                 : { color: "rgba(255,255,255,0.7)" }
             }
           >
-            Referral Bonus
+            Agency
           </button>
           <button
             onClick={() => setActiveTab("commission")}
@@ -214,6 +245,7 @@ const Earn = () => {
 
         <style>{`
   .container {
+    position: relative;
     width: 100%;
     max-width: 375px;
     background: linear-gradient(rgba(53,3,12,0.6), rgba(53,3,12,0.6)) no-repeat top / 200% 245px, url("https://www.82bet22.com/assets/png/promotionbg-1203267e.webp") no-repeat top / 200% 245px, linear-gradient(180deg, #35030c 0%, #5b0116 245px, transparent 245px);
@@ -851,13 +883,123 @@ const Earn = () => {
     font-size: 15px;
     color: rgba(255,255,255,0.9);
   }
+  .rules-grade {
+    display: block;
+    width: 100%;
+    max-width: 462px;
+    margin: 0 auto 34px;
+    box-sizing: border-box;
+  }
+  .rules-grade-th {
+    display: flex;
+    background: #f2413b;
+    border-radius: 10px 10px 0 0;
+    color: white;
+    padding-top: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+  .rules-grade-th .item {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rules-grade-tr {
+    display: flex;
+    background: rgba(255,255,255,0.06);
+    height: 47px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .rules-grade-tr .item {
+    flex: 1;
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .rules-grade-tr .item:first-child {
+    color: #fff;
+    font-weight: 600;
+  }
+  .rules-grade-th .item:first-child {
+    color: #fff;
+  }
+  .rules-grade-tr:last-child {
+    border-radius: 0 0 10px 10px;
+    border-bottom: none;
+  }
+  .rules-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 461px;
+    margin: 0 auto 34px;
+    padding: 35px 12px 17px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    box-sizing: border-box;
+    text-align: start;
+    border: 1px solid rgba(255,180,50,0.1);
+  }
+  .rules-card-title {
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 109px;
+    height: 27px;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    line-height: 27px;
+    z-index: 1;
+  }
+  .rules-card-txt {
+    display: block;
+    padding: 24px 0 0;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    line-height: 26px;
+    text-align: start;
+  }
+  .rules-card-txt p {
+    margin: 10px 0;
+  }
+  .rules-card-txt .txt {
+    margin-top: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .rules-svg-head {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 337px;
+    height: 41px;
+    pointer-events: none;
+  }
+  @keyframes inviteShine {
+    0% { left: -100%; }
+    50%, 100% { left: 200%; }
+  }
 `}</style>
         {activeTab === "referral" ? (
           showCommissionDetail ? (
-            <div style={{ width: "100%" }}>
-              <div className="x-page" style={{ minHeight: "auto" }}>
-                <div className="navbar"><div className="navbar-fixed" style={{ position: "static" }}><div className="navbar__content"><div className="navbar__content-left" onClick={() => setShowCommissionDetail(false)}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Commission detail</div></div><div className="navbar__content-right"></div></div></div></div>
-              </div>
+            <div className="x-page">
+              <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setShowCommissionDetail(false)}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Commission detail</div></div><div className="navbar__content-right"></div></div></div></div>
+              <div className="x-page-list">
               {commLoading && agencyCommissions.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>Loading...</div>
               ) : agencyCommissions.length === 0 ? (
@@ -887,9 +1029,11 @@ const Earn = () => {
                 </GameButton>
               )}
             </div>
+            </div>
           ) : (
           <>
             <div className="container">
+  <img src={iconSubordinate} alt="" className="absolute top-3 right-3 w-7 h-7" style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.4))" }} onClick={() => setActiveTab("subordinate")} />
   <div className="amount">{agencyCommissions.length > 0 ? agencyCommissions[0].totalAmount : 0}</div>
   <div className="amount_txt">Yesterday's total commission</div>
   <div className="tip">Upgrade the level to increase commission income</div>
@@ -903,13 +1047,21 @@ const Earn = () => {
     </div>
     <div className="info">
       <div className="head u2">Team subordinates</div>
-      <div className="line1"><div>{((agencyDaily?.level1?.regCount ?? 0) + (agencyDaily?.level2?.regCount ?? 0) + (agencyDaily?.level3?.regCount ?? 0))}</div>number of register</div>
-      <div className="line2"><div>{((agencyDaily?.level1?.depositCount ?? 0) + (agencyDaily?.level2?.depositCount ?? 0) + (agencyDaily?.level3?.depositCount ?? 0))}</div>Deposit number</div>
-      <div className="line3"><div>{((agencyDaily?.level1?.deposit ?? 0) + (agencyDaily?.level2?.deposit ?? 0) + (agencyDaily?.level3?.deposit ?? 0))}</div>Deposit amount</div>
-      <div className="line1"><div>{((agencyDaily?.level1?.firstDepositCount ?? 0) + (agencyDaily?.level2?.firstDepositCount ?? 0) + (agencyDaily?.level3?.firstDepositCount ?? 0))}</div> Number of people making first deposit</div>
+      <div className="line1"><div>{((agencyDaily?.level2?.regCount ?? 0) + (agencyDaily?.level3?.regCount ?? 0))}</div>number of register</div>
+      <div className="line2"><div>{((agencyDaily?.level2?.depositCount ?? 0) + (agencyDaily?.level3?.depositCount ?? 0))}</div>Deposit number</div>
+      <div className="line3"><div>{((agencyDaily?.level2?.deposit ?? 0) + (agencyDaily?.level3?.deposit ?? 0))}</div>Deposit amount</div>
+      <div className="line1"><div>{((agencyDaily?.level2?.firstDepositCount ?? 0) + (agencyDaily?.level3?.firstDepositCount ?? 0))}</div> Number of people making first deposit</div>
     </div>
   </div>
 </div>
+            <div style={{ display: "flex", alignItems: "center", width: "90%", margin: "10px auto" }}>
+              <div style={{ flex: 1, display: "flex", alignItems: "center", background: "rgba(255,255,255,0.08)", borderRadius: "20px 0 0 20px", border: "1px solid rgba(255,180,50,0.15)", borderRight: "none", padding: "0 12px", height: "40px", overflow: "hidden", position: "relative" }}>
+                <span style={{ position: "absolute", top: 0, left: "-100%", width: "60%", height: "100%", background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)", animation: "inviteShine 2.5s ease-in-out infinite", pointerEvents: "none" }} />
+                <span style={{ flex: 1, fontSize: "13px", color: "rgba(255,255,255,0.5)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", position: "relative", zIndex: 1 }}>{inviteUrl}</span>
+                <img src={iconCopy} alt="" className="icon-copy-small" style={{ cursor: "pointer", flexShrink: 0, position: "relative", zIndex: 1 }} onClick={() => copyToClipboard(inviteUrl, "Copied Success")} />
+              </div>
+              <GameButton variant="dark" onClick={handleShareInvite} style={{ height: "40px", borderRadius: "0 20px 20px 0", padding: "0 20px", fontSize: "14px", flexShrink: 0, minWidth: "auto" }}>Invite</GameButton>
+            </div>
             <div className="promote__cell">
               <div className="promote__cell-item" onClick={() => {}}>
                 <div className="label"><img src={iconTeamPartner} className="svg-icon" alt="" /><span>Partner rewards</span></div>
@@ -927,7 +1079,7 @@ const Earn = () => {
                 <div className="label"><img src={iconCommission} className="svg-icon" alt="" /><span>Commission detail</span></div>
                 <div className="arrow"><i>&#10095;</i></div>
               </div>
-              <div className="promote__cell-item" onClick={() => {}}>
+              <div className="promote__cell-item" onClick={() => setActiveTab("rules")}>
                 <div className="label"><img src={iconInviteReg} className="svg-icon" alt="" /><span>Invitation rules</span></div>
                 <div className="arrow"><i>&#10095;</i></div>
               </div>
@@ -950,7 +1102,7 @@ const Earn = () => {
               <div>
                 <div><span>{agencyDaily?.level1?.regCount ?? 0}</span><span>direct subordinate</span></div>
                 <span></span>
-                <div><span>{agencyDaily ? (agencyDaily.level1.regCount + agencyDaily.level2.regCount + agencyDaily.level3.regCount) : 0}</span><span>Total number of subordinates in the team</span></div>
+                <div><span>{agencyDaily ? (agencyDaily.level2.regCount + agencyDaily.level3.regCount) : 0}</span><span>Total number of subordinates in the team</span></div>
               </div>
             </div>
           </>
@@ -996,6 +1148,181 @@ const Earn = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        ) : activeTab === "subordinate" ? (
+          <div className="x-page">
+            <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setActiveTab("referral")}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">New subordinates</div></div><div className="navbar__content-right"></div></div></div></div>
+            <div className="bet-container-sticky"><div className="van-sticky"><div><div className="fun-tabs tabs"><div className="fun-tabs__tab-list">
+              {["today", "yesterday", "thisMonth"].map((tab) => (
+                <div key={tab} className="fun-tab-item funtab_item"><div className="fun-tab-item__wrap"><div className="fun-tab-item__label"><div className={`tab_item${tab === subDateFilter ? " tab_active" : ""}`} onClick={() => setSubDateFilter(tab)}>
+                  <span>{tab === "today" ? "Today" : tab === "yesterday" ? "Yesterday" : "This Month"}</span>
+                </div></div></div></div>
+              ))}
+            </div></div></div></div></div>
+            <div className="x-page-list" style={{ padding: "10px" }}>
+              {teamLoading && agencyTeam.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>Loading...</div>
+              ) : agencyTeam.length === 0 ? (
+                <div className="flex flex-col items-center justify-center text-center py-10">
+                  <img src={noDataImg} alt="No data" className="w-[150px] h-[139px] object-contain block mb-3" />
+                  <p style={{ color: "#acafc2", fontSize: "13px", margin: 0 }}>No data</p>
+                </div>
+              ) : (
+                agencyTeam.map((member) => (
+                  <div key={member.userId} className="TeamReport__C-body-item">
+                    <div className="TeamReport__C-body-item-head">
+                      <span>UID:{member.userId}</span>
+                    </div>
+                    <div className="TeamReport__C-body-item-detail">
+                      <div>Level <span>{member.tier}</span></div>
+                      <div>Mobile <span className="val-light">{member.mobile}</span></div>
+                      <div>Register Time <span className="val-light">{member.registeredAt?.slice(0, 10)}</span></div>
+                    </div>
+                  </div>
+                ))
+              )}
+              {agencyTeam.length > 0 && agencyTeam.length < teamTotal && (
+                <GameButton variant="dark" onClick={() => fetchAgencyTeam(teamPage + 1, true)} disabled={teamLoading} style={{ width: "100%", marginTop: "8px", height: "36px", borderRadius: "19px" }}>
+                  {teamLoading ? "Loading..." : "Load more"}
+                </GameButton>
+              )}
+              {agencyTeam.length > 0 && agencyTeam.length >= teamTotal && (
+                <div style={{ textAlign: "center", padding: "16px 0", color: "#acafc2", fontSize: "13px" }}>No more data</div>
+              )}
+            </div>
+          </div>
+        ) : activeTab === "rules" ? (
+          <div className="x-page">
+            <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setActiveTab("referral")}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Invitation rules</div></div><div className="navbar__content-right"></div></div></div></div>
+            <div className="x-page-list">
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">01</div>
+              <div className="rules-card-txt">
+                <p>There are 6 subordinate levels in inviting friends, if A invites B, then B is a level 1 subordinate of A. If B invites C, then C is a level 1 subordinate of B and also a level 2 subordinate of A. If C invites D, then D is a level 1 subordinate of C, at the same time a level 2 subordinate of B and also a level 3 subordinate of A.</p>
+              </div>
+            </div>
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">02</div>
+              <div className="rules-card-txt">
+                <p>When inviting friends to register, you must send the invitation link provided or enter the invitation code manually so that your friends become your level 1 subordinates.</p>
+              </div>
+            </div>
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">03</div>
+              <div className="rules-card-txt">
+                <p>The invitee registers via the inviter's invitation code and completes the deposit, shortly after that the commission will be received immediately</p>
+              </div>
+            </div>
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">04</div>
+              <div className="rules-card-txt">
+                <p>The calculation of yesterday's commission starts every morning at 01:00. After the commission calculation is completed, the commission is rewarded to the wallet and can be viewed through the commission collection record.</p>
+              </div>
+            </div>
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">05</div>
+              <div className="rules-card-txt">
+                <p>Commission rates vary depending on your agency level on that day<br/>
+                Number of Teams: How many downline deposits you have to date.<br/>
+                Team Deposits: The total number of deposits made by your downline in one day.<br/>
+                Team Deposit: Your downline deposits within one day.</p>
+              </div>
+            </div>
+            <div className="rules-grade">
+              <div className="rules-grade-th">
+                <div className="item">Level</div>
+                <div className="item">Number</div>
+                <div className="item">Betting</div>
+                <div className="item">Deposit</div>
+              </div>
+              <div className="rules-grade-tr">
+                <div className="item">L0</div>
+                <div className="item">0</div>
+                <div className="item">0</div>
+                <div className="item">0</div>
+              </div>
+              <div className="rules-grade-tr">
+                <div className="item">L1</div>
+                <div className="item">10</div>
+                <div className="item">500K</div>
+                <div className="item">100K</div>
+              </div>
+              <div className="rules-grade-tr">
+                <div className="item">L2</div>
+                <div className="item">15</div>
+                <div className="item">1,000K</div>
+                <div className="item">200K</div>
+              </div>
+              <div className="rules-grade-tr">
+                <div className="item">L3</div>
+                <div className="item">30</div>
+                <div className="item">1,000K</div>
+                <div className="item">500K</div>
+              </div>
+              <div className="rules-grade-tr">
+                <div className="item">L4</div>
+                <div className="item">45</div>
+                <div className="item">5M</div>
+                <div className="item">1,000K</div>
+              </div>
+              <div className="rules-grade-tr">
+                <div className="item">L5</div>
+                <div className="item">50</div>
+                <div className="item">25M</div>
+                <div className="item">5M</div>
+              </div>
+              <div className="rules-grade-tr">
+                <div className="item">L6</div>
+                <div className="item">60</div>
+                <div className="item">100M</div>
+                <div className="item">20M</div>
+              </div>
+            </div>
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">06</div>
+              <div className="rules-card-txt">
+                The commission percentage depends on the membership level. The higher the membership level, the higher the bonus percentage. Different game types also have different payout percentages.
+                <p>The commission rate is specifically explained as follows</p>
+                <div className="txt" style={{ color: "#f2413b" }} onClick={() => setActiveTab("rebateratio")}>View rebate ratio &gt;&gt;</div>
+              </div>
+            </div>
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">07</div>
+              <div className="rules-card-txt">
+                TOP20 commission rankings will be randomly awarded with a separate bonus
+              </div>
+            </div>
+            <div className="rules-card">
+              <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2 -0.0310078V-4H492V-0.0310078C485 -0.0310078 470.65 -0.0310078 463 4.43411C454.5 9.39535 450 12.8682 439 35.1938C429.492 54.4913 413.5 59.6693 408 60H83C66 60 53.5 42.1395 50.5 36.186C47.5 30.2326 44.0048 21.3075 33.5 9.89147C23 -1.51938 8 -0.0310078 -2 -0.0310078Z" fill="rgba(255,255,255,0.08)"/>
+              </svg>
+              <div className="rules-card-title">08</div>
+              <div className="rules-card-txt">
+                The final interpretation of this activity belongs to 1xKING
+              </div>
+            </div>
             </div>
           </div>
         ) : (
@@ -1053,28 +1380,28 @@ const Earn = () => {
                     <div className="van-picker__toolbar">
                       <button type="button" className="van-picker__cancel" onClick={() => setDateOpen(false)}>Cancel</button>
                       <div className="van-picker__title">Choose a date</div>
-                      <button type="button" className="van-picker__confirm" onClick={() => setDateOpen(false)}>Confirm</button>
+                      <button type="button" className="van-picker__confirm" onClick={() => { setDateOpen(false); setSearchUid(""); setLevelVal("All"); fetchAgencyTeam(1, false, { fromDate: `${yr}-${String(mo).padStart(2,"0")}-${String(dd).padStart(2,"0")}`, toDate: `${yr}-${String(mo).padStart(2,"0")}-${String(dd).padStart(2,"0")}` }); }}>Confirm</button>
                     </div>
                     <div className="van-picker__columns">
                       <div className="van-picker-column">
-                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((yr - 2020) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); setYr(y => Math.max(2020, Math.min(2030, y + (e.deltaY > 0 ? 1 : -1)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) setYr(y => Math.max(2020, Math.min(2030, y + (diff > 0 ? 1 : -1)))); }}>
-                          {Array.from({ length: 11 }, (_, i) => 2020 + i).map(y => (
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((yr - 2020) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 30)); setYr(y => Math.max(2020, Math.min(yesterday.getFullYear(), y + (e.deltaY > 0 ? step : -step)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 44)); setYr(y => Math.max(2020, Math.min(yesterday.getFullYear(), y + (diff > 0 ? step : -step)))); } }}>
+                          {(yrs => { return yrs.map(y => (
                             <div key={y} className={`van-picker-column__item${y === yr ? " van-picker-column__item--selected" : ""}`}>{String(y)}</div>
-                          ))}
+                          ))})(Array.from({ length: yesterday.getFullYear() - 2020 + 1 }, (_, i) => 2020 + i))}
                         </div>
                       </div>
                       <div className="van-picker-column">
-                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((mo - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); setMo(m => Math.max(1, Math.min(12, m + (e.deltaY > 0 ? 1 : -1)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) setMo(m => Math.max(1, Math.min(12, m + (diff > 0 ? 1 : -1)))); }}>
-                          {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((mo - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 20)); setMo(m => { const maxMo = yr >= yesterday.getFullYear() ? yesterday.getMonth() + 1 : 12; return Math.max(1, Math.min(maxMo, m + (e.deltaY > 0 ? step : -step))); }); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 30)); setMo(m => { const maxMo = yr >= yesterday.getFullYear() ? yesterday.getMonth() + 1 : 12; return Math.max(1, Math.min(maxMo, m + (diff > 0 ? step : -step))); }); } }}>
+                          {(months => { return months.map(m => (
                             <div key={m} className={`van-picker-column__item${m === mo ? " van-picker-column__item--selected" : ""}`}>{String(m).padStart(2, "0")}</div>
-                          ))}
+                          ))})(Array.from({ length: yr >= yesterday.getFullYear() ? yesterday.getMonth() + 1 : 12 }, (_, i) => i + 1))}
                         </div>
                       </div>
                       <div className="van-picker-column">
-                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((dd - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); setDd(d => Math.max(1, Math.min(31, d + (e.deltaY > 0 ? 1 : -1)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) setDd(d => Math.max(1, Math.min(31, d + (diff > 0 ? 1 : -1)))); }}>
-                          {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((dd - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 20)); setDd(d => { let maxDd = 31; if (yr === yesterday.getFullYear() && mo === yesterday.getMonth() + 1) maxDd = yesterday.getDate(); else if ([4,6,9,11].includes(mo)) maxDd = 30; else if (mo === 2) maxDd = 28; return Math.max(1, Math.min(maxDd, d + (e.deltaY > 0 ? step : -step))); }); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 30)); setDd(d => { let maxDd = 31; if (yr === yesterday.getFullYear() && mo === yesterday.getMonth() + 1) maxDd = yesterday.getDate(); else if ([4,6,9,11].includes(mo)) maxDd = 30; else if (mo === 2) maxDd = 28; return Math.max(1, Math.min(maxDd, d + (diff > 0 ? step : -step))); }); } }}>
+                          {(days => { return days.map(d => (
                             <div key={d} className={`van-picker-column__item${d === dd ? " van-picker-column__item--selected" : ""}`}>{String(d).padStart(2, "0")}</div>
-                          ))}
+                          ))})(Array.from({ length: (yr === yesterday.getFullYear() && mo === yesterday.getMonth() + 1) ? yesterday.getDate() : [4,6,9,11].includes(mo) ? 30 : mo === 2 ? 28 : 31 }, (_, i) => i + 1))}
                         </div>
                       </div>
                       <div className="van-picker__mask"></div>
