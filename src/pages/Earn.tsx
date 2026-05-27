@@ -470,8 +470,8 @@ const Earn = () => {
     opacity: 0.9;
   }
   .TeamReport__C-body-item {
-    background-color: rgba(255,255,255,0.06);
-    border-radius: 5px;
+    background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+    border-radius: 10px;
     padding: 0 10px;
     margin-bottom: 6px;
     border: 1px solid rgba(255,180,50,0.1);
