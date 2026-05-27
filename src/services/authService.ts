@@ -498,6 +498,16 @@ export const authService = {
     return !!localStorage.getItem(TOKEN_KEY);
   },
 
+  async getAgencyNewSub(fromDate: string, toDate: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/agency/newsub?fromDate=${fromDate}&toDate=${toDate}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch new subscribers"));
+    return data;
+  },
+
   async getAgencyDaily(date?: string): Promise<any> {
     const params = new URLSearchParams();
     if (date) params.set("date", date);

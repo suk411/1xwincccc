@@ -144,6 +144,21 @@ const Earn = () => {
     }
   }, [levelVal, searchUid]);
 
+  const fetchAgencyNewSub = useCallback(async (fromDate: string, toDate: string) => {
+    try {
+      setTeamLoading(true);
+      const data = await authService.getAgencyNewSub(fromDate, toDate);
+      setAgencyTeam(data.items || []);
+      setTeamTotal(data.items?.length || 0);
+    } catch (err: any) {
+      if (!err.message?.includes("Session expired")) {
+        toast({ description: err.message || "Something went wrong", variant: "destructive" });
+      }
+    } finally {
+      setTeamLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchAgencyDaily();
   }, [fetchAgencyDaily]);
@@ -173,8 +188,8 @@ const Earn = () => {
     }
     setLevelVal("All");
     setSearchUid("");
-    fetchAgencyTeam(1, false, { fromDate, toDate });
-  }, [subDateFilter, activeTab, fetchAgencyTeam]);
+    fetchAgencyNewSub(fromDate, toDate);
+  }, [subDateFilter, activeTab, fetchAgencyNewSub]);
 
   const commHasMore = agencyCommissions.length < commTotal;
   const teamHasMore = agencyTeam.length < teamTotal;
@@ -1034,7 +1049,7 @@ const Earn = () => {
           <>
             <div className="container">
   <img src={iconSubordinate} alt="" className="absolute top-3 right-3 w-7 h-7" style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.4))" }} onClick={() => setActiveTab("subordinate")} />
-  <div className="amount">{agencyCommissions.length > 0 ? agencyCommissions[0].totalAmount : 0}</div>
+  <div className="amount">{agencyDaily?.yesterdayTotalCommission ?? 0}</div>
   <div className="amount_txt">Yesterday's total commission</div>
   <div className="tip">Upgrade the level to increase commission income</div>
   <div className="info_content">
@@ -1095,14 +1110,14 @@ const Earn = () => {
             <div className="commission">
               <div><span>promotion data</span></div>
               <div>
-                <div><span>{agencyDaily?.level1?.bets ?? 0}</span><span>Today's Bets</span></div>
+                <div><span>{agencyDaily?.thisWeekCommission ?? 0}</span><span>This Week</span></div>
                 <span></span>
-                <div><span>{agencyCommissions.length > 0 ? agencyCommissions[0].totalAmount : 0}</span><span>Total commission</span></div>
+                <div><span>{agencyDaily?.totalCommission ?? 0}</span><span>Total commission</span></div>
               </div>
               <div>
-                <div><span>{agencyDaily?.level1?.regCount ?? 0}</span><span>direct subordinate</span></div>
+                <div><span>{agencyDaily?.totalRegister?.level1 ?? 0}</span><span>direct subordinate</span></div>
                 <span></span>
-                <div><span>{agencyDaily ? (agencyDaily.level2.regCount + agencyDaily.level3.regCount) : 0}</span><span>Total number of subordinates in the team</span></div>
+                <div><span>{agencyDaily ? ((agencyDaily.totalRegister?.level2 ?? 0) + (agencyDaily.totalRegister?.level3 ?? 0)) : 0}</span><span>Total number of subordinates in the team</span></div>
               </div>
             </div>
           </>
@@ -1347,7 +1362,7 @@ const Earn = () => {
                 <div><span className="num">{agencyDaily?.level1?.depositCount ?? 0}</span><span className="label">Deposit number</span></div>
                 <div><span className="num">{agencyDaily?.level1?.deposit ?? 0}</span><span className="label">Deposit amount</span></div>
                 <div><span className="num">{agencyDaily?.level1?.regCount ?? 0}</span><span className="label">Number of bettors</span></div>
-                <div><span className="num">{agencyDaily?.level1?.bets ?? 0}</span><span className="label">Total bet</span></div>
+                <div><span className="num">0</span><span className="label">Total bet</span></div>
                 <div><span className="num">{agencyDaily?.level1?.firstDepositCount ?? 0}</span><span className="label">First deposit number</span></div>
                 <div><span className="num">0</span><span className="label">First deposit amount</span></div>
               </div>

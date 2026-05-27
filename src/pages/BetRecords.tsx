@@ -129,7 +129,7 @@ const BetRecords = () => {
     const dateStr = `${date.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })} ${date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
 
     const statusText = isWin ? "Win" : isLoss ? "Lose" : "Pending";
-    const statusColor = isWin ? "#ffb753" : isLoss ? "#ff4444" : "#fbbf24";
+    const statusColor = isWin ? "#22c55e" : isLoss ? "#3b82f6" : "#fbbf24";
 
     return (
       <div
@@ -143,7 +143,7 @@ const BetRecords = () => {
             <span className="text-white/50 text-xs mt-0.5">{dateStr}</span>
           </div>
           <span
-            className="text-sm font-bold px-3 py-0.5 rounded-full border"
+            className="text-sm px-3 py-0.5 rounded-md border"
             style={{ color: statusColor, borderColor: statusColor }}
           >
             {statusText}
