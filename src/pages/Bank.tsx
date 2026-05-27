@@ -60,7 +60,8 @@ const Bank = () => {
   const [selectedAmount, setSelectedAmount] = useState(100);
   const [customAmount, setCustomAmount] = useState("");
   const [selectedWithdrawAmount, setSelectedWithdrawAmount] = useState(110);
-  const [activeChannel, setActiveChannel] = useState("upi");
+  const [activeMethod, setActiveMethod] = useState("upi");
+  const [activePaymentChannel, setActivePaymentChannel] = useState("simplypay");
   const [activeWithdrawMethod, setActiveWithdrawMethod] = useState("bank_card");
   const [withdrawAmountInput, setWithdrawAmountInput] = useState("");
   const [depositAmountInput, setDepositAmountInput] = useState("");
@@ -73,11 +74,20 @@ const Bank = () => {
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
 
-  const channels = [
+  const methods = [
     { id: "upi", label: "UPI", icon: upiLogo },
     { id: "usdt", label: "USDT", icon: usdtLogo },
     { id: "upay", label: "UPAY", icon: upayLogo },
   ];
+
+  const channelOptions: Record<string, { id: string; label: string; icon?: string }[]> = {
+    upi: [
+      { id: "simplypay", label: "SimplyPay", icon: upiLogo },
+      { id: "gspayinr", label: "XinPay", icon: upiLogo },
+    ],
+    usdt: [{ id: "gspayusdt", label: "USDT", icon: usdtLogo }],
+    upay: [{ id: "upay", label: "UPAY", icon: upayLogo }],
+  };
 
   const WITHDRAW_METHODS = [
     { id: "bank_card", label: "BANK CARD", icon: bankLogo },
@@ -215,7 +225,7 @@ const Bank = () => {
 
     setPaying(true);
     try {
-      const res = await authService.deposit(depositAmount, activeChannel);
+      const res = await authService.deposit(depositAmount, activePaymentChannel);
       if (res.paymentUrl) {
         window.open(res.paymentUrl, "_blank");
         toast({ description: "Opening payment..." });
@@ -224,7 +234,7 @@ const Bank = () => {
       }
       refreshBalance();
     } catch (err: any) {
-      toast({ description: err.message || "Deposit failed", variant: "destructive" });
+      toast({ description: "Please try again or choose another payment method.", variant: "destructive" });
     } finally {
       setPaying(false);
     }
@@ -378,14 +388,17 @@ const Bank = () => {
         {activeTab === "deposit" ? (
           <>
             <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white text-sm">Payment channel</span>
+              <span className="text-white text-sm">Payment Methods</span>
               <div className="flex gap-1">
-                {channels.map((ch) => {
-                  const isActive = activeChannel === ch.id;
+                {methods.map((m) => {
+                  const isActive = activeMethod === m.id;
                   return (
                     <button
-                      key={ch.id}
-                      onClick={() => setActiveChannel(ch.id)}
+                      key={m.id}
+                      onClick={() => {
+                        setActiveMethod(m.id);
+                        setActivePaymentChannel(channelOptions[m.id][0].id);
+                      }}
                       className="relative flex items-center justify-center rounded-[7px] cursor-pointer overflow-hidden transition-all border border-white/10"
                       style={{
                         width: "105px",
@@ -393,21 +406,58 @@ const Bank = () => {
                         backgroundColor: "rgba(211, 54, 93, 0.2)",
                       }}
                     >
-                      {/* Active background overlay */}
                       {isActive && (
                         <div
                           className="absolute inset-0 rounded-[7px] z-0"
                           style={{ backgroundColor: "rgb(177, 44, 73)" }}
                         />
                       )}
-                      
-                      {/* Content */}
                       <div className="relative z-10 flex items-center gap-1 justify-center w-full">
-                        <img 
-                          src={ch.icon} 
-                          alt={ch.label} 
+                        <img
+                          src={m.icon}
+                          alt={m.label}
                           className="w-[30px] h-[30px] object-contain rounded-[4px]"
                         />
+                        <span className="text-white text-[12px] text-center w-[60px]">
+                          {m.label}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </GameCard>
+
+            <GameCard className="p-3 flex flex-col gap-2">
+              <span className="text-white text-sm">Payment Channel</span>
+              <div className="flex gap-1">
+                {channelOptions[activeMethod]?.map((ch) => {
+                  const isActive = activePaymentChannel === ch.id;
+                  return (
+                    <button
+                      key={ch.id}
+                      onClick={() => setActivePaymentChannel(ch.id)}
+                      className="relative flex items-center justify-center rounded-[7px] cursor-pointer overflow-hidden transition-all border border-white/10"
+                      style={{
+                        width: "105px",
+                        height: "42px",
+                        backgroundColor: "rgba(211, 54, 93, 0.2)",
+                      }}
+                    >
+                      {isActive && (
+                        <div
+                          className="absolute inset-0 rounded-[7px] z-0"
+                          style={{ backgroundColor: "rgb(177, 44, 73)" }}
+                        />
+                      )}
+                      <div className="relative z-10 flex items-center gap-1 justify-center w-full">
+                        {ch.icon && (
+                          <img
+                            src={ch.icon}
+                            alt={ch.label}
+                            className="w-[30px] h-[30px] object-contain rounded-[4px]"
+                          />
+                        )}
                         <span className="text-white text-[12px] text-center w-[60px]">
                           {ch.label}
                         </span>
