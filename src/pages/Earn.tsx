@@ -127,11 +127,14 @@ const Earn = () => {
   const fetchAgencyTeam = useCallback(async (p = 1, append = false, dateRange?: { fromDate?: string; toDate?: string }) => {
     try {
       setTeamLoading(true);
-      const params: any = { page: p, limit: 25 };
+      const today = new Date();
+      const yest = new Date(today);
+      yest.setDate(yest.getDate() - 1);
+      const defaultToDate = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, "0")}-${String(yest.getDate()).padStart(2, "0")}`;
+      const params: any = { page: p, limit: 25, toDate: dateRange?.toDate || defaultToDate };
       if (levelVal !== "All") params.tier = levelVal === "Level 1" ? 1 : levelVal === "Level 2" ? 2 : 3;
       if (searchUid) params.userId = parseInt(searchUid);
       if (dateRange?.fromDate) params.fromDate = dateRange.fromDate;
-      if (dateRange?.toDate) params.toDate = dateRange.toDate;
       const data = await authService.getAgencyTeam(params);
       setAgencyTeam(prev => append ? [...prev, ...data.items] : data.items);
       setTeamTotal(data.total || 0);
@@ -167,6 +170,10 @@ const Earn = () => {
   useEffect(() => {
     if (showCommissionDetail) fetchAgencyCommissions(1);
   }, [showCommissionDetail, fetchAgencyCommissions]);
+
+  useEffect(() => {
+    if (activeTab === "commission") fetchAgencyTeam(1);
+  }, [activeTab, fetchAgencyTeam]);
 
   useEffect(() => {
     if (activeTab !== "subordinate") return;
