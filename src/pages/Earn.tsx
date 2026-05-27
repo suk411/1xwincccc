@@ -60,6 +60,7 @@ interface AgencyTeamMember {
   registeredAt: string;
   tier: number;
   totalDeposit?: number;
+  level?: number;
 }
 
 const Earn = () => {
@@ -1190,20 +1191,12 @@ const Earn = () => {
                       <span>UID:{member.userId}</span>
                     </div>
                     <div className="TeamReport__C-body-item-detail">
-                      <div>Level <span>{member.tier}</span></div>
+                      <div>Level <span>{member.level ?? member.tier}</span></div>
                       <div>Mobile <span className="val-light">{member.mobile}</span></div>
                       <div>Register Time <span className="val-light">{member.registeredAt?.slice(0, 10)}</span></div>
                     </div>
                   </div>
                 ))
-              )}
-              {agencyTeam.length > 0 && agencyTeam.length < teamTotal && (
-                <GameButton variant="dark" onClick={() => fetchAgencyTeam(teamPage + 1, true)} disabled={teamLoading} style={{ width: "100%", marginTop: "8px", height: "36px", borderRadius: "19px" }}>
-                  {teamLoading ? "Loading..." : "Load more"}
-                </GameButton>
-              )}
-              {agencyTeam.length > 0 && agencyTeam.length >= teamTotal && (
-                <div style={{ textAlign: "center", padding: "16px 0", color: "#acafc2", fontSize: "13px" }}>No more data</div>
               )}
             </div>
           </div>
