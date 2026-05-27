@@ -966,11 +966,11 @@ const Earn = () => {
     max-width: 461px;
     margin: 0 auto 34px;
     padding: 35px 12px 17px;
-    background: rgba(255,255,255,0.06);
+    background: linear-gradient(rgba(53,3,12,0.6), rgba(53,3,12,0.6)) no-repeat top / 200% 100%, url("https://www.82bet22.com/assets/png/promotionbg-1203267e.webp") no-repeat top / 200% 100%, linear-gradient(180deg, #35030c 0%, #5b0116 100%);
     border-radius: 10px;
     box-sizing: border-box;
     text-align: start;
-    border: 1px solid rgba(255,180,50,0.1);
+    border: 1px solid rgba(255,180,50,0.25);
   }
   .rules-card-title {
     position: absolute;
