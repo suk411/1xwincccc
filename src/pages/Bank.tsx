@@ -172,11 +172,6 @@ const Bank = () => {
     setSelectedWithdrawAmount(val);
   };
 
-  const handleAllDeposit = () => {
-    const val = Math.floor(balance);
-    setDepositAmountInput(String(val));
-    setCustomAmount(String(val));
-  };
 
   const handleDepositAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "");
@@ -515,19 +510,6 @@ const Bank = () => {
                   onChange={handleDepositAmountChange}
                 />
               </div>
-              <div className="flex flex-col gap-1.5 ml-0.5">
-                <div className="flex justify-between items-center text-[11px]">
-                  <span className="text-white/50">
-                    Balance <span className="text-yellow-500 font-bold">₹{balance.toFixed(2)}</span>
-                  </span>
-                  <button
-                    onClick={handleAllDeposit}
-                    className="bg-transparent text-primary text-[11px] cursor-pointer px-2.5 py-0.5 font-normal border border-primary/40 rounded"
-                  >
-                    All
-                  </button>
-                </div>
-              </div>
             </GameCard>
 
             <GameCard className="p-3 flex flex-col gap-2">
@@ -545,20 +527,30 @@ const Bank = () => {
               </div>
             </GameCard>
 
-            <div className="mt-2 px-2 space-y-2">
-              {[
-                "Each deposit will be credited within 1-5 minutes.",
-                "You can use customer service at any time to resolve deposit issues.",
-                "If you encounter fluctuations in the banking system, don't worry, just try a few more times and you will succeed.",
-                "Please ensure that you have installed Paytm and PhonePe.",
-                "The wagering requirement for withdrawal is 1× the deposit amount and 3× the bonus amount."
-              ].map((text, idx) => (
-                <div key={idx} className="flex gap-2">
-                  <span className="text-primary text-[10px] font-bold shrink-0">{idx + 1}.</span>
-                  <p className="text-white/50 text-[10px] leading-relaxed">{text}</p>
-                </div>
-              ))}
-            </div>
+            <GameCard className="p-3">
+              <div className="space-y-1.5">
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  Each deposit will be credited within 1-5 minutes.
+                </p>
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  You can use customer service at any time to resolve deposit issues.
+                </p>
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  If you encounter fluctuations in the banking system, don't worry, just try a few more times and you will succeed.
+                </p>
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  Please ensure that you have installed Paytm and PhonePe.
+                </p>
+                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
+                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                  The wagering requirement for withdrawal is 1× the deposit amount and 3× the bonus amount.
+                </p>
+              </div>
+            </GameCard>
           </>
         ) : (
           <>
