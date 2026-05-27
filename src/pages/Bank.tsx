@@ -172,6 +172,12 @@ const Bank = () => {
     setSelectedWithdrawAmount(val);
   };
 
+  const handleAllDeposit = () => {
+    const val = Math.floor(balance);
+    setDepositAmountInput(String(val));
+    setCustomAmount(String(val));
+  };
+
   const handleDepositAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "");
     setDepositAmountInput(val);
@@ -503,11 +509,24 @@ const Bank = () => {
                 <span className="text-primary text-lg font-medium">₹</span>
                 <input
                   type="text"
-                  placeholder="Custom amount"
+                  placeholder="Please enter an amount"
                   className="bg-transparent border-none outline-none w-full h-full ml-3 text-sm text-white placeholder-white/50"
                   value={depositAmountInput}
                   onChange={handleDepositAmountChange}
                 />
+              </div>
+              <div className="flex flex-col gap-1.5 ml-0.5">
+                <div className="flex justify-between items-center text-[11px]">
+                  <span className="text-white/50">
+                    Balance <span className="text-yellow-500 font-bold">₹{balance.toFixed(2)}</span>
+                  </span>
+                  <button
+                    onClick={handleAllDeposit}
+                    className="bg-transparent text-primary text-[11px] cursor-pointer px-2.5 py-0.5 font-normal border border-primary/40 rounded"
+                  >
+                    All
+                  </button>
+                </div>
               </div>
             </GameCard>
 
