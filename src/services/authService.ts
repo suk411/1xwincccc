@@ -86,27 +86,26 @@ export interface WithdrawInfoResponse {
   success: boolean;
   data: {
     paymentMethods?: {
+      userId?: number;
+      holderName?: string;
       bank?: {
-        accountNo?: string;
-        ifsc?: string;
         bankName?: string;
-        holderName?: string;
+        ifsc?: string;
+        accountNo?: string;
         isDefault?: boolean;
         isActive?: boolean;
         createdAt?: string;
         updatedAt?: string;
       } | null;
       upi?: {
-        upiId?: string;
-        holderName?: string;
+        address?: string;
         isDefault?: boolean;
         isActive?: boolean;
         createdAt?: string;
         updatedAt?: string;
       } | null;
       upay?: {
-        rplId?: string;
-        holderName?: string;
+        address?: string;
         isDefault?: boolean;
         isActive?: boolean;
         createdAt?: string;
@@ -152,12 +151,16 @@ export interface WithdrawInfoResponse {
 export interface WithdrawResponse {
   status: string;
   msg?: string;
+  amount?: number;
   newBalance: number;
   orderId?: string;
   paymentMethod?: string;
   bankDetails?: {
+    bankName?: string;
+    bankCode?: string;
     accountNumber?: string;
     accountHolder?: string;
+    ifsc?: string;
   };
 }
 
@@ -205,7 +208,13 @@ export interface WithdrawalRecord {
   _id?: string;
   charge?: number;
   currency?: string;
+  paymentMethod?: string;
+  paymentDetails?: {
+    upiId?: string;
+    holderName?: string;
+  };
   channelName?: string;
+  gatewayResponse?: any;
   note?: string;
   updatedAt?: string;
 }

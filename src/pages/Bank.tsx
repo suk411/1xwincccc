@@ -203,7 +203,9 @@ const Bank = () => {
   const limits = withdrawInfo?.data?.limits;
   const methodLimits = activeWithdrawMethod === "upi" ? limits?.UPI : activeWithdrawMethod === "upay" ? limits?.UPAY : limits?.BANK;
 
-  const feeAmount = (selectedWithdrawAmount * 0.035) + 6;
+  const chargePct = withdrawInfo?.data?.chargeInfo?.percentage ?? 0.035;
+  const chargeFlat = withdrawInfo?.data?.chargeInfo?.flat ?? 6;
+  const feeAmount = (selectedWithdrawAmount * chargePct) + chargeFlat;
   const withdrawReceivedAmount = selectedWithdrawAmount;
   
   const currentEffectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
@@ -625,14 +627,7 @@ const Bank = () => {
                       background: 'url("https://yaarwin.org/assets/png/line-0198e433.webp") no-repeat 0 50% / contain',
                     }}>
                       <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 400, lineHeight: 1.4 }}>
-                        {(() => {
-                          const pm = getCurrentPaymentMethod();
-                          if (!pm) return "";
-                          if (activeWithdrawMethod === "bank_card") return (pm as any)?.holderName || "";
-                          if (activeWithdrawMethod === "upi") return (pm as any)?.holderName || "";
-                          if (activeWithdrawMethod === "upay") return (pm as any)?.holderName || "";
-                          return "";
-                        })()}
+                        {withdrawInfo?.data?.paymentMethods?.holderName || ""}
                       </span>
                       <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "17.199px", fontWeight: 400, lineHeight: 1.4 }}>
                         {(() => {
@@ -642,8 +637,8 @@ const Bank = () => {
                             const acc = (pm as any).accountNo || "";
                             return acc.length > 4 ? "****" + acc.slice(-4) : acc || "-";
                           }
-                          if (activeWithdrawMethod === "upi") return (pm as any).upiId || "-";
-                          if (activeWithdrawMethod === "upay") return (pm as any).rplId || "-";
+                          if (activeWithdrawMethod === "upi") return (pm as any).address || "-";
+                          if (activeWithdrawMethod === "upay") return (pm as any).address || "-";
                           return "-";
                         })()}
                       </span>
@@ -817,7 +812,7 @@ const Bank = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-white/70">Account Holder</span>
-                        <span className="text-white font-medium">{pm.holderName || "-"}</span>
+                        <span className="text-white font-medium">{withdrawInfo?.data?.paymentMethods?.holderName || "-"}</span>
                       </div>
                       {activeWithdrawMethod === "bank_card" && (
                         <>
@@ -838,13 +833,13 @@ const Bank = () => {
                       {activeWithdrawMethod === "upi" && (
                         <div className="flex justify-between">
                           <span className="text-white/70">UPI ID</span>
-                          <span className="text-white font-medium">{(pm as any).upiId || "-"}</span>
+                          <span className="text-white font-medium">{(pm as any).address || "-"}</span>
                         </div>
                       )}
                       {activeWithdrawMethod === "upay" && (
                         <div className="flex justify-between">
                           <span className="text-white/70">RLP Address</span>
-                          <span className="text-white font-medium">{(pm as any).rplId || "-"}</span>
+                          <span className="text-white font-medium">{(pm as any).address || "-"}</span>
                         </div>
                       )}
                     </>
