@@ -293,7 +293,9 @@ const checkAccountInactive = (data: any) => {
   if (data?.status === "failed" && data?.msg === "Account is inactive") {
     localStorage.removeItem(TOKEN_KEY);
     notifyListeners();
-    setTimeout(() => { window.location.href = "/login"; }, 100);
+    if (!window.location.pathname.startsWith("/login")) {
+      setTimeout(() => { window.location.href = "/login"; }, 100);
+    }
     throw new Error("Account is locked. Please contact customer support.");
   }
 };
