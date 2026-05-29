@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "@/components/Loader";
 import { GameCard } from "@/components/GameCard";
@@ -77,9 +77,9 @@ const Bank = () => {
   const [loadingDepositConfig, setLoadingDepositConfig] = useState(false);
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
-    const d = ch.description?.toLowerCase() || "";
-    if (d.includes("upay")) return "upay";
-    if (d.includes("usdt")) return "usdt";
+    const name = (ch.name || ch.channel || "").toLowerCase();
+    if (name.includes("upay")) return "upay";
+    if (name.includes("usdt")) return "usdt";
     return "upi";
   };
 
@@ -136,12 +136,16 @@ const Bank = () => {
     }
   };
 
+  const depositConfigLoaded = useRef(false);
+
   const loadDepositConfig = async () => {
-    if (depositConfig.length === 0) setLoadingDepositConfig(true);
+    if (depositConfigLoaded.current) return;
+    setLoadingDepositConfig(true);
     try {
       const res = await authService.getDepositConfig();
       if (res?.data?.length) {
         setDepositConfig(res.data);
+        depositConfigLoaded.current = true;
         const firstCat = categorizeChannel(res.data[0]);
         setActiveMethod(firstCat);
       }

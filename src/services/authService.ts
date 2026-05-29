@@ -72,7 +72,6 @@ export interface DepositConfigItem {
   minAmount: number;
   maxAmount: number;
   sortOrder: number;
-  description: string;
 }
 
 export interface LedgerResponse {
