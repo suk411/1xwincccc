@@ -360,6 +360,7 @@ const Bank = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-52 w-full">
+      <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }`}</style>
       {(paying || loadingWithdrawInfo || bindingAccount || withdrawing || loadingDepositConfig) && (
         <Loader
           overlay
@@ -460,7 +461,7 @@ const Bank = () => {
                       className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all"
                       style={{
                         background: isActive ? "rgb(177, 44, 73)" : "transparent",
-                        boxShadow: isActive ? "0 4px 10px rgba(177, 44, 73, 0.3)" : "none",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
                         border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
                       }}
                     >
@@ -478,7 +479,7 @@ const Bank = () => {
 
             <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
               <span className="text-white text-sm">Payment Channel</span>
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
                 {channelOptions[activeMethod]?.map((ch) => {
                   const isActive = activePaymentChannel === ch.id;
                   const limit = getChannelLimit(activeMethod, ch.id);
@@ -489,7 +490,7 @@ const Bank = () => {
                       className="rounded-lg overflow-hidden cursor-pointer transition-all shrink-0"
                       style={{
                         background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.05)",
-                        boxShadow: isActive ? "0 4px 10px rgba(177, 44, 73, 0.3)" : "none",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
                         minWidth: "140px",
                       }}
                     >
