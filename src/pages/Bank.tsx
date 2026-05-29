@@ -32,6 +32,15 @@ const DEPOSIT_OPTIONS = [
   { deposit: 20000, bonus: 6000 },
   { deposit: 30000, bonus: 7500 }
 ];
+
+const USDT_OPTIONS = [
+  { deposit: 50, bonus: 0 },
+  { deposit: 100, bonus: 0 },
+  { deposit: 200, bonus: 0 },
+  { deposit: 500, bonus: 0 },
+  { deposit: 1000, bonus: 0 },
+  { deposit: 2000, bonus: 0 },
+];
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
 
 const CACHE_KEY = "withdraw_info_cache";
@@ -510,46 +519,97 @@ const Bank = () => {
 
             <GameCard className="p-2 flex flex-col gap-2">
               <span className="text-white text-sm">Choose Deposit Amount</span>
-              <div className="grid grid-cols-3 gap-2">
-                {DEPOSIT_OPTIONS.map((opt) => {
-                  const isActive = !customAmount && selectedAmount === opt.deposit;
-                  return (
-                    <div
-                      key={opt.deposit}
-                      onClick={() => {
-                        setSelectedAmount(opt.deposit);
-                        setCustomAmount("");
-                      }}
-                      className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
-                      style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
-                    >
-                      <img src={depositBadge} alt="" className="absolute top-0 left-0 w-12 h-5 object-contain" />
-                      <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
-                      <span className="text-white text-base text-center pt-2.5 pb-0.5">{opt.deposit.toLocaleString()}</span>
-                      <div
-                        className="text-center text-[11px] font-bold rounded-b-md"
-                        style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
-                      >
-                        +{opt.bonus}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div
-                className="flex items-center rounded-[30px] h-11 px-3"
-                style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
-              >
-                <span className="text-primary text-lg font-medium">₹</span>
-                <input
-                  type="text"
-                  placeholder="Please enter an amount"
-                  className="bg-transparent border-none outline-none w-full h-full ml-3 text-sm text-white placeholder-white/50"
-                  value={depositAmountInput}
-                  onChange={handleDepositAmountChange}
-                />
-              </div>
+              {activeMethod === "usdt" ? (
+                <>
+                  <div className="grid grid-cols-3 gap-2">
+                    {USDT_OPTIONS.map((opt) => {
+                      const isActive = !customAmount && selectedAmount === opt.deposit;
+                      return (
+                        <div
+                          key={opt.deposit}
+                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); }}
+                          className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
+                          style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
+                        >
+                          <img src={usdtLogo} alt="" className="absolute top-0 left-0 w-8 h-5 object-contain mt-0.5 ml-0.5" />
+                          <span className="text-white text-base text-center pt-3 pb-1">{opt.deposit.toLocaleString()}</span>
+                          <div className="text-center text-[10px] pb-1 text-white/60">USDT</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div
+                    className="flex items-center rounded-[30px] h-11 px-3"
+                    style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
+                  >
+                    <img src={usdtLogo} alt="USDT" className="w-5 h-5 object-contain mr-2" />
+                    <input
+                      type="text"
+                      placeholder="Please enter USDT amount"
+                      className="bg-transparent border-none outline-none w-full h-full text-sm text-white placeholder-white/50"
+                      value={depositAmountInput}
+                      onChange={handleDepositAmountChange}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="grid grid-cols-3 gap-2">
+                    {DEPOSIT_OPTIONS.map((opt) => {
+                      const isActive = !customAmount && selectedAmount === opt.deposit;
+                      return (
+                        <div
+                          key={opt.deposit}
+                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); }}
+                          className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
+                          style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
+                        >
+                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-12 h-5 object-contain" />
+                          <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
+                          <span className="text-white text-base text-center pt-2.5 pb-0.5">{opt.deposit.toLocaleString()}</span>
+                          <div
+                            className="text-center text-[11px] font-bold rounded-b-md"
+                            style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
+                          >
+                            +{opt.bonus}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div
+                    className="flex items-center rounded-[30px] h-11 px-3"
+                    style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
+                  >
+                    <span className="text-primary text-lg font-medium">₹</span>
+                    <input
+                      type="text"
+                      placeholder="Please enter an amount"
+                      className="bg-transparent border-none outline-none w-full h-full ml-3 text-sm text-white placeholder-white/50"
+                      value={depositAmountInput}
+                      onChange={handleDepositAmountChange}
+                    />
+                  </div>
+                </>
+              )}
             </GameCard>
+
+            {activeMethod === "usdt" && (
+              <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-white/70">Exchange Rate</span>
+                  <span className="text-yellow-500 font-medium">1 USDT = ₹86.00</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-white/70">Received Amount</span>
+                  <span className="text-white font-medium">{(currentEffectiveAmount / 86).toFixed(2)} USDT</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-white/70">Paid Amount</span>
+                  <span className="text-white font-medium">₹{currentEffectiveAmount.toLocaleString()}</span>
+                </div>
+              </GameCard>
+            )}
 
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white font-bold text-sm">Deposit Event</span>
