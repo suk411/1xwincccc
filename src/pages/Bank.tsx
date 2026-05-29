@@ -454,18 +454,22 @@ const Bank = () => {
                       key={method.id}
                       onClick={() => {
                         setActiveMethod(method.id);
-                        setActivePaymentChannel(channelOptions[method.id][0].id);
+                        const chs = channelOptions[method.id];
+                        if (chs?.length) setActivePaymentChannel(chs[0].id);
                       }}
-                      className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all border border-white/10"
+                      className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all"
                       style={{
-                        backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
-                        color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
+                        background: isActive ? "linear-gradient(90deg, rgb(12, 215, 129) 0%, rgb(0, 233, 137) 100%)" : "transparent",
+                        boxShadow: isActive ? "0 4px 10px rgba(12, 215, 129, 0.3)" : "none",
+                        border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
                       }}
                     >
                       <div className="flex justify-center items-center w-full h-[35px]">
                         <img src={method.icon} alt={method.label} className="w-[35px] h-[35px] object-contain" />
                       </div>
-                      <span className="text-xs font-medium">{method.label}</span>
+                      <span className="text-xs font-medium" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.7)" }}>
+                        {method.label}
+                      </span>
                     </div>
                   );
                 })}
@@ -474,39 +478,29 @@ const Bank = () => {
 
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Payment Channel</span>
-              <div className="flex gap-1">
+              <div className="grid grid-cols-2 gap-3">
                 {channelOptions[activeMethod]?.map((ch) => {
                   const isActive = activePaymentChannel === ch.id;
+                  const limit = getChannelLimit(activeMethod, ch.id);
                   return (
-                    <button
+                    <div
                       key={ch.id}
                       onClick={() => setActivePaymentChannel(ch.id)}
-                      className="relative flex items-center justify-center rounded-[7px] cursor-pointer overflow-hidden transition-all border border-white/10"
+                      className="rounded-xl overflow-hidden cursor-pointer transition-all"
                       style={{
-                        width: "105px",
-                        height: "42px",
-                        backgroundColor: "rgba(211, 54, 93, 0.2)",
+                        background: isActive ? "linear-gradient(90deg, rgb(12, 215, 129) 0%, rgb(0, 233, 137) 100%)" : "rgba(255,255,255,0.05)",
+                        boxShadow: isActive ? "0 4px 10px rgba(12, 215, 129, 0.3)" : "none",
                       }}
                     >
-                      {isActive && (
-                        <div
-                          className="absolute inset-0 rounded-[7px] z-0"
-                          style={{ backgroundColor: "rgb(177, 44, 73)" }}
-                        />
-                      )}
-                      <div className="relative z-10 flex items-center gap-1 justify-center w-full">
-                        {ch.icon && (
-                          <img
-                            src={ch.icon}
-                            alt={ch.label}
-                            className="w-[30px] h-[30px] object-contain rounded-[4px]"
-                          />
-                        )}
-                        <span className="text-white text-[12px] text-center w-[60px]">
+                      <div className="flex flex-col p-3" style={{ color: "#fff" }}>
+                        <div style={{ fontSize: "20px", fontWeight: 500, marginBottom: "4px" }}>
                           {ch.label}
-                        </span>
+                        </div>
+                        <div style={{ fontSize: "14px", opacity: 0.9 }}>
+                          {limit ? `₹${limit.min.toLocaleString()} - ₹${limit.max.toLocaleString()}` : ""}
+                        </div>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
