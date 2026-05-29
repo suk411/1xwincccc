@@ -601,12 +601,12 @@ const Bank = () => {
                   <span className="text-yellow-500 font-medium">1 USDT = ₹86.00</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-white/70">Received Amount</span>
-                  <span className="text-white font-medium">{(currentEffectiveAmount / 86).toFixed(2)} USDT</span>
+                  <span className="text-white/70">Paid Amount</span>
+                  <span className="text-white font-medium">{currentEffectiveAmount.toFixed(2)} USDT</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-white/70">Paid Amount</span>
-                  <span className="text-white font-medium">₹{currentEffectiveAmount.toLocaleString()}</span>
+                  <span className="text-white/70">Received Amount</span>
+                  <span className="text-white font-medium">₹{(currentEffectiveAmount * 86).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               </GameCard>
             )}
