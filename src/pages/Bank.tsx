@@ -459,8 +459,8 @@ const Bank = () => {
                       }}
                       className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all"
                       style={{
-                        background: isActive ? "linear-gradient(90deg, rgb(12, 215, 129) 0%, rgb(0, 233, 137) 100%)" : "transparent",
-                        boxShadow: isActive ? "0 4px 10px rgba(12, 215, 129, 0.3)" : "none",
+                        background: isActive ? "rgb(177, 44, 73)" : "transparent",
+                        boxShadow: isActive ? "0 4px 10px rgba(177, 44, 73, 0.3)" : "none",
                         border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
                       }}
                     >
@@ -488,8 +488,8 @@ const Bank = () => {
                       onClick={() => setActivePaymentChannel(ch.id)}
                       className="rounded-xl overflow-hidden cursor-pointer transition-all"
                       style={{
-                        background: isActive ? "linear-gradient(90deg, rgb(12, 215, 129) 0%, rgb(0, 233, 137) 100%)" : "rgba(255,255,255,0.05)",
-                        boxShadow: isActive ? "0 4px 10px rgba(12, 215, 129, 0.3)" : "none",
+                        background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.05)",
+                        boxShadow: isActive ? "0 4px 10px rgba(177, 44, 73, 0.3)" : "none",
                       }}
                     >
                       <div className="flex flex-col p-3" style={{ color: "#fff" }}>
