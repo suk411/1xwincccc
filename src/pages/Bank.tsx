@@ -479,7 +479,7 @@ const Bank = () => {
 
             <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
               <span className="text-white text-sm">Payment Channel</span>
-              <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+              <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar" style={{ scrollBehavior: "smooth" }}>
                 {channelOptions[activeMethod]?.map((ch) => {
                   const isActive = activePaymentChannel === ch.id;
                   const limit = getChannelLimit(activeMethod, ch.id);
