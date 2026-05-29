@@ -74,21 +74,18 @@ const Bank = () => {
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
 
-  const DEPOSIT_METHODS = [
-    { id: "bank_card", label: "BANK CARD", icon: bankLogo },
+  const methods = [
     { id: "upi", label: "UPI", icon: upiLogo },
+    { id: "usdt", label: "USDT", icon: usdtLogo },
     { id: "upay", label: "UPAY", icon: upayLogo },
   ];
 
   const channelOptions: Record<string, { id: string; label: string; icon?: string }[]> = {
-    bank_card: [
-      { id: "simplypay", label: "SimplyPay", icon: bankLogo },
-      { id: "gspayinr", label: "XinPay", icon: bankLogo },
-    ],
     upi: [
       { id: "simplypay", label: "SimplyPay", icon: upiLogo },
       { id: "gspayinr", label: "XinPay", icon: upiLogo },
     ],
+    usdt: [{ id: "gspayusdt", label: "USDT", icon: usdtLogo }],
     upay: [{ id: "upay", label: "UPAY", icon: upayLogo }],
   };
 
@@ -396,7 +393,7 @@ const Bank = () => {
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Payment Methods</span>
               <div className="flex gap-2 justify-start">
-                {DEPOSIT_METHODS.map((method) => {
+                {methods.map((method) => {
                   const isActive = activeMethod === method.id;
                   return (
                     <div
