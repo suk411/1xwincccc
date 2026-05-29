@@ -74,18 +74,21 @@ const Bank = () => {
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
 
-  const methods = [
+  const DEPOSIT_METHODS = [
+    { id: "bank_card", label: "BANK CARD", icon: bankLogo },
     { id: "upi", label: "UPI", icon: upiLogo },
-    { id: "usdt", label: "USDT", icon: usdtLogo },
     { id: "upay", label: "UPAY", icon: upayLogo },
   ];
 
   const channelOptions: Record<string, { id: string; label: string; icon?: string }[]> = {
+    bank_card: [
+      { id: "simplypay", label: "SimplyPay", icon: bankLogo },
+      { id: "gspayinr", label: "XinPay", icon: bankLogo },
+    ],
     upi: [
       { id: "simplypay", label: "SimplyPay", icon: upiLogo },
       { id: "gspayinr", label: "XinPay", icon: upiLogo },
     ],
-    usdt: [{ id: "gspayusdt", label: "USDT", icon: usdtLogo }],
     upay: [{ id: "upay", label: "UPAY", icon: upayLogo }],
   };
 
@@ -392,40 +395,27 @@ const Bank = () => {
           <>
             <GameCard className="p-3 flex flex-col gap-2">
               <span className="text-white text-sm">Payment Methods</span>
-              <div className="flex gap-1">
-                {methods.map((m) => {
-                  const isActive = activeMethod === m.id;
+              <div className="flex gap-2 justify-start">
+                {DEPOSIT_METHODS.map((method) => {
+                  const isActive = activeMethod === method.id;
                   return (
-                    <button
-                      key={m.id}
+                    <div
+                      key={method.id}
                       onClick={() => {
-                        setActiveMethod(m.id);
-                        setActivePaymentChannel(channelOptions[m.id][0].id);
+                        setActiveMethod(method.id);
+                        setActivePaymentChannel(channelOptions[method.id][0].id);
                       }}
-                      className="relative flex items-center justify-center rounded-[7px] cursor-pointer overflow-hidden transition-all border border-white/10"
+                      className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all border border-white/10"
                       style={{
-                        width: "105px",
-                        height: "42px",
-                        backgroundColor: "rgba(211, 54, 93, 0.2)",
+                        backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
+                        color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
                       }}
                     >
-                      {isActive && (
-                        <div
-                          className="absolute inset-0 rounded-[7px] z-0"
-                          style={{ backgroundColor: "rgb(177, 44, 73)" }}
-                        />
-                      )}
-                      <div className="relative z-10 flex items-center gap-1 justify-center w-full">
-                        <img
-                          src={m.icon}
-                          alt={m.label}
-                          className="w-[30px] h-[30px] object-contain rounded-[4px]"
-                        />
-                        <span className="text-white text-[12px] text-center w-[60px]">
-                          {m.label}
-                        </span>
+                      <div className="flex justify-center items-center w-full h-[35px]">
+                        <img src={method.icon} alt={method.label} className="w-[35px] h-[35px] object-contain" />
                       </div>
-                    </button>
+                      <span className="text-xs font-medium">{method.label}</span>
+                    </div>
                   );
                 })}
               </div>
