@@ -444,7 +444,7 @@ const Bank = () => {
 
         {activeTab === "deposit" ? (
           <>
-            <GameCard className="p-3 flex flex-col gap-2">
+            <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
               <span className="text-white text-sm">Payment Methods</span>
               <div className="flex gap-2 justify-start">
                 {methods.map((method) => {
@@ -476,9 +476,9 @@ const Bank = () => {
               </div>
             </GameCard>
 
-            <GameCard className="p-3 flex flex-col gap-2">
+            <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
               <span className="text-white text-sm">Payment Channel</span>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex gap-2 overflow-x-auto pb-1">
                 {channelOptions[activeMethod]?.map((ch) => {
                   const isActive = activePaymentChannel === ch.id;
                   const limit = getChannelLimit(activeMethod, ch.id);
@@ -486,17 +486,18 @@ const Bank = () => {
                     <div
                       key={ch.id}
                       onClick={() => setActivePaymentChannel(ch.id)}
-                      className="rounded-xl overflow-hidden cursor-pointer transition-all"
+                      className="rounded-lg overflow-hidden cursor-pointer transition-all shrink-0"
                       style={{
                         background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.05)",
                         boxShadow: isActive ? "0 4px 10px rgba(177, 44, 73, 0.3)" : "none",
+                        minWidth: "140px",
                       }}
                     >
-                      <div className="flex flex-col p-3" style={{ color: "#fff" }}>
-                        <div style={{ fontSize: "20px", fontWeight: 500, marginBottom: "4px" }}>
+                      <div className="flex flex-col px-3 py-2" style={{ color: "#fff" }}>
+                        <div style={{ fontSize: "15px", fontWeight: 500, marginBottom: "2px", whiteSpace: "nowrap" }}>
                           {ch.label}
                         </div>
-                        <div style={{ fontSize: "14px", opacity: 0.9 }}>
+                        <div style={{ fontSize: "12px", opacity: 0.9, whiteSpace: "nowrap" }}>
                           {limit ? `₹${limit.min.toLocaleString()} - ₹${limit.max.toLocaleString()}` : ""}
                         </div>
                       </div>
