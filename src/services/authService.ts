@@ -65,6 +65,16 @@ export interface DepositResponse {
   msg?: string;
 }
 
+export interface DepositConfigItem {
+  channel: string;
+  name: string;
+  isActive: boolean;
+  minAmount: number;
+  maxAmount: number;
+  sortOrder: number;
+  description: string;
+}
+
 export interface LedgerResponse {
   [key: string]: any;
 }
@@ -509,6 +519,17 @@ export const authService = {
     const data = await res.json();
     checkAccountInactive(data);
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to set default payment method"));
+    return data;
+  },
+
+  async getDepositConfig(): Promise<{ status: string; data: DepositConfigItem[] }> {
+    const res = await fetch(`${API_BASE}/api/account/deposit-config`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    checkAccountInactive(data);
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposit config"));
     return data;
   },
 

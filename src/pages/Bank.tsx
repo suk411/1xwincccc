@@ -73,20 +73,41 @@ const Bank = () => {
   const [bindingAccount, setBindingAccount] = useState(false);
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
+  const [depositConfig, setDepositConfig] = useState<import("@/services/authService").DepositConfigItem[]>([]);
+  const [loadingDepositConfig, setLoadingDepositConfig] = useState(false);
 
-  const methods = [
-    { id: "upi", label: "UPI", icon: upiLogo },
-    { id: "usdt", label: "USDT", icon: usdtLogo },
-    { id: "upay", label: "UPAY", icon: upayLogo },
-  ];
+  const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
+    const d = ch.description?.toLowerCase() || "";
+    if (d.includes("upay")) return "upay";
+    if (d.includes("usdt")) return "usdt";
+    return "upi";
+  };
 
-  const channelOptions: Record<string, { id: string; label: string; icon?: string }[]> = {
-    upi: [
-      { id: "simplypay", label: "SimplyPay", icon: upiLogo },
-      { id: "gspayinr", label: "XinPay", icon: upiLogo },
-    ],
-    usdt: [{ id: "gspayusdt", label: "USDT", icon: usdtLogo }],
-    upay: [{ id: "upay", label: "UPAY", icon: upayLogo }],
+  const methodIcons: Record<string, string> = { upi: upiLogo, usdt: usdtLogo, upay: upayLogo };
+  const methodLabels: Record<string, string> = { upi: "UPI", usdt: "USDT", upay: "UPAY" };
+
+  const buildChannelOptions = (config: import("@/services/authService").DepositConfigItem[]) => {
+    const opts: Record<string, { id: string; label: string; icon?: string }[]> = {};
+    config.forEach(ch => {
+      const cat = categorizeChannel(ch);
+      if (!opts[cat]) opts[cat] = [];
+      opts[cat].push({ id: ch.channel, label: ch.name, icon: methodIcons[cat] });
+    });
+    return opts;
+  };
+
+  const channelOptions = buildChannelOptions(depositConfig);
+  const methods = Object.keys(channelOptions).length > 0
+    ? Object.keys(channelOptions).map(id => ({ id, label: methodLabels[id] || id.toUpperCase(), icon: methodIcons[id] || upiLogo }))
+    : [
+        { id: "upi", label: "UPI", icon: upiLogo },
+        { id: "usdt", label: "USDT", icon: usdtLogo },
+        { id: "upay", label: "UPAY", icon: upayLogo },
+      ];
+
+  const getChannelLimit = (methodId: string, channelId: string) => {
+    const ch = depositConfig.find(c => c.channel === channelId && categorizeChannel(c) === methodId);
+    return ch ? { min: ch.minAmount, max: ch.maxAmount } : null;
   };
 
   const WITHDRAW_METHODS = [
@@ -115,6 +136,22 @@ const Bank = () => {
     }
   };
 
+  const loadDepositConfig = async () => {
+    if (depositConfig.length === 0) setLoadingDepositConfig(true);
+    try {
+      const res = await authService.getDepositConfig();
+      if (res?.data?.length) {
+        setDepositConfig(res.data);
+        const firstCat = categorizeChannel(res.data[0]);
+        setActiveMethod(firstCat);
+      }
+    } catch {
+      // fall back to hardcoded methods
+    } finally {
+      setLoadingDepositConfig(false);
+    }
+  };
+
   useEffect(() => {
     if (location.state?.activeTab) {
       setActiveTab(location.state.activeTab);
@@ -124,6 +161,8 @@ const Bank = () => {
   useEffect(() => {
     if (activeTab === "withdraw") {
       loadWithdrawInfo();
+    } else {
+      loadDepositConfig();
     }
   }, [activeTab]);
 
@@ -217,11 +256,20 @@ const Bank = () => {
     if (paying) return;
     
     const depositAmount = customAmount ? parseInt(customAmount) : selectedAmount;
+    const limit = getChannelLimit(activeMethod, activePaymentChannel);
     
-    if (customAmount) {
-      const amount = parseInt(customAmount);
-      if (isNaN(amount) || amount < 100 || amount > 20000) {
-        toast({ description: "Please enter an amount between 100 and 20000", variant: "destructive" });
+    if (isNaN(depositAmount) || depositAmount <= 0) {
+      toast({ description: "Please enter a valid amount", variant: "destructive" });
+      return;
+    }
+
+    if (limit) {
+      if (depositAmount < limit.min) {
+        toast({ description: `Minimum deposit for this channel is ₹${limit.min}`, variant: "destructive" });
+        return;
+      }
+      if (depositAmount > limit.max) {
+        toast({ description: `Maximum deposit for this channel is ₹${limit.max}`, variant: "destructive" });
         return;
       }
     }
@@ -237,7 +285,7 @@ const Bank = () => {
       }
       refreshBalance();
     } catch (err: any) {
-      toast({ description: "Please try again or choose another payment method.", variant: "destructive" });
+      toast({ description: err.message || "Please try again or choose another payment method.", variant: "destructive" });
     } finally {
       setPaying(false);
     }
@@ -308,7 +356,7 @@ const Bank = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-52 w-full">
-      {(paying || loadingWithdrawInfo || bindingAccount || withdrawing) && (
+      {(paying || loadingWithdrawInfo || bindingAccount || withdrawing || loadingDepositConfig) && (
         <Loader
           overlay
           label={
@@ -318,7 +366,9 @@ const Bank = () => {
                 ? "Processing withdrawal..."
                 : bindingAccount
                   ? "Saving bank account..."
-                  : "Loading withdraw info..."
+                  : loadingDepositConfig
+                    ? "Loading payment options..."
+                    : "Loading withdraw info..."
           }
         />
       )}
