@@ -23,6 +23,9 @@ const statusStyles: Record<string, string> = {
   Cancelled: "#888888",
   cancelled: "#888888",
   CANCELLED: "#888888",
+  EXPIRED: "#ff6b35",
+  Expired: "#ff6b35",
+  expired: "#ff6b35",
   success: "#00b341",
   Success: "#00b341",
   SUCCESS: "#00b341",
@@ -44,6 +47,9 @@ const amountStyles: Record<string, string> = {
   Cancelled: "#888888",
   cancelled: "#888888",
   CANCELLED: "#888888",
+  EXPIRED: "#ff6b35",
+  Expired: "#ff6b35",
+  expired: "#ff6b35",
   success: "#00b341",
   Success: "#00b341",
   SUCCESS: "#00b341",
@@ -113,7 +119,7 @@ const DepositRecords = () => {
     order.status || order.orderStatus || "PENDING";
 
   const getChannel = (order: DepositOrder) =>
-    order.channelName || order.channel || order.paymentChannel || order.method || "—";
+    order.channelName || order.channel || order.paymentChannel || order.method || order.remark || "—";
 
   const isOlderThan15Min = (order: DepositOrder) => {
     const d = order.createdAt || order.date || order.created_at;
@@ -283,6 +289,24 @@ const DepositRecords = () => {
                       <div className="flex justify-between">
                         <span>Bonus</span>
                         <span>₹{Number(bonus).toLocaleString()}</span>
+                      </div>
+                    )}
+                    {order.balanceAfter != null && (
+                      <div className="flex justify-between">
+                        <span>Balance After</span>
+                        <span>₹{Number(order.balanceAfter).toLocaleString()}</span>
+                      </div>
+                    )}
+                    {order.type && (
+                      <div className="flex justify-between">
+                        <span>Type</span>
+                        <span>{order.type}</span>
+                      </div>
+                    )}
+                    {order.remark && (
+                      <div className="flex justify-between">
+                        <span>Remark</span>
+                        <span>{order.remark}</span>
                       </div>
                     )}
                     {order.currency && (

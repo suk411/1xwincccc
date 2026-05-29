@@ -48,11 +48,11 @@ export interface DepositOrder {
 }
 
 export interface DepositsResponse {
-  status: string;
-  total: number;
-  page: number;
-  limit: number;
+  success: boolean;
   items: DepositOrder[];
+  total?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface DepositResponse {
@@ -71,6 +71,7 @@ export interface DepositConfigItem {
   isActive: boolean;
   minAmount: number;
   maxAmount: number;
+  exchangeRate: number;
   sortOrder: number;
 }
 

@@ -119,6 +119,11 @@ const Bank = () => {
     return ch ? { min: ch.minAmount, max: ch.maxAmount } : null;
   };
 
+  const getExchangeRate = (methodId: string, channelId: string): number => {
+    const ch = depositConfig.find(c => c.channel === channelId && categorizeChannel(c) === methodId);
+    return ch?.exchangeRate ?? 86;
+  };
+
   const WITHDRAW_METHODS = [
     { id: "bank_card", label: "BANK CARD", icon: bankLogo },
     { id: "upi", label: "UPI", icon: upiLogo },
@@ -270,6 +275,8 @@ const Bank = () => {
     
     const depositAmount = customAmount ? parseInt(customAmount) : selectedAmount;
     const limit = getChannelLimit(activeMethod, activePaymentChannel);
+    const isUsdt = activeMethod === "usdt";
+    const denom = isUsdt ? "USDT" : "₹";
     
     if (isNaN(depositAmount) || depositAmount <= 0) {
       toast({ description: "Please enter a valid amount", variant: "destructive" });
@@ -278,11 +285,11 @@ const Bank = () => {
 
     if (limit) {
       if (depositAmount < limit.min) {
-        toast({ description: `Minimum deposit for this channel is ₹${limit.min}`, variant: "destructive" });
+        toast({ description: `Minimum deposit for this channel is ${denom}${limit.min}`, variant: "destructive" });
         return;
       }
       if (depositAmount > limit.max) {
-        toast({ description: `Maximum deposit for this channel is ₹${limit.max}`, variant: "destructive" });
+        toast({ description: `Maximum deposit for this channel is ${denom}${limit.max}`, variant: "destructive" });
         return;
       }
     }
@@ -594,11 +601,11 @@ const Bank = () => {
               )}
             </GameCard>
 
-            {activeMethod === "usdt" && (
+            {activeMethod === "usdt" && currentEffectiveAmount > 0 && (
               <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/70">Exchange Rate</span>
-                  <span className="text-yellow-500 font-medium">1 USDT = ₹86.00</span>
+                  <span className="text-yellow-500 font-medium">1 USDT = ₹{getExchangeRate(activeMethod, activePaymentChannel).toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/70">Paid Amount</span>
@@ -606,7 +613,7 @@ const Bank = () => {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/70">Received Amount</span>
-                  <span className="text-white font-medium">₹{(currentEffectiveAmount * 86).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className="text-white font-medium">₹{(currentEffectiveAmount * getExchangeRate(activeMethod, activePaymentChannel)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               </GameCard>
             )}
@@ -850,16 +857,28 @@ const Bank = () => {
         <div className="flex flex-col">
           <div className="flex items-center gap-1">
             <span className="text-white/70 text-xs">{activeTab === "deposit" ? "Payment" : "Withdraw"}</span>
-            <span className="text-white font-bold text-sm">
-              ₹{(activeTab === "deposit" ? (customAmount ? parseInt(customAmount) || 0 : selectedAmount) : selectedWithdrawAmount).toLocaleString()}
-            </span>
+            {activeTab === "deposit" && activeMethod === "usdt" ? (
+              <span className="text-white font-bold text-sm">
+                {(customAmount ? parseInt(customAmount) || 0 : selectedAmount).toLocaleString()} USDT
+              </span>
+            ) : (
+              <span className="text-white font-bold text-sm">
+                ₹{(activeTab === "deposit" ? (customAmount ? parseInt(customAmount) || 0 : selectedAmount) : selectedWithdrawAmount).toLocaleString()}
+              </span>
+            )}
           </div>
-          {activeTab === "deposit" && (
+          {activeTab === "deposit" && activeMethod !== "usdt" && (
             <div className="flex items-center gap-1">
               <span className="text-white/50 text-[10px]">Received</span>
               <span className="text-green-400 text-[10px] font-bold">₹{((customAmount ? parseInt(customAmount) || 0 : selectedAmount) + selectedDepositBonus).toLocaleString()}</span>
               <span className="text-white/50 text-[10px]">Bonus</span>
               <span className="text-primary text-[10px] font-bold">₹{selectedDepositBonus.toLocaleString()}</span>
+            </div>
+          )}
+          {activeTab === "deposit" && activeMethod === "usdt" && currentEffectiveAmount > 0 && (
+            <div className="flex items-center gap-1">
+              <span className="text-white/50 text-[10px]">Received</span>
+              <span className="text-green-400 text-[10px] font-bold">₹{(currentEffectiveAmount * getExchangeRate(activeMethod, activePaymentChannel)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           )}
           {activeTab === "withdraw" && (
