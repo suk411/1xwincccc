@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Phone,  Lock } from "lucide-react";
+import phoneIcon from "@/assets/auth/icon-phone-complete.svg";
+import lockIcon from "@/assets/auth/password-icon.svg";
 import {
   GameDialog,
   GameDialogContent,
@@ -56,7 +57,7 @@ const LoginDialog = ({ open, onOpenChange, onSwitchToRegister, onLoginSuccess }:
         <GameDialogBody>
           <div className="w-full flex flex-col gap-3">
             <GameInput
-icon={<Phone size={18} />} 
+icon={<span className="flex items-center gap-1"><img src={phoneIcon} className="w-[18px] h-[18px]" alt="" /><span className="text-[#e37681] text-sm">+91</span></span>} 
               placeholder="Enter phone number"
               hint={phoneError ? "Enter valid 10-digit number" : "10-digit phone number"}
               error={phoneError}
@@ -70,7 +71,7 @@ icon={<Phone size={18} />}
               inputMode="numeric"
             />
             <GameInput
-              icon={<Lock size={18} />}
+              icon={<img src={lockIcon} className="w-[18px] h-[18px]" alt="" />}
               placeholder="Enter password"
               hint={passwordError ? "Password must be at least 6 characters" : ""}
               error={passwordError}

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Phone, Lock, Gift } from "lucide-react";
+import phoneIcon from "@/assets/auth/icon-phone-complete.svg";
+import lockIcon from "@/assets/auth/password-icon.svg";
+import inviteIcon from "@/assets/auth/icon-invitation.svg";
 import {
   GameDialog,
   GameDialogContent,
@@ -57,7 +59,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
         <GameDialogBody>
           <div className="w-full flex flex-col gap-3">
             <GameInput
-              icon={<Phone size={18} />}
+              icon={<span className="flex items-center gap-1"><img src={phoneIcon} className="w-[18px] h-[18px]" alt="" /><span className="text-[#e37681] text-sm">+91</span></span>}
               placeholder="Enter phone number"
               hint={phoneError ? "Enter valid 10-digit number" : "10-digit phone number"}
               error={phoneError}
@@ -71,7 +73,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
               inputMode="numeric"
             />
             <GameInput
-              icon={<Lock size={18} />}
+              icon={<img src={lockIcon} className="w-[18px] h-[18px]" alt="" />}
               placeholder="Enter password"
               hint={passwordError ? "Password must be at least 6 characters" : "Min 6 characters"}
               error={passwordError}
@@ -84,7 +86,7 @@ const RegisterDialog = ({ open, onOpenChange, onSwitchToLogin, onRegisterSuccess
               type="password"
             />
             <GameInput
-              icon={<Gift size={18} />}
+              icon={<img src={inviteIcon} className="w-[18px] h-[18px]" alt="" />}
               placeholder="Invitation code (optional)"
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}

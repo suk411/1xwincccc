@@ -63,6 +63,15 @@ interface AgencyTeamMember {
   level?: number;
 }
 
+interface TeamAggregation {
+  depositCount: number;
+  depositAmount: number;
+  bettorCount: number;
+  betAmount: number;
+  firstDepositCount: number;
+  firstDepositAmount: number;
+}
+
 const Earn = () => {
   const [activeTab, setActiveTab] = useState<"referral" | "commission" | "rebateratio" | "subordinate" | "rules">("referral");
   const [agencyDaily, setAgencyDaily] = useState<AgencyDaily | null>(null);
@@ -74,6 +83,7 @@ const Earn = () => {
   const [teamPage, setTeamPage] = useState(1);
   const [teamTotal, setTeamTotal] = useState(0);
   const [teamLoading, setTeamLoading] = useState(false);
+  const [teamAggregation, setTeamAggregation] = useState<TeamAggregation | null>(null);
 
   const [levelOpen, setLevelOpen] = useState(false);
   const [levelVal, setLevelVal] = useState("All");
@@ -81,9 +91,12 @@ const Earn = () => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  const [yr, setYr] = useState(yesterday.getFullYear());
-  const [mo, setMo] = useState(yesterday.getMonth() + 1);
-  const [dd, setDd] = useState(yesterday.getDate());
+  const MAX_YR = yesterday.getFullYear();
+  const MAX_MO = yesterday.getMonth() + 1;
+  const MAX_DD = yesterday.getDate();
+  const [yr, setYr] = useState(MAX_YR);
+  const [mo, setMo] = useState(MAX_MO);
+  const [dd, setDd] = useState(MAX_DD);
   const [rebateLevelTab, setRebateLevelTab] = useState(0);
   const [searchUid, setSearchUid] = useState("");
   const [subDateFilter, setSubDateFilter] = useState("today");
@@ -124,21 +137,18 @@ const Earn = () => {
     }
   }, []);
 
-  const fetchAgencyTeam = useCallback(async (p = 1, append = false, dateRange?: { fromDate?: string; toDate?: string }) => {
+  const fetchAgencyTeam = useCallback(async (p = 1, append = false) => {
     try {
       setTeamLoading(true);
-      const today = new Date();
-      const yest = new Date(today);
-      yest.setDate(yest.getDate() - 1);
-      const defaultToDate = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, "0")}-${String(yest.getDate()).padStart(2, "0")}`;
-      const params: any = { page: p, limit: 25, toDate: dateRange?.toDate || defaultToDate };
+      const toDate = `${yr}-${String(mo).padStart(2, "0")}-${String(dd).padStart(2, "0")}`;
+      const params: any = { page: p, limit: 25, toDate };
       if (levelVal !== "All") params.tier = levelVal === "Level 1" ? 1 : levelVal === "Level 2" ? 2 : 3;
       if (searchUid) params.userId = parseInt(searchUid);
-      if (dateRange?.fromDate) params.fromDate = dateRange.fromDate;
       const data = await authService.getAgencyTeam(params);
       setAgencyTeam(prev => append ? [...prev, ...data.items] : data.items);
       setTeamTotal(data.total || 0);
       setTeamPage(p);
+      if (!append) setTeamAggregation(data.aggregation?.total ?? null);
     } catch (err: any) {
       if (!err.message?.includes("Session expired")) {
         toast({ description: err.message || "Something went wrong", variant: "destructive" });
@@ -146,7 +156,7 @@ const Earn = () => {
     } finally {
       setTeamLoading(false);
     }
-  }, [levelVal, searchUid]);
+  }, [levelVal, searchUid, yr, mo, dd]);
 
   const fetchAgencyNewSub = useCallback(async (fromDate: string, toDate: string) => {
     try {
@@ -172,8 +182,13 @@ const Earn = () => {
   }, [showCommissionDetail, fetchAgencyCommissions]);
 
   useEffect(() => {
-    if (activeTab === "commission") fetchAgencyTeam(1);
-  }, [activeTab, fetchAgencyTeam]);
+    if (activeTab === "commission") {
+      setAgencyTeam([]);
+      setTeamAggregation(null);
+      fetchAgencyTeam(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   useEffect(() => {
     if (activeTab !== "subordinate") return;
@@ -1359,12 +1374,12 @@ const Earn = () => {
               </div>
 
               <div className="header-container">
-                <div><span className="num">{agencyDaily?.level1?.depositCount ?? 0}</span><span className="label">Deposit number</span></div>
-                <div><span className="num">{agencyDaily?.level1?.deposit ?? 0}</span><span className="label">Deposit amount</span></div>
-                <div><span className="num">{agencyDaily?.level1?.regCount ?? 0}</span><span className="label">Number of bettors</span></div>
-                <div><span className="num">0</span><span className="label">Total bet</span></div>
-                <div><span className="num">{agencyDaily?.level1?.firstDepositCount ?? 0}</span><span className="label">First deposit number</span></div>
-                <div><span className="num">0</span><span className="label">First deposit amount</span></div>
+                <div><span className="num">{teamAggregation?.depositCount ?? 0}</span><span className="label">Deposit number</span></div>
+                <div><span className="num">{teamAggregation?.depositAmount ?? 0}</span><span className="label">Deposit amount</span></div>
+                <div><span className="num">{teamAggregation?.bettorCount ?? 0}</span><span className="label">Number of bettors</span></div>
+                <div><span className="num">{teamAggregation?.betAmount ?? 0}</span><span className="label">Total bet</span></div>
+                <div><span className="num">{teamAggregation?.firstDepositCount ?? 0}</span><span className="label">First deposit number</span></div>
+                <div><span className="num">{teamAggregation?.firstDepositAmount ?? 0}</span><span className="label">First deposit amount</span></div>
               </div>
 
               {agencyTeam.map((member) => (
@@ -1395,28 +1410,28 @@ const Earn = () => {
                     <div className="van-picker__toolbar">
                       <button type="button" className="van-picker__cancel" onClick={() => setDateOpen(false)}>Cancel</button>
                       <div className="van-picker__title">Choose a date</div>
-                      <button type="button" className="van-picker__confirm" onClick={() => { setDateOpen(false); setSearchUid(""); setLevelVal("All"); fetchAgencyTeam(1, false, { fromDate: `${yr}-${String(mo).padStart(2,"0")}-${String(dd).padStart(2,"0")}`, toDate: `${yr}-${String(mo).padStart(2,"0")}-${String(dd).padStart(2,"0")}` }); }}>Confirm</button>
+                      <button type="button" className="van-picker__confirm" onClick={() => setDateOpen(false)}>Confirm</button>
                     </div>
                     <div className="van-picker__columns">
                       <div className="van-picker-column">
-                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((yr - 2020) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 30)); setYr(y => Math.max(2020, Math.min(yesterday.getFullYear(), y + (e.deltaY > 0 ? step : -step)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 44)); setYr(y => Math.max(2020, Math.min(yesterday.getFullYear(), y + (diff > 0 ? step : -step)))); } }}>
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((yr - 2020) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 30)); setYr(y => Math.max(2020, Math.min(MAX_YR, y + (e.deltaY > 0 ? step : -step)))); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 44)); setYr(y => Math.max(2020, Math.min(MAX_YR, y + (diff > 0 ? step : -step)))); } }}>
                           {(yrs => { return yrs.map(y => (
                             <div key={y} className={`van-picker-column__item${y === yr ? " van-picker-column__item--selected" : ""}`}>{String(y)}</div>
-                          ))})(Array.from({ length: yesterday.getFullYear() - 2020 + 1 }, (_, i) => 2020 + i))}
+                          ))})(Array.from({ length: MAX_YR - 2020 + 1 }, (_, i) => 2020 + i))}
                         </div>
                       </div>
                       <div className="van-picker-column">
-                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((mo - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 20)); setMo(m => { const maxMo = yr >= yesterday.getFullYear() ? yesterday.getMonth() + 1 : 12; return Math.max(1, Math.min(maxMo, m + (e.deltaY > 0 ? step : -step))); }); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 30)); setMo(m => { const maxMo = yr >= yesterday.getFullYear() ? yesterday.getMonth() + 1 : 12; return Math.max(1, Math.min(maxMo, m + (diff > 0 ? step : -step))); }); } }}>
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((mo - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 20)); setMo(m => { const maxMo = yr >= MAX_YR ? MAX_MO : 12; return Math.max(1, Math.min(maxMo, m + (e.deltaY > 0 ? step : -step))); }); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 30)); setMo(m => { const maxMo = yr >= MAX_YR ? MAX_MO : 12; return Math.max(1, Math.min(maxMo, m + (diff > 0 ? step : -step))); }); } }}>
                           {(months => { return months.map(m => (
                             <div key={m} className={`van-picker-column__item${m === mo ? " van-picker-column__item--selected" : ""}`}>{String(m).padStart(2, "0")}</div>
-                          ))})(Array.from({ length: yr >= yesterday.getFullYear() ? yesterday.getMonth() + 1 : 12 }, (_, i) => i + 1))}
+                          ))})(Array.from({ length: yr >= MAX_YR ? MAX_MO : 12 }, (_, i) => i + 1))}
                         </div>
                       </div>
                       <div className="van-picker-column">
-                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((dd - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 20)); setDd(d => { let maxDd = 31; if (yr === yesterday.getFullYear() && mo === yesterday.getMonth() + 1) maxDd = yesterday.getDate(); else if ([4,6,9,11].includes(mo)) maxDd = 30; else if (mo === 2) maxDd = 28; return Math.max(1, Math.min(maxDd, d + (e.deltaY > 0 ? step : -step))); }); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 30)); setDd(d => { let maxDd = 31; if (yr === yesterday.getFullYear() && mo === yesterday.getMonth() + 1) maxDd = yesterday.getDate(); else if ([4,6,9,11].includes(mo)) maxDd = 30; else if (mo === 2) maxDd = 28; return Math.max(1, Math.min(maxDd, d + (diff > 0 ? step : -step))); }); } }}>
+                        <div className="van-picker-column__wrapper" style={{ transform: `translateY(${-((dd - 1) * 44) + 110}px)` }} onWheel={e => { e.preventDefault(); const step = Math.max(1, Math.round(Math.abs(e.deltaY) / 20)); setDd(d => { let maxDd = 31; if (yr === MAX_YR && mo === MAX_MO) maxDd = MAX_DD; else if ([4,6,9,11].includes(mo)) maxDd = 30; else if (mo === 2) maxDd = 28; return Math.max(1, Math.min(maxDd, d + (e.deltaY > 0 ? step : -step))); }); }} onTouchStart={e => { e.currentTarget.dataset.touchY = e.touches[0].clientY; }} onTouchEnd={e => { const start = parseFloat(e.currentTarget.dataset.touchY||"0"); const diff = start - e.changedTouches[0].clientY; if (Math.abs(diff) > 10) { const step = Math.max(1, Math.round(Math.abs(diff) / 30)); setDd(d => { let maxDd = 31; if (yr === MAX_YR && mo === MAX_MO) maxDd = MAX_DD; else if ([4,6,9,11].includes(mo)) maxDd = 30; else if (mo === 2) maxDd = 28; return Math.max(1, Math.min(maxDd, d + (diff > 0 ? step : -step))); }); } }}>
                           {(days => { return days.map(d => (
                             <div key={d} className={`van-picker-column__item${d === dd ? " van-picker-column__item--selected" : ""}`}>{String(d).padStart(2, "0")}</div>
-                          ))})(Array.from({ length: (yr === yesterday.getFullYear() && mo === yesterday.getMonth() + 1) ? yesterday.getDate() : [4,6,9,11].includes(mo) ? 30 : mo === 2 ? 28 : 31 }, (_, i) => i + 1))}
+                          ))})(Array.from({ length: (yr === MAX_YR && mo === MAX_MO) ? MAX_DD : [4,6,9,11].includes(mo) ? 30 : mo === 2 ? 28 : 31 }, (_, i) => i + 1))}
                         </div>
                       </div>
                       <div className="van-picker__mask"></div>

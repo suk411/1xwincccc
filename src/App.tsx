@@ -20,6 +20,8 @@ import GameLobbyPage from "./pages/GameLobbyPage";
 import SupportChat from "./pages/SupportChat";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
@@ -71,6 +73,8 @@ const AppContent = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/earn" element={<ProtectedRoute><Earn /></ProtectedRoute>} />
           <Route path="/bank" element={<ProtectedRoute><Bank /></ProtectedRoute>} />

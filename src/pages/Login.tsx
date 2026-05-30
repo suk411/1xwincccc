@@ -2,7 +2,8 @@ import { useState } from "react";
 import { DotPulse } from "ldrs/react";
 import "ldrs/react/DotPulse.css";
 import { useNavigate } from "react-router-dom";
-import { Phone, Lock } from "lucide-react";
+import phoneIcon from "@/assets/auth/icon-phone-complete.svg";
+import lockIcon from "@/assets/auth/password-icon.svg";
 import authBg from "@/assets/auth/auth-bg.png";
 import rewardBanner from "@/assets/auth/reward-banner.png";
 import forgotIcon from "@/assets/auth/forgot-icon.png";
@@ -12,6 +13,7 @@ import flagIcon from "@/assets/auth/flag-icon.png";
 import logo from "@/assets/logo.png";
 import { GameInput } from "@/components/GameInput";
 import { GameButton } from "@/components/GameButton";
+import LanguageDrawer from "@/components/LanguageDrawer";
 import { authService } from "@/services/authService";
 import { toast } from "@/hooks/use-toast";
 
@@ -22,6 +24,7 @@ const Login = () => {
   const [phoneError, setPhoneError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
   const handleLogin = async () => {
     const isPhoneValid = /^\d{10}$/.test(phone);
@@ -60,15 +63,15 @@ const Login = () => {
         <div className="relative w-full my-4">
           <img src={rewardBanner} alt="" className="w-full h-auto" />
           <span className="absolute inset-0 flex items-center justify-center text-[#ffd700] font-bold pt-2 text-sm pl-8">
-            Get rewards upto ₹1000
+            Get invitation rewards upto ₹1000
           </span>
         </div>
 
         {/* Form */}
         <div className="flex flex-col gap-3 mt-2">
           <GameInput
-            icon={<Phone size={18} />}
-            placeholder="Account / Email / Phone"
+            icon={<span className="flex items-center gap-1"><img src={phoneIcon} className="w-[18px] h-[18px]" alt="" /><span className="text-[#e37681] text-sm">+91</span></span>}
+            placeholder="Enter phone number"
             hint={phoneError ? "Enter valid 10-digit number" : "Enter account/email/phone number"}
             error={phoneError}
             value={phone}
@@ -80,7 +83,7 @@ const Login = () => {
             inputMode="numeric"
           />
           <GameInput
-            icon={<Lock size={18} />}
+            icon={<img src={lockIcon} className="w-[18px] h-[18px]" alt="" />}
             placeholder="Enter Password"
             hint={passwordError ? "Password must be at least 6 characters" : "Enter Password"}
             error={passwordError}
@@ -126,18 +129,19 @@ const Login = () => {
             <img src={supportIcon} alt="" className="w-4 h-4" />
             Contact Support
           </button>
-          <button className="flex items-center gap-1.5 text-[#c4889a] text-xs border border-[#5a2030] rounded-full px-4 py-1.5">
+          <button className="flex items-center gap-1.5 text-[#c4889a] text-xs border border-[#5a2030] rounded-full px-4 py-1.5" onClick={() => setLangOpen(true)}>
             <img src={flagIcon} alt="" className="w-4 h-4" />
             English
             <span className="text-[#c4889a]">›</span>
           </button>
         </div>
+        <LanguageDrawer open={langOpen} onOpenChange={setLangOpen} />
 
         {/* Terms */}
         <p className="text-center text-[#964850] text-[10px] mt-6 mb-2">
           By logging in, you agree to our{" "}
-          <span className="text-[#e37681] underline">Terms of Service</span> and{" "}
-          <span className="text-[#e37681] underline">Privacy Policy</span>
+          <span className="text-[#e37681] underline cursor-pointer" onClick={() => navigate("/terms")}>Terms of Service</span> and{" "}
+          <span className="text-[#e37681] underline cursor-pointer" onClick={() => navigate("/privacy")}>Privacy Policy</span>
         </p>
         <p className="text-center text-[#964850] text-[10px] mb-4">v1.0.25</p>
       </div>
