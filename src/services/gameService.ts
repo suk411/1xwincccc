@@ -215,7 +215,7 @@ export const GAME_LIST: GameObject[] = [
   {
     name: "Aviator",
     logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SPRIBEgamelogo/SPRIBEaviator.png",
-    provider_code: "SPRIBE",
+    provider_code: "JD",
     provider: "spribe",
     game_id: "22_22001",
     type: "MG",
@@ -279,7 +279,7 @@ export const GAME_LIST: GameObject[] = [
   {
     name: "Chicken Dash",
     logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/chicken%20dash.png",
-    provider_code: "SPRIBE",
+    provider_code: "JD",
     provider: "spribe",
     game_id: 690,
     type: "MG",

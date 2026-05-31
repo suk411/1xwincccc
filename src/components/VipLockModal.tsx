@@ -39,12 +39,19 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
 
   const handleWatchNow = async () => {
     if (!game) return;
+    const gameWindow = window.open("", "_blank");
     setLoading(true);
     try {
       const result = await gameService.watch(game);
       if (result.gameUrl) {
         onClose();
-        navigate("/game", { state: { gameUrl: result.gameUrl } });
+        if (gameWindow) {
+          gameWindow.location.href = result.gameUrl;
+        } else {
+          window.location.href = result.gameUrl;
+        }
+      } else {
+        if (gameWindow) gameWindow.close();
       }
     } catch (e: any) {
       toast({

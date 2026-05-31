@@ -49,17 +49,22 @@ const GameLobbyPage = () => {
     setShowGameConfirm(false);
     setGameForConfirm(null);
     
-    // Start loading overlay
+    const gameWindow = window.open("", "_blank");
     setIsLaunching(true);
     setLaunchingGame(gameForConfirm.game_id);
     
     try {
-      // Backend request is ONLY made if user is VIP 1 or more
       const result = await gameService.launch(gameForConfirm);
       await refreshProfile();
       
       if (result.gameUrl) {
-        navigate("/game", { state: { gameUrl: result.gameUrl } });
+        if (gameWindow) {
+          gameWindow.location.href = result.gameUrl;
+        } else {
+          window.location.href = result.gameUrl;
+        }
+      } else {
+        if (gameWindow) gameWindow.close();
       }
     } catch (e: any) {
       toast({ title: "Launch failed", description: e.message, variant: "destructive" });
