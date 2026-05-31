@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,6 +30,7 @@ import { VersionCheck } from "./components/VersionCheck";
 import PosterModal from "./components/PosterModal";
 import WinGo from "./components/games/WinGo";
 import bgMain from "@/assets/bg-main.jpg";
+import btnClickSound from "@/assets/btn-click.mp3";
 import { authService } from "./services/authService";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,28 @@ const AppContent = () => {
   const isAuthPage = ["/login", "/register"].includes(location.pathname);
   const isHomePage = location.pathname === "/";
   const showBottomNav = ["/", "/earn", "/bank", "/promo", "/events"].includes(location.pathname);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio(btnClickSound);
+    audioRef.current.volume = 0.5;
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (location.pathname === "/wingo") return;
+      const target = e.target as HTMLElement;
+      if (target.closest("button, a, [role=\"button\"], .cursor-pointer")) {
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play().catch(() => {});
+        }
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => document.removeEventListener("click", handler, true);
+  }, [location.pathname]);
 
   useEffect(() => {
     const isLoggedIn = authService.isLoggedIn();
