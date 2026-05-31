@@ -9,9 +9,10 @@ import upiLogo from "@/assets/bank/upi-logo.jpg";
 import usdtLogo from "@/assets/bank/usdt-logo.png";
 import upayLogo from "@/assets/bank/upay-logo.png";
 import bankLogo from "@/assets/bank/bank-logo.png";
+import addDetailsPlusIcon from "@/assets/bank/adddetils-plusicon.png";
 import giftBox from "@/assets/bank/gift-box-small.png";
 import eventBg from "@/assets/bank/event-bg.png";
-import { ClipboardCheck } from "lucide-react";
+import { ClipboardCheck, X } from "lucide-react";
 import AddAccountDialog, { type BankAccount } from "@/components/bank/AddAccountDialog";
 import { GameButton } from "@/components/GameButton";
 import { useProfile } from "@/hooks/useProfile";
@@ -294,17 +295,23 @@ const Bank = () => {
       }
     }
 
+    const payWindow = window.open("", "_blank");
     setPaying(true);
     try {
       const res = await authService.deposit(depositAmount, activePaymentChannel);
       if (res.paymentUrl) {
-        window.open(res.paymentUrl, "_blank");
-        toast({ description: "Opening payment..." });
+        if (payWindow) {
+          payWindow.location.href = res.paymentUrl;
+        } else {
+          window.location.href = res.paymentUrl;
+        }
       } else {
+        if (payWindow) payWindow.close();
         toast({ description: res.msg || "Deposit initiated", variant: "destructive" });
       }
       refreshBalance();
     } catch (err: any) {
+      if (payWindow) payWindow.close();
       toast({ description: err.message || "Please try again or choose another payment method.", variant: "destructive" });
     } finally {
       setPaying(false);
@@ -534,7 +541,7 @@ const Bank = () => {
                       return (
                         <div
                           key={opt.deposit}
-                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); }}
+                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); setDepositAmountInput(opt.deposit.toString()); }}
                           className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
                           style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                         >
@@ -550,6 +557,9 @@ const Bank = () => {
                     style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
                   >
                     <img src={usdtLogo} alt="USDT" className="w-5 h-5 object-contain mr-2" />
+                    {depositAmountInput && (
+                      <X size={16} className="text-white/50 cursor-pointer mr-2 flex-shrink-0" onClick={() => { setDepositAmountInput(""); setCustomAmount(""); setSelectedAmount(0); }} />
+                    )}
                     <input
                       type="text"
                       placeholder="Please enter USDT amount"
@@ -567,7 +577,7 @@ const Bank = () => {
                       return (
                         <div
                           key={opt.deposit}
-                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); }}
+                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); setDepositAmountInput(opt.deposit.toString()); }}
                           className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
                           style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                         >
@@ -589,6 +599,9 @@ const Bank = () => {
                     style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
                   >
                     <span className="text-primary text-lg font-medium">₹</span>
+                    {depositAmountInput && (
+                      <X size={16} className="text-white/50 cursor-pointer ml-3 flex-shrink-0" onClick={() => { setDepositAmountInput(""); setCustomAmount(""); setSelectedAmount(0); }} />
+                    )}
                     <input
                       type="text"
                       placeholder="Please enter an amount"
@@ -760,7 +773,7 @@ const Bank = () => {
                   onClick={() => setShowAddAccount(true)}
                 >
                   <img
-                    src="https://yaarwin.org/assets/png/add-1ad7f3f5.webp"
+                    src={addDetailsPlusIcon}
                     alt="Add"
                     className="w-11 h-11 object-contain opacity-80"
                   />

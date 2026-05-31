@@ -72,7 +72,7 @@ const Login = () => {
           <GameInput
             icon={<span className="flex items-center gap-1"><img src={phoneIcon} className="w-[18px] h-[18px]" alt="" /><span className="text-[#e37681] text-sm">+91</span></span>}
             placeholder="Enter phone number"
-            hint={phoneError ? "Enter valid 10-digit number" : "Enter account/email/phone number"}
+            hint={phoneError ? "Enter valid 10-digit number" : "Enter 10-digit phone number"}
             error={phoneError}
             value={phone}
             onChange={(e) => {

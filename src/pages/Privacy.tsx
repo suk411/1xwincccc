@@ -10,6 +10,7 @@ const Privacy = () => {
     --main-color: #f2413b;
     min-height: calc(100vh - 120px);
     color: #fff;
+    width: 100%;
   }
   .x-page .navbar {
     display: block;
@@ -78,7 +79,7 @@ const Privacy = () => {
     stroke-linejoin: round;
   }
   .x-page .x-page-list {
-    padding: 12px 0 24px;
+    padding: 12px 8px 24px;
     flex: 1;
     overflow-y: auto;
   }
@@ -121,19 +122,6 @@ const Privacy = () => {
   .rules-card-txt p {
     margin: 10px 0;
   }
-  .rules-card-txt .sub-item {
-    padding-left: 16px;
-    margin: 6px 0;
-  }
-  .card-heading {
-    display: block;
-    text-align: center;
-    margin-bottom: 4px;
-  }
-  .card-heading strong {
-    color: rgba(255,255,255,0.85);
-    font-size: 17px;
-  }
   .rules-svg-head {
     position: absolute;
     top: -1px;
@@ -152,7 +140,6 @@ const Privacy = () => {
           </svg>
           <div className="rules-card-title">01</div>
           <div className="rules-card-txt">
-            <p className="card-heading"><strong>Information Collected</strong></p>
             <p>We collect personal data such as name, email, age, and usage behavior to enhance the user experience.</p>
           </div>
         </div>
@@ -163,7 +150,6 @@ const Privacy = () => {
           </svg>
           <div className="rules-card-title">02</div>
           <div className="rules-card-txt">
-            <p className="card-heading"><strong>Use of Information</strong></p>
             <p>Collected information is used to provide services, enhance user experience, perform usage analytics, and send related communications.</p>
           </div>
         </div>
@@ -174,7 +160,6 @@ const Privacy = () => {
           </svg>
           <div className="rules-card-title">03</div>
           <div className="rules-card-txt">
-            <p className="card-heading"><strong>Data Sharing</strong></p>
             <p>We do not share your personal data with third parties without your consent, unless required by law.</p>
           </div>
         </div>
@@ -185,7 +170,6 @@ const Privacy = () => {
           </svg>
           <div className="rules-card-title">04</div>
           <div className="rules-card-txt">
-            <p className="card-heading"><strong>Security</strong></p>
             <p>We implement reasonable security measures to protect your data from unauthorized access.</p>
           </div>
         </div>
@@ -196,7 +180,6 @@ const Privacy = () => {
           </svg>
           <div className="rules-card-title">05</div>
           <div className="rules-card-txt">
-            <p className="card-heading"><strong>User Rights</strong></p>
             <p>You have the right to access, rectify, and delete your personal data, and to withdraw your consent at any time.</p>
           </div>
         </div>
@@ -207,7 +190,6 @@ const Privacy = () => {
           </svg>
           <div className="rules-card-title">06</div>
           <div className="rules-card-txt">
-            <p className="card-heading"><strong>Changes to the Policy</strong></p>
             <p>We reserve the right to update this policy. Changes will be communicated in a timely manner.</p>
           </div>
         </div>

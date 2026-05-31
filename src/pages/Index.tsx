@@ -26,6 +26,7 @@ import GameProviderSection from "@/components/GameProviderSection";
 import GameLobby from "@/components/GameLobby";
 import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
+import wingoLogo from "@/assets/wingo/WinGo-logo.png";
 import { refreshProfile } from "@/hooks/useProfile";
 import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
 import VipLockModal from "@/components/VipLockModal";
@@ -82,7 +83,7 @@ const winMessages = [
 
 const WINGO_GAME: GameObject = {
   name: "Win Go",
-  logo: "https://www.rajaluck.com/assets/png/WinGo-b9c59235.png",
+  logo: wingoLogo,
   provider: "1XKING",
   provider_code: "WINGO",
   game_id: "wingo",
