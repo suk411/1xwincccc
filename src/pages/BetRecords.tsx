@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 import { GAME_LIST } from "@/services/gameService";
-import { GameButton } from "@/components/GameButton";
 import { wingoService, WingoUserBetItem } from "@/services/wingoService";
 import noDataImg from "@/assets/wingo/nodata.png";
 
@@ -117,7 +116,7 @@ const BetRecords = () => {
   const filteredItems = items.filter(item => {
     const cat = getGameCategory(item.gameId);
     if (gameTab === 0) return cat === "lottery" && String(item.gameId) !== "wingo";
-    if (gameTab === 1) return cat === "casino";
+    if (gameTab === 1) return cat !== "lottery" && String(item.gameId) !== "wingo";
     return true;
   });
 
@@ -312,6 +311,83 @@ const BetRecords = () => {
         .br-fun-tab-item__label .tab_item.tab_active span {
           color: #fff;
         }
+        .back-btn {
+          position: relative;
+          width: 33.422px;
+          height: 33.422px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          border-radius: 50%;
+          background: linear-gradient(145deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+          border: 0.72px solid rgba(255, 255, 255, 0.15);
+          box-shadow: 0 2.34px 8.28px rgba(0, 0, 0, 0.15), inset 0 0.54px 1.17px rgba(255, 255, 255, 0.2);
+          overflow: hidden;
+          transition: all 0.2s ease;
+          flex-shrink: 0;
+        }
+        .back-btn::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 4px;
+          right: 4px;
+          height: 45%;
+          background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0));
+          border-radius: 50% 50% 0 0;
+          pointer-events: none;
+        }
+        .back-btn:active {
+          transform: scale(0.94);
+          background: linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+        }
+        .back-btn.disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+          pointer-events: none;
+        }
+        .back-btn svg {
+          color: #ffffff;
+          z-index: 1;
+          width: 16px;
+          height: 16px;
+        }
+        .br-pagination-foot {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px 0;
+          gap: 20px;
+        }
+        .br-pagination-foot-page {
+          font-size: 14px;
+          color: #fff;
+          min-width: 40px;
+          text-align: center;
+        }
+        .empty__container {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 40px 0;
+        }
+        .empty__container img {
+          width: 150px;
+          height: 139.28px;
+          object-fit: contain;
+          display: block;
+          margin-bottom: 10px;
+        }
+        .empty__container p {
+          color: #acafc2;
+          font-size: 13px;
+          margin: 0;
+          display: block;
+        }
       `}</style>
 
       <div className="fun-tabs tabs">
@@ -336,9 +412,9 @@ const BetRecords = () => {
         {(loading || wingoLoading) && items.length === 0 && wingoItems.length === 0 ? (
           <Loader label="Loading records..." />
         ) : filteredItems.length === 0 && wingoItems.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center py-10">
-            <img src={noDataImg} alt="No data" className="w-[150px] h-[139px] object-contain block mb-3" />
-            <p style={{ color: "#acafc2", fontSize: "13px", margin: 0 }}>No data</p>
+          <div className="empty__container">
+            <img src={noDataImg} alt="No data" />
+            <p>No data</p>
           </div>
         ) : (gameTab === 0 ? (
           <>
@@ -348,30 +424,26 @@ const BetRecords = () => {
               </div>
             )}
             {!wingoLoading && wingoTotal > wingoLimit && (
-              <div className="flex items-center justify-center gap-3 py-3 mb-4">
-                <GameButton
-                  variant="mute"
-                  size="sm"
+              <div className="br-pagination-foot">
+                <button
+                  className={`back-btn${wingoPage <= 1 ? ' disabled' : ''}`}
                   disabled={wingoPage <= 1}
-                  onClick={() => {
-                    setWingoPage((p) => p - 1);
-                    window.scrollTo(0, 0);
-                  }}
+                  onClick={() => { setWingoPage((p) => p - 1); window.scrollTo(0, 0); }}
                 >
-                  Previous
-                </GameButton>
-                <span className="text-white/60 text-xs font-medium">Page {wingoPage}</span>
-                <GameButton
-                  variant="mute"
-                  size="sm"
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <div className="br-pagination-foot-page">{wingoPage}/{Math.ceil(wingoTotal / wingoLimit)}</div>
+                <button
+                  className={`back-btn${wingoPage >= Math.ceil(wingoTotal / wingoLimit) ? ' disabled' : ''}`}
                   disabled={wingoPage >= Math.ceil(wingoTotal / wingoLimit)}
-                  onClick={() => {
-                    setWingoPage((p) => p + 1);
-                    window.scrollTo(0, 0);
-                  }}
+                  onClick={() => { setWingoPage((p) => p + 1); window.scrollTo(0, 0); }}
                 >
-                  Next
-                </GameButton>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
+                    <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
               </div>
             )}
             {filteredItems.length > 0 && (
@@ -380,30 +452,26 @@ const BetRecords = () => {
               </div>
             )}
             {!loading && total > limit && (
-              <div className="flex items-center justify-center gap-3 py-6 mt-4">
-                <GameButton
-                  variant="mute"
-                  size="sm"
+              <div className="br-pagination-foot">
+                <button
+                  className={`back-btn${page <= 1 ? ' disabled' : ''}`}
                   disabled={page <= 1}
-                  onClick={() => {
-                    setPage((p) => p - 1);
-                    window.scrollTo(0, 0);
-                  }}
+                  onClick={() => { setPage((p) => p - 1); window.scrollTo(0, 0); }}
                 >
-                  Previous
-                </GameButton>
-                <span className="text-white/60 text-xs font-medium">Page {page}</span>
-                <GameButton
-                  variant="mute"
-                  size="sm"
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <div className="br-pagination-foot-page">{page}/{Math.ceil(total / limit)}</div>
+                <button
+                  className={`back-btn${page >= Math.ceil(total / limit) ? ' disabled' : ''}`}
                   disabled={page >= Math.ceil(total / limit)}
-                  onClick={() => {
-                    setPage((p) => p + 1);
-                    window.scrollTo(0, 0);
-                  }}
+                  onClick={() => { setPage((p) => p + 1); window.scrollTo(0, 0); }}
                 >
-                  Next
-                </GameButton>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
+                    <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
               </div>
             )}
           </>
@@ -413,30 +481,26 @@ const BetRecords = () => {
               {filteredItems.map(renderDefaultCard)}
             </div>
             {!loading && total > limit && (
-              <div className="flex items-center justify-center gap-3 py-6 mt-4">
-                <GameButton
-                  variant="mute"
-                  size="sm"
+              <div className="br-pagination-foot">
+                <button
+                  className={`back-btn${page <= 1 ? ' disabled' : ''}`}
                   disabled={page <= 1}
-                  onClick={() => {
-                    setPage((p) => p - 1);
-                    window.scrollTo(0, 0);
-                  }}
+                  onClick={() => { setPage((p) => p - 1); window.scrollTo(0, 0); }}
                 >
-                  Previous
-                </GameButton>
-                <span className="text-white/60 text-xs font-medium">Page {page}</span>
-                <GameButton
-                  variant="mute"
-                  size="sm"
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <div className="br-pagination-foot-page">{page}/{Math.ceil(total / limit)}</div>
+                <button
+                  className={`back-btn${page >= Math.ceil(total / limit) ? ' disabled' : ''}`}
                   disabled={page >= Math.ceil(total / limit)}
-                  onClick={() => {
-                    setPage((p) => p + 1);
-                    window.scrollTo(0, 0);
-                  }}
+                  onClick={() => { setPage((p) => p + 1); window.scrollTo(0, 0); }}
                 >
-                  Next
-                </GameButton>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
+                    <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
               </div>
             )}
           </>

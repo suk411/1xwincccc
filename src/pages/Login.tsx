@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DotPulse } from "ldrs/react";
 import "ldrs/react/DotPulse.css";
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import phoneIcon from "@/assets/auth/icon-phone-complete.svg";
 import lockIcon from "@/assets/auth/password-icon.svg";
 import authBg from "@/assets/auth/auth-bg.png";
@@ -18,7 +18,7 @@ import { authService } from "@/services/authService";
 import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [phoneError, setPhoneError] = useState(false);
@@ -37,7 +37,7 @@ const Login = () => {
     try {
       await authService.login(phone, password);
       toast({ description: "Login successful" });
-      navigate("/");
+      navigateWithTransition("/");
     } catch (err: any) {
       toast({ description: err.message || "Login failed", variant: "destructive" });
     } finally {
@@ -116,7 +116,7 @@ const Login = () => {
           </button>
           <button
             className="flex items-center gap-1.5 text-[#c4889a] text-sm"
-            onClick={() => navigate("/register")}
+            onClick={() => navigateWithTransition("/register")}
           >
             <img src={quickLoginIcon} alt="" className="w-5 h-5" />
             Quick to Register
@@ -140,8 +140,8 @@ const Login = () => {
         {/* Terms */}
         <p className="text-center text-[#964850] text-[10px] mt-6 mb-2">
           By logging in, you agree to our{" "}
-          <span className="text-[#e37681] underline cursor-pointer" onClick={() => navigate("/terms")}>Terms of Service</span> and{" "}
-          <span className="text-[#e37681] underline cursor-pointer" onClick={() => navigate("/privacy")}>Privacy Policy</span>
+           <span className="text-[#e37681] underline cursor-pointer" onClick={() => navigateWithTransition("/terms")}>Terms of Service</span> and{" "}
+           <span className="text-[#e37681] underline cursor-pointer" onClick={() => navigateWithTransition("/privacy")}>Privacy Policy</span>
         </p>
         <p className="text-center text-[#964850] text-[10px] mb-4">v1.0.25</p>
       </div>

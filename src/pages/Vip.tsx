@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { useProfile } from "@/hooks/useProfile";
 import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
@@ -21,7 +21,7 @@ import backArrow from "@/assets/icons/close-icon.png";
 
 
 const Vip = () => {
-  const navigate = useNavigate();
+  const { goBack } = useTransitionNavigate();
   const { userId, refresh: refreshProfile } = useProfile();
   const { toast } = useToast();
 
@@ -169,7 +169,7 @@ const Vip = () => {
           {/* TITLE */}
           <div className="flex items-center   justify-center relative py-3">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => goBack()}
               className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center"
             >
               <img src={backArrow} className="w-5 h-5" />

@@ -1,16 +1,17 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 import { useState } from "react";
 
 const PaymentGateway = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const [loading, setLoading] = useState(true);
   const paymentUrl = (location.state as any)?.paymentUrl || "";
 
   if (!paymentUrl) {
-    navigate("/bank", { replace: true });
+    navigateWithTransition("/bank", { replace: true });
     return null;
   }
 

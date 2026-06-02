@@ -1,5 +1,6 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 
 import homeActive from "@/assets/icons/home-active.png";
 import homeInactive from "@/assets/icons/home-inactive.png";
@@ -32,6 +33,7 @@ const activeBgSrc =
 
 const BottomNav = () => {
   const location = useLocation();
+  const { navigateWithTransition } = useTransitionNavigate();
 
   const handlePromoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -58,9 +60,9 @@ const BottomNav = () => {
             const isActive = location.pathname === item.path;
             const isCenterAdjacent = item.path === "/earn";
             return (
-              <Link
+              <button
                 key={item.path}
-                to={item.path}
+                onClick={() => navigateWithTransition(item.path)}
                 className="relative flex flex-col items-center gap-0 py-[2%] px-[3%] transition-all duration-200 overflow-hidden"
                 style={{
                   minWidth: "10%",
@@ -125,7 +127,7 @@ const BottomNav = () => {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </button>
             );
           })}
 
@@ -145,9 +147,9 @@ const BottomNav = () => {
             const isActive = location.pathname === item.path;
             const isCenterAdjacent = item.path === "/bank";
             return (
-              <Link
+              <button
                 key={item.path}
-                to={item.path}
+                onClick={() => navigateWithTransition(item.path)}
                 className="relative flex flex-col items-center gap-0 py-[2%] px-[3%] transition-all duration-200 overflow-hidden"
                 style={{
                   minWidth: "10%",
@@ -212,7 +214,7 @@ const BottomNav = () => {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </button>
             );
           })}
         </div>

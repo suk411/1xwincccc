@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import Loader from "@/components/Loader";
 import { GameCard } from "@/components/GameCard";
 import headerBg from "@/assets/bank/header-bg.png";
@@ -61,7 +62,7 @@ const saveCache = (data: any) => {
 };
 
 const Bank = () => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const location = useLocation();
   const { toast } = useToast();
   const { balance, refresh: refreshBalance } = useProfile();
@@ -408,7 +409,7 @@ const Bank = () => {
           <span className="text-white font-bold text-base">Bank</span>
         </div>
         <div className="relative z-10 flex items-center gap-3">
-          <ClipboardCheck size={20} className="text-white cursor-pointer mr-4" onClick={() => navigate(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
+          <ClipboardCheck size={20} className="text-white cursor-pointer mr-4" onClick={() => navigateWithTransition(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
         </div>
       </div>
 

@@ -29,6 +29,7 @@ import DownloadBanner from "./components/DownloadBanner";
 import { VersionCheck } from "./components/VersionCheck";
 import PosterModal from "./components/PosterModal";
 import WinGo from "./components/games/WinGo";
+import { NavigationProvider } from "./providers/NavigationProvider";
 import bgMain from "@/assets/bg-main.jpg";
 import btnClickSound from "@/assets/btn-click.mp3";
 import { authService } from "./services/authService";
@@ -127,7 +128,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AppContent />
+        <NavigationProvider>
+          <AppContent />
+        </NavigationProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

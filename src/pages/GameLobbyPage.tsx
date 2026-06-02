@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import PageHeader from "@/components/PageHeader";
 import GameLobby from "@/components/GameLobby";
 import { GameObject, gameService } from "@/services/gameService";
@@ -10,7 +11,7 @@ import GameConfirmDialog from "@/components/GameConfirmDialog";
 import Loader from "@/components/Loader";
 
 const GameLobbyPage = () => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("all");
   const [launchingGame, setLaunchingGame] = useState<string | number | null>(null);

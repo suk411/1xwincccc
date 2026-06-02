@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import PageHeader from "@/components/PageHeader";
 import { GameTabs } from "@/components/GameTabs";
 import firstDepositBanner from "@/assets/events/first-deposit-banner.png";
@@ -42,13 +42,13 @@ const withdrawalEvents: EventCard[] = [
 ];
 
 const Events = () => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const [activeTab, setActiveTab] = useState("deposit");
   const events = activeTab === "deposit" ? depositEvents : withdrawalEvents;
 
   const handleEventClick = (event: EventCard) => {
     if (event.path) {
-      navigate(event.path);
+      navigateWithTransition(event.path);
     }
   };
 

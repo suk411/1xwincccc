@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GameButton } from "./GameButton";
 import { gameService, GameObject } from "@/services/gameService";
 import { useToast } from "@/hooks/use-toast";
@@ -14,7 +14,7 @@ interface VipLockModalProps {
 const IMG_BASE_URL = "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/vipdilog/";
 
 const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -177,7 +177,7 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
             className="w-full"
             onClick={() => {
               onClose();
-              navigate("/bank");
+              navigateWithTransition("/bank");
             }}
           >
             Go to Deposit

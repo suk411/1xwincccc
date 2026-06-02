@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 
 const Privacy = () => {
-  const navigate = useNavigate();
+  const { goBack } = useTransitionNavigate();
 
   return (
     <div className="x-page">
@@ -132,7 +132,7 @@ const Privacy = () => {
     pointer-events: none;
   }
 `}</style>
-      <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => navigate(-1)}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Privacy Policy</div></div><div className="navbar__content-right"></div></div></div></div>
+      <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => goBack()}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Privacy Policy</div></div><div className="navbar__content-right"></div></div></div></div>
       <div className="x-page-list">
         <div className="rules-card">
           <svg className="rules-svg-head" viewBox="0 0 489 60" fill="none" xmlns="http://www.w3.org/2000/svg">

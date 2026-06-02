@@ -1,10 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Loader from "@/components/Loader";
 
 const GamePlay = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { navigateWithTransition, goBack } = useTransitionNavigate();
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const gameUrl = (location.state as any)?.gameUrl || "";
@@ -26,8 +27,8 @@ const GamePlay = () => {
         await document.exitFullscreen();
       }
     } catch {}
-    navigate(-1);
-  }, [navigate]);
+    goBack();
+  }, [goBack]);
 
   // Enter fullscreen once iframe loads
   useEffect(() => {
@@ -56,7 +57,7 @@ const GamePlay = () => {
   }, []);
 
   if (!gameUrl) {
-    navigate("/", { replace: true });
+    navigateWithTransition("/", { replace: true });
     return null;
   }
 

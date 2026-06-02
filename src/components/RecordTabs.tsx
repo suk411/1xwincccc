@@ -1,5 +1,6 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { cn } from "@/lib/utils";
 import tabGlow from "@/assets/tab-active-glow.png";
 
@@ -16,7 +17,7 @@ const RECORD_TABS: RecordTab[] = [
 ];
 
 const RecordTabs: React.FC = () => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const location = useLocation();
 
   const activeTab = RECORD_TABS.find((tab) => tab.path === location.pathname)?.value || "deposit";
@@ -41,7 +42,7 @@ const RecordTabs: React.FC = () => {
               return (
                 <td key={tab.value} style={{ padding: 0, border: "none", width: "33.33%" }}>
                   <button
-                    onClick={() => navigate(tab.path)}
+                    onClick={() => navigateWithTransition(tab.path)}
                     className={cn(
                       "relative flex items-center justify-center gap-1.5 text-sm font-medium transition-colors whitespace-nowrap w-full",
                       isActive ? "text-white" : "text-muted-foreground"

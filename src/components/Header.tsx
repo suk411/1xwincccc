@@ -1,5 +1,4 @@
 import { useState, useSyncExternalStore } from "react";
-import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import supportIcon from "@/assets/icons/support.png";
 import mailIcon from "@/assets/icons/mail.png";
@@ -9,7 +8,6 @@ import { GameButton } from "./GameButton";
 import { authService } from "@/services/authService";
 
 const Header = () => {
-  const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const isLoggedIn = useSyncExternalStore(
     authService.subscribe,

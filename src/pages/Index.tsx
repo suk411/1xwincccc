@@ -1,6 +1,6 @@
 import PageLayout from "@/components/PageLayout";
 
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import bannerVideo from "@/assets/banner-video.mp4";
 import { useEffect, useRef, useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
@@ -107,7 +107,7 @@ const categoryTabs = [
 ];
 
 const Index = () => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -230,7 +230,7 @@ const Index = () => {
     
     // Handle Wingo separately (built-in game, no launch API)
     if (game.game_id === "wingo") {
-      navigate("/wingo");
+      navigateWithTransition("/wingo");
       return;
     }
     
@@ -267,7 +267,7 @@ const Index = () => {
 
   const handleGroupClick = (label: string) => {
     if (label === "GROUP") {
-      navigate("/community-event");
+      navigateWithTransition("/community-event");
     }
   };
 
@@ -277,7 +277,7 @@ const Index = () => {
     } else {
       // Regardless of which category tab is clicked (all, slots, casino, etc.), 
       // always open the lobby with "all" active.
-      navigate("/lobby", { state: { activeTab: "all" } });
+      navigateWithTransition("/lobby", { state: { activeTab: "all" } });
     }
   };
 
@@ -345,15 +345,15 @@ const Index = () => {
             <span className="text-white font-bold text-[14px]">{balance.toFixed(2)}</span>
           </div>
           <div className="flex items-center gap-4 mr-2">
-            <button onClick={() => navigate("/bank")} className="flex flex-col items-center gap-0.3">
+            <button onClick={() => navigateWithTransition("/bank")} className="flex flex-col items-center gap-0.3">
               <img src={depositIcon} alt="Deposit" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
               <span className="text-[7.2px]">Deposit</span>
             </button>
-            <button onClick={() => navigate("/bank")}  className="flex flex-col items-center gap-0.3">
+            <button onClick={() => navigateWithTransition("/bank")}  className="flex flex-col items-center gap-0.3">
               <img src={withdrawIcon} alt="Withdraw" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
               <span className="text-[7.2px]">Withdraw</span>
             </button>
-            <button onClick={() => navigate("/vip")} className="flex flex-col items-center gap-0.3">
+            <button onClick={() => navigateWithTransition("/vip")} className="flex flex-col items-center gap-0.3">
               <img src={vipIcon} alt="VIP" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
               <span className="text-[7.2px]">VIP</span>
             </button>

@@ -2,7 +2,7 @@ import { useEffect, useCallback, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GameButton } from "./GameButton";
 import { authService } from "@/services/authService";
 import { useProfile } from "@/hooks/useProfile";
@@ -39,7 +39,7 @@ interface ProfileDrawerProps {
 const VIP_THRESHOLDS = [0, 200, 400, 1000, 2000, 3000];
 
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const { balance, userId, refresh } = useProfile(false);
   const { copyToClipboard } = useCopyToClipboard();
   const [vipData, setVipData] = useState<import("@/services/authService").VipResponse | null>(null);
@@ -70,17 +70,17 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
       authService.logout();
       window.location.href = "/";
     } else if (label === "Deposit History") {
-      navigate("/bank/records");
+      navigateWithTransition("/bank/records");
     } else if (label === "Withdrawal History") {
-      navigate("/bank/withdrawals");
+      navigateWithTransition("/bank/withdrawals");
     } else if (label === "Deposit") {
-      navigate("/bank");
+      navigateWithTransition("/bank");
     } else if (label === "Withdrawal") {
-      navigate("/bank");
+      navigateWithTransition("/bank");
     } else if (label === "VIP") {
-      navigate("/vip");
+      navigateWithTransition("/vip");
     } else if (label === "Game Records") {
-      navigate("/bet-records");
+      navigateWithTransition("/bet-records");
     }
   };
 
@@ -164,7 +164,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   paddingRight: "8px",
                   borderRadius: "12px",
                 }}
-                onClick={() => { onOpenChange(false); navigate("/vip"); }}
+                onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
               >
                 <div
                   style={{

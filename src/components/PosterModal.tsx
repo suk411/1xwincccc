@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 
 interface PosterModalProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ const DEPOSIT_BONUS_DATA = [
 ];
 
 const PosterModal: React.FC<PosterModalProps> = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
 
   if (!isOpen) return null;
 
@@ -26,7 +26,7 @@ const PosterModal: React.FC<PosterModalProps> = ({ isOpen, onClose }) => {
         {/* Main Content Area - Clickable */}
         <div 
           onClick={() => {
-            navigate('/bank');
+            navigateWithTransition('/bank');
             onClose();
           }}
           className="relative w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl cursor-pointer active:scale-[0.98] transition-transform"

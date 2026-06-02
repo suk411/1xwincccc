@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GameObject, GAME_LIST } from "../services/gameService";
 
 const providerLogos: Record<string, string> = {
@@ -60,7 +60,7 @@ interface GameProviderSectionProps {
 }
 
 const GameProviderSection = ({ launchingGame, handleGameLaunch, vipLevel }: GameProviderSectionProps) => {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = useTransitionNavigate();
   const providerSections = getProviderSections();
 
   const navigateToLobby = (provider: string) => {
@@ -72,7 +72,7 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch, vipLevel }: Game
         return;
       }
     }
-    navigate("/lobby", { state: { activeTab: "all", selectedProvider: provider } });
+    navigateWithTransition("/lobby", { state: { activeTab: "all", selectedProvider: provider } });
   };
 
   return (
