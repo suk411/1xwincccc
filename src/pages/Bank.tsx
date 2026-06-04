@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
-import Loader from "@/components/Loader";
+
 import { GameCard } from "@/components/GameCard";
 import headerBg from "@/assets/bank/header-bg.png";
 import bankIcon from "@/assets/bank/bank-icon.png";
@@ -80,12 +80,12 @@ const Bank = () => {
   const [showViewAccount, setShowViewAccount] = useState(false);
   const [bindAccount, setBindAccount] = useState<BankAccount | null>(cached?.data?.bindAccount || null);
   const [withdrawInfo, setWithdrawInfo] = useState<import("@/services/authService").WithdrawInfoResponse | null>(cached || null);
-  const [loadingWithdrawInfo, setLoadingWithdrawInfo] = useState(false);
+
   const [bindingAccount, setBindingAccount] = useState(false);
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
   const [depositConfig, setDepositConfig] = useState<import("@/services/authService").DepositConfigItem[]>([]);
-  const [loadingDepositConfig, setLoadingDepositConfig] = useState(false);
+
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
     const name = (ch.name || ch.channel || "").toLowerCase();
@@ -108,13 +108,11 @@ const Bank = () => {
   };
 
   const channelOptions = buildChannelOptions(depositConfig);
-  const methods = Object.keys(channelOptions).length > 0
-    ? Object.keys(channelOptions).map(id => ({ id, label: methodLabels[id] || id.toUpperCase(), icon: methodIcons[id] || upiLogo }))
-    : [
-        { id: "upi", label: "UPI", icon: upiLogo },
-        { id: "usdt", label: "USDT", icon: usdtLogo },
-        { id: "upay", label: "UPAY", icon: upayLogo },
-      ];
+  const methods = [
+    { id: "upi", label: "UPI", icon: upiLogo },
+    { id: "usdt", label: "USDT", icon: usdtLogo },
+    { id: "upay", label: "UPAY", icon: upayLogo },
+  ];
 
   const getChannelLimit = (methodId: string, channelId: string) => {
     const ch = depositConfig.find(c => c.channel === channelId && categorizeChannel(c) === methodId);
@@ -133,7 +131,6 @@ const Bank = () => {
   ];
 
   const loadWithdrawInfo = async () => {
-    if (!withdrawInfo) setLoadingWithdrawInfo(true);
     try {
       const info = await authService.getWithdrawInfo();
       setWithdrawInfo(info);
@@ -147,8 +144,6 @@ const Bank = () => {
       if (!withdrawInfo) {
         toast({ description: err?.message || "Failed to load withdraw info", variant: "destructive" });
       }
-    } finally {
-      setLoadingWithdrawInfo(false);
     }
   };
 
@@ -156,7 +151,6 @@ const Bank = () => {
 
   const loadDepositConfig = async () => {
     if (depositConfigLoaded.current) return;
-    setLoadingDepositConfig(true);
     try {
       const res = await authService.getDepositConfig();
       if (res?.data?.length) {
@@ -167,8 +161,6 @@ const Bank = () => {
       }
     } catch {
       // fall back to hardcoded methods
-    } finally {
-      setLoadingDepositConfig(false);
     }
   };
 
@@ -385,31 +377,18 @@ const Bank = () => {
   return (
     <main className="relative flex-1 flex flex-col pb-52 w-full">
       <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }`}</style>
-      {(paying || loadingWithdrawInfo || bindingAccount || withdrawing || loadingDepositConfig) && (
-        <Loader
-          overlay
-          label={
-            paying
-              ? "Payment processing..."
-              : withdrawing
-                ? "Processing withdrawal..."
-                : bindingAccount
-                  ? "Saving bank account..."
-                  : loadingDepositConfig
-                    ? "Loading payment options..."
-                    : "Loading withdraw info..."
-          }
-        />
-      )}
       {/* Top Header with red bg */}
-      <div className="relative w-full h-12 flex items-center justify-between px-4">
+      <div className="relative w-full h-12 flex items-center px-4">
         <img src={headerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="relative z-10 flex items-center gap-2">
+        <div className="relative z-10 flex items-center gap-2 flex-1">
           <img src={bankIcon} alt="Bank" className="w-8 h-8 object-contain" />
           <span className="text-white font-bold text-base">Bank</span>
         </div>
-        <div className="relative z-10 flex items-center gap-3">
-          <ClipboardCheck size={20} className="text-white cursor-pointer mr-4" onClick={() => navigateWithTransition(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
+        <div className="relative z-10 flex items-center justify-start pl-10 flex-1">
+          <span className="text-white text-sm font-bold">₹{(activeTab === 'deposit' ? balance : walletBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        </div>
+        <div className="relative z-10 flex items-center justify-end flex-1">
+          <ClipboardCheck size={20} className="text-white cursor-pointer" onClick={() => navigateWithTransition(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
         </div>
       </div>
 
@@ -439,33 +418,6 @@ const Bank = () => {
             Withdraw
           </button>
         </GameCard>
-
-        {/* New Bank Card */}
-        <div 
-          className="relative w-full h-24 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col justify-center"
-          style={{
-            background: 'linear-gradient(135deg, #5a0a1a 0%, #3a0611 50%, #4a0915 100%)',
-            border: '1.5px solid rgba(255, 180, 50, 0.45)',
-          }}
-        >
-          <div className="relative z-10 flex justify-between items-center gap-2">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-white/80 text-[10px] font-medium uppercase tracking-wider">Total Balance</span>
-              <div className="flex items-baseline gap-0.5">
-                <span className="text-white text-lg font-black">₹</span>
-                <span className="text-white text-lg font-black">
-                  {(activeTab === 'deposit' ? balance : walletBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-              </div>
-            </div>
-            {/* Credit Card Icon as requested */}
-            <img 
-              src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/creditcardicon.png" 
-              alt="Credit Card" 
-              className="w-8 h-8 object-contain opacity-90"
-            />
-          </div>
-        </div>
 
         {activeTab === "deposit" ? (
           <>
@@ -600,16 +552,17 @@ const Bank = () => {
                     style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
                   >
                     <span className="text-primary text-lg font-medium">₹</span>
-                    {depositAmountInput && (
-                      <X size={16} className="text-white/50 cursor-pointer ml-3 flex-shrink-0" onClick={() => { setDepositAmountInput(""); setCustomAmount(""); setSelectedAmount(0); }} />
-                    )}
+                    <div className="w-px h-5 bg-white/20 mx-3"></div>
                     <input
                       type="text"
                       placeholder="Please enter an amount"
-                      className="bg-transparent border-none outline-none w-full h-full ml-3 text-sm text-white placeholder-white/50"
+                      className="bg-transparent border-none outline-none w-full h-full text-sm text-white placeholder-white/50"
                       value={depositAmountInput}
                       onChange={handleDepositAmountChange}
                     />
+                    {depositAmountInput && (
+                      <X size={16} className="text-white/50 cursor-pointer ml-2 flex-shrink-0" onClick={() => { setDepositAmountInput(""); setCustomAmount(""); setSelectedAmount(0); }} />
+                    )}
                   </div>
                 </>
               )}
@@ -675,7 +628,9 @@ const Bank = () => {
         ) : (
           <>
             {/* Withdraw method selector - from withdrwalui.html */}
-            <div className="flex gap-2 justify-start">
+            <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
+              <span className="text-white text-sm">Payment Methods</span>
+              <div className="flex gap-2 justify-start">
               {WITHDRAW_METHODS.map((method) => {
                 const isActive = activeWithdrawMethod === method.id;
                 return (
@@ -696,6 +651,7 @@ const Bank = () => {
                 );
               })}
             </div>
+            </GameCard>
 
             {/* Payment method info card — from testui/test.html */}
             <GameCard className="p-3">
@@ -801,13 +757,17 @@ const Bank = () => {
                 style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
               >
                 <span className="text-primary text-lg font-medium">₹</span>
+                <div className="w-px h-5 bg-white/20 mx-3"></div>
                 <input
                   type="text"
                   placeholder="Please enter the amount"
-                  className="bg-transparent border-none outline-none w-full h-full ml-3 text-sm text-white placeholder-white/50"
+                  className="bg-transparent border-none outline-none w-full h-full text-sm text-white placeholder-white/50"
                   value={withdrawAmountInput}
                   onChange={handleWithdrawAmountChange}
                 />
+                {withdrawAmountInput && (
+                  <X size={16} className="text-white/50 cursor-pointer ml-2 flex-shrink-0" onClick={() => { setWithdrawAmountInput(""); setSelectedWithdrawAmount(0); }} />
+                )}
               </div>
               <div className="flex flex-col gap-1.5 ml-0.5">
                 <div className="flex justify-between items-center text-[11px]">

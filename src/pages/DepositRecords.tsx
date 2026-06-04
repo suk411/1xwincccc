@@ -1,5 +1,4 @@
 import PageHeader from "@/components/PageHeader";
-import Loader from "@/components/Loader";
 import { useState, useEffect } from "react";
 import { Copy, ChevronDown } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
@@ -8,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import pendingIcon from "@/assets/games/pendingicon.png";
 import successIcon from "@/assets/games/success.png";
+import noDataImg from "@/assets/wingo/nodata.png";
 
 interface DepositOrder {
   [key: string]: any;
@@ -162,197 +162,201 @@ const DepositRecords = () => {
         <PageHeader title="Deposit Records" backPath="/" />
       </div>
       <div className="flex flex-col gap-2 px-2 mt-4">
-        {loading ? (
-          <Loader label="Loading records..." />
-        ) : orders.length === 0 ? (
-          <div className="text-center text-white/60 py-8 text-sm">No deposit records found</div>
+        {orders.length === 0 ? (
+          <div className="flex flex-col items-center justify-center text-center py-10">
+            <img src={noDataImg} alt="No data" className="w-[150px] h-[139px] object-contain block mb-3" />
+            <p style={{ color: "#acafc2", fontSize: "13px", margin: 0 }}>No data</p>
+          </div>
         ) : (
-          orders.map((order, idx) => {
-            const orderId = getOrderId(order);
-            const expanded = expandedId === orderId;
-            const status = getStatus(order);
-            const statusColor = statusStyles[status] || fallbackStyle;
-            const amountColor = amountStyles[status] || fallbackStyle;
-            const amount = getAmount(order);
-            const bonus = order.bonus || order.bonusAmount || 0;
+          <>
+            {orders.map((order, idx) => {
+              const orderId = getOrderId(order);
+              const expanded = expandedId === orderId;
+              const status = getStatus(order);
+              const statusColor = statusStyles[status] || fallbackStyle;
+              const amountColor = amountStyles[status] || fallbackStyle;
+              const amount = getAmount(order);
+              const bonus = order.bonus || order.bonusAmount || 0;
 
-            const getStatusIcon = () => {
-              const statusLower = status.toLowerCase();
-              if (statusLower === "pending") {
+              const getStatusIcon = () => {
+                const statusLower = status.toLowerCase();
+                if (statusLower === "pending") {
+                  return <img src={pendingIcon} alt="Pending" className="w-7 h-7" />;
+                } else if (statusLower === "success" || statusLower === "completed") {
+                  return <img src={successIcon} alt="Success" className="w-7 h-7" />;
+                } else if (statusLower === "failed" || statusLower === "cancelled") {
+                  return "❌";
+                }
                 return <img src={pendingIcon} alt="Pending" className="w-7 h-7" />;
-              } else if (statusLower === "success" || statusLower === "completed") {
-                return <img src={successIcon} alt="Success" className="w-7 h-7" />;
-              } else if (statusLower === "failed" || statusLower === "cancelled") {
-                return "❌";
-              }
-              return <img src={pendingIcon} alt="Pending" className="w-7 h-7" />;
-            };
+              };
 
-            return (
-              <div
-                key={orderId + idx}
-                className="rounded-xl overflow-hidden w-full max-w-full"
-                style={{ 
-                  background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
-                  border: "1px solid rgba(255,180,50,0.25)",
-                }}
-              >
-                {/* Top Bar */}
-                <div className="flex items-center justify-between px-4 py-2" style={{
-                  background: statusColor + '20'
-                }}>
-                  {/* Order ID + Copy Button */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-white text-xs truncate">{orderId}</span>
-                    <button
-                      className="text-white flex-shrink-0 hover:text-yellow-400 transition"
-                      onClick={() => {
-                        copyToClipboard(orderId, "Copied Success");
-                      }}
-                    >
-                      <Copy size={12} />
-                    </button>
-                  </div>
-                  
-                  {/* Status with Shine Effect Only on Text */}
-                  <span className="relative inline-block overflow-hidden">
-                    <span style={{
-                      position: "absolute",
-                      top: 0,
-                      left: "-100%",
-                      width: "60%",
-                      height: "100%",
-                      background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
-                      animation: "statusShine 2.5s ease-in-out infinite",
-                      pointerEvents: "none",
-                    }} />
-                    <span className="text-xs font-bold whitespace-nowrap relative z-10" style={{ color: statusColor }}>
-                      {status.toLowerCase() === "pending" ? "IN PROGRESS" : status}
-                    </span>
-                  </span>
-                </div>
-                
-                {/* Card Body */}
-                <div className="flex gap-3 px-4 py-3">
-                  {/* Icon on Left */}
-                  <div className="text-2xl flex-shrink-0 flex items-center justify-center">
-                    {getStatusIcon()}
-                  </div>
-
-                  {/* Details on Right */}
-                  <div className="flex-1 min-w-0 flex flex-col gap-2">
-                    {/* Date & Time */}
-                    <div className="text-white/70 text-xs">
-                      {getDate(order)}
-                    </div>
-
-                    {/* Amount Info + Details Button */}
-                    <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-bold" style={{ color: amountColor }}>
-                          Cash+ ₹{Number(amount).toLocaleString()}
-                        </span>
-                        <span className="text-white/70 text-xs">
-                          Bonus+ ₹{Number(bonus).toLocaleString()}
-                        </span>
-                      </div>
+              return (
+                <div
+                  key={orderId + idx}
+                  className="rounded-xl overflow-hidden w-full max-w-full"
+                  style={{ 
+                    background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+                    border: "1px solid rgba(255,180,50,0.25)",
+                  }}
+                >
+                  {/* Top Bar */}
+                  <div className="flex items-center justify-between px-4 py-2" style={{
+                    background: statusColor + '20'
+                  }}>
+                    {/* Order ID + Copy Button */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-white text-xs truncate">{orderId}</span>
                       <button
-                        onClick={() => setExpandedId(expanded ? null : orderId)}
-                        className="text-white hover:text-white transition flex items-center gap-1 text-xs flex-shrink-0"
+                        className="text-white flex-shrink-0 hover:text-yellow-400 transition"
+                        onClick={() => {
+                          copyToClipboard(orderId, "Copied Success");
+                        }}
                       >
-                        <span>{expanded ? "Hide" : "Details"}</span>
-                        <ChevronDown 
-                          size={12} 
-                          className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
-                        />
+                        <Copy size={12} />
                       </button>
                     </div>
+                    
+                    {/* Status with Shine Effect Only on Text */}
+                    <span className="relative inline-block overflow-hidden">
+                      <span style={{
+                        position: "absolute",
+                        top: 0,
+                        left: "-100%",
+                        width: "60%",
+                        height: "100%",
+                        background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+                        animation: "statusShine 2.5s ease-in-out infinite",
+                        pointerEvents: "none",
+                      }} />
+                      <span className="text-xs font-bold whitespace-nowrap relative z-10" style={{ color: statusColor }}>
+                        {status.toLowerCase() === "pending" ? "IN PROGRESS" : status}
+                      </span>
+                    </span>
                   </div>
-                </div>
+                  
+                  {/* Card Body */}
+                  <div className="flex gap-3 px-4 py-3">
+                    {/* Icon on Left */}
+                    <div className="text-2xl flex-shrink-0 flex items-center justify-center">
+                      {getStatusIcon()}
+                    </div>
 
-                {/* Expanded details */}
-                {expanded && (
-                  <div className="px-4 pb-4 pt-2 text-xs text-white/70 flex flex-col gap-1.5 border-t border-white/10">
-                    <div className="flex justify-between">
-                      <span>Date</span>
-                      <span>{getDate(order)}</span>
+                    {/* Details on Right */}
+                    <div className="flex-1 min-w-0 flex flex-col gap-2">
+                      {/* Date & Time */}
+                      <div className="text-white/70 text-xs">
+                        {getDate(order)}
+                      </div>
+
+                      {/* Amount Info + Details Button */}
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-bold" style={{ color: amountColor }}>
+                            Cash+ ₹{Number(amount).toLocaleString()}
+                          </span>
+                          <span className="text-white/70 text-xs">
+                            Bonus+ ₹{Number(bonus).toLocaleString()}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setExpandedId(expanded ? null : orderId)}
+                          className="text-white hover:text-white transition flex items-center gap-1 text-xs flex-shrink-0"
+                        >
+                          <span>{expanded ? "Hide" : "Details"}</span>
+                          <ChevronDown 
+                            size={12} 
+                            className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Channel</span>
-                      <span>{getChannel(order)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Amount</span>
-                      <span>₹{Number(amount).toLocaleString()}</span>
-                    </div>
-                    {bonus > 0 && (
+                  </div>
+
+                  {/* Expanded details */}
+                  {expanded && (
+                    <div className="px-4 pb-4 pt-2 text-xs text-white/70 flex flex-col gap-1.5 border-t border-white/10">
                       <div className="flex justify-between">
-                        <span>Bonus</span>
-                        <span>₹{Number(bonus).toLocaleString()}</span>
+                        <span>Date</span>
+                        <span>{getDate(order)}</span>
                       </div>
-                    )}
-                    {order.balanceAfter != null && (
                       <div className="flex justify-between">
-                        <span>Balance After</span>
-                        <span>₹{Number(order.balanceAfter).toLocaleString()}</span>
+                        <span>Channel</span>
+                        <span>{getChannel(order)}</span>
                       </div>
-                    )}
-                    {order.type && (
                       <div className="flex justify-between">
-                        <span>Type</span>
-                        <span>{order.type}</span>
+                        <span>Amount</span>
+                        <span>₹{Number(amount).toLocaleString()}</span>
                       </div>
-                    )}
-                    {order.remark && (
-                      <div className="flex justify-between">
-                        <span>Remark</span>
-                        <span>{order.remark}</span>
-                      </div>
-                    )}
-                    {order.currency && (
-                      <div className="flex justify-between">
-                        <span>Currency</span>
-                        <span>{order.currency}</span>
-                      </div>
-                    )}
-                    {order.userId && (
-                      <div className="flex justify-between">
-                        <span>User ID</span>
-                        <span>{order.userId}</span>
-                      </div>
-                    )}
-                    {(status.toLowerCase() === "pending") && !isOlderThan15Min(order) && (
-                      <div className="flex gap-2 mt-3 pt-3 border-t border-white/10">
-                        <GameButton variant="mute" className="flex-1 h-7 text-xs" style={{
-                          height: "28px",
-                          fontSize: "10px",
-                          paddingLeft: "12px",
-                          paddingRight: "12px",
-                          borderRadius: "14px",
-                        }}>
-                          Cancel
-                        </GameButton>
-                        <GameButton
-                          variant="gold"
-                          className="flex-1 h-7 text-xs"
-                          style={{
+                      {bonus > 0 && (
+                        <div className="flex justify-between">
+                          <span>Bonus</span>
+                          <span>₹{Number(bonus).toLocaleString()}</span>
+                        </div>
+                      )}
+                      {order.balanceAfter != null && (
+                        <div className="flex justify-between">
+                          <span>Balance After</span>
+                          <span>₹{Number(order.balanceAfter).toLocaleString()}</span>
+                        </div>
+                      )}
+                      {order.type && (
+                        <div className="flex justify-between">
+                          <span>Type</span>
+                          <span>{order.type}</span>
+                        </div>
+                      )}
+                      {order.remark && (
+                        <div className="flex justify-between">
+                          <span>Remark</span>
+                          <span>{order.remark}</span>
+                        </div>
+                      )}
+                      {order.currency && (
+                        <div className="flex justify-between">
+                          <span>Currency</span>
+                          <span>{order.currency}</span>
+                        </div>
+                      )}
+                      {order.userId && (
+                        <div className="flex justify-between">
+                          <span>User ID</span>
+                          <span>{order.userId}</span>
+                        </div>
+                      )}
+                      {(status.toLowerCase() === "pending") && !isOlderThan15Min(order) && (
+                        <div className="flex gap-2 mt-3 pt-3 border-t border-white/10">
+                          <GameButton variant="mute" className="flex-1 h-7 text-xs" style={{
                             height: "28px",
                             fontSize: "10px",
                             paddingLeft: "12px",
                             paddingRight: "12px",
                             borderRadius: "14px",
-                          }}
-                          onClick={() => handlePayOrder(order)}
-                        >
-                          Pay
-                        </GameButton>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })
+                          }}>
+                            Cancel
+                          </GameButton>
+                          <GameButton
+                            variant="gold"
+                            className="flex-1 h-7 text-xs"
+                            style={{
+                              height: "28px",
+                              fontSize: "10px",
+                              paddingLeft: "12px",
+                              paddingRight: "12px",
+                              borderRadius: "14px",
+                            }}
+                            onClick={() => handlePayOrder(order)}
+                          >
+                            Pay
+                          </GameButton>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <p style={{ color: "#acafc2", fontSize: "13px", textAlign: "center", padding: "10px 0", margin: 0 }}>No data</p>
+          </>
         )}
 
         {/* Pagination */}

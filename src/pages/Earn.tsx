@@ -1199,26 +1199,27 @@ const Earn = () => {
               ))}
             </div></div></div></div></div>
             <div className="x-page-list" style={{ padding: "10px" }}>
-              {teamLoading && agencyTeam.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>Loading...</div>
-              ) : agencyTeam.length === 0 ? (
+              {agencyTeam.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-center py-10">
                   <img src={noDataImg} alt="No data" className="w-[150px] h-[139px] object-contain block mb-3" />
                   <p style={{ color: "#acafc2", fontSize: "13px", margin: 0 }}>No data</p>
                 </div>
               ) : (
-                agencyTeam.map((member) => (
-                  <div key={member.userId} className="TeamReport__C-body-item">
-                    <div className="TeamReport__C-body-item-head">
-                      <span>UID:{member.userId}</span>
+                <>
+                  {agencyTeam.map((member) => (
+                    <div key={member.userId} className="TeamReport__C-body-item">
+                      <div className="TeamReport__C-body-item-head">
+                        <span>UID:{member.userId}</span>
+                      </div>
+                      <div className="TeamReport__C-body-item-detail">
+                        <div>Level <span>{(member.level ?? member.tier) === 1 ? "Direct subordinate" : `Level ${member.level ?? member.tier}`}</span></div>
+                        <div>Mobile <span className="val-light">{member.mobile}</span></div>
+                        <div>Register Time <span className="val-light">{member.registeredAt?.replace("T", " ").slice(0, 16)}</span></div>
+                      </div>
                     </div>
-                    <div className="TeamReport__C-body-item-detail">
-                      <div>Level <span>{member.level ?? member.tier}</span></div>
-                      <div>Mobile <span className="val-light">{member.mobile}</span></div>
-                      <div>Register Time <span className="val-light">{member.registeredAt?.slice(0, 10)}</span></div>
-                    </div>
-                  </div>
-                ))
+                  ))}
+                  <p style={{ color: "#acafc2", fontSize: "13px", textAlign: "center", padding: "10px 0", margin: 0 }}>No data</p>
+                </>
               )}
             </div>
           </div>
@@ -1382,23 +1383,33 @@ const Earn = () => {
                 <div><span className="num">{teamAggregation?.firstDepositAmount ?? 0}</span><span className="label">First deposit amount</span></div>
               </div>
 
-              {agencyTeam.map((member) => (
-                <div key={member.userId} className="TeamReport__C-body-item">
-                  <div className="TeamReport__C-body-item-head">
-                    <span>UID:{member.userId}</span>
-                  </div>
-                  <div className="TeamReport__C-body-item-detail">
-                    <div>Level <span>{member.tier}</span></div>
-                    <div>Deposit amount <span className="val-light">{member.totalDeposit ?? 0}</span></div>
-                    <div>Mobile <span className="val-light">{member.mobile}</span></div>
-                    <div>Register Time <span className="val-light">{member.registeredAt?.slice(0, 10)}</span></div>
-                  </div>
+              {agencyTeam.length === 0 ? (
+                <div className="flex flex-col items-center justify-center text-center py-10">
+                  <img src={noDataImg} alt="No data" className="w-[150px] h-[139px] object-contain block mb-3" />
+                  <p style={{ color: "#acafc2", fontSize: "13px", margin: 0 }}>No data</p>
                 </div>
-              ))}
-              {agencyTeam.length > 0 && agencyTeam.length < teamTotal && (
-                <GameButton variant="dark" onClick={() => fetchAgencyTeam(teamPage + 1, true)} disabled={teamLoading} style={{ width: "100%", marginTop: "8px", height: "36px", borderRadius: "19px" }}>
-                  {teamLoading ? "Loading..." : "Load more"}
-                </GameButton>
+              ) : (
+                <>
+                  {agencyTeam.map((member) => (
+                    <div key={member.userId} className="TeamReport__C-body-item">
+                      <div className="TeamReport__C-body-item-head">
+                        <span>UID:{member.userId}</span>
+                      </div>
+                      <div className="TeamReport__C-body-item-detail">
+                        <div>Level <span>{member.tier === 1 ? "Direct subordinate" : `Level ${member.tier}`}</span></div>
+                        <div>Deposit amount <span className="val-light">{member.totalDeposit ?? 0}</span></div>
+                        <div>Mobile <span className="val-light">{member.mobile}</span></div>
+                        <div>Register Time <span className="val-light">{member.registeredAt?.replace("T", " ").slice(0, 16)}</span></div>
+                      </div>
+                    </div>
+                  ))}
+                  {agencyTeam.length < teamTotal && (
+                    <GameButton variant="dark" onClick={() => fetchAgencyTeam(teamPage + 1, true)} disabled={teamLoading} style={{ width: "100%", marginTop: "8px", height: "36px", borderRadius: "19px" }}>
+                      {teamLoading ? "Loading..." : "Load more"}
+                    </GameButton>
+                  )}
+                  <p style={{ color: "#acafc2", fontSize: "13px", textAlign: "center", padding: "10px 0", margin: 0 }}>No data</p>
+                </>
               )}
             </div>
 
