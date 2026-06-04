@@ -1032,6 +1032,15 @@ const Earn = () => {
     0% { left: -100%; }
     50%, 100% { left: 200%; }
   }
+  .skeleton-box {
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.06) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
 `}</style>
         {activeTab === "referral" ? (
           showCommissionDetail ? (
@@ -1374,14 +1383,25 @@ const Earn = () => {
                 </div>
               </div>
 
-              <div className="header-container">
-                <div><span className="num">{teamAggregation?.depositCount ?? 0}</span><span className="label">Deposit number</span></div>
-                <div><span className="num">{teamAggregation?.depositAmount ?? 0}</span><span className="label">Deposit amount</span></div>
-                <div><span className="num">{teamAggregation?.bettorCount ?? 0}</span><span className="label">Number of bettors</span></div>
-                <div><span className="num">{teamAggregation?.betAmount ?? 0}</span><span className="label">Total bet</span></div>
-                <div><span className="num">{teamAggregation?.firstDepositCount ?? 0}</span><span className="label">First deposit number</span></div>
-                <div><span className="num">{teamAggregation?.firstDepositAmount ?? 0}</span><span className="label">First deposit amount</span></div>
-              </div>
+              {teamLoading && !teamAggregation ? (
+                <div className="header-container">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i}>
+                      <div className="num skeleton-box" style={{ display: "inline-block", width: "60%", height: "18px", borderRadius: "4px", marginBottom: "6px" }}>&nbsp;</div>
+                      <div className="label skeleton-box" style={{ display: "inline-block", width: "80%", height: "12px", borderRadius: "4px" }}>&nbsp;</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="header-container">
+                  <div><span className="num">{teamAggregation?.depositCount ?? 0}</span><span className="label">Deposit number</span></div>
+                  <div><span className="num">{teamAggregation?.depositAmount ?? 0}</span><span className="label">Deposit amount</span></div>
+                  <div><span className="num">{teamAggregation?.bettorCount ?? 0}</span><span className="label">Number of bettors</span></div>
+                  <div><span className="num">{teamAggregation?.betAmount ?? 0}</span><span className="label">Total bet</span></div>
+                  <div><span className="num">{teamAggregation?.firstDepositCount ?? 0}</span><span className="label">First deposit number</span></div>
+                  <div><span className="num">{teamAggregation?.firstDepositAmount ?? 0}</span><span className="label">First deposit amount</span></div>
+                </div>
+              )}
 
               {agencyTeam.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-center py-10">
