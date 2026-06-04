@@ -378,16 +378,13 @@ const Bank = () => {
     <main className="relative flex-1 flex flex-col pb-52 w-full">
       <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }`}</style>
       {/* Top Header with red bg */}
-      <div className="relative w-full h-12 flex items-center px-4">
+      <div className="relative w-full h-12 flex items-center justify-between px-4">
         <img src={headerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="relative z-10 flex items-center gap-2 flex-1">
+        <div className="relative z-10 flex items-center gap-2">
           <img src={bankIcon} alt="Bank" className="w-8 h-8 object-contain" />
           <span className="text-white font-bold text-base">Bank</span>
         </div>
-        <div className="relative z-10 flex items-center justify-start pl-10 flex-1">
-          <span className="text-white text-sm font-bold">₹{(activeTab === 'deposit' ? balance : walletBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-        </div>
-        <div className="relative z-10 flex items-center justify-end flex-1">
+        <div className="relative z-10 flex items-center gap-3">
           <ClipboardCheck size={20} className="text-white cursor-pointer" onClick={() => navigateWithTransition(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
         </div>
       </div>
