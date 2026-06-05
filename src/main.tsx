@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import "./lib/preloadAssets";
 import { initGlobalClickSound } from "./hooks/useClickSound";
 
 // Play click sound on every interactive element tap
