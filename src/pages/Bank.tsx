@@ -378,14 +378,14 @@ const Bank = () => {
     <main className="relative flex-1 flex flex-col pb-52 w-full">
       <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }`}</style>
       {/* Top Header with red bg */}
-      <div className="relative w-full h-12 flex items-center justify-between px-4">
+      <div className="relative w-full h-11 flex items-center justify-between px-3">
         <img src={headerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="relative z-10 flex items-center gap-2">
-          <img src={bankIcon} alt="Bank" className="w-8 h-8 object-contain" />
+        <div className="relative z-10 flex items-center gap-1.5">
+          <img src={bankIcon} alt="Bank" className="w-7 h-7 object-contain" />
           <span className="text-white font-bold text-base">Bank</span>
         </div>
-        <div className="relative z-10 flex items-center gap-3">
-          <ClipboardCheck size={20} className="text-white cursor-pointer" onClick={() => navigateWithTransition(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
+        <div className="relative z-10 flex items-center gap-2">
+          <ClipboardCheck size={18} className="text-white cursor-pointer" onClick={() => navigateWithTransition(activeTab === "deposit" ? "/bank/records" : "/bank/withdrawals")} />
         </div>
       </div>
 
@@ -394,7 +394,7 @@ const Bank = () => {
         <GameCard className="flex gap-1">
           <button
             onClick={() => setActiveTab("deposit")}
-            className="flex-1 h-8 rounded-sm text-sm transition-all border border-white/10"
+            className="flex-1 h-7 rounded-sm text-xs transition-all border border-white/10"
             style={
               activeTab === "deposit"
                 ? { backgroundImage: "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)", color: "#5a2d0a" }
@@ -405,7 +405,7 @@ const Bank = () => {
           </button>
           <button
             onClick={() => setActiveTab("withdraw")}
-            className="flex-1 h-8 rounded-md text-sm transition-all border border-white/10"
+            className="flex-1 h-7 rounded-md text-xs transition-all border border-white/10"
             style={
               activeTab === "withdraw"
                 ? { backgroundImage: "linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%)", color: "#5a2d0a" }
@@ -418,9 +418,9 @@ const Bank = () => {
 
         {activeTab === "deposit" ? (
           <>
-            <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
-              <span className="text-white text-sm">Payment Methods</span>
-              <div className="flex gap-2 justify-start">
+            <GameCard className="p-2 flex flex-col gap-1.5" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
+              <span className="text-white text-xs">Payment Methods</span>
+              <div className="flex gap-1.5 justify-start">
                 {methods.map((method) => {
                   const isActive = activeMethod === method.id;
                   return (
@@ -431,15 +431,15 @@ const Bank = () => {
                         const chs = channelOptions[method.id];
                         if (chs?.length) setActivePaymentChannel(chs[0].id);
                       }}
-                      className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all"
+                      className="flex flex-col justify-between items-center w-[31%] h-[72px] p-2 rounded-md cursor-pointer transition-all"
                       style={{
                         background: isActive ? "rgb(177, 44, 73)" : "transparent",
                         boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
                         border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
                       }}
                     >
-                      <div className="flex justify-center items-center w-full h-[35px]">
-                        <img src={method.icon} alt={method.label} className="w-[35px] h-[35px] object-contain" />
+                      <div className="flex justify-center items-center w-full h-[32px]">
+                        <img src={method.icon} alt={method.label} className="w-[32px] h-[32px] object-contain" />
                       </div>
                       <span className="text-xs font-medium" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.7)" }}>
                         {method.label}
@@ -450,9 +450,9 @@ const Bank = () => {
               </div>
             </GameCard>
 
-            <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
-              <span className="text-white text-sm">Payment Channel</span>
-              <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar" style={{ scrollBehavior: "smooth" }}>
+            <GameCard className="p-2 flex flex-col gap-1.5" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
+              <span className="text-white text-xs">Payment Channel</span>
+              <div className="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar" style={{ scrollBehavior: "smooth" }}>
                 {channelOptions[activeMethod]?.map((ch) => {
                   const isActive = activePaymentChannel === ch.id;
                   const limit = getChannelLimit(activeMethod, ch.id);
@@ -464,14 +464,14 @@ const Bank = () => {
                       style={{
                         background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.05)",
                         boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-                        minWidth: "140px",
+                        minWidth: "126px",
                       }}
                     >
-                      <div className="flex flex-col px-3 py-2" style={{ color: "#fff" }}>
-                        <div style={{ fontSize: "15px", fontWeight: 500, marginBottom: "2px", whiteSpace: "nowrap" }}>
+                      <div className="flex flex-col px-2.5 py-1.5" style={{ color: "#fff" }}>
+                        <div style={{ fontSize: "13px", fontWeight: 500, marginBottom: "2px", whiteSpace: "nowrap" }}>
                           {ch.label}
                         </div>
-                        <div style={{ fontSize: "12px", opacity: 0.9, whiteSpace: "nowrap" }}>
+                        <div style={{ fontSize: "11px", opacity: 0.9, whiteSpace: "nowrap" }}>
                           {limit ? `₹${limit.min.toLocaleString()} - ₹${limit.max.toLocaleString()}` : ""}
                         </div>
                       </div>
@@ -481,11 +481,11 @@ const Bank = () => {
               </div>
             </GameCard>
 
-            <GameCard className="p-2 flex flex-col gap-2">
-              <span className="text-white text-sm">Choose Deposit Amount</span>
+            <GameCard className="p-2 flex flex-col gap-1.5">
+              <span className="text-white text-xs">Choose Deposit Amount</span>
               {activeMethod === "usdt" ? (
                 <>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-1.5">
                     {USDT_OPTIONS.map((opt) => {
                       const isActive = !customAmount && selectedAmount === opt.deposit;
                       return (
@@ -495,15 +495,15 @@ const Bank = () => {
                           className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
                           style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                         >
-                          <img src={usdtLogo} alt="" className="absolute top-0 left-0 w-8 h-5 object-contain mt-0.5 ml-0.5" />
-                          <span className="text-white text-base text-center pt-3 pb-1">{opt.deposit.toLocaleString()}</span>
+                          <img src={usdtLogo} alt="" className="absolute top-0 left-0 w-7 h-4 object-contain mt-0.5 ml-0.5" />
+                          <span className="text-white text-sm text-center pt-2 pb-0.5">{opt.deposit.toLocaleString()}</span>
                           <div className="text-center text-[10px] pb-1 text-white/60">USDT</div>
                         </div>
                       );
                     })}
                   </div>
                   <div
-                    className="flex items-center rounded-[30px] h-11 px-3"
+                    className="flex items-center rounded-[30px] h-10 px-2.5"
                     style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
                   >
                     <img src={usdtLogo} alt="USDT" className="w-5 h-5 object-contain mr-2" />
@@ -521,7 +521,7 @@ const Bank = () => {
                 </>
               ) : (
                 <>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-1.5">
                     {DEPOSIT_OPTIONS.map((opt) => {
                       const isActive = !customAmount && selectedAmount === opt.deposit;
                       return (
@@ -531,11 +531,11 @@ const Bank = () => {
                           className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
                           style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                         >
-                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-12 h-5 object-contain" />
-                          <span className="absolute top-0 left-4 text-white text-[8px] font-bold">1st</span>
-                          <span className="text-white text-base text-center pt-2.5 pb-0.5">{opt.deposit.toLocaleString()}</span>
+                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-10 h-4 object-contain" />
+                          <span className="absolute top-0 left-3 text-white text-[7px] font-bold">1st</span>
+                          <span className="text-white text-sm text-center pt-2 pb-0.5">{opt.deposit.toLocaleString()}</span>
                           <div
-                            className="text-center text-[11px] font-bold rounded-b-md"
+                            className="text-center text-[10px] font-bold rounded-b-md"
                             style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
                           >
                             +{opt.bonus}
@@ -545,11 +545,11 @@ const Bank = () => {
                     })}
                   </div>
                   <div
-                    className="flex items-center rounded-[30px] h-11 px-3"
+                    className="flex items-center rounded-[30px] h-10 px-2.5"
                     style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
                   >
-                    <span className="text-primary text-lg font-medium">₹</span>
-                    <div className="w-px h-5 bg-white/20 mx-3"></div>
+                    <span className="text-primary text-base font-medium">₹</span>
+                    <div className="w-px h-4 bg-white/20 mx-2"></div>
                     <input
                       type="text"
                       placeholder="Please enter an amount"
@@ -566,29 +566,29 @@ const Bank = () => {
             </GameCard>
 
             {activeMethod === "usdt" && currentEffectiveAmount > 0 && (
-              <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
-                <div className="flex items-center justify-between text-sm">
+              <GameCard className="p-2 flex flex-col gap-1.5" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-white/70">Exchange Rate</span>
                   <span className="text-yellow-500 font-medium">1 USDT = ₹{getExchangeRate(activeMethod, activePaymentChannel).toFixed(2)}</span>
                 </div>
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-white/70">Paid Amount</span>
                   <span className="text-white font-medium">{currentEffectiveAmount.toFixed(2)} USDT</span>
                 </div>
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-white/70">Received Amount</span>
                   <span className="text-white font-medium">₹{(currentEffectiveAmount * getExchangeRate(activeMethod, activePaymentChannel)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               </GameCard>
             )}
 
-            <GameCard className="p-3 flex flex-col gap-2">
-              <span className="text-white font-bold text-sm">Deposit Event</span>
+            <GameCard className="p-2 flex flex-col gap-1.5">
+              <span className="text-white font-bold text-xs">Deposit Event</span>
               <div
-                className="relative rounded-lg flex items-center gap-3 px-3 py-3"
+                className="relative rounded-lg flex items-center gap-2 px-2 py-2"
                 style={{ backgroundImage: `url(${eventBg})`, backgroundSize: "contain", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
               >
-                <img src={giftBox} alt="Gift" className="w-16 h-16 object-contain" />
+                <img src={giftBox} alt="Gift" className="w-14 h-14 object-contain" />
                 <div className="flex flex-col flex-1">
                   <span className="text-white text-[10px] font-bold">First Deposit</span>
                   <span className="text-green-500 font-bold text-sm">100% Deposit Bonus</span>
@@ -597,26 +597,26 @@ const Bank = () => {
               </div>
             </GameCard>
 
-            <GameCard className="p-3">
-              <div className="space-y-1.5">
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+            <GameCard className="p-2">
+              <div className="space-y-1">
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   Each deposit will be credited within 1-5 minutes.
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   You can use customer service at any time to resolve deposit issues.
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   If you encounter fluctuations in the banking system, don't worry, just try a few more times and you will succeed.
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   Please ensure that you have installed Paytm and PhonePe.
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   The wagering requirement for withdrawal is 1× the deposit amount and 3× the bonus amount.
                 </p>
               </div>
@@ -625,23 +625,23 @@ const Bank = () => {
         ) : (
           <>
             {/* Withdraw method selector - from withdrwalui.html */}
-            <GameCard className="p-3 flex flex-col gap-2" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
-              <span className="text-white text-sm">Payment Methods</span>
-              <div className="flex gap-2 justify-start">
+            <GameCard className="p-2 flex flex-col gap-1.5" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
+              <span className="text-white text-xs">Payment Methods</span>
+              <div className="flex gap-1.5 justify-start">
               {WITHDRAW_METHODS.map((method) => {
                 const isActive = activeWithdrawMethod === method.id;
                 return (
                   <div
                     key={method.id}
                     onClick={() => setActiveWithdrawMethod(method.id)}
-                    className="flex flex-col justify-between items-center w-[31%] h-20 p-2.5 rounded-md cursor-pointer transition-all border border-white/10"
+                    className="flex flex-col justify-between items-center w-[31%] h-[72px] p-2 rounded-md cursor-pointer transition-all border border-white/10"
                     style={{
                       backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
                       color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
                     }}
                   >
-                    <div className="flex justify-center items-center w-full h-[35px]">
-                      <img src={method.icon} alt={method.label} className="w-[35px] h-[35px] object-contain" />
+                    <div className="flex justify-center items-center w-full h-[32px]">
+                      <img src={method.icon} alt={method.label} className="w-[32px] h-[32px] object-contain" />
                     </div>
                     <span className="text-xs font-medium">{method.label}</span>
                   </div>
@@ -651,34 +651,34 @@ const Bank = () => {
             </GameCard>
 
             {/* Payment method info card — from testui/test.html */}
-            <GameCard className="p-3">
+            <GameCard className="p-2">
               {hasPaymentMethod() ? (
-                <div className="bankInfo" style={{ display: "block", width: "100%", maxWidth: 456, margin: "13.65px 0", boxSizing: "border-box" }}>
+                <div className="bankInfo" style={{ display: "block", width: "100%", maxWidth: 456, margin: "12px 0", boxSizing: "border-box" }}>
                   <div
                     className="bankInfoItem type1 cursor-pointer"
                     onClick={() => setShowViewAccount(true)}
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      padding: "12.285px",
+                      padding: "11px",
                       background: "rgba(255,255,255,0.05)",
-                      borderRadius: "12.285px",
-                      height: "91.53px",
+                      borderRadius: "11px",
+                      height: "82px",
                       boxSizing: "border-box",
                     }}
                   >
                     {/* Left: Icon + Name */}
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 111.6, height: 66.6 }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 100, height: 60 }}>
                       {activeWithdrawMethod === "upi" ? (
-                        <img src={upiLogo} alt="" className="svg-icon" style={{ width: 28.8, height: 28.8, marginBottom: 3.6, objectFit: "contain" }} />
+                        <img src={upiLogo} alt="" className="svg-icon" style={{ width: 26, height: 26, marginBottom: 3, objectFit: "contain" }} />
                       ) : activeWithdrawMethod === "upay" ? (
-                        <img src={upayLogo} alt="" className="svg-icon" style={{ width: 28.8, height: 28.8, marginBottom: 3.6, objectFit: "contain" }} />
+                        <img src={upayLogo} alt="" className="svg-icon" style={{ width: 26, height: 26, marginBottom: 3, objectFit: "contain" }} />
                       ) : (
-                        <svg className="svg-icon icon-1" viewBox="0 0 62 59" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 28.8, height: 28.8, marginBottom: 3.6 }}>
+                        <svg className="svg-icon icon-1" viewBox="0 0 62 59" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: 26, height: 26, marginBottom: 3 }}>
                           <path d="M42.7474 21.041C43.8798 22.8892 44.446 25.0217 44.5875 27.1542C55.0621 29.8554 62.1395 35.6843 61.9979 42.0819C61.9979 51.4651 48.1262 59 30.999 59C13.8717 59 0 51.4651 0 42.0819C0 35.4 7.21894 29.5711 17.5519 26.8699C17.5519 29.4289 18.1181 31.9879 19.392 34.2626L29.1588 51.1807C29.8666 52.4602 30.4328 53.8819 30.7159 55.3036L31.1405 54.5928C33.5468 50.4699 33.5468 45.2096 31.1405 41.0867L23.3554 27.5807C20.9491 23.3157 20.9491 18.1976 23.3554 14.0747L23.78 13.3639C24.0631 14.7855 24.6293 16.2072 25.337 17.4867L29.8666 25.4482L36.944 37.8169C37.6517 39.0964 38.2179 40.5181 38.501 41.9398L38.9256 41.2289C41.3319 37.106 41.3319 31.8458 38.9256 27.7229L31.1405 14.2169C28.7342 10.094 28.7342 4.83373 31.1405 0.710843L31.5651 0C31.8482 1.42169 32.4144 2.84337 33.1222 4.12289L42.7474 21.041Z" fill="#ffb753"/>
                         </svg>
                       )}
-                      <span style={{ fontSize: 14.4, textAlign: "center", color: "rgba(255,255,255,0.7)" }}>
+                      <span style={{ fontSize: 13, textAlign: "center", color: "rgba(255,255,255,0.7)" }}>
                         {(() => {
                           const pm = getCurrentPaymentMethod();
                           if (activeWithdrawMethod === "bank_card") return (pm as any)?.bankName || "Bank";
@@ -693,14 +693,14 @@ const Bank = () => {
                     <div style={{
                       display: "flex",
                       flexDirection: "column",
-                      paddingLeft: "30.717px",
+                      paddingLeft: "27px",
                       flex: 1,
                       background: 'url("https://yaarwin.org/assets/png/line-0198e433.webp") no-repeat 0 50% / contain',
                     }}>
-                      <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 400, lineHeight: 1.4 }}>
+                      <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", fontWeight: 400, lineHeight: 1.4 }}>
                         {withdrawInfo?.data?.paymentMethods?.holderName || ""}
                       </span>
-                      <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "17.199px", fontWeight: 400, lineHeight: 1.4 }}>
+                      <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "15px", fontWeight: 400, lineHeight: 1.4 }}>
                         {(() => {
                           const pm = getCurrentPaymentMethod();
                           if (!pm) return "-";
@@ -723,13 +723,13 @@ const Bank = () => {
                 </div>
               ) : (
                 <div
-                  className="flex flex-col items-center justify-center gap-2 h-24 cursor-pointer border border-white/10 rounded-md"
+                  className="flex flex-col items-center justify-center gap-1.5 h-[86px] cursor-pointer border border-white/10 rounded-md"
                   onClick={() => setShowAddAccount(true)}
                 >
                   <img
                     src={addDetailsPlusIcon}
                     alt="Add"
-                    className="w-11 h-11 object-contain opacity-80"
+                    className="w-10 h-10 object-contain opacity-80"
                   />
                   <span className="text-white/70 text-xs">
                     {activeWithdrawMethod === "upi"
@@ -741,20 +741,20 @@ const Bank = () => {
                 </div>
               )}
               {!hasPaymentMethod() && (
-                <p className="text-primary text-[11px] text-center mt-2">
+                <p className="text-primary text-[10px] text-center mt-1.5">
                   Need to add beneficiary information to be able to withdraw money
                 </p>
               )}
             </GameCard>
 
             {/* Amount input section - from withdrwalui.html */}
-            <GameCard className="p-3">
+            <GameCard className="p-2">
               <div
-                className="flex items-center rounded-[30px] h-11 px-3 mb-2.5"
+                className="flex items-center rounded-[30px] h-10 px-2.5 mb-2"
                 style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
               >
-                <span className="text-primary text-lg font-medium">₹</span>
-                <div className="w-px h-5 bg-white/20 mx-3"></div>
+                <span className="text-primary text-base font-medium">₹</span>
+                <div className="w-px h-4 bg-white/20 mx-2"></div>
                 <input
                   type="text"
                   placeholder="Please enter the amount"
@@ -766,19 +766,19 @@ const Bank = () => {
                   <X size={16} className="text-white/50 cursor-pointer ml-2 flex-shrink-0" onClick={() => { setWithdrawAmountInput(""); setSelectedWithdrawAmount(0); }} />
                 )}
               </div>
-              <div className="flex flex-col gap-1.5 ml-0.5">
-                <div className="flex justify-between items-center text-[11px]">
+              <div className="flex flex-col gap-1 ml-0.5">
+                <div className="flex justify-between items-center text-[10px]">
                   <span className="text-white/50">
                     Withdrawable balance <span className="text-yellow-500 font-bold">₹{walletBalance.toFixed(2)}</span>
                   </span>
                   <button
                     onClick={handleAllWithdraw}
-                    className="bg-transparent text-primary text-[11px] cursor-pointer px-2.5 py-0.5 font-normal border border-primary/40 rounded"
+                    className="bg-transparent text-primary text-[10px] cursor-pointer px-2 py-0.5 font-normal border border-primary/40 rounded"
                   >
                     All
                   </button>
                 </div>
-                <div className="flex justify-between items-center text-[11px]">
+                <div className="flex justify-between items-center text-[10px]">
                   <span className="text-white/50">Withdrawal amount received</span>
                   <span className="text-yellow-500 font-bold text-right">₹{withdrawReceivedAmount.toFixed(2)}</span>
                 </div>
@@ -786,32 +786,32 @@ const Bank = () => {
             </GameCard>
 
             {/* Rules section - from withdrwalui.html */}
-            <GameCard className="p-3">
-              <div className="space-y-1.5">
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+            <GameCard className="p-2">
+              <div className="space-y-1">
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   Need to bet <span className="text-primary">₹{remainingTurnover.toFixed(0)}</span> to be able to withdraw
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   Withdraw time <span className="text-primary">00:00-23:55</span>
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   Inday Remaining Withdrawal Times <span className="text-primary">{limits?.remainingToday ?? 3}</span>
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   Withdrawal amount range <span className="text-primary">₹{(methodLimits?.min ?? 110).toFixed(2)}-₹{(methodLimits?.max ?? 50000).toFixed(2)}</span>
                 </p>
               </div>
-              <div className="border-t border-white/5 mt-3 pt-3 space-y-1.5">
-                <p className="text-white/80 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+              <div className="border-t border-white/5 mt-2 pt-2 space-y-1">
+                <p className="text-white/80 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   Please confirm your beneficial account information before withdrawing. If your information is incorrect, our company will not be liable for the amount of loss.
                 </p>
-                <p className="text-white/50 text-[12px] leading-5 pl-5 relative">
-                  <span className="absolute left-[7.5px] top-[7px] w-[5px] h-[5px] bg-primary rotate-45" />
+                <p className="text-white/50 text-[11px] leading-4 pl-4 relative">
+                  <span className="absolute left-[6px] top-[5px] w-[4px] h-[4px] bg-primary rotate-45" />
                   If your beneficial information is incorrect, please contact customer service.
                 </p>
               </div>
@@ -822,7 +822,7 @@ const Bank = () => {
 
       {/* Bottom payment bar - fixed above bottom nav */}
       <div
-        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-30 px-4 py-3 pb-28 flex items-center justify-between"
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-30 px-3 py-2 pb-28 flex items-center justify-between"
         style={{ backgroundImage: "linear-gradient(180deg, #9c1735 0%, #480816 100%)" }}
       >
         <div className="flex flex-col">
@@ -862,11 +862,11 @@ const Bank = () => {
         <GameButton
           variant="gold"
           style={{
-            height: "38px",
-            fontSize: "13px",
-            paddingLeft: "48px",
-            paddingRight: "48px",
-            borderRadius: "19px",
+            height: "34px",
+            fontSize: "12px",
+            paddingLeft: "40px",
+            paddingRight: "40px",
+            borderRadius: "17px",
           }}
           onClick={activeTab === "deposit" ? handlePay : handleWithdraw}
           disabled={paying || withdrawing}
@@ -886,7 +886,7 @@ const Bank = () => {
         <GameDialog open={showViewAccount} onOpenChange={setShowViewAccount}>
           <GameDialogContent title="Payment Method Details">
             <GameDialogBody>
-              <div className="w-full flex flex-col gap-2 text-left text-sm">
+              <div className="w-full flex flex-col gap-1.5 text-left text-xs">
                 {(() => {
                   const pm = getCurrentPaymentMethod();
                   if (!pm) return <span className="text-white/70">No payment method details</span>;
