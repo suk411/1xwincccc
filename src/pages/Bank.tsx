@@ -862,7 +862,7 @@ const Bank = () => {
           )}
         </div>
         <GameButton
-          variant="gold"
+          variant={paying || withdrawing || (activeTab === "deposit" && !depositConfigReady) ? "mute" : "gold"}
           style={{
             height: "34px",
             fontSize: "12px",
