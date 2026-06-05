@@ -88,7 +88,7 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
         </div>
 
         {/* Buttons */}
-        <div className="w-full px-8 z-10">
+        <div className="flex justify-center w-full px-6 z-10">
           <GameButton
             variant="red"
             type="prompt"
