@@ -42,7 +42,7 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute -top-8 -right-0 w-8 h-8 z-[110] transition-transform active:scale-90"
+          className="absolute -top-7 -right-0 w-7 h-7 z-[110] transition-transform active:scale-90"
         >
           <img src={`${IMG_BASE_URL}croosiconvip.png`} alt="Close" className="w-full h-full object-contain" />
         </button>
