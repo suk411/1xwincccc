@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const VERSION_CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
+const VERSION_CHECK_INTERVAL = 30 * 60 * 1000; // 30 minutes
 const LAST_CHECK_KEY = 'last_version_check';
 const LOCAL_STORAGE_KEY = 'app_version';
 
