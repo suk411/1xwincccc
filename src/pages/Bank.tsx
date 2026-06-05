@@ -85,6 +85,7 @@ const Bank = () => {
   const [paying, setPaying] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
   const [depositConfig, setDepositConfig] = useState<import("@/services/authService").DepositConfigItem[]>([]);
+  const [depositConfigReady, setDepositConfigReady] = useState(false);
 
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
@@ -156,6 +157,7 @@ const Bank = () => {
       if (res?.data?.length) {
         setDepositConfig(res.data);
         depositConfigLoaded.current = true;
+        setDepositConfigReady(true);
         const firstCat = categorizeChannel(res.data[0]);
         setActiveMethod(firstCat);
       }
@@ -869,7 +871,7 @@ const Bank = () => {
             borderRadius: "17px",
           }}
           onClick={activeTab === "deposit" ? handlePay : handleWithdraw}
-          disabled={paying || withdrawing}
+          disabled={paying || withdrawing || (activeTab === "deposit" && !depositConfigReady)}
         >
           {paying ? "Processing..." : withdrawing ? "Processing..." : activeTab === "deposit" ? "Pay" : "Withdraw"}
         </GameButton>
