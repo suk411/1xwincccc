@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GameButton } from "./GameButton";
-import { gameService, GameObject } from "@/services/gameService";
-import { useToast } from "@/hooks/use-toast";
-import { Eye } from "lucide-react";
+import type { GameObject } from "@/services/gameService";
 
 interface VipLockModalProps {
   isOpen: boolean;
@@ -15,8 +13,6 @@ const IMG_BASE_URL = "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object
 
 const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) => {
   const { navigateWithTransition } = useTransitionNavigate();
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -34,33 +30,6 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
-    }
-  };
-
-  const handleWatchNow = async () => {
-    if (!game) return;
-    const gameWindow = window.open("", "_blank");
-    setLoading(true);
-    try {
-      const result = await gameService.watch(game);
-      if (result.gameUrl) {
-        onClose();
-        if (gameWindow) {
-          gameWindow.location.href = result.gameUrl;
-        } else {
-          window.location.href = result.gameUrl;
-        }
-      } else {
-        if (gameWindow) gameWindow.close();
-      }
-    } catch (e: any) {
-      toast({
-        title: "Watch failed",
-        description: e.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -84,93 +53,42 @@ const VipLockModal: React.FC<VipLockModalProps> = ({ isOpen, onClose, game }) =>
         </div>
 
         {/* Visual Composition */}
-        <div className="relative w-full aspect-square flex items-center justify-center -mt-4">
-          {/* Background Coins */}
+        <div className="relative w-full aspect-[4/3] flex items-center justify-center -mt-2">
           <img
             src={`${IMG_BASE_URL}bgcoinsvip.png`}
             alt=""
             className="absolute inset-0 w-full h-full object-contain z-0 scale-105"
           />
-          
-          {/* Platform */}
           <img
             src={`${IMG_BASE_URL}bottomplatfromvip.png`}
             alt=""
             className="absolute bottom-2 w-[85%] object-contain z-[1]"
           />
-
-          {/* Center Visuals Stack */}
-          <div className="relative w-full h-full flex items-center justify-center z-[2]">
-             {/* Gold Diamond Behind */}
-            <img
-              src={`${IMG_BASE_URL}golddaimondvip.png`}
-              alt=""
-              className="absolute w-[30%] object-contain z-[3]"
-            />
-            
-            {/* White Diamond Highlight */}
-            <img
-              src={`${IMG_BASE_URL}whitedaimondvip.png`}
-              alt=""
-              className="absolute w-[30%] object-contain z-[4] animate-pulse"
-            />
-
-            {/* Center Badge */}
-            <img
-              src={`${IMG_BASE_URL}centervip.png`}
-              alt="VIP"
-              className="absolute w-[40%] object-contain z-[5]"
-            />
-
-            {/* Chain Overlay */}
-            <img
-              src={`${IMG_BASE_URL}chainvip.png`}
-              alt=""
-              className="absolute w-[75%] object-contain z-[6]"
-            />
-
-            {/* Lock Icon */}
-            <img
-              src={`${IMG_BASE_URL}lockvip.png`}
-              alt="Locked"
-              className="absolute w-[12%] mt-10 object-contain z-[7]"
-            />
+          <div className="relative w-[85%] h-[85%] flex items-center justify-center z-[2]">
+            <img src={`${IMG_BASE_URL}golddaimondvip.png`} alt="" className="absolute w-[28%] object-contain z-[3]" />
+            <img src={`${IMG_BASE_URL}whitedaimondvip.png`} alt="" className="absolute w-[28%] object-contain z-[4] animate-pulse" />
+            <img src={`${IMG_BASE_URL}centervip.png`} alt="VIP" className="absolute w-[36%] object-contain z-[5]" />
+            <img src={`${IMG_BASE_URL}chainvip.png`} alt="" className="absolute w-[65%] object-contain z-[6]" />
+            <img src={`${IMG_BASE_URL}lockvip.png`} alt="Locked" className="absolute w-[10%] mt-8 object-contain z-[7]" />
           </div>
         </div>
 
         {/* Text Content */}
-        <div className="flex flex-col items-center gap-1 -mt-2 mb-4 z-10 w-full">
-          <div className="flex items-center gap-1.5 text-white/90 text-[13px] font-medium">
-             <img src={`${IMG_BASE_URL}whitedaimondvip.png`} className="w-3.5 h-3.5" alt="" />
+        <div className="flex flex-col items-center gap-0.5 -mt-1 mb-3 z-10 w-full">
+          <div className="flex items-center gap-1 text-white/90 text-[12px] font-medium">
+             <img src={`${IMG_BASE_URL}whitedaimondvip.png`} className="w-3 h-3" alt="" />
              <span>Only VIP users can play this game</span>
           </div>
-          <div className="relative flex items-start justify-center w-full px-5">
-            <img src={`${IMG_BASE_URL}golddaimondvip.png`} className="absolute left-4 top-0.5 w-4 h-4 shrink-0" alt="" />
-            <p className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff8a00] to-[#ffc700] text-base font-bold text-center leading-tight">
+          <div className="flex items-center justify-center gap-1.5 w-full px-5">
+            <img src={`${IMG_BASE_URL}golddaimondvip.png`} className="w-3.5 h-3.5 shrink-0" alt="" />
+            <p className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff8a00] to-[#ffc700] text-sm font-bold text-center leading-tight">
               Deposit to become VIP and unlock access
             </p>
           </div>
         </div>
 
         {/* Buttons */}
-        <div className="w-full px-8 z-10 space-y-3">
-          <GameButton
-            variant="gold"
-            type="prompt"
-            className="w-full"
-            onClick={handleWatchNow}
-            disabled={loading}
-          >
-            {loading ? (
-              "Loading..."
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <span>Watch Only</span>
-                <Eye size={20} className="stroke-[2.5]" />
-              </span>
-            )}
-          </GameButton>
-
+        <div className="w-full px-8 z-10">
           <GameButton
             variant="red"
             type="prompt"
