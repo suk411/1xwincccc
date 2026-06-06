@@ -135,7 +135,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             {/* VIP badge - clickable to open VIP page */}
             <button
               onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-              className="flex-shrink-0 cursor-pointer -ml-6"
+              className="flex-shrink-0 cursor-pointer -ml-10"
             >
               <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-48 h-20 object-contain" />
             </button>
