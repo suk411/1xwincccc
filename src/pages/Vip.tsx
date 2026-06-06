@@ -132,8 +132,8 @@ const Vip = () => {
     if (busy || !canClaimWeekly) return;
     setBusy(true);
     try {
-      const res = await authService.claimWeeklyBonus();
-      toast({ description: `Weekly bonus ₹${fmt(res.weeklyBonus)} credited! Balance: ₹${fmt(res.balanceAfter)}` });
+      await authService.claimWeeklyBonus();
+      toast({ description: "Claim success" });
       await loadVip();
       refreshProfile();
     } catch (err: unknown) {
@@ -157,8 +157,8 @@ const Vip = () => {
     if (busy || !canClaimUpgrade) return;
     setBusy(true);
     try {
-      const res = await authService.claimUpgradeBonus();
-      toast({ description: `Upgrade bonus ₹${fmt(res.upgradeBonus)} credited! Balance: ₹${fmt(res.balanceAfter)}` });
+      await authService.claimUpgradeBonus();
+      toast({ description: "Claim success" });
       await loadVip();
       refreshProfile();
     } catch (err: unknown) {
