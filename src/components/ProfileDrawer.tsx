@@ -136,7 +136,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
                   className="ml-1 cursor-pointer"
                 >
-                  <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-24 h-10 object-contain" />
+                  <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-48 h-20 object-contain" />
                 </button>
               </div>
             </div>
