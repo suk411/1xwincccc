@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { GameCard } from "@/components/GameCard";
 import { GameButton } from "@/components/GameButton";
 import { authService } from "@/services/authService";
@@ -99,7 +99,8 @@ const Earn = () => {
   const [dd, setDd] = useState(MAX_DD);
   const [rebateLevelTab, setRebateLevelTab] = useState(0);
   const [searchUid, setSearchUid] = useState("");
-  const [subDateFilter, setSubDateFilter] = useState("today");
+  const [subDateOffset, setSubDateOffset] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [showCommissionDetail, setShowCommissionDetail] = useState(false);
 
   const { userId } = useProfile(false);
@@ -192,27 +193,13 @@ const Earn = () => {
 
   useEffect(() => {
     if (activeTab !== "subordinate") return;
-    const today = new Date();
-    const y = today.getFullYear();
-    const m = String(today.getMonth() + 1).padStart(2, "0");
-    const d = String(today.getDate()).padStart(2, "0");
-    const dateStr = `${y}-${m}-${d}`;
-    let fromDate: string, toDate: string;
-    if (subDateFilter === "today") {
-      fromDate = dateStr; toDate = dateStr;
-    } else if (subDateFilter === "yesterday") {
-      const yest = new Date(today);
-      yest.setDate(yest.getDate() - 1);
-      fromDate = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, "0")}-${String(yest.getDate()).padStart(2, "0")}`;
-      toDate = fromDate;
-    } else {
-      fromDate = `${y}-${m}-01`;
-      toDate = dateStr;
-    }
+    const d = new Date();
+    d.setDate(d.getDate() - subDateOffset);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     setLevelVal("All");
     setSearchUid("");
-    fetchAgencyNewSub(fromDate, toDate);
-  }, [subDateFilter, activeTab, fetchAgencyNewSub]);
+    fetchAgencyNewSub(dateStr, dateStr);
+  }, [subDateOffset, activeTab, fetchAgencyNewSub]);
 
   const commHasMore = agencyCommissions.length < commTotal;
   const teamHasMore = agencyTeam.length < teamTotal;
@@ -1041,6 +1028,10 @@ const Earn = () => {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .scroll-snap-x { scroll-snap-type: x mandatory; }
+  .scroll-snap-item { scroll-snap-align: center; }
 `}</style>
         {activeTab === "referral" ? (
           showCommissionDetail ? (
@@ -1200,13 +1191,20 @@ const Earn = () => {
         ) : activeTab === "subordinate" ? (
           <div className="x-page">
             <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setActiveTab("referral")}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">New subordinates</div></div><div className="navbar__content-right"></div></div></div></div>
-            <div className="bet-container-sticky"><div className="van-sticky"><div><div className="fun-tabs tabs"><div className="fun-tabs__tab-list">
-              {["today", "yesterday", "thisMonth"].map((tab) => (
-                <div key={tab} className="fun-tab-item funtab_item"><div className="fun-tab-item__wrap"><div className="fun-tab-item__label"><div className={`tab_item${tab === subDateFilter ? " tab_active" : ""}`} onClick={() => setSubDateFilter(tab)}>
-                  <span>{tab === "today" ? "Today" : tab === "yesterday" ? "Yesterday" : "This Month"}</span>
-                </div></div></div></div>
-              ))}
-            </div></div></div></div></div>
+            <div className="bet-container-sticky"><div className="van-sticky"><div>
+              <div ref={scrollRef} className="flex gap-2 overflow-x-auto px-3 py-2 hide-scrollbar scroll-snap-x" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
+                {Array.from({ length: 90 }, (_, i) => {
+                  const d = new Date(); d.setDate(d.getDate() - i);
+                  const label = i === 0 ? "Today" : i === 1 ? "Yesterday" : `${d.getDate()}/${d.getMonth() + 1}`;
+                  const isActive = i === subDateOffset;
+                  return (
+                    <div key={i} onClick={() => { setSubDateOffset(i); }} className={`scroll-snap-item shrink-0 px-3 py-1.5 rounded-full text-xs cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white font-bold" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
+                      {label}
+                    </div>
+                  );
+                })}
+              </div>
+            </div></div></div>
             <div className="x-page-list" style={{ padding: "10px" }}>
               {agencyTeam.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-center py-10">
