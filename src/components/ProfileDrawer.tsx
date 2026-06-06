@@ -101,9 +101,9 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           <SheetClose className="absolute right-4 top-4 z-10" />
 
           {/* Avatar and User Info */}
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center mb-2">
             {/* Avatar with status */}
-            <div className="relative flex-shrink-0">
+            <div className="relative flex-shrink-0 mr-2">
               <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-yellow-500/50">
                 <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
               </div>
@@ -135,7 +135,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             {/* VIP badge - clickable to open VIP page */}
             <button
               onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-              className="flex-shrink-0 cursor-pointer -ml-16"
+              className="flex-shrink-0 cursor-pointer"
             >
               <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-48 h-20 object-contain" />
             </button>
