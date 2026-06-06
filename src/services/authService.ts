@@ -21,26 +21,37 @@ export interface BalanceResponse {
   balance: number;
 }
 
-export interface VipResponse {
-  status: string;
-  vipLevel: number | string;
-  vipSince: string;
-  totalDeposits: number;
-  withdrawDailyLimit: number;
-  monthlyCheckinBonus: number;
-  canClaimMonthly: boolean;
-  pendingUpgradeBonus: number;
-  canClaimUpgrade: boolean;
+export interface VipTierInfo {
+  minDeposit: number;
+  weeklyBonus: number;
+  upgradeBonus: number;
+  weeklyDepositRequirement: number;
 }
 
-export interface VipCheckinResponse {
+export interface VipResponse {
   status: string;
-  userId: string;
-  monthlyBonus: number;
-  upgradeBonus: number;
-  totalCredited: number;
+  vipLevel: string;
+  vipSince: string;
+  totalDeposits: number;
+  weeklyStatus: "eligible" | "claimed" | "deposit_not_met";
+  upgradeStatus: "claimed" | "unclaimed";
+  vipLevels: Record<string, VipTierInfo>;
+}
+
+export interface WeeklyBonusResponse {
+  status: string;
+  userId: number;
+  weeklyBonus: number;
   balanceAfter: number;
-  vipLevel: number;
+  vipLevel: string;
+}
+
+export interface UpgradeBonusResponse {
+  status: string;
+  userId: number;
+  upgradeBonus: number;
+  balanceAfter: number;
+  vipLevel: string;
 }
 
 export interface DepositOrder {
@@ -380,15 +391,27 @@ export const authService = {
     return data;
   },
 
-  async checkinVip(): Promise<VipCheckinResponse> {
-    const res = await fetch(`${API_BASE}/api/account/vip/checkin`, {
+  async claimWeeklyBonus(): Promise<WeeklyBonusResponse> {
+    const res = await fetch(`${API_BASE}/api/account/vip/weekly-bonus`, {
       method: "POST",
       headers: authHeaders(),
     });
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Check-in failed"));
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to claim weekly bonus"));
+    return data;
+  },
+
+  async claimUpgradeBonus(): Promise<UpgradeBonusResponse> {
+    const res = await fetch(`${API_BASE}/api/account/vip/upgrade-bonus`, {
+      method: "POST",
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    checkAccountInactive(data);
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to claim upgrade bonus"));
     return data;
   },
 

@@ -6,13 +6,16 @@ import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GameButton } from "./GameButton";
 import { authService } from "@/services/authService";
 import { useProfile } from "@/hooks/useProfile";
-import { Progress } from "@/components/ui/progress";
 import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
-import vipBadge from "@/assets/profile/vip-badge.png";
 import deposit from "@/assets/bank/deposit-icon.png";
 import withdraw from "@/assets/profile/withdrawal.png";
+import vipBadge1 from "@/assets/vip/vip-badge-1.png";
+import vipBadge2 from "@/assets/vip/vip-badge-2.png";
+import vipBadge3 from "@/assets/vip/vip-badge-3.png";
+import vipBadge4 from "@/assets/vip/vip-badge-4.png";
+import vipBadge5 from "@/assets/vip/vip-badge-5.png";
 
 import avatar from "@/assets/profile/avatar.png";
 import avatarChange from "@/assets/profile/avatar-change.png";
@@ -37,6 +40,8 @@ interface ProfileDrawerProps {
 }
 
 const VIP_THRESHOLDS = [0, 200, 400, 1000, 2000, 3000];
+const VIP_BADGES = [vipBadge1, vipBadge2, vipBadge3, vipBadge4, vipBadge5];
+const getVipBadge = (idx: number) => VIP_BADGES[Math.min(idx, VIP_BADGES.length - 1)];
 
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const { navigateWithTransition } = useTransitionNavigate();
@@ -57,10 +62,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const vipLevelIndex = isSvip
     ? VIP_THRESHOLDS.length - 1
     : Math.min(VIP_THRESHOLDS.length - 1, Math.max(0, Number(vipLevelStr.replace(/\D/g, "")) || 0));
-  const displayVipLevel = isSvip ? vipLevelStr : `VIP${vipLevelIndex}`;
-  const totalDeposits = Number(vipData?.totalDeposits ?? 0);
-  const nextThreshold = isSvip ? VIP_THRESHOLDS[VIP_THRESHOLDS.length - 1] : VIP_THRESHOLDS[Math.min(vipLevelIndex + 1, VIP_THRESHOLDS.length - 1)];
-  const progressPercent = nextThreshold > 0 ? Math.min((totalDeposits / nextThreshold) * 100, 100) : 0;
+
 
   const appVersion = localStorage.getItem('app_version') || '1.0.0';
 
@@ -88,7 +90,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="left"
-        className="w-[90%] p-0 border-none flex flex-col h-full"
+        className="w-[81%] p-0 border-none flex flex-col h-full"
       >
         {/* Top Profile Section */}
         <div
@@ -129,13 +131,13 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
                 </button>
 
-                {/* VIP badge with level text overlay */}
-                <div className="relative ml-1 w-12 h-5">
-                  <img src={vipBadge} alt="VIP" className="w-full h-full object-contain" />
-                  <span className="absolute inset-0 flex items-center justify-center pl-3 text-[10px] font-bold text-yellow-300">
-                    {displayVipLevel}
-                  </span>
-                </div>
+                {/* VIP badge - clickable to open VIP page */}
+                <button
+                  onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
+                  className="ml-1 cursor-pointer"
+                >
+                  <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-24 h-10 object-contain" />
+                </button>
               </div>
             </div>
           </div>
@@ -143,64 +145,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
 
         {/* Scrollable content area */}
         <div className="flex-1 overflow-y-auto scrollbar-hide px-3 pt-1 pb-8 bg-[#470211] ">
-          {/* VIP Progress Section */}
-          <div className="flex items-center justify-between mb-1">
-            <div className="text-white text-xs">
-              <span className="text-yellow-400">₹{totalDeposits.toLocaleString()}</span>
-              <span className="text-gray-400">/₹{nextThreshold.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="text-white font-medium text-xs">{isSvip ? displayVipLevel : `VIP${vipLevelIndex + 1}`}</span>
-              <button
-                className="relative inline-flex items-center justify-center border-0 outline-none cursor-pointer overflow-hidden transition-transform active:scale-96"
-                style={{
-                  background: "linear-gradient(145deg, rgb(255, 122, 92) 0%, rgb(255, 71, 87) 50%, rgb(224, 48, 80) 100%)",
-                  color: "#fff",
-                  boxShadow: "rgba(255, 71, 87, 0.35) 0px 3px 10px 0px, rgba(255, 255, 255, 0.25) 0px 0.5px 0.5px 0px inset",
-                  height: "24px",
-                  fontSize: "9px",
-                  fontWeight: "700",
-                  paddingLeft: "8px",
-                  paddingRight: "8px",
-                  borderRadius: "12px",
-                }}
-                onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-              >
-                <div
-                  style={{
-                    content: "",
-                    position: "absolute",
-                    top: 0,
-                    left: "10%",
-                    width: "80%",
-                    height: "50%",
-                    background: "linear-gradient(rgba(255, 255, 255, 0.3), transparent)",
-                    borderRadius: "12px 12px 50% 50%",
-                    pointerEvents: "none",
-                  }}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: "-100%",
-                    width: "60%",
-                    height: "100%",
-                    background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
-                    animation: "redShine 3s ease-in-out infinite",
-                    pointerEvents: "none",
-                  }}
-                />
-                <span className="relative z-10">Upgrade</span>
-              </button>
-            </div>
-          </div>
 
-          {/* VIP Progress Bar */}
-          <Progress
-            value={progressPercent}
-            className="h-1.5 mb-2 border-[0.8px] border-[rgb(112,28,50)] bg-[rgb(112,28,50)] rounded-[20px] [&>div]:bg-[linear-gradient(105deg,#f5d742_100%,#51f542_90%,#a67a00_20%)]"
-          />
 
           {/* Gold Balance Bar */}
           <div
@@ -266,12 +211,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           {/* App Version Display removed to use the new menu item instead */}
         </div>
       </SheetContent>
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes redShine {
-          0%, 70% { left: -100%; }
-          100% { left: 200%; }
-        }
-      `}} />
+
     </Sheet>
   );
 };

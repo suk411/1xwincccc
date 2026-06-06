@@ -3,72 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exact VIP Card Position</title>
     <style>
-        /* Container styles */
-        .rechargeTypes_list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14.4px;
-            width: 100%;
-            max-width: 475px;
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
-            padding: 0;
             font-family: sans-serif;
         }
 
-        /* Item styles */
-        .Recharge__content-quickInfo__item {
+        /* The Exact Card Container */
+        .vip-info-box {
             display: flex;
             flex-direction: column;
-            border-radius: 14.4px;
+            width: 241.125px; /* Exact computed width */
+            height: 165.087px; /* Exact computed height */
+            padding: 10px 0 0; /* Padding-top pushes content down */
+            background-image: url("https://1699win.online/assets/vpdb1-BTjnZd5L.png");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Top Section (Icons) - This controls the vertical space above the progress */
+        .icon-level-box {
+            display: flex;
+            align-items: flex-end;
+            width: 226px;
+            height: 106.55px; /* Exact fixed height found in inspection */
+            margin: 0 0 0 15px;
+        }
+
+        /* The Requested Progress Section */
+        .progress-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 241.125px;
+            margin: -5px 0 0 0; /* CRITICAL: Negative margin for exact position */
+            padding: 0;
+            color: #4d5461;
+        }
+
+        .progress-box span {
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-left: 35px; /* Aligns text with the bar start */
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        /* The Progress Bar (Same Size) */
+        .progress {
+            display: flex;
+            position: relative;
+            justify-content: space-between;
+            align-items: center;
+            width: 205.1px; /* Exact computed width */
+            height: 14px; /* Exact computed height */
+            background-color: #79808f;
+            border-radius: 7px;
+            color: #fff;
+            font-size: 10px;
+            padding: 0 10px;
+            box-sizing: border-box;
             overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        /* Active state */
-        .Recharge__content-quickInfo__item.item_active {
-            background-image: linear-gradient(90deg, rgb(12, 215, 129) 0%, rgb(0, 233, 137) 100%);
-            box-shadow: 0 4px 10px rgba(12, 215, 129, 0.3);
+        .progress-inner {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background-color: #fc8618;
+            border-radius: 7px;
+            z-index: 1;
         }
 
-        /* Content wrapper */
-        .other {
-            display: flex;
-            flex-direction: column;
-            padding: 14.4px 18.7px;
-            color: #ffffff; /* White text for contrast against the green gradient */
-        }
-
-        /* Text styling */
-        .other div:first-child {
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-
-        .other div:last-child {
-            font-size: 14px;
-            opacity: 0.9;
+        .progress span {
+            position: relative;
+            z-index: 2;
         }
     </style>
 </head>
 <body>
 
-    <div class="rechargeTypes_list">
-        <!-- Active Item -->
-        <div class="Recharge__content-quickInfo__item item_active">
-            <div class="other">
-                <div>Phonepe_QR</div>
-                <div>Balance: 100 - 50K</div>
-            </div>
-        </div>
-        
-        <!-- Placeholder for second item based on grid-template-columns -->
-        <div class="Recharge__content-quickInfo__item" style="background: #f5f5f5; color: #333;">
-            <div class="other" style="color: #333;">
-                <div>Other Pay</div>
-                <div>Balance: 100 - 20K</div>
+    <div class="vip-info-box">
+        <!-- Placeholder for icons to maintain structure -->
+        <div class="icon-level-box"></div>
+
+        <!-- Positioned Progress Section -->
+        <div class="progress-box">
+            <span>Accumulate Deposit <b style="color:inherit">9000</b></span>
+            <div class="progress">
+                <div class="progress-inner" style="width: 10%;"></div>
+                <span>V2</span>
+                <span>1000.00 / 10000.00</span>
+                <span>V3</span>
             </div>
         </div>
     </div>
