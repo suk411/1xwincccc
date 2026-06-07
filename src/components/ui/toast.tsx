@@ -24,10 +24,11 @@ ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
   "pointer-events-auto relative flex flex-col items-center justify-center " +
-  "rounded-lg px-3 py-2 transition-opacity text-center " +
+  "rounded-lg px-3 py-2 text-center " +
   "box-content w-fit max-w-[70%] min-w-[96px] " +
-  "data-[state=open]:opacity-100 " +
-  "data-[state=closed]:opacity-0",
+  "transition-all duration-300 ease-in-out " +
+  "data-[state=open]:opacity-100 data-[state=open]:scale-100 " +
+  "data-[state=closed]:opacity-0 data-[state=closed]:scale-95",
   {
     variants: {
       variant: {

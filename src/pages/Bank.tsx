@@ -21,19 +21,7 @@ import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
 
-const DEPOSIT_OPTIONS = [
-  { deposit: 100, bonus: 20 },
-  { deposit: 200, bonus: 40 },
-  { deposit: 300, bonus: 60 },
-  { deposit: 500, bonus: 100 },
-  { deposit: 1000, bonus: 250 },
-  { deposit: 3000, bonus: 750 },
-  { deposit: 5000, bonus: 1250 },
-  { deposit: 8000, bonus: 2000 },
-  { deposit: 10000, bonus: 3000 },
-  { deposit: 20000, bonus: 6000 },
-  { deposit: 30000, bonus: 7500 }
-];
+const DEPOSIT_AMOUNTS = [100, 200, 300, 500, 1000, 3000, 5000, 8000, 10000, 20000, 30000];
 
 const USDT_OPTIONS = [
   { deposit: 50, bonus: 0 },
@@ -86,6 +74,9 @@ const Bank = () => {
   const [withdrawing, setWithdrawing] = useState(false);
   const [depositConfig, setDepositConfig] = useState<import("@/services/authService").DepositConfigItem[]>([]);
   const [depositConfigReady, setDepositConfigReady] = useState(false);
+  const [depositBonusInfo, setDepositBonusInfo] = useState<import("@/services/authService").DepositBonusInfo | null>(null);
+  const [bonusOptIn, setBonusOptIn] = useState(false);
+  const [showBonusApply, setShowBonusApply] = useState(false);
 
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
@@ -166,6 +157,16 @@ const Bank = () => {
     }
   };
 
+  const loadDepositBonusInfo = async () => {
+    try {
+      const info = await authService.getDepositBonusInfo();
+      setDepositBonusInfo(info);
+      setBonusOptIn(info.hasBonusAvailable);
+    } catch {
+      // bonus info not available
+    }
+  };
+
   useEffect(() => {
     if (location.state?.activeTab) {
       setActiveTab(location.state.activeTab);
@@ -177,6 +178,7 @@ const Bank = () => {
       loadWithdrawInfo();
     } else {
       loadDepositConfig();
+      loadDepositBonusInfo();
     }
   }, [activeTab]);
 
@@ -262,9 +264,11 @@ const Bank = () => {
   const withdrawReceivedAmount = selectedWithdrawAmount;
   
   const currentEffectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
-  const selectedDepositBonus = [...DEPOSIT_OPTIONS]
-    .sort((a, b) => b.deposit - a.deposit)
-    .find(o => currentEffectiveAmount >= o.deposit)?.bonus || 0;
+  const getBonus = (amount: number) => {
+    if (!depositBonusInfo?.hasBonusAvailable || !depositBonusInfo?.nextBonusRate) return 0;
+    return Math.floor(amount * depositBonusInfo.nextBonusRate);
+  };
+  const selectedDepositBonus = getBonus(currentEffectiveAmount);
 
   const handlePay = async () => {
     if (paying) return;
@@ -293,7 +297,8 @@ const Bank = () => {
     const payWindow = window.open("", "_blank");
     setPaying(true);
     try {
-      const res = await authService.deposit(depositAmount, activePaymentChannel);
+      const shouldOptIn = activeMethod !== "usdt" && bonusOptIn;
+      const res = await authService.deposit(depositAmount, activePaymentChannel, shouldOptIn);
       if (res.paymentUrl) {
         if (payWindow) {
           payWindow.location.href = res.paymentUrl;
@@ -524,23 +529,24 @@ const Bank = () => {
               ) : (
                 <>
                   <div className="grid grid-cols-3 gap-1.5">
-                    {DEPOSIT_OPTIONS.map((opt) => {
-                      const isActive = !customAmount && selectedAmount === opt.deposit;
+                    {DEPOSIT_AMOUNTS.map((amount) => {
+                      const isActive = !customAmount && selectedAmount === amount;
+                      const bonus = getBonus(amount);
                       return (
                         <div
-                          key={opt.deposit}
-                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); setDepositAmountInput(opt.deposit.toString()); }}
-                          className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
+                          key={amount}
+                          onClick={() => { setSelectedAmount(amount); setCustomAmount(""); setDepositAmountInput(amount.toString()); }}
+                          className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10 py-1"
                           style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                         >
                           <img src={depositBadge} alt="" className="absolute top-0 left-0 w-10 h-4 object-contain" />
                           <span className="absolute top-0 left-3 text-white text-[7px] font-bold">1st</span>
-                          <span className="text-white text-sm text-center pt-2 pb-0.5">{opt.deposit.toLocaleString()}</span>
+                          <span className="text-white text-sm text-center pt-3 pb-1">{amount.toLocaleString()}</span>
                           <div
-                            className="text-center text-[10px] font-bold rounded-b-md"
+                            className={`text-center text-[10px] font-bold rounded-b-md ${bonus > 0 ? "" : "invisible"}`}
                             style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
                           >
-                            +{opt.bonus}
+                            {bonus > 0 ? `+${bonus}` : "0"}
                           </div>
                         </div>
                       );
@@ -585,17 +591,73 @@ const Bank = () => {
             )}
 
             <GameCard className="p-2 flex flex-col gap-1.5">
-              <span className="text-white font-bold text-xs">Deposit Event</span>
+              <span className="text-white font-bold text-xs">Deposit Bonus</span>
               <div
-                className="relative rounded-lg flex items-center gap-2 px-2 py-2"
-                style={{ backgroundImage: `url(${eventBg})`, backgroundSize: "contain", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
+                className="relative rounded-lg flex items-center gap-2 px-2 py-2 cursor-pointer overflow-hidden"
+                style={{ backgroundImage: `url(${eventBg})`, backgroundSize: "100% 100%", backgroundPosition: "center", backgroundRepeat: "no-repeat", minHeight: "72px" }}
+                onClick={() => {
+                  if (!depositBonusInfo?.hasBonusAvailable) return;
+                  if (showBonusApply) {
+                    setBonusOptIn(true);
+                    setShowBonusApply(false);
+                  } else if (bonusOptIn) {
+                    setBonusOptIn(false);
+                    setShowBonusApply(true);
+                  } else {
+                    setShowBonusApply(true);
+                  }
+                }}
               >
-                <img src={giftBox} alt="Gift" className="w-14 h-14 object-contain" />
-                <div className="flex flex-col flex-1">
-                  <span className="text-white text-[10px] font-bold">First Deposit</span>
-                  <span className="text-green-500 font-bold text-sm">100% Deposit Bonus</span>
-                  <span className="text-white/60 text-[10px]">3x Turnover required on total amount</span>
-                </div>
+                {showBonusApply && (
+                  <div className="absolute inset-0 bg-black/60 rounded-lg" />
+                )}
+                <img src={giftBox} alt="Gift" className="w-14 h-14 object-contain relative z-10" />
+                {depositBonusInfo ? (
+                  <div className="flex flex-col flex-1 relative z-10">
+                    {depositBonusInfo.hasBonusAvailable ? (
+                      showBonusApply ? (
+                        <GameButton
+                          variant="red"
+                          buttonType="prompt"
+                          style={{ transform: "scale(0.7)", transformOrigin: "center" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setBonusOptIn(true);
+                            setShowBonusApply(false);
+                          }}
+                        >
+                          Apply Bonus
+                        </GameButton>
+                      ) : (
+                        <>
+                          <span className="text-green-500 font-bold text-sm">
+                            {depositBonusInfo.nextBonusRate * 100}% Deposit Bonus
+                          </span>
+                          <span className="text-white/60 text-[10px]">
+                            {depositBonusInfo.nextBonusExample}
+                          </span>
+                          <span className="text-white/40 text-[10px]">
+                            {depositBonusInfo.turnoverMultiplier}x turnover required
+                          </span>
+                        </>
+                      )
+                    ) : (
+                      <>
+                        <span className="text-white text-[10px] font-bold">Deposit Bonus</span>
+                        <span className="text-white/60 text-[10px]">No bonus available</span>
+                        <span className="text-white/40 text-[10px]">
+                          {depositBonusInfo.successfulDeposits} deposits completed
+                        </span>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex flex-col flex-1 relative z-10 gap-1.5">
+                    <div className="h-3 w-24 rounded bg-white/10 animate-pulse" />
+                    <div className="h-2.5 w-36 rounded bg-white/10 animate-pulse" />
+                    <div className="h-2 w-28 rounded bg-white/10 animate-pulse" />
+                  </div>
+                )}
               </div>
             </GameCard>
 

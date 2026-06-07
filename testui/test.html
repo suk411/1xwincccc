@@ -1,113 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exact VIP Card Position</title>
-    <style>
-        body {
-            background-color: #1a1a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: sans-serif;
-        }
-
-        /* The Exact Card Container */
-        .vip-info-box {
-            display: flex;
-            flex-direction: column;
-            width: 241.125px; /* Exact computed width */
-            height: 165.087px; /* Exact computed height */
-            padding: 10px 0 0; /* Padding-top pushes content down */
-            background-image: url("https://1699win.online/assets/vpdb1-BTjnZd5L.png");
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        /* Top Section (Icons) - This controls the vertical space above the progress */
-        .icon-level-box {
-            display: flex;
-            align-items: flex-end;
-            width: 226px;
-            height: 106.55px; /* Exact fixed height found in inspection */
-            margin: 0 0 0 15px;
-        }
-
-        /* The Requested Progress Section */
-        .progress-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 241.125px;
-            margin: -5px 0 0 0; /* CRITICAL: Negative margin for exact position */
-            padding: 0;
-            color: #4d5461;
-        }
-
-        .progress-box span {
-            display: block;
-            width: 100%;
-            text-align: left;
-            margin-left: 35px; /* Aligns text with the bar start */
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        /* The Progress Bar (Same Size) */
-        .progress {
-            display: flex;
-            position: relative;
-            justify-content: space-between;
-            align-items: center;
-            width: 205.1px; /* Exact computed width */
-            height: 14px; /* Exact computed height */
-            background-color: #79808f;
-            border-radius: 7px;
-            color: #fff;
-            font-size: 10px;
-            padding: 0 10px;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .progress-inner {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background-color: #fc8618;
-            border-radius: 7px;
-            z-index: 1;
-        }
-
-        .progress span {
-            position: relative;
-            z-index: 2;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My IP Details Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 50px;
+      background-color: #f4f6f9;
+    }
+    .box {
+      max-width: 550px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    button {
+      background-color: #337ab7;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #286090;
+    }
+    table {
+      width: 100%;
+      margin-top: 25px;
+      border-collapse: collapse;
+      display: none;
+      text-align: left;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f8f9fa;
+      width: 45%;
+    }
+    .error {
+      color: red;
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="vip-info-box">
-        <!-- Placeholder for icons to maintain structure -->
-        <div class="icon-level-box"></div>
+<div class="box">
+  <h2>Find My Current IP Details</h2>
+  <p>Click the button to fetch your live network location data.</p>
+  
+  <button id="btn">Get My IP Details</button>
+  <div id="error" class="error">Failed to get data.</div>
 
-        <!-- Positioned Progress Section -->
-        <div class="progress-box">
-            <span>Accumulate Deposit <b style="color:inherit">9000</b></span>
-            <div class="progress">
-                <div class="progress-inner" style="width: 10%;"></div>
-                <span>V2</span>
-                <span>1000.00 / 10000.00</span>
-                <span>V3</span>
-            </div>
-        </div>
-    </div>
+  <table id="resultTable">
+    <tr><th>Your IP Address</th><td id="ip"></td></tr>
+    <tr><th>City</th><td id="city"></td></tr>
+    <tr><th>Region</th><td id="region"></td></tr>
+    <tr><th>Country</th><td id="country"></td></tr>
+    <tr><th>ISP Provider</th><td id="org"></td></tr>
+    <tr><th>Timezone</th><td id="timezone"></td></tr>
+  </table>
+</div>
+
+<script>
+  document.getElementById('btn').addEventListener('click', function() {
+    var table = document.getElementById('resultTable');
+    var errorDiv = document.getElementById('error');
+
+    table.style.display = 'none';
+    errorDiv.style.display = 'none';
+
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('ip').innerText = data.ip || 'N/A';
+        document.getElementById('city').innerText = data.city || 'N/A';
+        document.getElementById('region').innerText = data.region || 'N/A';
+        document.getElementById('country').innerText = data.country_name || 'N/A';
+        document.getElementById('org').innerText = data.org || 'N/A';
+        document.getElementById('timezone').innerText = data.timezone || 'N/A';
+
+        table.style.display = 'table';
+      })
+      .catch(err => {
+        errorDiv.style.display = 'block';
+        console.error(err);
+      });
+  });
+</script>
 
 </body>
 </html>

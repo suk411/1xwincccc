@@ -1,4 +1,4 @@
-# VIP API - User Side
+# Deposit API - User Side
 
 ## Base URL
 
@@ -16,10 +16,12 @@ Authorization: Bearer <user_token>
 
 ---
 
-## Get VIP Status
+## Deposit Page Config
+
+Get available deposit channels with their min/max limits and exchange rates. Frontend should call this on page load instead of hardcoding channels.
 
 ```
-GET /account/vip
+GET /account/deposit-config
 ```
 
 **Response:**
@@ -27,86 +29,171 @@ GET /account/vip
 ```json
 {
   "status": "success",
-  "vipLevel": "VIP 3",
-  "vipSince": "2026-06-04T16:12:08.889Z",
-  "totalDeposits": 1000,
-  "weeklyStatus": "eligible",
-  "upgradeStatus": "unclaimed",
-  "vipLevels": {
-    "VIP 1": { "minDeposit": 0, "weeklyBonus": 0, "upgradeBonus": 0, "weeklyDepositRequirement": 0 },
-    "VIP 2": { "minDeposit": 100, "weeklyBonus": 0, "upgradeBonus": 0, "weeklyDepositRequirement": 0 },
-    "VIP 3": { "minDeposit": 2000, "weeklyBonus": 21, "upgradeBonus": 15, "weeklyDepositRequirement": 200 },
-    "VIP 4": { "minDeposit": 5000, "weeklyBonus": 41, "upgradeBonus": 31, "weeklyDepositRequirement": 300 },
-    "VIP 5": { "minDeposit": 25000, "weeklyBonus": 151, "upgradeBonus": 90, "weeklyDepositRequirement": 400 },
-    "VIP 6": { "minDeposit": 100000, "weeklyBonus": 551, "upgradeBonus": 900, "weeklyDepositRequirement": 1000 }
-  }
+  "data": [
+    {
+      "channel": "simplypay",
+      "name": "SimplyPay",
+      "isActive": true,
+      "minAmount": 100,
+      "maxAmount": 100000,
+      "exchangeRate": 1,
+      "sortOrder": 0
+    },
+    {
+      "channel": "usdt",
+      "name": "USDT",
+      "isActive": true,
+      "minAmount": 1,
+      "maxAmount": 1000,
+      "exchangeRate": 90,
+      "sortOrder": 2
+    }
+  ]
 }
 ```
 
-### Status Fields
+Only active channels (`isActive: true`) are returned.
 
-| Field | Values | Description |
-|-------|--------|-------------|
-| `weeklyStatus` | `"eligible"`, `"claimed"`, `"deposit_not_met"` | Weekly bonus claim status |
-| `upgradeStatus` | `"claimed"`, `"unclaimed"` | Upgrade bonus claim status |
+- For INR channels, `exchangeRate` is 1 (amount = received amount).
+- For USDT, `exchangeRate` is the current rate (e.g., 90). The frontend should show: *"You deposit X USDT → You receive Y INR"* where `Y = X * exchangeRate`.
 
 ---
 
-## Claim Weekly Bonus
+## Initiate Deposit
 
 ```
-POST /account/vip/weekly-bonus
+POST /api/payment/deposit
 ```
 
-**Description:** Claims the weekly bonus for the user's current VIP level. Requires meeting the weekly deposit requirement for that tier. Can only be claimed once per week (Monday–Sunday).
+**Body:**
+
+```json
+{
+  "amount": 10,
+  "channel": "gspayusdt",
+  "bonusOptIn": true
+}
+```
+
+| Param | Type | Required | Description |
+|-------|------|---------|-------------|
+| amount | number | Yes | Deposit amount in the channel's denomination (USDT for USDT, INR for others) |
+| channel | string | Yes | Channel key from `/account/deposit-config` |
+| bonusOptIn | boolean | No | Set `true` to opt into deposit bonus (first 3 deposits only). Default: `false` |
+
+**Validation (server-enforced):**
+- Channel must exist and be `isActive: true`
+- Amount must be within `minAmount`–`maxAmount` range of the selected channel
+
+**Exchange Rate & receivedAmount:**
+- For USDT: `receivedAmount = amount × exchangeRate` (e.g., 10 USDT × 90 = 900 INR)
+- For INR channels: `receivedAmount = amount` (exchangeRate = 1)
+- The wallet is credited with `receivedAmount` in INR
+
+**Response (Success):**
+
+```json
+{
+  "status": "success",
+  "msg": "Redirect to paymentUrl",
+  "paymentUrl": "https://..."
+}
+```
+
+**Error (disabled channel):**
+
+```json
+{
+  "success": false,
+  "msg": "Channel is currently disabled",
+  "status": "failed"
+}
+```
+
+**Error (amount out of range):**
+
+```json
+{
+  "success": false,
+  "msg": "Minimum deposit for USDT is 1",
+  "status": "failed"
+}
+```
+
+---
+
+## My Deposit Records
+
+```
+GET /account/my-deposits
+```
+
+**Query Params:** page, limit
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "items": [
+    {
+      "userId": 123456,
+      "type": "DEPOSIT",
+      "amount": 500.0,
+      "balanceAfter": 1500.0,
+      "status": "SUCCESS",
+      "orderId": "DEP123456",
+      "remark": "Deposit via Paysimply",
+      "createdAt": "2026-03-15T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+## Deposit Bonus Info
+
+Shows available bonus rates and remaining bonus eligibility for the current user.
+
+```
+GET /account/deposit-bonus-info
+```
 
 **Response:**
 
 ```json
 {
   "status": "success",
-  "userId": 123456,
-  "weeklyBonus": 21,
-  "balanceAfter": 1150.0,
-  "vipLevel": "VIP 3"
+  "hasBonusAvailable": true,
+  "nextDepositCount": 2,
+  "nextBonusRate": 0.5,
+  "nextBonusExample": "Deposit ₹200 → get ₹100 bonus",
+  "turnoverMultiplier": 7,
+  "successfulDeposits": 1,
+  "allRates": [
+    { "depositCount": 1, "bonusRate": 1.0 },
+    { "depositCount": 2, "bonusRate": 0.5 },
+    { "depositCount": 3, "bonusRate": 0.3 }
+  ]
 }
 ```
 
-**Note:** Claiming the weekly bonus adds a turnover requirement. The bonus amount needs to be turned over before withdrawal.
+| Field | Description |
+|-------|-------------|
+| `hasBonusAvailable` | Whether user can still claim a bonus (within first 3 deposits) |
+| `nextDepositCount` | Which deposit number the next bonus would apply to (1, 2, or 3) |
+| `nextBonusRate` | The bonus rate for the next eligible deposit |
+| `nextBonusExample` | Human-readable example of what the next bonus would be |
+| `turnoverMultiplier` | Current turnover multiplier for deposit bonus |
+| `successfulDeposits` | Number of successful deposits the user has made |
+| `allRates` | All configured bonus rates |
 
----
+### Deposit Status Values
 
-## Claim Upgrade Bonus
-
-```
-POST /account/vip/upgrade-bonus
-```
-
-**Description:** Claims the accumulated upgrade bonus earned from VIP level ups. Each time you reach a new VIP tier, the upgrade bonus is added to pending balance. Claim it here separately.
-
-**Response:**
-
-```json
-{
-  "status": "success",
-  "userId": 123456,
-  "upgradeBonus": 15,
-  "balanceAfter": 1171.0,
-  "vipLevel": "VIP 3"
-}
-```
-
-**Note:** Claiming the upgrade bonus adds a turnover requirement. The bonus amount needs to be turned over before withdrawal.
-
----
-
-## VIP Tier Requirements
-
-| Tier | Cumulative Deposit | Weekly Bonus | Upgrade Bonus | Weekly Deposit Requirement |
-|------|------------------|-------------|--------------|--------------------------|
-| VIP 1 | 0 | 0 | 0 | 0 |
-| VIP 2 | 100 | 0 | 0 | 0 |
-| VIP 3 | 2,000 | 21 | 15 | 200 |
-| VIP 4 | 5,000 | 41 | 31 | 300 |
-| VIP 5 | 25,000 | 151 | 90 | 400 |
-| VIP 6 | 100,000 | 551 | 900 | 1,000 |
+| Status | Description |
+|--------|-------------|
+| `PENDING` | Deposit initiated, awaiting payment |
+| `SUCCESS` | Payment successful, amount credited |
+| `FAILED` | Payment failed |
+| `EXPIRED` | Payment link expired |
