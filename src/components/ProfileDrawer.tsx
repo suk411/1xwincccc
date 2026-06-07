@@ -104,10 +104,10 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           <div className="flex items-center mb-2">
             {/* Avatar with status */}
             <div className="relative flex-shrink-0 mr-2">
-              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-yellow-500/50">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-500/50">
                 <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
               </div>
-              <div className="absolute -bottom-1 right-0 w-5 h-5">
+              <div className="absolute -bottom-0.5 right-0 w-4 h-4">
                 <img src={avatarChange} alt="Change" className="w-full h-full object-contain" />
               </div>
             </div>
@@ -115,7 +115,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             {/* User details */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1">
-                <span className="text-white font-semibold text-sm truncate">KING{userId || "..."}</span>
+                <span className="text-white text-xs truncate">KING{userId || "..."}</span>
               </div>
               <div className="flex items-center mt-0.5">
                 <span className="text-gray-300 text-xs whitespace-nowrap">ID:{userId || "..."}</span>
