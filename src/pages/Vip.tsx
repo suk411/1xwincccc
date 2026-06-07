@@ -453,7 +453,7 @@ const Vip = () => {
                 onClick={handleWeeklyClick}
                 disabled={busy || visibleTierIdx !== currentTierIndex || visibleTierIdx <= 1 || (vipData?.weeklyStatus !== "eligible" && vipData?.weeklyStatus !== "deposit_not_met")}
               >
-                {busy ? "..." : visibleTierIdx === currentTierIndex && visibleTierIdx > 1 && (canClaimWeekly || vipData?.weeklyStatus === "deposit_not_met") ? "Claim" : visibleTierIdx === currentTierIndex && vipData?.weeklyStatus === "claimed" ? "Claimed" : <img src={lockIcon} className="w-4 h-4" />}
+                {busy ? "..." : visibleTierIdx < currentTierIndex ? "Claimed" : visibleTierIdx === currentTierIndex && visibleTierIdx > 1 && (canClaimWeekly || vipData?.weeklyStatus === "deposit_not_met") ? "Claim" : visibleTierIdx === currentTierIndex && vipData?.weeklyStatus === "claimed" ? "Claimed" : <img src={lockIcon} className="w-4 h-4" />}
               </GameButton>
             </div>
           </GameCard>
@@ -475,7 +475,7 @@ const Vip = () => {
                 onClick={handleClaimUpgrade}
                 disabled={busy || visibleTierIdx !== currentTierIndex || visibleTierIdx <= 1 || !canClaimUpgrade}
               >
-                {busy ? "..." : visibleTierIdx === currentTierIndex && visibleTierIdx > 1 && canClaimUpgrade ? "Claim" : visibleTierIdx === currentTierIndex && vipData?.upgradeStatus === "claimed" ? "Claimed" : <img src={lockIcon} className="w-4 h-4" />}
+                {busy ? "..." : visibleTierIdx < currentTierIndex ? "Claimed" : visibleTierIdx === currentTierIndex && visibleTierIdx > 1 && canClaimUpgrade ? "Claim" : visibleTierIdx === currentTierIndex && vipData?.upgradeStatus === "claimed" ? "Claimed" : <img src={lockIcon} className="w-4 h-4" />}
               </GameButton>
             </div>
           </GameCard>
