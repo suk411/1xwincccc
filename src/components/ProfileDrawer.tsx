@@ -94,7 +94,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
       >
         {/* Top Profile Section */}
         <div
-          className="relative p-1.5 pt-4 flex-shrink-0 mb-3"
+          className="relative p-1.5 pt-4 flex-shrink-0"
           style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
         >
           {/* Close button */}
@@ -145,7 +145,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         </div>
 
         {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide px-3 pt-1 pb-8 bg-[#470211] ">
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-3 pt-3 pb-8 bg-[#470211] ">
 
 
           {/* Gold Balance Bar */}
