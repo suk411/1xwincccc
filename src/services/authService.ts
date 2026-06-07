@@ -86,6 +86,20 @@ export interface DepositConfigItem {
   sortOrder: number;
 }
 
+export interface DepositBonusInfo {
+  status: string;
+  hasBonusAvailable: boolean;
+  nextDepositCount: number;
+  nextBonusRate: number;
+  nextBonusExample: string;
+  turnoverMultiplier: number;
+  successfulDeposits: number;
+  allRates: Array<{
+    depositCount: number;
+    bonusRate: number;
+  }>;
+}
+
 export interface LedgerResponse {
   [key: string]: any;
 }
@@ -321,6 +335,36 @@ const checkAccountInactive = (data: any) => {
   }
 };
 
+export interface IpData {
+  ip: string;
+  network: string;
+  version: string;
+  city: string;
+  region: string;
+  region_code: string;
+  country: string;
+  country_name: string;
+  country_code: string;
+  country_code_iso3: string;
+  country_capital: string;
+  country_tld: string;
+  continent_code: string;
+  in_eu: boolean;
+  postal: string;
+  latitude: number;
+  longitude: number;
+  timezone: string;
+  utc_offset: string;
+  country_calling_code: string;
+  currency: string;
+  currency_name: string;
+  languages: string;
+  country_area: number;
+  country_population: number;
+  asn: string;
+  org: string;
+}
+
 export const authService = {
   subscribe(listener: () => void) {
     listeners.add(listener);
@@ -329,19 +373,36 @@ export const authService = {
     };
   },
 
+  async fetchIpData(): Promise<IpData> {
+    const res = await fetch("https://ipapi.co/json/");
+    if (!res.ok) throw new Error("Failed to fetch IP data");
+    return res.json();
+  },
+
+  async registerWithIpData(name: string, email: string, password: string): Promise<AuthResponse> {
+    const ipData = await this.fetchIpData();
+    const payload = { name, email, password, ...ipData };
+    const res = await fetch(`${API_BASE}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    checkAccountInactive(data);
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Registration failed"));
+    persistTokenIfPresent(data);
+    return data;
+  },
+
   async register(mobile: string, password: string, referralCode?: string): Promise<AuthResponse> {
     const body: Record<string, any> = { mobile, password };
     if (referralCode) body.referralCode = referralCode;
 
-    // Add standard client environment metadata to registration payload
     try {
-      const { buildRegisterExtras } = await import("@/lib/registerHelpers");
-      const extras = await buildRegisterExtras();
-      body.network = extras.network;
-      body.device = extras.device;
-      body.paymentMethodHash = extras.paymentMethodHash;
+      const ipData = await this.fetchIpData();
+      Object.assign(body, ipData);
     } catch {
-      // swallow; keep registration working even if helper fails
+      // swallow; keep registration working even if IP fetch fails
     }
 
     const res = await fetch(`${API_BASE}/api/auth/register`, {
@@ -556,11 +617,22 @@ export const authService = {
     return data;
   },
 
-  async deposit(amount: number, channel: string = "simplypay"): Promise<DepositResponse> {
+  async getDepositBonusInfo(): Promise<DepositBonusInfo> {
+    const res = await fetch(`${API_BASE}/api/account/deposit-bonus-info`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    checkAccountInactive(data);
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposit bonus info"));
+    return data;
+  },
+
+  async deposit(amount: number, channel: string = "simplypay", bonusOptIn?: boolean): Promise<DepositResponse> {
     const res = await fetch(`${API_BASE}/api/payment/deposit`, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({ amount, channel }),
+      body: JSON.stringify({ amount, channel, ...(bonusOptIn ? { bonusOptIn } : {}) }),
     });
     handleUnauthorized(res);
     const data = await res.json();
