@@ -374,7 +374,19 @@ export const authService = {
   },
 
   async fetchIpData(): Promise<IpData> {
-    const res = await fetch("https://ipapi.co/json/");
+    let ipv4 = "";
+    try {
+      const ipifyRes = await fetch("https://api4.ipify.org?format=json");
+      if (ipifyRes.ok) {
+        const ipifyData = await ipifyRes.json();
+        ipv4 = ipifyData?.ip || "";
+      }
+    } catch {
+      // fall through
+    }
+
+    const url = ipv4 ? `https://ipapi.co/${encodeURIComponent(ipv4)}/json/` : "https://ipapi.co/json/";
+    const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to fetch IP data");
     return res.json();
   },
