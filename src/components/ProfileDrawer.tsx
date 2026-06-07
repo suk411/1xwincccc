@@ -113,10 +113,10 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
 
             {/* User details */}
-            <div className="ml-2">
-              <div className="text-white text-xs whitespace-nowrap">KING{userId || "..."}</div>
-              <div className="flex items-center mt-0.5 whitespace-nowrap">
-                <span className="text-gray-300 text-xs">ID:{userId || "..."}</span>
+            <div className="flex-1 ml-2">
+              <div className="text-white text-xs truncate">KING{userId || "..."}</div>
+              <div className="flex items-center mt-0.5">
+                <span className="text-gray-300 text-xs whitespace-nowrap">ID:{userId || "..."}</span>
                 <button
                   onClick={() => {
                     if (userId) {
@@ -127,17 +127,18 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
                 </button>
-                {/* VIP badge - clickable to open VIP page */}
-                {vipData && (
-                  <button
-                    onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-                    className="flex-shrink-0 cursor-pointer ml-1"
-                  >
-                    <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-24 h-9 object-contain" />
-                  </button>
-                )}
               </div>
             </div>
+
+            {/* VIP badge - clickable to open VIP page */}
+            {vipData && (
+              <button
+                onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
+                className="flex-shrink-0 cursor-pointer"
+              >
+                <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-[131px] h-[54px] object-contain" />
+              </button>
+            )}
           </div>
         </div>
 
