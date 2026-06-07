@@ -113,10 +113,10 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
 
             {/* User details */}
-            <div className="flex-1 min-w-0 ml-2">
-              <div className="text-white text-xs truncate">KING{userId || "..."}</div>
-              <div className="flex items-center mt-0.5">
-                <span className="text-gray-300 text-xs whitespace-nowrap">ID:{userId || "..."}</span>
+            <div className="ml-2">
+              <div className="text-white text-xs whitespace-nowrap">KING{userId || "..."}</div>
+              <div className="flex items-center mt-0.5 whitespace-nowrap">
+                <span className="text-gray-300 text-xs">ID:{userId || "..."}</span>
                 <button
                   onClick={() => {
                     if (userId) {
