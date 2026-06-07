@@ -103,7 +103,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
           {/* Avatar and User Info */}
           <div className="flex items-center mb-2">
             {/* Avatar with status */}
-            <div className="relative flex-shrink-0 mr-2">
+            <div className="relative flex-shrink-0">
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-500/50">
                 <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
               </div>
@@ -113,10 +113,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
 
             {/* User details */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1">
-                <span className="text-white text-xs truncate">KING{userId || "..."}</span>
-              </div>
+            <div className="flex-1 min-w-0 ml-2">
+              <div className="text-white text-xs truncate">KING{userId || "..."}</div>
               <div className="flex items-center mt-0.5">
                 <span className="text-gray-300 text-xs whitespace-nowrap">ID:{userId || "..."}</span>
                 <button
@@ -129,17 +127,18 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
                 </button>
-                {/* VIP badge - clickable to open VIP page */}
-                {vipData && (
-                  <button
-                    onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-                    className="flex-shrink-0 cursor-pointer ml-1"
-                  >
-                    <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-[131px] h-[54px] object-contain" />
-                  </button>
-                )}
               </div>
             </div>
+
+            {/* VIP badge - clickable to open VIP page */}
+            {vipData && (
+              <button
+                onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
+                className="flex-shrink-0 cursor-pointer"
+              >
+                <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-[131px] h-[54px] object-contain" />
+              </button>
+            )}
           </div>
         </div>
 
