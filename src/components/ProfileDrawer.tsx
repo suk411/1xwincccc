@@ -134,7 +134,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             {vipData && (
               <button
                 onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-                className="flex-shrink-0 cursor-pointer mr-3"
+                className="flex-shrink-0 cursor-pointer mr-9"
               >
                 <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-[105px] h-[54px] object-contain" />
               </button>
