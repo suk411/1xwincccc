@@ -27,7 +27,7 @@ import GameLobby from "@/components/GameLobby";
 import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import wingoLogo from "@/assets/wingo/WinGo-logo.png";
-import { refreshProfile } from "@/hooks/useProfile";
+import { refreshProfile, refreshVipLevel } from "@/hooks/useProfile";
 import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
 import VipLockModal from "@/components/VipLockModal";
 import googlePlayBadge from "@/assets/download/google-play.png";
@@ -145,6 +145,9 @@ const Index = () => {
   };
 
   useEffect(() => {
+    // Fetch current VIP level on every home page visit
+    refreshVipLevel();
+
     // Load initial balances from cache if available
     const cached = localStorage.getItem("cached_game_balances");
     if (cached) {
@@ -208,8 +211,8 @@ const Index = () => {
 
   const handleGameLaunch = async (game: GameObject) => {
     // Check VIP requirement immediately using cached vipLevel from useProfile hook
-    // Strictly restrict ALL games if vipLevel is 0
-    if (vipLevel === 0) {
+    // Require VIP 2 or above to play
+    if (vipLevel < 2) {
       setPendingGame(game);
       setShowVipModal(true);
       return;

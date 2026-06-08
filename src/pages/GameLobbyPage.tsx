@@ -31,8 +31,8 @@ const GameLobbyPage = () => {
 
   const handleGameLaunch = async (game: GameObject) => {
     // Check VIP requirement
-    // Strictly restrict ALL games if vipLevel is 0
-    if (vipLevel === 0) {
+    // Require VIP 2 or above to play
+    if (vipLevel < 2) {
       setPendingGame(game);
       setShowVipModal(true);
       return;

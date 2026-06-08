@@ -27,7 +27,38 @@ const notify = () => subs.forEach((fn) => fn());
 const subscribe = (cb: () => void) => { subs.add(cb); return () => { subs.delete(cb); }; };
 const getSnapshot = () => current;
 
+let fetchingVip = false;
 let fetching = false;
+
+const _refreshVipLevel = async () => {
+  if (fetchingVip || !authService.isLoggedIn()) return;
+  fetchingVip = true;
+  try {
+    const data = await authService.getCurrentVip();
+    const rawVip = data.vipLevel;
+    let vipLevel = 0;
+    if (typeof rawVip === "number") {
+      vipLevel = rawVip;
+    } else if (typeof rawVip === "string") {
+      const match = rawVip.match(/\d+/);
+      if (match) {
+        vipLevel = parseInt(match[0], 10);
+      } else if (rawVip.toLowerCase().startsWith("svip")) {
+        vipLevel = 5;
+      }
+    }
+    current = { ...current, vipLevel, loading: false };
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      balance: current.balance,
+      userId: current.userId,
+      vipLevel,
+    }));
+    notify();
+  } catch {
+    // Silently fail
+  }
+  fetchingVip = false;
+};
 
 const refreshBalanceOnly = async () => {
   if (fetching || !authService.isLoggedIn()) return;
@@ -133,3 +164,4 @@ export const useProfile = (autoFetch = true) => {
 
 export const refreshProfile = refresh;
 export const refreshBalance = refreshBalanceOnly;
+export const refreshVipLevel = _refreshVipLevel;

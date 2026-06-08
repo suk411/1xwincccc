@@ -453,6 +453,17 @@ export const authService = {
     return data;
   },
 
+  async getCurrentVip(): Promise<{ status: string; vipLevel: string }> {
+    const res = await fetch(`${API_BASE}/api/account/current/vip`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    checkAccountInactive(data);
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch VIP level"));
+    return data;
+  },
+
   async getVip(): Promise<VipResponse> {
     const res = await fetch(`${API_BASE}/api/account/vip`, {
       headers: authHeaders(),
