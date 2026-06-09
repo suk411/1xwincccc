@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GameObject, GAME_LIST } from "@/services/gameService";
 import { GameTabs, GameTab } from "./GameTabs";
 import { GameButton } from "./GameButton";
@@ -24,6 +25,19 @@ const LOBBY_TABS: GameTab[] = [
   { label: "Fish", value: "fish", icon: <IconImg src={catfishIcon} alt="Fish" /> },
 ];
 
+const HEADER_TITLES: Record<string, string> = {
+  all: "Game Lobby",
+  slots: "Slots",
+  slot: "Slots",
+  casino: "Casino",
+  fish: "Fish",
+  sport: "Sports",
+  live: "Live",
+  cards: "Cards",
+  card: "Cards",
+  top: "Game Lobby",
+};
+
 const PROVIDER_ICONS: Record<string, string> = {
   jili: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/JILI_LOGO.avif",
   pg: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/PG_LOGO.avif",
@@ -42,6 +56,7 @@ interface GameLobbyProps {
 }
 
 const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProps) => {
+  const { goBack } = useTransitionNavigate();
   const location = useLocation();
   const [selectedProvider, setSelectedProvider] = useState(GAME_LIST[0]?.provider?.toLowerCase() || "jili");
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -134,127 +149,44 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     setVisibleCount(prev => prev + GAMES_PER_PAGE);
   };
 
+  const headerTitle = HEADER_TITLES[activeTab.toLowerCase()] || activeTab;
+
   return (
-    <div className="flex flex-col gap-2 mt-2 h-full overflow-hidden scrollbar-hide">
-      <div className="w-full flex-shrink-0 overflow-hidden scrollbar-hide">
-        <GameTabs
-          tabs={LOBBY_TABS}
-          value={selectedFilter}
-          onChange={handleFilterChange}
-          className="rounded-lg scrollbar-hide"
-        />
-      </div>
-
-      <div className="flex gap-1.5 flex-1 overflow-hidden scrollbar-hide">
-        {/* Provider Sidebar */}
-        <div
-          className="flex flex-col gap-1 py-2 px-1 rounded-lg flex-shrink-0 h-full overflow-y-auto scrollbar-hide"
-          style={{
-            backgroundColor: "#120810",
-            width: "4.5rem",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          {providers.map((code) => {
-            const isActive = selectedProvider === code;
-            const iconUrl = PROVIDER_ICONS[code];
-            if (!iconUrl) return null;
-
-            return (
-              <button
-                key={code}
-                onClick={() => handleProviderChange(code)}
-                className="flex flex-col items-center justify-center gap-1 py-2 rounded-lg transition-all flex-shrink-0"
-                style={{
-                  background: isActive
-                    ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
-                    : "transparent",
-                  border: isActive
-                    ? "1px solid rgba(255,180,50,0.35)"
-                    : "1px solid transparent",
-                }}
-              >
-                <img
-                  src={iconUrl}
-                  alt={code}
-                  className="w-10 h-10 object-contain rounded"
-                />
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Game Grid */}
-        <div className="flex-1 flex flex-col overflow-y-auto scrollbar-hide pb-4">
-          <div style={{ position: "relative", width: "100%", height: 36, flexShrink: 0, marginBottom: 8 }}>
-            <div style={{ position: "absolute", left: 0, right: 64, top: 0, bottom: 0, overflow: "hidden" }}>
-              <div style={{
-                width: "100%",
-                height: "100%",
-                transition: "transform 0.3s ease, opacity 0.25s ease, border-radius 0.25s ease, border 0.25s ease",
-                transform: searchOpen ? "translateX(0)" : "translateX(100%)",
-                opacity: searchOpen ? 1 : 0,
-                position: "relative",
-                borderRadius: searchOpen ? "5px 0 0 5px" : 5,
-                border: "1px solid rgba(255,180,50,0.15)",
-                borderRight: searchOpen ? "none" : "1px solid rgba(255,180,50,0.15)",
-                overflow: "hidden",
-              }}>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 1024 1024"
-                  fill="rgba(255,255,255,0.4)"
-                  style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}
-                >
+    <div className="flex flex-col h-full overflow-hidden scrollbar-hide">
+      {/* Navbar Header (Invitation Rules style) */}
+      <div style={{ display: "block", position: "static", width: "100%", height: 46, boxSizing: "border-box", zIndex: 100, background: "none", flexShrink: 0 }}>
+        <div style={{
+          width: "100%", height: 46,
+          background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+          color: "#fff", boxSizing: "border-box", userSelect: "none",
+          display: "flex", alignItems: "center", position: "relative",
+        }}>
+          <div style={{ position: "absolute", left: 12, display: "flex", alignItems: "center", height: "100%", cursor: "pointer" }} onClick={() => goBack()}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </div>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+            <span style={{ fontSize: 18, fontWeight: 400, lineHeight: 1.2, color: "#fff", textAlign: "center" }}>{headerTitle}</span>
+          </div>
+          <div style={{ position: "absolute", right: 12, display: "flex", alignItems: "center", height: "100%" }}>
+            <div style={{ overflow: "hidden", transition: "width 0.3s ease, opacity 0.25s ease", width: searchOpen ? "160px" : 0, opacity: searchOpen ? 1 : 0, height: 32, borderRadius: "5px 0 0 5px", border: "1px solid rgba(255,180,50,0.15)", borderRight: "none", boxSizing: "border-box" }}>
+              <div style={{ position: "relative", width: "100%", height: "100%", backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                <svg width="14" height="14" viewBox="0 0 1024 1024" fill="rgba(255,255,255,0.4)" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}>
                   <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
                 </svg>
-                <input
-                  ref={searchRef}
-                  type="text"
-                  placeholder="Search games"
-                  value={searchQuery}
+                <input ref={searchRef} type="text" placeholder="Search" value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); }
-                  }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(255,255,255,0.08)",
-                    border: "none",
-                    padding: "10px 30px 10px 34px",
-                    fontSize: 14,
-                    boxSizing: "border-box",
-                    color: "rgba(255,255,255,0.9)",
-                    outline: "none",
-                  }}
+                  onKeyDown={(e) => { if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); } }}
+                  style={{ width: "100%", height: "100%", border: "none", padding: "0 8px 0 30px", fontSize: 12, boxSizing: "border-box", color: "rgba(255,255,255,0.9)", outline: "none", backgroundColor: "transparent" }}
                 />
               </div>
             </div>
-            <GameButton
-              variant="dark"
-              onClick={() => {
-                if (searchOpen) { setSearchOpen(false); setSearchQuery(""); }
-                else { setSearchOpen(true); setTimeout(() => searchRef.current?.focus(), 200); }
-              }}
-              style={{
-                position: "absolute",
-                right: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                width: 64,
-                height: 36,
-                borderRadius: searchOpen ? "0 19px 19px 0" : 19,
-                borderLeft: searchOpen ? "none" : undefined,
-                padding: 0,
-                fontSize: 14,
-                minWidth: 64,
-                color: "rgba(255,255,255,0.7)",
-                transition: "border-radius 0.25s ease, border 0.25s ease",
-              }}
+            <GameButton variant="dark"
+              onClick={() => { if (searchOpen) { setSearchOpen(false); setSearchQuery(""); } else { setSearchOpen(true); setTimeout(() => searchRef.current?.focus(), 200); } }}
+              style={{ flexShrink: 0, width: 32, height: 32, borderRadius: searchOpen ? "0 19px 19px 0" : 19, padding: 0, fontSize: 14, minWidth: 32, color: "rgba(255,255,255,0.7)", transition: "border-radius 0.25s ease" }}
             >
-              <svg width="18" height="18" viewBox="0 0 1024 1024" fill="white">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="white">
                 {searchOpen ? (
                   <path d="M563.2 512L832 243.2c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0L518.4 467.2 249.6 198.4c-12.8-12.8-32-12.8-44.8 0s-12.8 32 0 44.8l268.8 268.8-268.8 268.8c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6l268.8-268.8 268.8 268.8c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8L563.2 512z" />
                 ) : (
@@ -263,51 +195,106 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
               </svg>
             </GameButton>
           </div>
+        </div>
+      </div>
 
-          {visibleGames.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center text-white/40 text-sm">
-              No games found
-            </div>
-          ) : (
-            <div className="grid grid-cols-3 gap-2 pb-4">
-              {visibleGames.map((game, i) => (
+      {/* Tabs + Content */}
+      <div className="flex flex-col gap-2 mt-2 flex-1 overflow-hidden scrollbar-hide" style={{ padding: "0 8px" }}>
+        <div className="w-full flex-shrink-0 overflow-hidden scrollbar-hide">
+          <GameTabs
+            tabs={LOBBY_TABS}
+            value={selectedFilter}
+            onChange={handleFilterChange}
+            className="rounded-lg scrollbar-hide"
+          />
+        </div>
+
+        <div className="flex gap-1.5 flex-1 overflow-hidden scrollbar-hide">
+          {/* Provider Sidebar */}
+          <div
+            className="flex flex-col gap-1 py-2 px-1 rounded-lg flex-shrink-0 h-full overflow-y-auto scrollbar-hide"
+            style={{
+              backgroundColor: "#120810",
+              width: "4.5rem",
+              border: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            {providers.map((code) => {
+              const isActive = selectedProvider === code;
+              const iconUrl = PROVIDER_ICONS[code];
+              if (!iconUrl) return null;
+
+              return (
                 <button
-                  key={`${game.game_id}-${i}`}
-                  disabled={launchingGame === game.game_id}
-                  onClick={() => handleGameLaunch(game)}
-                  className="flex flex-col rounded-xl overflow-hidden cursor-pointer hover:scale-[1.03] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+                  key={code}
+                  onClick={() => handleProviderChange(code)}
+                  className="flex flex-col items-center justify-center gap-1 py-2 rounded-lg transition-all flex-shrink-0"
                   style={{
-                    background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
-                    border: "1px solid rgba(255,180,50,0.25)",
+                    background: isActive
+                      ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
+                      : "transparent",
+                    border: isActive
+                      ? "1px solid rgba(255,180,50,0.35)"
+                      : "1px solid transparent",
                   }}
                 >
-                  <div className="h-full w-full overflow-hidden">
-                    <img
-                      src={game.logo}
-                      alt={game.name}
-                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-                    />
-                  </div>
+                  <img
+                    src={iconUrl}
+                    alt={code}
+                    className="w-10 h-10 object-contain rounded"
+                  />
                 </button>
-              ))}
-            </div>
-          )}
+              );
+            })}
+          </div>
 
-          {visibleGames.length > 0 && visibleCount < filteredGames.length && (
-            <div className="flex flex-col items-center gap-2 pb-10">
-              <span className="text-white/60 text-xs">
-                Showing {visibleGames.length} of {filteredGames.length} games
-              </span>
-              <GameButton
-                variant="mute"
-                size="lg"
-                onClick={handleLoadMore}
-                className="w-full max-w-[200px]"
-              >
-                Load More
-              </GameButton>
-            </div>
-          )}
+          {/* Game Grid */}
+          <div className="flex-1 flex flex-col overflow-y-auto scrollbar-hide pb-4">
+            {visibleGames.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center text-white/40 text-sm">
+                No games found
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-2 pb-4">
+                {visibleGames.map((game, i) => (
+                  <button
+                    key={`${game.game_id}-${i}`}
+                    disabled={launchingGame === game.game_id}
+                    onClick={() => handleGameLaunch(game)}
+                    className="flex flex-col rounded-xl overflow-hidden cursor-pointer hover:scale-[1.03] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+                    style={{
+                      background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+                      border: "1px solid rgba(255,180,50,0.25)",
+                    }}
+                  >
+                    <div className="h-full w-full overflow-hidden">
+                      <img
+                        src={game.logo}
+                        alt={game.name}
+                        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {visibleGames.length > 0 && visibleCount < filteredGames.length && (
+              <div className="flex flex-col items-center gap-2 pb-10">
+                <span className="text-white/60 text-xs">
+                  Showing {visibleGames.length} of {filteredGames.length} games
+                </span>
+                <GameButton
+                  variant="mute"
+                  size="lg"
+                  onClick={handleLoadMore}
+                  className="w-full max-w-[200px]"
+                >
+                  Load More
+                </GameButton>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
