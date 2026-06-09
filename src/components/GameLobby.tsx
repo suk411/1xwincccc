@@ -166,33 +166,31 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </div>
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", height: "100%", opacity: searchOpen ? 0 : 1, transition: "opacity 0.2s ease" }}>
             <span style={{ fontSize: 18, fontWeight: 400, lineHeight: 1.2, color: "#fff", textAlign: "center" }}>{headerTitle}</span>
           </div>
           <div style={{ position: "absolute", right: 12, display: "flex", alignItems: "center", height: "100%" }}>
-            <div style={{ overflow: "hidden", transition: "width 0.3s ease, opacity 0.25s ease", width: searchOpen ? "160px" : 0, opacity: searchOpen ? 1 : 0, height: 32, borderRadius: "5px 0 0 5px", border: "1px solid rgba(255,180,50,0.15)", borderRight: "none", boxSizing: "border-box" }}>
-              <div style={{ position: "relative", width: "100%", height: "100%", backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
-                <svg width="14" height="14" viewBox="0 0 1024 1024" fill="rgba(255,255,255,0.4)" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}>
+            <div style={{ overflow: "hidden", transition: "width 0.3s ease, opacity 0.25s ease", width: searchOpen ? "180px" : 0, opacity: searchOpen ? 1 : 0, height: 36, borderRadius: 19, border: "1px solid rgba(255,180,50,0.15)", boxSizing: "border-box", marginRight: 8 }}>
+              <div style={{ position: "relative", width: "100%", height: "100%", backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", borderRadius: 19 }}>
+                <svg width="14" height="14" viewBox="0 0 1024 1024" fill="rgba(255,255,255,0.4)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}>
                   <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
                 </svg>
-                <input ref={searchRef} type="text" placeholder="Search" value={searchQuery}
+                <input ref={searchRef} type="text" placeholder="Search games" value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); } }}
-                  style={{ width: "100%", height: "100%", border: "none", padding: "0 8px 0 30px", fontSize: 12, boxSizing: "border-box", color: "rgba(255,255,255,0.9)", outline: "none", backgroundColor: "transparent" }}
+                  style={{ width: "100%", height: "100%", border: "none", padding: "0 8px 0 32px", fontSize: 12, boxSizing: "border-box", color: "rgba(255,255,255,0.9)", outline: "none", backgroundColor: "transparent", borderRadius: 19 }}
                 />
               </div>
             </div>
             <GameButton variant="dark"
               onClick={() => { if (searchOpen) { setSearchOpen(false); setSearchQuery(""); } else { setSearchOpen(true); setTimeout(() => searchRef.current?.focus(), 200); } }}
-              style={{ flexShrink: 0, width: 32, height: 32, borderRadius: searchOpen ? "0 19px 19px 0" : 19, padding: 0, fontSize: 14, minWidth: 32, color: "rgba(255,255,255,0.7)", transition: "border-radius 0.25s ease" }}
+              style={{ flexShrink: 0, width: searchOpen ? 64 : 36, height: 36, borderRadius: 19, padding: searchOpen ? "0 12px" : 0, fontSize: 13, minWidth: searchOpen ? 64 : 36, color: "rgba(255,255,255,0.7)", transition: "width 0.3s ease, padding 0.3s ease" }}
             >
-              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="white">
-                {searchOpen ? (
-                  <path d="M563.2 512L832 243.2c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0L518.4 467.2 249.6 198.4c-12.8-12.8-32-12.8-44.8 0s-12.8 32 0 44.8l268.8 268.8-268.8 268.8c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6l268.8-268.8 268.8 268.8c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8L563.2 512z" />
-                ) : (
+              {searchOpen ? "Cancel" : (
+                <svg width="16" height="16" viewBox="0 0 1024 1024" fill="white">
                   <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
-                )}
-              </svg>
+                </svg>
+              )}
             </GameButton>
           </div>
         </div>
