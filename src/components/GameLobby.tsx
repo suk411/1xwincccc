@@ -161,16 +161,16 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
           color: "#fff", boxSizing: "border-box", userSelect: "none",
           display: "flex", alignItems: "center", position: "relative",
         }}>
-          <div style={{ position: "absolute", left: 12, display: "flex", alignItems: "center", height: "100%", cursor: "pointer" }} onClick={() => goBack()}>
+          <div style={{ display: "flex", alignItems: "center", height: "100%", cursor: "pointer", flexShrink: 0, padding: "0 12px" }} onClick={() => goBack()}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </div>
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", height: "100%", opacity: searchOpen ? 0 : 1, transition: "opacity 0.2s ease" }}>
+          <div style={{ flex: searchOpen ? 0 : 1, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", height: "100%", opacity: searchOpen ? 0 : 1, transition: "flex 0.3s ease, opacity 0.2s ease" }}>
             <span style={{ fontSize: 18, fontWeight: 400, lineHeight: 1.2, color: "#fff", textAlign: "center" }}>{headerTitle}</span>
           </div>
-          <div style={{ position: "absolute", right: 12, display: "flex", alignItems: "center", height: "100%" }}>
-            <div style={{ overflow: "hidden", transition: "width 0.3s ease, opacity 0.25s ease", width: searchOpen ? "180px" : 0, opacity: searchOpen ? 1 : 0, height: 36, borderRadius: 19, border: "1px solid rgba(255,180,50,0.15)", boxSizing: "border-box", marginRight: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", height: "100%", flex: searchOpen ? 1 : 0, justifyContent: "flex-end", overflow: "hidden", paddingRight: 12 }}>
+            <div style={{ flex: 1, overflow: "hidden", transition: "opacity 0.25s ease", opacity: searchOpen ? 1 : 0, height: 36, borderRadius: 19, border: "1px solid rgba(255,180,50,0.15)", boxSizing: "border-box", marginRight: 8 }}>
               <div style={{ position: "relative", width: "100%", height: "100%", backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", borderRadius: 19 }}>
                 <svg width="14" height="14" viewBox="0 0 1024 1024" fill="rgba(255,255,255,0.4)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}>
                   <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
