@@ -63,6 +63,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const [visibleCount, setVisibleCount] = useState(GAMES_PER_PAGE);
 
   useEffect(() => {
@@ -137,6 +138,21 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
     return filteredGames.slice(0, visibleCount);
   }, [filteredGames, visibleCount]);
 
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < filteredGames.length) {
+          setVisibleCount(prev => prev + GAMES_PER_PAGE);
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [visibleCount, filteredGames.length]);
+
   const handleProviderChange = (code: string) => {
     setSelectedProvider(code);
   };
@@ -166,33 +182,34 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </div>
-          <div style={{ flex: searchOpen ? 0 : 1, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", height: "100%", opacity: searchOpen ? 0 : 1, transition: "flex 0.3s ease, opacity 0.2s ease" }}>
+          <div style={{ flex: searchOpen ? 0 : 1, transition: "flex 0.3s ease" }} />
+          <div style={{ position: "absolute", left: 0, right: 0, display: "flex", alignItems: "center", justifyContent: "center", height: "100%", pointerEvents: "none", opacity: searchOpen ? 0 : 1, transform: searchOpen ? "scale(0.5)" : "scale(1)", transition: "opacity 0.25s ease, transform 0.3s ease" }}>
             <span style={{ fontSize: 18, fontWeight: 400, lineHeight: 1.2, color: "#fff", textAlign: "center" }}>{headerTitle}</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", height: "100%", flex: searchOpen ? 1 : 0, justifyContent: "flex-end", overflow: "hidden", paddingRight: 12 }}>
-            <div style={{ flex: 1, overflow: "hidden", transition: "opacity 0.25s ease", opacity: searchOpen ? 1 : 0, height: 36, borderRadius: 19, border: "1px solid rgba(255,180,50,0.15)", boxSizing: "border-box", marginRight: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", height: "100%", flex: searchOpen ? 1 : 0, justifyContent: "flex-end", overflow: "hidden", marginRight: searchOpen ? 12 : 0 }}>
+            <div style={{ flex: 1, overflow: "hidden", transition: "opacity 0.25s ease", opacity: searchOpen ? 1 : 0, height: 36, borderRadius: 19, border: "1px solid rgba(255,180,50,0.15)", boxSizing: "border-box" }}>
               <div style={{ position: "relative", width: "100%", height: "100%", backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", borderRadius: 19 }}>
-                <svg width="14" height="14" viewBox="0 0 1024 1024" fill="rgba(255,255,255,0.4)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}>
+                <svg width="16" height="16" viewBox="0 0 1024 1024" fill="rgba(255,255,255,0.4)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}>
                   <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
                 </svg>
                 <input ref={searchRef} type="text" placeholder="Search games" value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); } }}
-                  style={{ width: "100%", height: "100%", border: "none", padding: "0 8px 0 32px", fontSize: 12, boxSizing: "border-box", color: "rgba(255,255,255,0.9)", outline: "none", backgroundColor: "transparent", borderRadius: 19 }}
+                  style={{ width: "100%", height: "100%", border: "none", padding: "0 8px 0 36px", fontSize: 12, boxSizing: "border-box", color: "rgba(255,255,255,0.9)", outline: "none", backgroundColor: "transparent", borderRadius: 19 }}
                 />
               </div>
             </div>
-            <GameButton variant="dark"
-              onClick={() => { if (searchOpen) { setSearchOpen(false); setSearchQuery(""); } else { setSearchOpen(true); setTimeout(() => searchRef.current?.focus(), 200); } }}
-              style={{ flexShrink: 0, width: searchOpen ? 64 : 36, height: 36, borderRadius: 19, padding: searchOpen ? "0 12px" : 0, fontSize: 13, minWidth: searchOpen ? 64 : 36, color: "rgba(255,255,255,0.7)", transition: "width 0.3s ease, padding 0.3s ease" }}
-            >
-              {searchOpen ? "Cancel" : (
-                <svg width="16" height="16" viewBox="0 0 1024 1024" fill="white">
-                  <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
-                </svg>
-              )}
-            </GameButton>
           </div>
+          <GameButton variant={searchOpen ? "mute" : "dark"}
+            onClick={() => { if (searchOpen) { setSearchOpen(false); setSearchQuery(""); } else { setSearchOpen(true); setTimeout(() => searchRef.current?.focus(), 200); } }}
+            style={{ flexShrink: 0, width: searchOpen ? 64 : 36, height: 36, borderRadius: 19, padding: searchOpen ? "0 12px" : 0, fontSize: 13, minWidth: searchOpen ? 64 : 36, color: "rgba(255,255,255,0.8)", marginRight: 12, transition: "width 0.3s ease, padding 0.3s ease" }}
+          >
+            {searchOpen ? "Cancel" : (
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="white">
+                <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
+              </svg>
+            )}
+          </GameButton>
         </div>
       </div>
 
@@ -278,19 +295,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
             )}
 
             {visibleGames.length > 0 && visibleCount < filteredGames.length && (
-              <div className="flex flex-col items-center gap-2 pb-10">
-                <span className="text-white/60 text-xs">
-                  Showing {visibleGames.length} of {filteredGames.length} games
-                </span>
-                <GameButton
-                  variant="mute"
-                  size="lg"
-                  onClick={handleLoadMore}
-                  className="w-full max-w-[200px]"
-                >
-                  Load More
-                </GameButton>
-              </div>
+              <div ref={sentinelRef} className="h-1" />
             )}
           </div>
         </div>

@@ -53,7 +53,7 @@ const IconImg = ({ src, alt }: { src: string; alt: string }) => (
 
 
 const gameTabs: GameTab[] = [
-  { label: "TOP", value: "top" },
+  { label: "TOP", value: "top", icon: <IconImg src={carhotIcon} alt="Top" /> },
   { label: "All", value: "all", icon: <IconImg src={catpopularIcon} alt="All" /> },
   { label: "Slots", value: "slot", icon: <IconImg src={catslotIcon} alt="Slots" /> },
   { label: "Cards", value: "card", icon: <IconImg src={catcardsIcon} alt="Cards" /> },

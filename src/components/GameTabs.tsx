@@ -73,7 +73,7 @@ const GameTabs: React.FC<GameTabsProps> = ({ tabs, value, onChange, className })
               )}
             >
               {tab.icon && (
-                <span style={{ display: "block", width: 25, height: 25, marginBottom: 2 }}>
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 25, height: 25, marginBottom: 2 }}>
                   {tab.icon}
                 </span>
               )}
