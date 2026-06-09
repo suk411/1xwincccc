@@ -25,7 +25,7 @@ const GAMES_PER_PAGE = 6;
 const getProviderSections = () => {
   const providers = ["jili", "pg", "jdb", "spribe", "turbo", ];
   const gameNames: Record<string, string[]> = {
-    jili: ["Money Coming", "Fortune Gems", "Super Ace", "3 Coin Treasures", "Book of Gold", "Zeus"],
+    jili: ["Money Coming", "Fortune Gems", "Super Ace", "Fortune Garuda 500", "Book of Gold", "Zeus"],
     pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko"],
     jdb: ["Mines 2", "Trump Card", "Bull Treasure", "Fortune Neko", "Super Niubi Deluxe", "Lucky Color Game"],
     spribe: ["Aviator", "Mines", "Plinko", "Goal", "Hilo", "Dice"],

@@ -1133,4 +1133,22 @@ export const JE_GAMES = [
     type: "CB",
     category: "card",
   },
+  {
+    name: "Fortune Garuda 500",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/Jfortunegaruda500.png",
+    provider_code: "JE",
+    provider: "jili",
+    game_id: 696,
+    type: "SL",
+    category: "slot",
+  },
+  {
+    name: "Fortune Gems 500",
+    logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/Jgamelogo/Jfortunegems500.png",
+    provider_code: "JE",
+    provider: "jili",
+    game_id: 540,
+    type: "SL",
+    category: "slot",
+  },
 ];
