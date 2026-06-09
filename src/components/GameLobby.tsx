@@ -1,27 +1,27 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { GameObject, GAME_LIST } from "@/services/gameService";
 import { GameTabs, GameTab } from "./GameTabs";
 import { GameButton } from "./GameButton";
 
-import allTabIcon from "@/assets/tabs/all-icon.png";
-import slotsTabIcon from "@/assets/tabs/slots-icon.png";
-import casinoTabIcon from "@/assets/tabs/casino-icon.png";
-import fishTabIcon from "@/assets/tabs/fish-icon.png";
-import liveTabIcon from "@/assets/tabs/live-icon.png";
-import sportTabIcon from "@/assets/tabs/sport-icon.png";
+import catpopularIcon from "@/assets/games/catpopular.webp";
+import catslotIcon from "@/assets/games/catslot.webp";
+import catcasinoIcon from "@/assets/games/catcasino.webp";
+import catfishIcon from "@/assets/games/catfish.webp";
+import catsportsIcon from "@/assets/games/catsports.webp";
+import catcardsIcon from "@/assets/games/catcards.webp";
 
 const IconImg = ({ src, alt }: { src: string; alt: string }) => (
-  <img src={src} alt={alt} className="w-5 h-5 object-contain" />
+  <img src={src} alt={alt} style={{ display: "block", width: 25, height: 25 }} />
 );
 
 const LOBBY_TABS: GameTab[] = [
-  { label: "All", value: "all", icon: <IconImg src={allTabIcon} alt="All" /> },
-  { label: "Slots", value: "slot", icon: <IconImg src={slotsTabIcon} alt="Slots" /> },
-  { label: "Casino", value: "casino", icon: <IconImg src={casinoTabIcon} alt="Casino" /> },
-  { label: "FISH", value: "fish", icon: <IconImg src={fishTabIcon} alt="Fish" /> },
-  { label: "LIVE", value: "live", icon: <IconImg src={liveTabIcon} alt="Live" /> },
-  { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
+  { label: "All", value: "all", icon: <IconImg src={catpopularIcon} alt="All" /> },
+  { label: "Slots", value: "slot", icon: <IconImg src={catslotIcon} alt="Slots" /> },
+  { label: "Cards", value: "card", icon: <IconImg src={catcardsIcon} alt="Cards" /> },
+  { label: "Casino", value: "casino", icon: <IconImg src={catcasinoIcon} alt="Casino" /> },
+  { label: "Sports", value: "sport", icon: <IconImg src={catsportsIcon} alt="Sports" /> },
+  { label: "Fish", value: "fish", icon: <IconImg src={catfishIcon} alt="Fish" /> },
 ];
 
 const PROVIDER_ICONS: Record<string, string> = {
@@ -45,6 +45,9 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
   const location = useLocation();
   const [selectedProvider, setSelectedProvider] = useState(GAME_LIST[0]?.provider?.toLowerCase() || "jili");
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
   const [visibleCount, setVisibleCount] = useState(GAMES_PER_PAGE);
 
   useEffect(() => {
@@ -63,17 +66,21 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
         fish: "fish",
         sport: "sport",
         live: "live",
+        cards: "card",
       };
       const targetCategory = categoryMapping[activeTab.toLowerCase()] || activeTab.toLowerCase();
       games = games.filter((g) => g.category.toLowerCase() === targetCategory);
     }
+    if (selectedFilter !== "all") {
+      games = games.filter((g) => g.category.toLowerCase() === selectedFilter.toLowerCase());
+    }
     const codes = new Set(games.map((g) => g.provider.toLowerCase()));
     return Array.from(codes);
-  }, [activeTab]);
+  }, [activeTab, selectedFilter]);
 
   useEffect(() => {
     setVisibleCount(GAMES_PER_PAGE);
-  }, [selectedProvider, selectedFilter, activeTab]);
+  }, [selectedProvider, selectedFilter, activeTab, searchQuery]);
 
   useEffect(() => {
     if (providers.length > 0 && !providers.includes(selectedProvider)) {
@@ -86,6 +93,11 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
 
     games = games.filter((g) => g.provider.toLowerCase() === selectedProvider.toLowerCase());
 
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      games = games.filter((g) => g.name.toLowerCase().includes(q));
+    }
+
     if (selectedFilter !== "all") {
       games = games.filter((g) => g.category.toLowerCase() === selectedFilter.toLowerCase());
     }
@@ -97,13 +109,14 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
         fish: "fish",
         sport: "sport",
         live: "live",
+        cards: "card",
       };
       const targetCategory = categoryMapping[activeTab.toLowerCase()] || activeTab.toLowerCase();
       games = games.filter((g) => g.category.toLowerCase() === targetCategory);
     }
 
     return games;
-  }, [selectedProvider, selectedFilter, activeTab]);
+  }, [selectedProvider, selectedFilter, activeTab, searchQuery]);
 
   const visibleGames = useMemo(() => {
     return filteredGames.slice(0, visibleCount);
@@ -173,6 +186,84 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
 
         {/* Game Grid */}
         <div className="flex-1 flex flex-col overflow-y-auto scrollbar-hide pb-4">
+          <div style={{ position: "relative", width: "100%", height: 36, flexShrink: 0, marginBottom: 8 }}>
+            <div style={{ position: "absolute", left: 0, right: 64, top: 0, bottom: 0, overflow: "hidden" }}>
+              <div style={{
+                width: "100%",
+                height: "100%",
+                transition: "transform 0.3s ease, opacity 0.25s ease, border-radius 0.25s ease, border 0.25s ease",
+                transform: searchOpen ? "translateX(0)" : "translateX(100%)",
+                opacity: searchOpen ? 1 : 0,
+                position: "relative",
+                borderRadius: searchOpen ? "5px 0 0 5px" : 5,
+                border: "1px solid rgba(255,180,50,0.15)",
+                borderRight: searchOpen ? "none" : "1px solid rgba(255,180,50,0.15)",
+                overflow: "hidden",
+              }}>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 1024 1024"
+                  fill="rgba(255,255,255,0.4)"
+                  style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 1, pointerEvents: "none" }}
+                >
+                  <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
+                </svg>
+                <input
+                  ref={searchRef}
+                  type="text"
+                  placeholder="Search games"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); }
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    border: "none",
+                    padding: "10px 30px 10px 34px",
+                    fontSize: 14,
+                    boxSizing: "border-box",
+                    color: "rgba(255,255,255,0.9)",
+                    outline: "none",
+                  }}
+                />
+              </div>
+            </div>
+            <GameButton
+              variant="dark"
+              onClick={() => {
+                if (searchOpen) { setSearchOpen(false); setSearchQuery(""); }
+                else { setSearchOpen(true); setTimeout(() => searchRef.current?.focus(), 200); }
+              }}
+              style={{
+                position: "absolute",
+                right: 0,
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 64,
+                height: 36,
+                borderRadius: searchOpen ? "0 19px 19px 0" : 19,
+                borderLeft: searchOpen ? "none" : undefined,
+                padding: 0,
+                fontSize: 14,
+                minWidth: 64,
+                color: "rgba(255,255,255,0.7)",
+                transition: "border-radius 0.25s ease, border 0.25s ease",
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 1024 1024" fill="white">
+                {searchOpen ? (
+                  <path d="M563.2 512L832 243.2c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0L518.4 467.2 249.6 198.4c-12.8-12.8-32-12.8-44.8 0s-12.8 32 0 44.8l268.8 268.8-268.8 268.8c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6l268.8-268.8 268.8 268.8c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8L563.2 512z" />
+                ) : (
+                  <path d="M956.8 905.6L723.2 672c54.4-64 86.4-147.2 86.4-236.8 0-204.8-166.4-371.2-371.2-371.2S67.2 230.4 67.2 435.2s166.4 371.2 371.2 371.2c89.6 0 172.8-32 236.8-86.4l233.6 233.6c6.4 6.4 16 9.6 25.6 9.6s19.2-3.2 25.6-9.6c12.8-12.8 12.8-32 0-44.8zM131.2 435.2c0-169.6 137.6-307.2 307.2-307.2s307.2 137.6 307.2 307.2-137.6 307.2-307.2 307.2-307.2-137.6-307.2-307.2z" />
+                )}
+              </svg>
+            </GameButton>
+          </div>
+
           {visibleGames.length === 0 ? (
             <div className="flex-1 flex items-center justify-center text-white/40 text-sm">
               No games found

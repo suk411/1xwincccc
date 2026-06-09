@@ -82,6 +82,7 @@ const GameLobbyPage = () => {
     fish: "Fish",
     sport: "Sports",
     live: "Live",
+    cards: "Cards",
   };
 
   return (

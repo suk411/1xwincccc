@@ -15,13 +15,13 @@ import giftIcon from "@/assets/bank/gift-box-small.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import headerGlow from "@/assets/header-glow.png";
 import { GameTabs, GameTab } from "@/components/GameTabs";
-import allTabIcon from "@/assets/tabs/all-icon.png";
-import recentTabIcon from "@/assets/tabs/recent-icon.png";
-import slotsTabIcon from "@/assets/tabs/slots-icon.png";
-import casinoTabIcon from "@/assets/tabs/casino-icon.png";
-import fishTabIcon from "@/assets/tabs/fish-icon.png";
-import liveTabIcon from "@/assets/tabs/live-icon.png";
-import sportTabIcon from "@/assets/tabs/sport-icon.png";
+import carhotIcon from "@/assets/games/carhot.webp";
+import catpopularIcon from "@/assets/games/catpopular.webp";
+import catslotIcon from "@/assets/games/catslot.webp";
+import catcardsIcon from "@/assets/games/catcards.webp";
+import catcasinoIcon from "@/assets/games/catcasino.webp";
+import catsportsIcon from "@/assets/games/catsports.webp";
+import catfishIcon from "@/assets/games/catfish.webp";
 import GameProviderSection from "@/components/GameProviderSection";
 import GameLobby from "@/components/GameLobby";
 import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
@@ -54,13 +54,12 @@ const IconImg = ({ src, alt }: { src: string; alt: string }) => (
 
 const gameTabs: GameTab[] = [
   { label: "TOP", value: "top" },
-  { label: "All", value: "all", icon: <IconImg src={allTabIcon} alt="All" /> },
-  { label: "Recent", value: "recent", icon: <IconImg src={recentTabIcon} alt="Recent" /> },
-  { label: "Slots", value: "slots", icon: <IconImg src={slotsTabIcon} alt="Slots" /> },
-  { label: "Casino", value: "casino", icon: <IconImg src={casinoTabIcon} alt="Casino" /> },
-  { label: "FISH", value: "fish", icon: <IconImg src={fishTabIcon} alt="Fish" /> },
-  { label: "LIVE", value: "live", icon: <IconImg src={liveTabIcon} alt="Live" /> },
-  { label: "SPORT", value: "sport", icon: <IconImg src={sportTabIcon} alt="Sport" /> },
+  { label: "All", value: "all", icon: <IconImg src={catpopularIcon} alt="All" /> },
+  { label: "Slots", value: "slot", icon: <IconImg src={catslotIcon} alt="Slots" /> },
+  { label: "Cards", value: "card", icon: <IconImg src={catcardsIcon} alt="Cards" /> },
+  { label: "Casino", value: "casino", icon: <IconImg src={catcasinoIcon} alt="Casino" /> },
+  { label: "Sports", value: "sport", icon: <IconImg src={catsportsIcon} alt="Sports" /> },
+  { label: "Fish", value: "fish", icon: <IconImg src={catfishIcon} alt="Fish" /> },
 ];
 
 
