@@ -26,7 +26,7 @@ const getProviderSections = () => {
   const providers = ["jili", "pg", "jdb", "spribe", "turbo", ];
   const gameNames: Record<string, string[]> = {
     jili: ["Money Coming", "Fortune Gems", "Super Ace", "Fortune Garuda 500", "Book of Gold", "Zeus"],
-    pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko"],
+    pg: ["Fortune Rabbit", "Leprechaun Riches", "Captain's Bounty", "Anubis Wrath", "Treasures of Aztec", "Lucky Neko", "Jack Frost's Winter"],
     jdb: ["Mines 2", "Trump Card", "Bull Treasure", "Fortune Neko", "Super Niubi Deluxe", "Lucky Color Game"],
     spribe: ["Aviator", "Mines", "Plinko", "Goal", "Hilo", "Dice"],
     turbo: ["Vortex", "Chicken Route", "Limbo Rider", "Vortex Halloween", "Mysteco", "Turbo Plinko"],
