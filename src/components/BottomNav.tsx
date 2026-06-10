@@ -44,7 +44,7 @@ const BottomNav = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-50 flex justify-center">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[var(--app-max-width)] z-50 flex justify-center" style={{ containerType: "inline-size" }}>
       {/* Nav container - constrained width */}
       <div className="relative w-full">
         <img 
@@ -66,13 +66,13 @@ const BottomNav = () => {
                 className="relative flex flex-col items-center gap-0 py-[2%] px-[3%] transition-all duration-200 overflow-hidden"
                 style={{
                   minWidth: "10%",
-                  marginRight: isCenterAdjacent ? "clamp(1rem, 5vw, 3rem)" : undefined,
-                  transform: isCenterAdjacent ? "translateX(clamp(-0.75rem, -3vw, -2rem))" : undefined,
+                  marginRight: isCenterAdjacent ? "clamp(1rem, 5cqw, 3rem)" : undefined,
+                  transform: isCenterAdjacent ? "translateX(clamp(-0.75rem, -3cqw, -2rem))" : undefined,
                 }}
               >
                 <div
                   className="relative flex flex-col items-center"
-                  style={{ transform: "translateY(clamp(-0.26rem, -0.8vw, -0.45rem))" }}
+                  style={{ transform: "translateY(clamp(-0.26rem, -0.8cqw, -0.45rem))" }}
                 >
                   {isActive ? (
                     <div
@@ -81,8 +81,8 @@ const BottomNav = () => {
                       style={{
                         top: "58%",
                         transform: "translate(-50%, -50%) scale(0.77)",
-                        width: "clamp(4.07rem, 11.55vw, 4.51rem)",
-                        height: "clamp(4.07rem, 11.55vw, 4.51rem)",
+                        width: "clamp(4.07rem, 11.55cqw, 4.51rem)",
+                        height: "clamp(4.07rem, 11.55cqw, 4.51rem)",
                       }}
                     >
                       <img src={activeBgSrc} alt="" className="w-full h-full" />
@@ -90,11 +90,11 @@ const BottomNav = () => {
                   ) : null}
                   <div
                     className="relative z-10 flex flex-col items-center"
-                    style={{ transform: "translateY(clamp(-0.38rem, -1.1vw, -0.6rem))" }}
+                    style={{ transform: "translateY(clamp(-0.38rem, -1.1cqw, -0.6rem))" }}
                   >
                     <div
                       className="flex items-end justify-center"
-                      style={{ width: "clamp(2.64rem, 7.92vw, 3.96rem)", height: "clamp(2.64rem, 7.92vw, 3.96rem)" }}
+                      style={{ width: "clamp(2.64rem, 7.92cqw, 3.96rem)", height: "clamp(2.64rem, 7.92cqw, 3.96rem)" }}
                     >
                       <img
                         src={isActive ? item.activeIcon : item.inactiveIcon}
@@ -103,8 +103,8 @@ const BottomNav = () => {
                           isActive ? "scale-110" : "opacity-70"
                         }`}
                         style={{
-                          width: "clamp(1.604rem, 5.132vw, 2.887rem)",
-                          height: "clamp(1.604rem, 5.132vw, 2.887rem)",
+                          width: "clamp(1.604rem, 5.132cqw, 2.887rem)",
+                          height: "clamp(1.604rem, 5.132cqw, 2.887rem)",
                           filter: isActive
                             ? "drop-shadow(0 0 0.45rem hsl(var(--nav-glow) / 0.6))"
                             : undefined,
@@ -116,10 +116,10 @@ const BottomNav = () => {
                         isActive ? "text-[#ffff8d]" : "text-muted-foreground"
                       }`}
                       style={{
-                        fontSize: "clamp(0.499rem, 1.499vw, 0.831rem)",
+                        fontSize: "clamp(0.499rem, 1.499cqw, 0.831rem)",
                         position: "relative",
                         zIndex: 10,
-                        marginTop: "clamp(0.08rem, 0.25vw, 0.14rem)",
+                        marginTop: "clamp(0.08rem, 0.25cqw, 0.14rem)",
                         textShadow: isActive ? "0 0 0.5625rem hsl(var(--primary) / 0.5)" : undefined,
                       }}
                     >
@@ -137,7 +137,7 @@ const BottomNav = () => {
             className="flex flex-col items-center pt-[2%] cursor-pointer"
             style={{ minWidth: '12%' }}
           >
-            <span className="text-primary text-glow" style={{ fontSize: 'clamp(0.7rem, 2.2vw, 1.2rem)' }}>
+            <span className="text-primary text-glow" style={{ fontSize: 'clamp(0.7rem, 2.2cqw, 1.2rem)' }}>
               GET ₹200
             </span>
           </div>
@@ -153,13 +153,13 @@ const BottomNav = () => {
                 className="relative flex flex-col items-center gap-0 py-[2%] px-[3%] transition-all duration-200 overflow-hidden"
                 style={{
                   minWidth: "10%",
-                  marginLeft: isCenterAdjacent ? "clamp(1rem, 5vw, 3rem)" : undefined,
-                  transform: isCenterAdjacent ? "translateX(clamp(0.75rem, 3vw, 2rem))" : undefined,
+                  marginLeft: isCenterAdjacent ? "clamp(1rem, 5cqw, 3rem)" : undefined,
+                  transform: isCenterAdjacent ? "translateX(clamp(0.75rem, 3cqw, 2rem))" : undefined,
                 }}
               >
                 <div
                   className="relative flex flex-col items-center"
-                  style={{ transform: "translateY(clamp(-0.26rem, -0.8vw, -0.45rem))" }}
+                  style={{ transform: "translateY(clamp(-0.26rem, -0.8cqw, -0.45rem))" }}
                 >
                   {isActive ? (
                     <div
@@ -168,8 +168,8 @@ const BottomNav = () => {
                       style={{
                         top: "58%",
                         transform: "translate(-50%, -50%) scale(0.77)",
-                        width: "clamp(4.07rem, 11.55vw, 4.51rem)",
-                        height: "clamp(4.07rem, 11.55vw, 4.51rem)",
+                        width: "clamp(4.07rem, 11.55cqw, 4.51rem)",
+                        height: "clamp(4.07rem, 11.55cqw, 4.51rem)",
                       }}
                     >
                       <img src={activeBgSrc} alt="" className="w-full h-full" />
@@ -177,11 +177,11 @@ const BottomNav = () => {
                   ) : null}
                   <div
                     className="relative z-10 flex flex-col items-center"
-                    style={{ transform: "translateY(clamp(-0.38rem, -1.1vw, -0.6rem))" }}
+                    style={{ transform: "translateY(clamp(-0.38rem, -1.1cqw, -0.6rem))" }}
                   >
                     <div
                       className="flex items-end justify-center"
-                      style={{ width: "clamp(2.64rem, 7.92vw, 3.96rem)", height: "clamp(2.64rem, 7.92vw, 3.96rem)" }}
+                      style={{ width: "clamp(2.64rem, 7.92cqw, 3.96rem)", height: "clamp(2.64rem, 7.92cqw, 3.96rem)" }}
                     >
                       <img
                         src={isActive ? item.activeIcon : item.inactiveIcon}
@@ -190,8 +190,8 @@ const BottomNav = () => {
                           isActive ? "scale-110" : "opacity-70"
                         }`}
                         style={{
-                          width: "clamp(1.604rem, 5.132vw, 2.887rem)",
-                          height: "clamp(1.604rem, 5.132vw, 2.887rem)",
+                          width: "clamp(1.604rem, 5.132cqw, 2.887rem)",
+                          height: "clamp(1.604rem, 5.132cqw, 2.887rem)",
                           filter: isActive
                             ? "drop-shadow(0 0 0.45rem hsl(var(--nav-glow) / 0.6))"
                             : undefined,
@@ -203,10 +203,10 @@ const BottomNav = () => {
                         isActive ? "text-[#ffff8d]" : "text-muted-foreground"
                       }`}
                       style={{
-                        fontSize: "clamp(0.499rem, 1.499vw, 0.831rem)",
+                        fontSize: "clamp(0.499rem, 1.499cqw, 0.831rem)",
                         position: "relative",
                         zIndex: 10,
-                        marginTop: "clamp(0.08rem, 0.25vw, 0.14rem)",
+                        marginTop: "clamp(0.08rem, 0.25cqw, 0.14rem)",
                         textShadow: isActive ? "0 0 0.5625rem hsl(var(--primary) / 0.5)" : undefined,
                       }}
                     >
@@ -230,14 +230,14 @@ const BottomNav = () => {
             src={navCenterPlatform} 
             alt="" 
             className="absolute left-1/2 -translate-x-1/2 z-0"
-            style={{ minWidth: 'clamp(8rem, 25vw, 16rem)', bottom: 'clamp(-1rem, -2vw, -2rem)' }}
+            style={{ minWidth: 'clamp(8rem, 25cqw, 16rem)', bottom: 'clamp(-1rem, -2cqw, -2rem)' }}
           />
           {/* Gift box image */}
           <img 
             src={giftBox} 
             alt="GET ₹200" 
             className="object-contain relative z-10 transition-transform duration-200 hover:scale-110"
-            style={{ width: 'clamp(3rem, 9vw, 6rem)', height: 'clamp(3rem, 9vw, 6rem)' }}
+            style={{ width: 'clamp(3rem, 9cqw, 6rem)', height: 'clamp(3rem, 9cqw, 6rem)' }}
           />
         </div>
       </div>
