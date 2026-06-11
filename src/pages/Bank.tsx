@@ -78,24 +78,6 @@ const Bank = () => {
   const [bonusOptIn, setBonusOptIn] = useState(false);
   const [showBonusApply, setShowBonusApply] = useState(false);
 
-  const depositAmounts = useMemo(() => {
-    const limit = getChannelLimit(activeMethod, activePaymentChannel);
-    if (!limit) return BASE_DEPOSIT_AMOUNTS;
-    const filtered = BASE_DEPOSIT_AMOUNTS.filter(a => a >= limit.min && a <= limit.max);
-    return filtered.length > 0 ? filtered : [limit.min];
-  }, [activeMethod, activePaymentChannel, depositConfig]);
-
-  useEffect(() => {
-    const limit = getChannelLimit(activeMethod, activePaymentChannel);
-    if (limit) {
-      if (selectedAmount < limit.min || selectedAmount > limit.max) {
-        setSelectedAmount(limit.min);
-        setCustomAmount("");
-        setDepositAmountInput(limit.min.toString());
-      }
-    }
-  }, [activeMethod, activePaymentChannel, depositConfig]);
-
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
     const name = (ch.name || ch.channel || "").toLowerCase();
     if (name.includes("upay")) return "upay";
@@ -132,6 +114,24 @@ const Bank = () => {
     const ch = depositConfig.find(c => c.channel === channelId && categorizeChannel(c) === methodId);
     return ch?.exchangeRate ?? 86;
   };
+
+  const depositAmounts = useMemo(() => {
+    const limit = getChannelLimit(activeMethod, activePaymentChannel);
+    if (!limit) return BASE_DEPOSIT_AMOUNTS;
+    const filtered = BASE_DEPOSIT_AMOUNTS.filter(a => a >= limit.min && a <= limit.max);
+    return filtered.length > 0 ? filtered : [limit.min];
+  }, [activeMethod, activePaymentChannel, depositConfig]);
+
+  useEffect(() => {
+    const limit = getChannelLimit(activeMethod, activePaymentChannel);
+    if (limit) {
+      if (selectedAmount < limit.min || selectedAmount > limit.max) {
+        setSelectedAmount(limit.min);
+        setCustomAmount("");
+        setDepositAmountInput(limit.min.toString());
+      }
+    }
+  }, [activeMethod, activePaymentChannel, depositConfig]);
 
   const WITHDRAW_METHODS = [
     { id: "bank_card", label: "BANK CARD", icon: bankLogo },
