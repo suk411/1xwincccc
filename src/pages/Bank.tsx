@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
 
@@ -21,7 +21,7 @@ import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
 
-const DEPOSIT_AMOUNTS = [100, 200, 300, 500, 1000, 3000, 5000, 8000, 10000, 20000, 30000];
+const BASE_DEPOSIT_AMOUNTS = [100, 200, 300, 500, 1000, 2000, 3000, 5000, 8000, 10000, 20000, 30000, 50000, 100000];
 
 const USDT_OPTIONS = [
   { deposit: 50, bonus: 0 },
@@ -78,6 +78,23 @@ const Bank = () => {
   const [bonusOptIn, setBonusOptIn] = useState(false);
   const [showBonusApply, setShowBonusApply] = useState(false);
 
+  const depositAmounts = useMemo(() => {
+    const limit = getChannelLimit(activeMethod, activePaymentChannel);
+    if (!limit) return BASE_DEPOSIT_AMOUNTS;
+    const filtered = BASE_DEPOSIT_AMOUNTS.filter(a => a >= limit.min && a <= limit.max);
+    return filtered.length > 0 ? filtered : [limit.min];
+  }, [activeMethod, activePaymentChannel, depositConfig]);
+
+  useEffect(() => {
+    const limit = getChannelLimit(activeMethod, activePaymentChannel);
+    if (limit) {
+      if (selectedAmount < limit.min || selectedAmount > limit.max) {
+        setSelectedAmount(limit.min);
+        setCustomAmount("");
+        setDepositAmountInput(limit.min.toString());
+      }
+    }
+  }, [activeMethod, activePaymentChannel, depositConfig]);
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
     const name = (ch.name || ch.channel || "").toLowerCase();
@@ -529,7 +546,7 @@ const Bank = () => {
               ) : (
                 <>
                   <div className="grid grid-cols-3 gap-1.5">
-                    {DEPOSIT_AMOUNTS.map((amount) => {
+                    {depositAmounts.map((amount) => {
                       const isActive = !customAmount && selectedAmount === amount;
                       const bonus = getBonus(amount);
                       return (
