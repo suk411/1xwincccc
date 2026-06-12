@@ -267,10 +267,22 @@ const DepositRecords = () => {
                       {/* Amount Info + Details Button */}
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-bold" style={{ color: amountColor }}>
+                          <span className="text-sm font-bold" style={{
+                            backgroundImage: "linear-gradient(0deg, rgb(70, 110, 208) 0%, rgb(64, 72, 179) 43.7%, rgb(97, 130, 237) 45%, rgb(101, 127, 231) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          }}>
                             Cash+ {currencySymbol}{Number(amount).toLocaleString()}
                           </span>
-                          <span className="text-white/70 text-xs">
+                          <span className="text-xs" style={{
+                            backgroundImage: "linear-gradient(0deg, rgb(70, 110, 208) 0%, rgb(64, 72, 179) 43.7%, rgb(97, 130, 237) 45%, rgb(101, 127, 231) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          }}>
                             Bonus+ {currencySymbol}{Number(bonus).toLocaleString()}
                           </span>
                         </div>
