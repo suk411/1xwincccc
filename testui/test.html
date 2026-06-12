@@ -1,104 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My IP Details Finder</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 50px;
-      background-color: #f4f6f9;
-    }
-    .box {
-      max-width: 550px;
-      margin: 0 auto;
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    button {
-      background-color: #337ab7;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      background-color: #286090;
-    }
-    table {
-      width: 100%;
-      margin-top: 25px;
-      border-collapse: collapse;
-      display: none;
-      text-align: left;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #f8f9fa;
-      width: 45%;
-    }
-    .error {
-      color: red;
-      margin-top: 15px;
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gullak Cash Section</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        /* 1. Reset and Force Body Visibility */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #101219 !important; /* Force the dark background */
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* 2. The Main Section (uid: 2951) */
+        .main-container {
+            position: relative;
+            width: 100%;
+            max-width: 434px; /* Exact width from live site */
+            min-height: 455px; /* Forced minimum height to prevent black/empty screen */
+            aspect-ratio: 434 / 455;
+            background-color: #101218;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* 3. The Image (uid: 2931) */
+        .bottle-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            z-index: 1;
+        }
+
+        /* 4. Text Label Container (uid: 2933) */
+        .cash-anchor {
+            position: absolute;
+            top: 44%; /* Changed from vw to % for better stability */
+            left: 50%;
+            z-index: 10;
+        }
+
+        /* Outline Layer (uid: 2921) */
+        .text-outline {
+            position: absolute;
+            top: -0.7px;
+            left: 0;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFFFF;
+            /* The critical border effect */
+            text-shadow: 
+                rgba(5, 16, 48, 0.7) -1.3px -1.3px 0px, 
+                rgba(5, 16, 48, 0.7)  1.3px -1.3px 0px, 
+                rgba(5, 16, 48, 0.7) -1.3px  1.3px 0px, 
+                rgba(5, 16, 48, 0.7)  1.3px  1.3px 0px;
+        }
+
+        /* Gradient Layer (uid: 2922) */
+        .text-fill {
+            position: absolute;
+            top: 0px;
+            left: 0;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 20px;
+            font-weight: 700;
+            /* Exact original gradient stops */
+            background-image: linear-gradient(0deg, 
+                rgb(70, 110, 208) 0%, 
+                rgb(64, 72, 179) 43.7%, 
+                rgb(97, 130, 237) 45%, 
+                rgb(101, 127, 231) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        /* 5. Amount (uid: 2934) */
+        .amount-display {
+            position: absolute;
+            top: 51%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            font-weight: 800;
+            color: #fff;
+            z-index: 10;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>Find My Current IP Details</h2>
-  <p>Click the button to fetch your live network location data.</p>
-  
-  <button id="btn">Get My IP Details</button>
-  <div id="error" class="error">Failed to get data.</div>
+    <div class="main-container">
+      
+        <!-- Cash Label -->
+        <div class="cash-anchor">
+            <div class="text-outline">Gullak Cash</div>
+            <div class="text-fill">Gullak Cash</div>
+        </div>
 
-  <table id="resultTable">
-    <tr><th>Your IP Address</th><td id="ip"></td></tr>
-    <tr><th>City</th><td id="city"></td></tr>
-    <tr><th>Region</th><td id="region"></td></tr>
-    <tr><th>Country</th><td id="country"></td></tr>
-    <tr><th>ISP Provider</th><td id="org"></td></tr>
-    <tr><th>Timezone</th><td id="timezone"></td></tr>
-  </table>
-</div>
-
-<script>
-  document.getElementById('btn').addEventListener('click', function() {
-    var table = document.getElementById('resultTable');
-    var errorDiv = document.getElementById('error');
-
-    table.style.display = 'none';
-    errorDiv.style.display = 'none';
-
-    fetch('https://ipapi.co/json/')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('ip').innerText = data.ip || 'N/A';
-        document.getElementById('city').innerText = data.city || 'N/A';
-        document.getElementById('region').innerText = data.region || 'N/A';
-        document.getElementById('country').innerText = data.country_name || 'N/A';
-        document.getElementById('org').innerText = data.org || 'N/A';
-        document.getElementById('timezone').innerText = data.timezone || 'N/A';
-
-        table.style.display = 'table';
-      })
-      .catch(err => {
-        errorDiv.style.display = 'block';
-        console.error(err);
-      });
-  });
-</script>
+    
+    </div>
 
 </body>
 </html>

@@ -13,9 +13,9 @@ const statusStyles: Record<string, string> = {
   PENDING: "#ffd700",
   Pending: "#ffd700",
   pending: "#ffd700",
-  AUDITING: "#ffd700",
-  Auditing: "#ffd700",
-  auditing: "#ffd700",
+  AUDITING: "#006aff",
+  Auditing: "#006aff",
+  auditing: "#006aff",
   APPROVED: "#00b341",
   Approved: "#00b341",
   approved: "#00b341",
@@ -43,9 +43,9 @@ const amountStyles: Record<string, string> = {
   PENDING: "#ffd700",
   Pending: "#ffd700",
   pending: "#ffd700",
-  AUDITING: "#ffd700",
-  Auditing: "#ffd700",
-  auditing: "#ffd700",
+  AUDITING: "#006aff",
+  Auditing: "#006aff",
+  auditing: "#006aff",
   APPROVED: "#00b341",
   Approved: "#00b341",
   approved: "#00b341",
@@ -133,15 +133,32 @@ const WithdrawalRecords = () => {
 
   const getNote = (item: WithdrawalRecord) => (item as any).note || "Withdrawal request";
 
-  const getDate = (item: WithdrawalRecord) => {
-    const d = (item as any).createdAt;
-    if (!d) return "—";
+  const isSuccessStatus = (s: string) => {
+    const sl = s.toLowerCase();
+    return sl === "success" || sl === "completed" || sl === "approved" || sl === "approve";
+  };
+
+  const formatDate = (d: string) => {
+    if (!d) return null;
     try {
       const date = new Date(d);
       return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     } catch {
       return d;
     }
+  };
+
+  const getDate = (item: WithdrawalRecord, status?: string) => {
+    if (status && isSuccessStatus(status)) {
+      const u = (item as any).updatedAt;
+      if (u) {
+        const formatted = formatDate(u);
+        if (formatted) return "Success on " + formatted;
+      }
+    }
+    const d = (item as any).createdAt;
+    const formatted = formatDate(d);
+    return formatted || "—";
   };
 
   return (
@@ -243,7 +260,7 @@ const WithdrawalRecords = () => {
                     <div className="flex-1 min-w-0 flex flex-col gap-2">
                       {/* Date & Time */}
                       <div className="text-white/70 text-xs">
-                        {getDate(item)}
+                        {getDate(item, status)}
                       </div>
 
                       {/* Amount Info + Details Button - Horizontal */}
@@ -277,8 +294,8 @@ const WithdrawalRecords = () => {
                   {expanded && (
                     <div className="px-4 pb-4 pt-2 text-xs text-white/70 flex flex-col gap-1.5 border-t border-white/10">
                       <div className="flex justify-between">
-                        <span>Date</span>
-                        <span>{getDate(item)}</span>
+                        <span>{isSuccessStatus(status) ? "Success on" : "Date"}</span>
+                        <span>{getDate(item, status)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Channel</span>

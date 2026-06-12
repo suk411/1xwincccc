@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_background">#141011</color>
+    <color name="colorPrimary">#141011</color>
+    <color name="colorPrimaryDark">#141011</color>
+    <color name="colorAccent">#D4A843</color>
+    <color name="progress_bar">#D4A843</color>
+</resources>
