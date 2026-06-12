@@ -144,7 +144,7 @@ const DepositRecords = () => {
       const u = order.updatedAt;
       if (u) {
         const formatted = formatDate(u);
-        if (formatted) return "Success on " + formatted;
+        if (formatted) return formatted;
       }
     }
     const d = order.createdAt || order.date || order.created_at;

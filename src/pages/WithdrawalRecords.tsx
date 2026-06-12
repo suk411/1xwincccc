@@ -151,7 +151,7 @@ const WithdrawalRecords = () => {
       const u = (item as any).updatedAt;
       if (u) {
         const formatted = formatDate(u);
-        if (formatted) return "Success on " + formatted;
+        if (formatted) return formatted;
       }
     }
     const d = (item as any).createdAt;
