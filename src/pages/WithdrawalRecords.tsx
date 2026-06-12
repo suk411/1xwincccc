@@ -257,7 +257,7 @@ const WithdrawalRecords = () => {
                     <div className="flex-1 min-w-0 flex flex-col gap-2">
                       {/* Date & Time */}
                       <div className="text-white/70 text-xs">
-                        {getDate(item, status)}
+                        {getDate(item)}
                       </div>
 
                       {/* Amount Info + Details Button - Horizontal */}
