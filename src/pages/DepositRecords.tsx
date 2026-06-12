@@ -267,7 +267,13 @@ const DepositRecords = () => {
                       {/* Amount Info + Details Button */}
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-bold" style={{ color: amountColor }}>
+                          <span className="text-sm font-bold" style={{
+                            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          }}>
                             Cash+ {currencySymbol}{Number(amount).toLocaleString()}
                           </span>
                           <span className="text-xs" style={{
@@ -303,12 +309,24 @@ const DepositRecords = () => {
                       </div>
                       <div className="flex justify-between">
                         <span>Amount</span>
-                        <span>{currencySymbol}{Number(amount).toLocaleString()}</span>
+                        <span className="font-bold" style={{
+                          backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                          WebkitBackgroundClip: "text",
+                          backgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          color: "transparent",
+                        }}>{currencySymbol}{Number(amount).toLocaleString()}</span>
                       </div>
                       {bonus > 0 && (
                         <div className="flex justify-between">
                           <span>Bonus</span>
-                          <span>{currencySymbol}{Number(bonus).toLocaleString()}</span>
+                          <span className="font-bold" style={{
+                            backgroundImage: "linear-gradient(0deg, rgb(70, 110, 208) 0%, rgb(64, 72, 179) 43.7%, rgb(97, 130, 237) 45%, rgb(101, 127, 231) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          }}>{currencySymbol}{Number(bonus).toLocaleString()}</span>
                         </div>
                       )}
                       {order.balanceAfter != null && (

@@ -264,7 +264,13 @@ const WithdrawalRecords = () => {
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         {/* Amount Info */}
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-bold" style={{ color: amountStyles[status] || fallbackStyle }}>
+                          <span className="text-sm font-bold" style={{
+                            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          }}>
                             Cash- ₹{Number(amount).toLocaleString()}
                           </span>
                           <span className="text-xs" style={{
@@ -302,11 +308,23 @@ const WithdrawalRecords = () => {
                       </div>
                       <div className="flex justify-between">
                         <span>Amount</span>
-                        <span>₹{Number(amount).toLocaleString()}</span>
+                        <span className="font-bold" style={{
+                          backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                          WebkitBackgroundClip: "text",
+                          backgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          color: "transparent",
+                        }}>₹{Number(amount).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Fee</span>
-                        <span>₹{Number(charge).toLocaleString()}</span>
+                        <span className="font-bold" style={{
+                          backgroundImage: "linear-gradient(0deg, rgb(220, 50, 50) 0%, rgb(180, 20, 20) 43.7%, rgb(240, 70, 70) 45%, rgb(210, 40, 40) 100%)",
+                          WebkitBackgroundClip: "text",
+                          backgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          color: "transparent",
+                        }}>₹{Number(charge).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Currency</span>
