@@ -43,9 +43,9 @@ const amountStyles: Record<string, string> = {
   PENDING: "#ffd700",
   Pending: "#ffd700",
   pending: "#ffd700",
-  AUDITING: "#006aff",
-  Auditing: "#006aff",
-  auditing: "#006aff",
+  AUDITING: "#ffd700",
+  Auditing: "#ffd700",
+  auditing: "#ffd700",
   APPROVED: "#00b341",
   Approved: "#00b341",
   approved: "#00b341",
@@ -129,8 +129,6 @@ const WithdrawalRecords = () => {
 
   const getStatus = (item: WithdrawalRecord) => (item as any).status || "PENDING";
 
-  const getChannel = (item: WithdrawalRecord) => (item as any).channelName || (item as any).channel || "—";
-
   const getNote = (item: WithdrawalRecord) => (item as any).note || "Withdrawal request";
 
   const isSuccessStatus = (s: string) => {
@@ -188,7 +186,6 @@ const WithdrawalRecords = () => {
               const amount = getAmount(item);
               const charge = getCharge(item);
               const currency = getCurrency(item);
-              const channel = getChannel(item);
               const note = getNote(item);
 
               const getStatusIcon = () => {
@@ -296,10 +293,6 @@ const WithdrawalRecords = () => {
                       <div className="flex justify-between">
                         <span>{isSuccessStatus(status) ? "Success on" : "Date"}</span>
                         <span>{getDate(item, status)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Channel</span>
-                        <span>{channel}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Amount</span>
