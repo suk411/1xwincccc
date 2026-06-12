@@ -221,9 +221,15 @@ const DepositRecords = () => {
                   }}>
                     {/* Order ID + Copy Button */}
                     <div className="flex items-center gap-2">
-                      <span className="text-white text-xs truncate">{orderId}</span>
+                      <span className="text-xs truncate" style={{
+                        color: "#FFFFFF",
+                        textShadow: "rgba(5, 16, 48, 0.7) -1.3px -1.3px 0px, rgba(5, 16, 48, 0.7) 1.3px -1.3px 0px, rgba(5, 16, 48, 0.7) -1.3px 1.3px 0px, rgba(5, 16, 48, 0.7) 1.3px 1.3px 0px",
+                      }}>{orderId}</span>
                       <button
-                        className="text-white flex-shrink-0 hover:text-yellow-400 transition"
+                        className="flex-shrink-0 hover:text-yellow-400 transition" style={{
+                          color: "#FFFFFF",
+                          textShadow: "rgba(5, 16, 48, 0.7) -1.3px -1.3px 0px, rgba(5, 16, 48, 0.7) 1.3px -1.3px 0px, rgba(5, 16, 48, 0.7) -1.3px 1.3px 0px, rgba(5, 16, 48, 0.7) 1.3px 1.3px 0px",
+                        }}
                         onClick={() => {
                           copyToClipboard(orderId, "Copied Success");
                         }}
