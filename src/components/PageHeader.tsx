@@ -39,7 +39,10 @@ const PageHeader = ({ title, showBack = true, backPath }: PageHeaderProps) => {
       )}
 
       {/* Title */}
-      <h1 className="relative z-10 text-white  tracking-wide">
+      <h1 className="relative z-10 tracking-wide" style={{
+        color: "#FFFFFF",
+        textShadow: "rgba(5, 16, 48, 0.7) -1.3px -1.3px 0px, rgba(5, 16, 48, 0.7) 1.3px -1.3px 0px, rgba(5, 16, 48, 0.7) -1.3px 1.3px 0px, rgba(5, 16, 48, 0.7) 1.3px 1.3px 0px",
+      }}>
         {title}
       </h1>
     </div>
