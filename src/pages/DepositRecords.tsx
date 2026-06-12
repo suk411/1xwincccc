@@ -118,9 +118,6 @@ const DepositRecords = () => {
   const getStatus = (order: DepositOrder) =>
     order.status || order.orderStatus || "PENDING";
 
-  const getChannel = (order: DepositOrder) =>
-    order.channelName || order.channel || order.paymentChannel || order.method || order.remark || "—";
-
   const isOlderThan15Min = (order: DepositOrder) => {
     const d = order.createdAt || order.date || order.created_at;
     if (!d) return true;
@@ -129,13 +126,30 @@ const DepositRecords = () => {
     } catch { return true; }
   };
 
-  const getDate = (order: DepositOrder) => {
-    const d = order.createdAt || order.date || order.created_at;
-    if (!d) return "—";
+  const isSuccessStatus = (s: string) => {
+    const sl = s.toLowerCase();
+    return sl === "success" || sl === "completed";
+  };
+
+  const formatDate = (d: string) => {
+    if (!d) return null;
     try {
       const date = new Date(d);
       return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     } catch { return d; }
+  };
+
+  const getDate = (order: DepositOrder, status?: string) => {
+    if (status && isSuccessStatus(status)) {
+      const u = order.updatedAt;
+      if (u) {
+        const formatted = formatDate(u);
+        if (formatted) return "Success on " + formatted;
+      }
+    }
+    const d = order.createdAt || order.date || order.created_at;
+    const formatted = formatDate(d);
+    return formatted || "—";
   };
 
   const getPaymentLink = (order: DepositOrder) =>
@@ -177,6 +191,8 @@ const DepositRecords = () => {
               const amountColor = amountStyles[status] || fallbackStyle;
               const amount = getAmount(order);
               const bonus = order.bonus || order.bonusAmount || 0;
+              const currency = order.currency || "INR";
+              const currencySymbol = currency === "USDT" ? "$" : "₹";
 
               const getStatusIcon = () => {
                 const statusLower = status.toLowerCase();
@@ -245,17 +261,17 @@ const DepositRecords = () => {
                     <div className="flex-1 min-w-0 flex flex-col gap-2">
                       {/* Date & Time */}
                       <div className="text-white/70 text-xs">
-                        {getDate(order)}
+                        {getDate(order, status)}
                       </div>
 
                       {/* Amount Info + Details Button */}
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-sm font-bold" style={{ color: amountColor }}>
-                            Cash+ ₹{Number(amount).toLocaleString()}
+                            Cash+ {currencySymbol}{Number(amount).toLocaleString()}
                           </span>
                           <span className="text-white/70 text-xs">
-                            Bonus+ ₹{Number(bonus).toLocaleString()}
+                            Bonus+ {currencySymbol}{Number(bonus).toLocaleString()}
                           </span>
                         </div>
                         <button
@@ -276,27 +292,23 @@ const DepositRecords = () => {
                   {expanded && (
                     <div className="px-4 pb-4 pt-2 text-xs text-white/70 flex flex-col gap-1.5 border-t border-white/10">
                       <div className="flex justify-between">
-                        <span>Date</span>
-                        <span>{getDate(order)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Channel</span>
-                        <span>{getChannel(order)}</span>
+                        <span>{isSuccessStatus(status) ? "Success on" : "Date"}</span>
+                        <span>{getDate(order, status)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Amount</span>
-                        <span>₹{Number(amount).toLocaleString()}</span>
+                        <span>{currencySymbol}{Number(amount).toLocaleString()}</span>
                       </div>
                       {bonus > 0 && (
                         <div className="flex justify-between">
                           <span>Bonus</span>
-                          <span>₹{Number(bonus).toLocaleString()}</span>
+                          <span>{currencySymbol}{Number(bonus).toLocaleString()}</span>
                         </div>
                       )}
                       {order.balanceAfter != null && (
                         <div className="flex justify-between">
                           <span>Balance After</span>
-                          <span>₹{Number(order.balanceAfter).toLocaleString()}</span>
+                          <span>{currencySymbol}{Number(order.balanceAfter).toLocaleString()}</span>
                         </div>
                       )}
                       {order.type && (
