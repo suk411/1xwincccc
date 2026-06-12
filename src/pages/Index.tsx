@@ -344,7 +344,13 @@ const Index = () => {
           </div>
           <div className="flex items-center gap-1.5 ml-3 flex-1">
             <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
-            <span className="text-white font-bold text-[14px]">{balance.toFixed(2)}</span>
+            <span className="font-bold text-[14px]" style={{
+              backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+            }}>{balance.toFixed(2)}</span>
           </div>
           <div className="flex items-center gap-4 mr-2">
             <button onClick={() => navigateWithTransition("/bank")} className="flex flex-col items-center gap-0.3">
@@ -411,7 +417,13 @@ const Index = () => {
 
             {/* Amount in the center */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-white text-[12px] font-mono font-bold">₹{totalGameBalance.toFixed(2)}</span>
+              <span className="text-[12px] font-mono font-bold" style={{
+                backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
+              }}>₹{totalGameBalance.toFixed(2)}</span>
             </div>
 
             {/* Details Button on top right */}
