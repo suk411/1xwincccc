@@ -61,13 +61,25 @@ const Register = () => {
         <div className="flex flex-col items-center mb-2">
           <img src={logo} alt="1xKING" className="h-16 w-auto mb-1" />
         
-          <p className="text-[#ffd700] font-bold text-sm italic mt-1">SPIN TO WIN,<br className="hidden" /> FORTUNE BEGINS HERE!</p>
+          <p className="font-bold text-sm italic mt-1" style={{
+            backgroundImage: "linear-gradient(0deg, rgb(227, 118, 129) 0%, rgb(200, 80, 95) 43.7%, rgb(240, 140, 150) 45%, rgb(220, 100, 115) 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            color: "transparent",
+          }}>SPIN TO WIN,<br className="hidden" /> FORTUNE BEGINS HERE!</p>
         </div>
 
         {/* Reward Banner */}
         <div className="relative w-full my-4">
           <img src={rewardBanner} alt="" className="w-full h-auto" />
-          <span className="absolute inset-0 flex items-center justify-center text-[#ffd700] font-bold pt-2 text-sm pl-8">
+          <span className="absolute inset-0 flex items-center justify-center font-bold pt-2 text-sm pl-8" style={{
+            backgroundImage: "linear-gradient(0deg, rgb(227, 118, 129) 0%, rgb(200, 80, 95) 43.7%, rgb(240, 140, 150) 45%, rgb(220, 100, 115) 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            color: "transparent",
+          }}>
             Get invitation rewards upto ₹1000
           </span>
         </div>
@@ -86,7 +98,14 @@ const Register = () => {
             }}
             type="tel"
             inputMode="numeric"
-            style={{ color: "#e37681" }}
+            style={{
+              backgroundImage: "linear-gradient(0deg, rgb(227, 118, 129) 0%, rgb(200, 80, 95) 43.7%, rgb(240, 140, 150) 45%, rgb(220, 100, 115) 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+              caretColor: "white",
+            }}
           />
           <GameInput
             icon={<img src={lockIcon} className="w-[18px] h-[18px]" alt="" />}
@@ -99,14 +118,28 @@ const Register = () => {
               setPasswordError(false);
             }}
             type="password"
-            style={{ color: "#e37681" }}
+            style={{
+              backgroundImage: "linear-gradient(0deg, rgb(227, 118, 129) 0%, rgb(200, 80, 95) 43.7%, rgb(240, 140, 150) 45%, rgb(220, 100, 115) 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+              caretColor: "white",
+            }}
           />
           <GameInput
             icon={<img src={inviteIcon} className="w-[18px] h-[18px]" alt="" />}
             placeholder="Invite code (optional)"
             value={inviteCode}
             onChange={(e) => setInviteCode(e.target.value)}
-            style={{ color: "#e37681" }}
+            style={{
+              backgroundImage: "linear-gradient(0deg, rgb(227, 118, 129) 0%, rgb(200, 80, 95) 43.7%, rgb(240, 140, 150) 45%, rgb(220, 100, 115) 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+              caretColor: "white",
+            }}
           />
         </div>
 
