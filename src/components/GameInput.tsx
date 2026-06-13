@@ -31,15 +31,7 @@ const GameInput = React.forwardRef<HTMLInputElement, GameInputProps>(
           <input
             ref={ref}
             type={inputType}
-            className="flex-1 bg-transparent outline-none text-base placeholder:text-[#964850] min-w-0"
-            style={{
-              backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              color: "transparent",
-              caretColor: "white",
-            }}
+            className="flex-1 bg-transparent outline-none text-white text-base placeholder:text-[#964850] min-w-0"
             {...props}
           />
           {isPassword && (
