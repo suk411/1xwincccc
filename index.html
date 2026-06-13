@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -23,23 +26,31 @@
   <meta name="description" content="1xKING - Your Ultimate Gaming Platform" />
   <meta name="author" content="1xKING" />
 
-  <!-- Version Check Script -->
+  <!-- Version Check & Cache Bust -->
   <script>
     (function() {
-      const LOCAL_STORAGE_KEY = 'app_version';
+      var LOCAL_STORAGE_KEY = 'app_version';
       fetch('/version.json?t=' + Date.now(), { cache: 'no-store' })
-        .then(response => response.json())
-        .then(data => {
-          const latestVersion = data.version;
-          const storedVersion = localStorage.getItem(LOCAL_STORAGE_KEY);
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          var latestVersion = data.version;
+          var storedVersion = localStorage.getItem(LOCAL_STORAGE_KEY);
           if (storedVersion && latestVersion !== storedVersion) {
             localStorage.setItem(LOCAL_STORAGE_KEY, latestVersion);
             window.location.reload();
           } else if (!storedVersion) {
             localStorage.setItem(LOCAL_STORAGE_KEY, latestVersion);
           }
+          // Bust public/ asset links with version
+          var links = document.querySelectorAll('link[href*="/favicon"], link[href*="/pwa-"], link[href*="/apple-touch"]');
+          for (var i = 0; i < links.length; i++) {
+            var href = links[i].getAttribute('href');
+            if (href && href.indexOf('?v=') === -1) {
+              links[i].setAttribute('href', href + '?v=' + latestVersion);
+            }
+          }
         })
-        .catch(() => { /* Silent fail */ });
+        .catch(function() { /* Silent fail */ });
     })();
   </script>
 

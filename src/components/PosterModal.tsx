@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
+import { withCacheBust } from "@/lib/cacheBust";
 
 interface PosterModalProps {
   isOpen: boolean;
@@ -33,7 +34,7 @@ const PosterModal: React.FC<PosterModalProps> = ({ isOpen, onClose }) => {
         >
           {/* Background Image */}
           <img 
-            src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/1stdepositbonus.png" 
+            src={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/1stdepositbonus.png")} 
             alt="Deposit Bonus"
             className="w-full h-full object-cover"
             onError={(e) => {
@@ -95,7 +96,7 @@ const PosterModal: React.FC<PosterModalProps> = ({ isOpen, onClose }) => {
           className="mt-0 w-10 h-10 flex items-center justify-center active:scale-90 transition-transform"
         >
           <img 
-            src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/cross%20icon.png" 
+            src={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/assets/cross%20icon.png")} 
             alt="Close" 
             className="w-5 h-5 object-contain"
           />

@@ -1,6 +1,7 @@
 import { GameDialog, GameDialogContent, GameDialogBody, GameDialogFooter } from "@/components/GameDialog";
 import { GameButton } from "@/components/GameButton";
 import { GameObject } from "@/services/gameService";
+import { withCacheBust } from "@/lib/cacheBust";
 
 interface GameConfirmDialogProps {
   isOpen: boolean;
@@ -37,7 +38,7 @@ const GameConfirmDialog: React.FC<GameConfirmDialogProps> = ({
           <div className="flex flex-col items-center gap-4 py-4">
             <div className="w-20 h-20 rounded-lg overflow-hidden border border-yellow-500/30">
               <img
-                src={game.logo}
+                src={withCacheBust(game.logo)}
                 alt={game.name}
                 className="w-full h-full object-cover"
               />

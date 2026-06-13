@@ -28,6 +28,7 @@ import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/servi
 import { toast } from "@/hooks/use-toast";
 import wingoLogo from "@/assets/wingo/WinGo-logo.png";
 import { refreshProfile, refreshVipLevel } from "@/hooks/useProfile";
+import { withCacheBust } from "@/lib/cacheBust";
 import { BalanceDetailsDialog } from "@/components/BalanceDetailsDialog";
 import VipLockModal from "@/components/VipLockModal";
 import googlePlayBadge from "@/assets/download/google-play.png";
@@ -92,7 +93,7 @@ const WINGO_GAME: GameObject = {
 
 const SABAPLAY_GAME: GameObject = {
   name: "SABAPLAY",
-  logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png",
+  logo: withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png"),
   provider: "IBC",
   provider_code: "IB",
   game_id: "0",
@@ -406,7 +407,7 @@ const Index = () => {
           >
             {/* Icon on left top */}
             <img 
-              src="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/GAME_wallet.png" 
+              src={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/GAME_wallet.png")} 
               alt="Game Wallet" 
               className="absolute top-2 left-2 w-6 h-6 object-contain"
             />
@@ -560,11 +561,11 @@ const Index = () => {
           </div>
           <div className="px-2 pb-3">
             <LotteryCard 
-              icon="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png"
+              icon={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png")}
               name="SABAPLAY" 
               hint="Sports betting"
               tag="NEW"
-              rightIcon="https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/IPL.png"
+              rightIcon={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/IPL.png")}
               onClick={() => handleGameLaunch(SABAPLAY_GAME)}
             />
           </div>

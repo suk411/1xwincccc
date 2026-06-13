@@ -4,6 +4,7 @@ import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GAME_LIST, gameService } from "@/services/gameService";
 import { refreshProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
+import { withCacheBust } from "@/lib/cacheBust";
 
 const Promo = () => {
   const { navigateWithTransition } = useTransitionNavigate();
@@ -74,25 +75,25 @@ const Promo = () => {
               id: "je",
               name: "JILI Wallet",
               provider_code: "JE",
-              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/jiliwallet.png"
+              logo: withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/jiliwallet.png")
             },
             {
               id: "pg",
               name: "PG Wallet",
               provider_code: "PG",
-              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
+              logo: withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png")
             },
             {
               id: "jd",
               name: "JD Wallet",
               provider_code: "JD",
-              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
+              logo: withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png")
             },
             {
               id: "tu",
               name: "TU Wallet",
               provider_code: "TU",
-              logo: "https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png"
+              logo: withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/gamelogo/pgwallet.png")
             }
           ].map((wallet) => {
             const isCountdownActive = (countdowns[wallet.provider_code] || 0) > 0;
