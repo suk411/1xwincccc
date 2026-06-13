@@ -543,9 +543,17 @@ const Bank = () => {
                     <input
                       type="text"
                       placeholder="Please enter USDT amount"
-                      className="bg-transparent border-none outline-none w-full h-full text-sm text-white placeholder-white/50"
+                      className="bg-transparent border-none outline-none w-full h-full text-sm placeholder-white/50"
                       value={depositAmountInput}
                       onChange={handleDepositAmountChange}
+                      style={{
+                        backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        color: "transparent",
+                        caretColor: "white",
+                      }}
                     />
                   </div>
                 </>
@@ -577,10 +585,15 @@ const Bank = () => {
                             WebkitTextFillColor: "transparent",
                             color: "transparent",
                           }}>{amount.toLocaleString()}</span>
-                          {bonus > 0 && (
+                          {bonusOptIn && bonus > 0 && (
                             <div
                               className="text-center text-[10px] font-bold rounded-b-md py-0.5"
-                              style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
+                              style={{
+                                backgroundImage: isActive
+                                  ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
+                                  : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
+                                color: "#5a2d0a"
+                              }}
                             >
                               +{bonus}
                             </div>
@@ -590,17 +603,31 @@ const Bank = () => {
                     })}
                   </div>
                   <div
-                    className="flex items-center rounded-[30px] h-10 px-2.5"
+                    className="flex items-center rounded-[30px] h-10 pl-4 pr-4"
                     style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
                   >
-                    <span className="text-primary text-base font-medium">₹</span>
+                    <span className="text-base font-medium" style={{
+                      backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      color: "transparent",
+                    }}>₹</span>
                     <div className="w-px h-4 bg-white/20 mx-2"></div>
                     <input
                       type="text"
                       placeholder="Please enter an amount"
-                      className="bg-transparent border-none outline-none w-full h-full text-sm text-white placeholder-white/50"
+                      className="bg-transparent border-none outline-none w-full h-full text-sm placeholder-white/50"
                       value={depositAmountInput}
                       onChange={handleDepositAmountChange}
+                      style={{
+                        backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        color: "transparent",
+                        caretColor: "white",
+                      }}
                     />
                     {depositAmountInput && (
                       <X size={16} className="text-white/50 cursor-pointer ml-2 flex-shrink-0" onClick={() => { setDepositAmountInput(""); setCustomAmount(""); setSelectedAmount(0); }} />
@@ -885,17 +912,31 @@ const Bank = () => {
             {/* Amount input section */}
             <GameCard className="p-2">
               <div
-                className="flex items-center rounded-[30px] h-10 px-2.5 mb-2"
+                className="flex items-center rounded-[30px] h-10 pl-4 pr-4 mb-2"
                 style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
               >
-                <span className="text-primary text-base font-medium">₹</span>
+                <span className="text-base font-medium" style={{
+                  backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
+                }}>₹</span>
                 <div className="w-px h-4 bg-white/20 mx-2"></div>
                 <input
                   type="text"
                   placeholder="Please enter the amount"
-                  className="bg-transparent border-none outline-none w-full h-full text-sm text-white placeholder-white/50"
+                  className="bg-transparent border-none outline-none w-full h-full text-sm placeholder-white/50"
                   value={withdrawAmountInput}
                   onChange={handleWithdrawAmountChange}
+                  style={{
+                    backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    color: "transparent",
+                    caretColor: "white",
+                  }}
                 />
                 {withdrawAmountInput && (
                   <X size={16} className="text-white/50 cursor-pointer ml-2 flex-shrink-0" onClick={() => { setWithdrawAmountInput(""); setSelectedWithdrawAmount(0); }} />
@@ -975,13 +1016,13 @@ const Bank = () => {
               </span>
             ) : (
               <span className="text-white font-bold text-sm">
-                ₹<span style={{
+                <span style={{
                   backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   color: "transparent",
-                }}>{(activeTab === "deposit" ? (customAmount ? parseInt(customAmount) || 0 : selectedAmount) : selectedWithdrawAmount).toLocaleString()}</span>
+                }}>₹{(activeTab === "deposit" ? (customAmount ? parseInt(customAmount) || 0 : selectedAmount) : selectedWithdrawAmount).toLocaleString()}</span>
               </span>
             )}
           </div>
@@ -994,15 +1035,19 @@ const Bank = () => {
                 backgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 color: "transparent",
-              }}>₹{((customAmount ? parseInt(customAmount) || 0 : selectedAmount) + selectedDepositBonus).toLocaleString()}</span>
-              <span className="text-white/50 text-[10px]">Bonus</span>
-              <span className="text-[10px] font-bold" style={{
-                backgroundImage: "linear-gradient(0deg, rgb(70, 110, 208) 0%, rgb(64, 72, 179) 43.7%, rgb(97, 130, 237) 45%, rgb(101, 127, 231) 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                color: "transparent",
-              }}>₹{selectedDepositBonus.toLocaleString()}</span>
+              }}>₹{((customAmount ? parseInt(customAmount) || 0 : selectedAmount) + (bonusOptIn ? selectedDepositBonus : 0)).toLocaleString()}</span>
+              {bonusOptIn && (
+                <>
+                  <span className="text-white/50 text-[10px]">Bonus</span>
+                  <span className="text-[10px] font-bold" style={{
+                    backgroundImage: "linear-gradient(0deg, rgb(70, 110, 208) 0%, rgb(64, 72, 179) 43.7%, rgb(97, 130, 237) 45%, rgb(101, 127, 231) 100%)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    color: "transparent",
+                  }}>₹{selectedDepositBonus.toLocaleString()}</span>
+                </>
+              )}
             </div>
           )}
           {activeTab === "deposit" && activeMethod === "usdt" && currentEffectiveAmount > 0 && (
