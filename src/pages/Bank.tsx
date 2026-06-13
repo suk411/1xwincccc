@@ -553,18 +553,26 @@ const Bank = () => {
                         <div
                           key={amount}
                           onClick={() => { setSelectedAmount(amount); setCustomAmount(""); setDepositAmountInput(amount.toString()); }}
-                          className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10 py-1"
-                          style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
+                          className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200"
+                          style={{
+                            background: isActive
+                              ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
+                              : "rgba(211, 54, 93, 0.2)",
+                            border: isActive
+                              ? "1.5px solid rgba(255, 180, 50, 0.6)"
+                              : "1px solid rgba(255,255,255,0.1)",
+                            boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
+                          }}
                         >
-                          <img src={depositBadge} alt="" className="absolute top-0 left-0 w-10 h-4 object-contain" />
-                          <span className="absolute top-0 left-3 text-white text-[7px] font-bold">1st</span>
-                          <span className="text-white text-sm text-center pt-3 pb-1">{amount.toLocaleString()}</span>
-                          <div
-                            className={`text-center text-[10px] font-bold rounded-b-md ${bonus > 0 ? "" : "invisible"}`}
-                            style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
-                          >
-                            {bonus > 0 ? `+${bonus}` : "0"}
-                          </div>
+                          <span className="text-white text-sm text-center pt-2.5 pb-1 font-medium">{amount.toLocaleString()}</span>
+                          {bonus > 0 && (
+                            <div
+                              className="text-center text-[10px] font-bold rounded-b-md py-0.5"
+                              style={{ backgroundImage: "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)", color: "#5a2d0a" }}
+                            >
+                              +{bonus}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -828,7 +836,35 @@ const Bank = () => {
               )}
             </GameCard>
 
-            {/* Amount input section - from withdrwalui.html */}
+            {/* Withdraw Amount Grid */}
+            <GameCard className="p-2 flex flex-col gap-1.5">
+              <span className="text-white text-xs">Choose Withdraw Amount</span>
+              <div className="grid grid-cols-3 gap-1.5">
+                {WITHDRAW_AMOUNTS.map((amount) => {
+                  const isActive = selectedWithdrawAmount === amount;
+                  return (
+                    <div
+                      key={amount}
+                      onClick={() => { setSelectedWithdrawAmount(amount); setWithdrawAmountInput(amount.toString()); }}
+                      className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200 py-1.5"
+                      style={{
+                        background: isActive
+                          ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
+                          : "rgba(211, 54, 93, 0.2)",
+                        border: isActive
+                          ? "1.5px solid rgba(255, 180, 50, 0.6)"
+                          : "1px solid rgba(255,255,255,0.1)",
+                        boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
+                      }}
+                    >
+                      <span className="text-white text-sm text-center font-medium">{amount.toLocaleString()}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </GameCard>
+
+            {/* Amount input section */}
             <GameCard className="p-2">
               <div
                 className="flex items-center rounded-[30px] h-10 px-2.5 mb-2"
