@@ -965,26 +965,56 @@ const Bank = () => {
             <span className="text-white/70 text-xs">{activeTab === "deposit" ? "Payment" : "Withdraw"}</span>
             {activeTab === "deposit" && activeMethod === "usdt" ? (
               <span className="text-white font-bold text-sm">
-                {(customAmount ? parseInt(customAmount) || 0 : selectedAmount).toLocaleString()} USDT
+                <span style={{
+                  backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
+                }}>{(customAmount ? parseInt(customAmount) || 0 : selectedAmount).toLocaleString()}</span> USDT
               </span>
             ) : (
               <span className="text-white font-bold text-sm">
-                ₹{(activeTab === "deposit" ? (customAmount ? parseInt(customAmount) || 0 : selectedAmount) : selectedWithdrawAmount).toLocaleString()}
+                ₹<span style={{
+                  backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
+                }}>{(activeTab === "deposit" ? (customAmount ? parseInt(customAmount) || 0 : selectedAmount) : selectedWithdrawAmount).toLocaleString()}</span>
               </span>
             )}
           </div>
           {activeTab === "deposit" && activeMethod !== "usdt" && (
             <div className="flex items-center gap-1">
               <span className="text-white/50 text-[10px]">Received</span>
-              <span className="text-green-400 text-[10px] font-bold">₹{((customAmount ? parseInt(customAmount) || 0 : selectedAmount) + selectedDepositBonus).toLocaleString()}</span>
+              <span className="text-[10px] font-bold" style={{
+                backgroundImage: "linear-gradient(0deg, rgb(50, 200, 100) 0%, rgb(30, 160, 60) 43.7%, rgb(80, 220, 120) 45%, rgb(40, 185, 70) 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
+              }}>₹{((customAmount ? parseInt(customAmount) || 0 : selectedAmount) + selectedDepositBonus).toLocaleString()}</span>
               <span className="text-white/50 text-[10px]">Bonus</span>
-              <span className="text-primary text-[10px] font-bold">₹{selectedDepositBonus.toLocaleString()}</span>
+              <span className="text-[10px] font-bold" style={{
+                backgroundImage: "linear-gradient(0deg, rgb(70, 110, 208) 0%, rgb(64, 72, 179) 43.7%, rgb(97, 130, 237) 45%, rgb(101, 127, 231) 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
+              }}>₹{selectedDepositBonus.toLocaleString()}</span>
             </div>
           )}
           {activeTab === "deposit" && activeMethod === "usdt" && currentEffectiveAmount > 0 && (
             <div className="flex items-center gap-1">
               <span className="text-white/50 text-[10px]">Received</span>
-              <span className="text-green-400 text-[10px] font-bold">₹{(currentEffectiveAmount * getExchangeRate(activeMethod, activePaymentChannel)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="text-[10px] font-bold" style={{
+                backgroundImage: "linear-gradient(0deg, rgb(50, 200, 100) 0%, rgb(30, 160, 60) 43.7%, rgb(80, 220, 120) 45%, rgb(40, 185, 70) 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
+              }}>₹{(currentEffectiveAmount * getExchangeRate(activeMethod, activePaymentChannel)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           )}
           {activeTab === "withdraw" && (
