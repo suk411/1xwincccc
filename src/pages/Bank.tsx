@@ -21,7 +21,7 @@ import { authService } from "@/services/authService";
 import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
 
-const BASE_DEPOSIT_AMOUNTS = [100, 200, 300, 500, 1000, 2000, 3000, 5000, 8000, 10000, 20000, 30000, 50000, 100000];
+const BASE_DEPOSIT_AMOUNTS = [100, 200, 300, 500, 1000, 2000, 3000, 5000, 8000, 10000];
 
 const USDT_OPTIONS = [
   { deposit: 50, bonus: 0 },
@@ -31,7 +31,7 @@ const USDT_OPTIONS = [
   { deposit: 1000, bonus: 0 },
   { deposit: 2000, bonus: 0 },
 ];
-const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000, 20000, 30000];
+const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000];
 
 const CACHE_KEY = "withdraw_info_cache";
 
@@ -520,7 +520,13 @@ const Bank = () => {
                           style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                         >
                           <img src={usdtLogo} alt="" className="absolute top-0 left-0 w-7 h-4 object-contain mt-0.5 ml-0.5" />
-                          <span className="text-white text-sm text-center pt-2 pb-0.5">{opt.deposit.toLocaleString()}</span>
+                          <span className="text-sm text-center pt-2 pb-0.5" style={{
+                            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          }}>{opt.deposit.toLocaleString()}</span>
                           <div className="text-center text-[10px] pb-1 text-white/60">USDT</div>
                         </div>
                       );
@@ -564,7 +570,13 @@ const Bank = () => {
                             boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
                           }}
                         >
-                          <span className="text-white text-sm text-center pt-2.5 pb-1 font-medium">{amount.toLocaleString()}</span>
+                          <span className="text-sm text-center pt-2.5 pb-1 font-medium" style={{
+                            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          }}>{amount.toLocaleString()}</span>
                           {bonus > 0 && (
                             <div
                               className="text-center text-[10px] font-bold rounded-b-md py-0.5"
@@ -857,7 +869,13 @@ const Bank = () => {
                         boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
                       }}
                     >
-                      <span className="text-white text-sm text-center font-medium">{amount.toLocaleString()}</span>
+                      <span className="text-sm text-center font-medium" style={{
+                        backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        color: "transparent",
+                      }}>{amount.toLocaleString()}</span>
                     </div>
                   );
                 })}
