@@ -244,7 +244,45 @@ const DepositRecords = () => {
                         animation: "statusShine 2.5s ease-in-out infinite",
                         pointerEvents: "none",
                       }} />
-                      <span className="text-xs font-bold whitespace-nowrap relative z-10" style={{ color: statusColor }}>
+                      <span className="text-xs font-bold whitespace-nowrap relative z-10" style={{
+                        ...(() => {
+                          const sl = status.toLowerCase();
+                          if (sl === "success" || sl === "completed") {
+                            return {
+                              backgroundImage: "linear-gradient(0deg, rgb(50, 200, 100) 0%, rgb(30, 160, 60) 43.7%, rgb(80, 220, 120) 45%, rgb(40, 185, 70) 100%)",
+                              WebkitBackgroundClip: "text",
+                              backgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                              color: "transparent",
+                            };
+                          }
+                          if (sl === "failed" || sl === "cancelled" || sl === "timeout") {
+                            return {
+                              backgroundImage: "linear-gradient(0deg, rgb(220, 50, 50) 0%, rgb(180, 20, 20) 43.7%, rgb(240, 70, 70) 45%, rgb(210, 40, 40) 100%)",
+                              WebkitBackgroundClip: "text",
+                              backgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                              color: "transparent",
+                            };
+                          }
+                          if (sl === "expired") {
+                            return {
+                              backgroundImage: "linear-gradient(0deg, rgb(255, 150, 50) 0%, rgb(230, 100, 20) 43.7%, rgb(255, 180, 70) 45%, rgb(240, 130, 30) 100%)",
+                              WebkitBackgroundClip: "text",
+                              backgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                              color: "transparent",
+                            };
+                          }
+                          return {
+                            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            color: "transparent",
+                          };
+                        })()
+                      }}>
                         {status.toLowerCase() === "pending" ? "IN PROGRESS" : status}
                       </span>
                     </span>
