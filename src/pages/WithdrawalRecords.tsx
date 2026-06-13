@@ -327,6 +327,10 @@ const WithdrawalRecords = () => {
                         }}>₹{Number(charge).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
+                        <span>Payment Method</span>
+                        <span>{(item as any).paymentMethod || "—"}</span>
+                      </div>
+                      <div className="flex justify-between">
                         <span>Currency</span>
                         <span>{currency}</span>
                       </div>
