@@ -78,7 +78,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
     } else if (label === "Deposit") {
       navigateWithTransition("/bank");
     } else if (label === "Withdrawal") {
-      navigateWithTransition("/bank");
+      navigateWithTransition("/bank", { state: { activeTab: "withdraw" } });
     } else if (label === "VIP") {
       navigateWithTransition("/vip");
     } else if (label === "Game Records") {

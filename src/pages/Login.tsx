@@ -56,14 +56,26 @@ const Login = () => {
         <div className="flex flex-col items-center mb-2">
           <img src={logo} alt="1xKING" className="h-16 w-auto mb-1" />
         
-          <p className="text-[#ffd700] font-bold text-sm italic mt-1">SPIN TO WIN,<br className="hidden" /> FORTUNE BEGINS HERE!</p>
+          <p className="font-bold text-sm italic mt-1" style={{
+            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            color: "transparent",
+          }}>SPIN TO WIN,<br className="hidden" /> FORTUNE BEGINS HERE!</p>
         </div>
 
         {/* Reward Banner */}
         <div className="relative w-full my-4">
           <img src={rewardBanner} alt="" className="w-full h-auto" />
-          <span className="absolute inset-0 flex items-center justify-center text-[#ffd700] font-bold pt-2 text-sm pl-8">
-            Get invitation rewards upto ₹1000
+          <span className="absolute inset-0 flex items-center justify-center font-bold pt-2 text-sm pl-8">
+            Get invitation rewards upto <span style={{
+              backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+            }}>₹1000</span>
           </span>
         </div>
 

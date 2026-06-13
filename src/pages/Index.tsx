@@ -358,7 +358,7 @@ const Index = () => {
               <img src={depositIcon} alt="Deposit" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
               <span className="text-[7.2px]">Deposit</span>
             </button>
-            <button onClick={() => navigateWithTransition("/bank")}  className="flex flex-col items-center gap-0.3">
+            <button onClick={() => navigateWithTransition("/bank", { state: { activeTab: "withdraw" } })}  className="flex flex-col items-center gap-0.3">
               <img src={withdrawIcon} alt="Withdraw" style={{width: '19.2px', height: '19.2px'}} className="object-contain" />
               <span className="text-[7.2px]">Withdraw</span>
             </button>
