@@ -173,7 +173,7 @@ const DepositRecords = () => {
         }
       `}} />
       <div className="sticky top-0 z-50">
-        <PageHeader title="Deposit Records" backPath="/" />
+        <PageHeader title="Deposit Records" />
       </div>
       <div className="flex flex-col gap-2 px-2 mt-4">
         {orders.length === 0 ? (

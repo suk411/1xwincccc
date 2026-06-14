@@ -692,7 +692,7 @@ const Index = () => {
             <div className="flex flex-col items-center py-4">
               <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
               <h4 className="text-white text-xs mb-3">Follow Us</h4>
-              <a href="https://t.me/" target="_blank" rel="noopener noreferrer">
+              <a href="https://t.me/+EM8kxuQpfMJmZTRl" target="_blank" rel="noopener noreferrer">
                 <img src={telegramPartner} alt="Telegram" className="w-16 h-14 rounded-sm object-contain" />
               </a>
             </div>

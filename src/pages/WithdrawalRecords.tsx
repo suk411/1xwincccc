@@ -168,7 +168,7 @@ const WithdrawalRecords = () => {
         }
       `}} />
       <div className="sticky top-0 z-50">
-        <PageHeader title="Withdrawal Records" backPath="/" />
+        <PageHeader title="Withdrawal Records" />
       </div>
       <div className="flex flex-col gap-2 px-2 mt-4">
         {items.length === 0 ? (

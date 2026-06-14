@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import pageHeaderBg from "@/assets/bank/header-bg.png";
 import backArrow from "@/assets/icons/close-icon.png";
@@ -9,11 +10,13 @@ interface PageHeaderProps {
 }
 
 const PageHeader = ({ title, showBack = true, backPath }: PageHeaderProps) => {
-  const { navigateWithTransition, goBack } = useTransitionNavigate();
+  const navigate = useNavigate();
+  const { goBack, setDirection } = useTransitionNavigate();
 
   const handleBack = () => {
     if (backPath) {
-      navigateWithTransition(backPath, { direction: "back" });
+      setDirection(-1);
+      navigate(backPath);
     } else {
       goBack();
     }

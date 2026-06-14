@@ -25,7 +25,7 @@ const Header = () => {
           {isLoggedIn && (
             <>
               <button 
-                onClick={() => window.open("https://t.me/", "_blank")}
+                onClick={() => window.open("https://tawk.to/chat/69ba6f55bb7f0b1c337b2956/1jk045qmh", "_blank")}
                 className="relative w-7 h-7 flex items-center justify-center hover:opacity-80 transition-opacity"
               >
                 <img src={supportIcon} alt="Support" className="absolute inset-0 w-full h-full object-contain" />

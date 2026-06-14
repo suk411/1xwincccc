@@ -1,4 +1,5 @@
 import "./LotteryCard.css";
+import wingoLogo from "@/assets/wingo/WinGo-logo.png";
 
 interface LotteryCardProps {
   icon?: string;
@@ -10,7 +11,7 @@ interface LotteryCardProps {
 }
 
 const LotteryCard: React.FC<LotteryCardProps> = ({
-  icon = "https://www.rajaluck.com/assets/png/WinGo-b9c59235.png",
+  icon = wingoLogo,
   name = "Win Go",
   hint = "Guess the number",
   tag = "HOT",

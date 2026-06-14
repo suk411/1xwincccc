@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import { PageTransition } from "@/components/PageTransition";
 import Index from "./pages/Index";
 import Earn from "./pages/Earn";
 import Bank from "./pages/Bank";
@@ -94,28 +96,30 @@ const AppContent = () => {
         {isHomePage && <DownloadBanner />}
         {isHomePage && <Header />}
         
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-          <Route path="/earn" element={<ProtectedRoute><Earn /></ProtectedRoute>} />
-          <Route path="/bank" element={<ProtectedRoute><Bank /></ProtectedRoute>} />
-          <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
-          <Route path="/promo" element={<ProtectedRoute><Promo /></ProtectedRoute>} />
-          <Route path="/community-event" element={<ProtectedRoute><CommunityEvent /></ProtectedRoute>} />
-          <Route path="/bank/records" element={<ProtectedRoute><DepositRecords /></ProtectedRoute>} />
-          <Route path="/bank/withdrawals" element={<ProtectedRoute><WithdrawalRecords /></ProtectedRoute>} />
-          <Route path="/payment" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
-          <Route path="/game" element={<ProtectedRoute><GamePlay /></ProtectedRoute>} />
-          <Route path="/wingo" element={<ProtectedRoute><WinGo /></ProtectedRoute>} />
-          <Route path="/bet-records" element={<ProtectedRoute><BetRecords /></ProtectedRoute>} />
-          <Route path="/vip" element={<ProtectedRoute><Vip /></ProtectedRoute>} />
-          <Route path="/lobby" element={<ProtectedRoute><GameLobbyPage /></ProtectedRoute>} />
-          <Route path="/support" element={<ProtectedRoute><SupportChat /></ProtectedRoute>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+            <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+            <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+            <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
+            <Route path="/" element={<PageTransition><ProtectedRoute><Index /></ProtectedRoute></PageTransition>} />
+            <Route path="/earn" element={<PageTransition><ProtectedRoute><Earn /></ProtectedRoute></PageTransition>} />
+            <Route path="/bank" element={<PageTransition><ProtectedRoute><Bank /></ProtectedRoute></PageTransition>} />
+            <Route path="/events" element={<PageTransition><ProtectedRoute><Events /></ProtectedRoute></PageTransition>} />
+            <Route path="/promo" element={<PageTransition><ProtectedRoute><Promo /></ProtectedRoute></PageTransition>} />
+            <Route path="/community-event" element={<PageTransition><ProtectedRoute><CommunityEvent /></ProtectedRoute></PageTransition>} />
+            <Route path="/bank/records" element={<PageTransition><ProtectedRoute><DepositRecords /></ProtectedRoute></PageTransition>} />
+            <Route path="/bank/withdrawals" element={<PageTransition><ProtectedRoute><WithdrawalRecords /></ProtectedRoute></PageTransition>} />
+            <Route path="/payment" element={<PageTransition><ProtectedRoute><PaymentGateway /></ProtectedRoute></PageTransition>} />
+            <Route path="/game" element={<PageTransition><ProtectedRoute><GamePlay /></ProtectedRoute></PageTransition>} />
+            <Route path="/wingo" element={<PageTransition><ProtectedRoute><WinGo /></ProtectedRoute></PageTransition>} />
+            <Route path="/bet-records" element={<PageTransition><ProtectedRoute><BetRecords /></ProtectedRoute></PageTransition>} />
+            <Route path="/vip" element={<PageTransition><ProtectedRoute><Vip /></ProtectedRoute></PageTransition>} />
+            <Route path="/lobby" element={<PageTransition><ProtectedRoute><GameLobbyPage /></ProtectedRoute></PageTransition>} />
+            <Route path="/support" element={<PageTransition><ProtectedRoute><SupportChat /></ProtectedRoute></PageTransition>} />
+            <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+          </Routes>
+        </AnimatePresence>
       </div>
       
       {showBottomNav && !isAuthPage && <BottomNav />}
