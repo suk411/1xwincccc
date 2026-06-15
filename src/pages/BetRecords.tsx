@@ -86,6 +86,7 @@ const BetRecords = () => {
       });
       if (res.status === 401) {
         localStorage.removeItem("auth_token");
+        sessionStorage.setItem("session_expired", "Session expired. Please login again.");
         window.location.href = "/login";
         return;
       }

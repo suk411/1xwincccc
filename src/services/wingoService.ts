@@ -12,6 +12,7 @@ const authHeaders = (): Record<string, string> => {
 const handleUnauthorized = (res: Response) => {
   if (res.status === 401) {
     localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.setItem("session_expired", "Session expired. Please login again.");
     window.location.href = "/login";
     throw new Error("Session expired. Please login again.");
   }

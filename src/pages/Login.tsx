@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DotPulse } from "ldrs/react";
 import "ldrs/react/DotPulse.css";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
@@ -25,6 +25,14 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+
+  useEffect(() => {
+    const msg = sessionStorage.getItem("session_expired");
+    if (msg) {
+      sessionStorage.removeItem("session_expired");
+      toast({ description: msg, variant: "destructive" });
+    }
+  }, []);
 
   const handleLogin = async () => {
     const isPhoneValid = /^\d{10}$/.test(phone);
