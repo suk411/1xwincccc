@@ -6,10 +6,11 @@ const variants = {
     x: direction > 0 ? "20%" : "-20%",
     opacity: 0,
   }),
-  center: { x: 0, opacity: 1 },
+  center: { x: 0, opacity: 1, transition: { duration: 0.075, ease: "easeOut" } },
   exit: (direction: number) => ({
     x: direction > 0 ? "-20%" : "20%",
     opacity: 0,
+    transition: { type: "spring", stiffness: 400, damping: 35 },
   }),
 };
 
@@ -23,7 +24,6 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       initial="enter"
       animate="center"
       exit="exit"
-      transition={{ type: "spring", stiffness: 400, damping: 35 }}
       style={{ width: "100%", height: "100%" }}
     >
       {children}
