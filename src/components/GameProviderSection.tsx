@@ -88,6 +88,7 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch, vipLevel }: Game
                 <img
                   src={providerLogos[section.provider] || ""}
                   alt={section.displayName}
+                  loading="lazy"
                   className="w-24 h-8 object-contain"
                 />
                 <span className="text-white text-sm font-bold tracking-wider">
@@ -119,7 +120,7 @@ const GameProviderSection = ({ launchingGame, handleGameLaunch, vipLevel }: Game
                   <div className="h-full w-full overflow-hidden">
                     <img
                       src={game.logo}
-                    
+                      loading="lazy"
                       className="w-full h-full   object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   </div>

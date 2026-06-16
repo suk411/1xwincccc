@@ -2,7 +2,7 @@ import PageLayout from "@/components/PageLayout";
 
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import bannerVideo from "@/assets/banner-video.mp4";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, memo } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { Volume2, VolumeX } from "lucide-react";
 import avatar from "@/assets/profile/avatar.png";
@@ -24,7 +24,7 @@ import catsportsIcon from "@/assets/games/catsports.webp";
 import catfishIcon from "@/assets/games/catfish.webp";
 import GameProviderSection from "@/components/GameProviderSection";
 import GameLobby from "@/components/GameLobby";
-import { GAME_LIST, gameService, GameObject, GameBalanceResponse } from "@/services/gameService";
+import { gameService, GameObject } from "@/services/gameService";
 import { toast } from "@/hooks/use-toast";
 import wingoLogo from "@/assets/wingo/WinGo-logo.png";
 import { refreshProfile, refreshVipLevel } from "@/hooks/useProfile";
@@ -106,9 +106,112 @@ const categoryTabs = [
   { icon: telegramIcon, label: "GROUP" },
 ];
 
+const MemoGameProviderSection = memo(GameProviderSection);
+const MemoGameLobby = memo(GameLobby);
+
+const StaticSections = memo(function StaticSections() {
+  return (
+    <>
+      <div className="w-full rounded-xl mt-2 overflow-hidden">
+        <div className="relative flex flex-col items-center">
+          <h3 className="relative top-6 z-10">Download App</h3>
+          <img
+            src={headerGlow}
+            alt="Header glow"
+            className="w-1/2 opacity-60 mx-auto"
+          />
+          <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 items-center px-3 pb-4">
+          <div className="flex flex-col items-center gap-3 w-full">
+            <img
+              src={promoCharacter}
+              alt="Promo"
+              className="w-4/5 object-contain"
+            />
+            <button className="w-3/4">
+              <img
+                src={appStoreBadge}
+                alt="App Store"
+                className="w-full object-contain"
+              />
+            </button>
+            <button className="w-3/4">
+              <img
+                src={googlePlayBadge}
+                alt="Google Play"
+                className="w-full object-contain"
+              />
+            </button>
+          </div>
+          <div className="flex items-center justify-center w-full">
+            <img
+              src={phoneMockup}
+              alt="App Preview"
+              className="w-4/5 px-1 object-contain"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full rounded-xl mt-2 overflow-hidden">
+        <div className="relative flex flex-col items-center">
+          <h3 className="relative top-8 z-10">Official Partners</h3>
+          <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
+        </div>
+        <div className="px-4 pb-4">
+          <img src={officialPartners} alt="Official Partners" className="w-full object-contain" />
+        </div>
+      </div>
+
+      <div className="w-full rounded-xl mt-2 overflow-hidden">
+        <div className="relative flex flex-col items-center">
+          <h3 className="relative top-8 z-10">About 1XKING</h3>
+          <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 px-4 pb-4">
+          <div className="flex flex-col items-center">
+            <h4 className="text-white text-xs mb-2">Verified Certification</h4>
+            <div className="w-full rounded-lg overflow-hidden">
+              <img src={verifiedCertification} alt="Verified Certification" className="w-full object-contain" />
+            </div>
+          </div>
+          <div className="flex flex-col items-center">
+            <h4 className="text-white text-xs mb-2">Security Protection</h4>
+            <div className="w-full rounded-lg overflow-hidden">
+              <img src={securityProtection} alt="Security Protection" className="w-full object-contain" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full rounded-xl mt-2 overflow-hidden">
+        <div className="grid grid-cols-2 gap-0">
+          <div className="flex flex-col items-center py-4">
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
+            <h4 className="text-white text-xs mb-3">Follow Us</h4>
+            <a href="https://t.me/+EM8kxuQpfMJmZTRl" target="_blank" rel="noopener noreferrer">
+              <img src={telegramPartner} alt="Telegram" className="w-16 h-14 rounded-sm object-contain" />
+            </a>
+          </div>
+          <div className="flex flex-col items-center py-4">
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
+            <h4 className="text-xs mb-3">Responsible Gaming Statement</h4>
+            <img src={responsibleGaming} alt="Responsible Gaming" className="w-4/5 object-contain" />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+});
+
 const Index = () => {
   const { navigateWithTransition } = useTransitionNavigate();
   const [muted, setMuted] = useState(true);
+  const [showBelowFold, setShowBelowFold] = useState(false);
+  useEffect(() => { setShowBelowFold(true); }, []);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerIndex, setTickerIndex] = useState(0);
@@ -128,21 +231,19 @@ const Index = () => {
 
   const { balance, vipLevel } = useProfile();
 
-  const fetchBalances = async () => {
+  const fetchBalances = useCallback(async () => {
     try {
       const data = await gameService.getBalance();
       setGameBalances(data.gameBalance);
-      // Cache the balances in local storage
       localStorage.setItem("cached_game_balances", JSON.stringify(data.gameBalance));
       
-      // Sum up only the game balances for the display on the card
       const total = Object.values(data.gameBalance).reduce((sum, val) => sum + val, 0);
       setTotalGameBalance(total);
       await refreshProfile();
     } catch (e) {
       console.error("Failed to fetch game balances:", e);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Fetch current VIP level on every home page visit
@@ -163,7 +264,7 @@ const Index = () => {
     fetchBalances();
   }, []);
 
-  const handleWithdrawAll = async () => {
+  const handleWithdrawAll = useCallback(async () => {
     if (isWithdrawing) return;
     setIsWithdrawing(true);
 
@@ -207,37 +308,31 @@ const Index = () => {
 
     setWithdrawCountdown(0);
     setIsWithdrawing(false);
-  };
+  }, [isWithdrawing, fetchBalances]);
 
-  const handleGameLaunch = async (game: GameObject) => {
-    // Check VIP requirement immediately using cached vipLevel from useProfile hook
-    // Require VIP 2 or above to play
+  const handleGameLaunch = useCallback((game: GameObject) => {
     if (vipLevel < 2) {
       setPendingGame(game);
       setShowVipModal(true);
       return;
     }
 
-    // Show confirmation dialog
     setGameForConfirm(game);
     setShowGameConfirm(true);
-  };
+  }, [vipLevel]);
 
-  const handleConfirmGameLaunch = async () => {
+  const handleConfirmGameLaunch = useCallback(async () => {
     if (!gameForConfirm) return;
     
-    // Close dialog immediately
     setShowGameConfirm(false);
     const game = gameForConfirm;
     setGameForConfirm(null);
     
-    // Handle Wingo separately (built-in game, no launch API)
     if (game.game_id === "wingo") {
       navigateWithTransition("/wingo");
       return;
     }
     
-    // Start loading overlay
     const gameWindow = window.open("", "_blank");
     setIsLaunching(true);
     setLaunchingGame(game.game_id);
@@ -261,28 +356,26 @@ const Index = () => {
       setIsLaunching(false);
       setLaunchingGame(null);
     }
-  };
+  }, [gameForConfirm, navigateWithTransition]);
 
 
   const handleTickerEnd = () => {
     setTickerIndex((prev) => (prev + 1) % winMessages.length);
   };
 
-  const handleGroupClick = (label: string) => {
+  const handleGroupClick = useCallback((label: string) => {
     if (label === "GROUP") {
       navigateWithTransition("/community-event");
     }
-  };
+  }, [navigateWithTransition]);
 
-  const handleTabChange = (tabValue: string) => {
+  const handleTabChange = useCallback((tabValue: string) => {
     if (tabValue === "top") {
       setActiveGameTab("top");
     } else {
-      // Regardless of which category tab is clicked (all, slots, casino, etc.), 
-      // always open the lobby with "all" active.
       navigateWithTransition("/lobby", { state: { activeTab: "all" } });
     }
-  };
+  }, [navigateWithTransition]);
 
   return (
     <PageLayout>
@@ -535,174 +628,62 @@ const Index = () => {
           />
         </div>
 
-        {/* Lottery Card Section */}
-        <div className="mt-3 rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
-          <div className="flex items-center justify-between px-2 py-2">
-            <div className="flex items-center gap-2">
-              <span className="text-white text-sm font-bold tracking-wider">LOTTERY</span>
+        {showBelowFold && (
+          <>
+            {/* Lottery Card Section */}
+            <div className="mt-3 rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
+              <div className="flex items-center justify-between px-2 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-white text-sm font-bold tracking-wider">LOTTERY</span>
+                </div>
+              </div>
+              <div className="px-2 pb-3">
+                <LotteryCard 
+                  name="Win Go" 
+                  hint="Guess the number"
+                  tag="HOT"
+                  onClick={() => handleGameLaunch(WINGO_GAME)}
+                />
+              </div>
             </div>
-          </div>
-          <div className="px-2 pb-3">
-            <LotteryCard 
-              name="Win Go" 
-              hint="Guess the number"
-              tag="HOT"
-              onClick={() => handleGameLaunch(WINGO_GAME)}
-            />
-          </div>
-        </div>
 
-        {/* SABAPLAY Card Section */}
-        <div className="mt-3 rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
-          <div className="flex items-center justify-between px-2 py-2">
-            <div className="flex items-center gap-2">
-              <span className="text-white text-sm font-bold tracking-wider">SPORT BOOK</span>
+            {/* SABAPLAY Card Section */}
+            <div className="mt-3 rounded-lg overflow-hidden" style={{ backgroundColor: "#1a0a10" }}>
+              <div className="flex items-center justify-between px-2 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-white text-sm font-bold tracking-wider">SPORT BOOK</span>
+                </div>
+              </div>
+              <div className="px-2 pb-3">
+                <LotteryCard 
+                  icon={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png")}
+                  name="SABAPLAY" 
+                  hint="Sports betting"
+                  tag="NEW"
+                  rightIcon={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/IPL.png")}
+                  onClick={() => handleGameLaunch(SABAPLAY_GAME)}
+                />
+              </div>
             </div>
-          </div>
-          <div className="px-2 pb-3">
-            <LotteryCard 
-              icon={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/SABAplays.png")}
-              name="SABAPLAY" 
-              hint="Sports betting"
-              tag="NEW"
-              rightIcon={withCacheBust("https://utprqkqiqjtjtzksjrng.supabase.co/storage/v1/object/public/SABAgamelogo/IPL.png")}
-              onClick={() => handleGameLaunch(SABAPLAY_GAME)}
-            />
-          </div>
-        </div>
+          </>
+        )}
 
         {activeGameTab === "top" ? (
           showTopGames && (
-            <GameProviderSection 
+            <MemoGameProviderSection 
               launchingGame={launchingGame}
               handleGameLaunch={handleGameLaunch}
             />
           )
         ) : (
-          <GameLobby
+          <MemoGameLobby
             activeTab={activeGameTab}
             launchingGame={launchingGame}
             handleGameLaunch={handleGameLaunch}
           />
         )}
 
-        
-{/* Download App Section */}
-
-<div className="w-full rounded-xl mt-2 overflow-hidden">
-
-{/* Header */}
-
-  <div className="relative flex flex-col items-center">
-    <h3 className="relative top-6 z-10">Download App</h3>
-    <img
-      src={headerGlow}
-      alt="Header glow"
-      className="w-1/2 opacity-60 mx-auto"
-    />
-    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
-  </div>
-
-{/* Content */}
-
-  <div className="grid grid-cols-2 gap-4 items-center px-3 pb-4">
-
-{/* Left Side */}
-<div className="flex flex-col items-center gap-3 w-full">
-
-  <img
-    src={promoCharacter}
-    alt="Promo"
-    className="w-4/5 object-contain"
-  />
-
-  <button className="w-3/4">
-    <img
-      src={appStoreBadge}
-      alt="App Store"
-      className="w-full object-contain"
-    />
-  </button>
-
-  <button className="w-3/4">
-    <img
-      src={googlePlayBadge}
-      alt="Google Play"
-      className="w-full object-contain"
-    />
-  </button>
-
-</div>
-
-{/* Right Side */}
-<div className="flex items-center justify-center w-full">
-
-  <img
-    src={phoneMockup}
-    alt="App Preview"
-    className="w-4/5 px-1  object-contain"
-  />
-
-</div>
-
-
-  </div>
-
-</div>
-
-
-        {/* Official Partners Section */}
-        <div className="w-full rounded-xl mt-2 overflow-hidden">
-          <div className="relative flex flex-col items-center">
-            <h3 className="relative top-8 z-10">Official Partners</h3>
-            <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
-          </div>
-          <div className="px-4 pb-4">
-            <img src={officialPartners} alt="Official Partners" className="w-full object-contain" />
-          </div>
-        </div>
-
-        {/* About Section */}
-        <div className="w-full rounded-xl mt-2 overflow-hidden">
-          <div className="relative flex flex-col items-center">
-            <h3 className="relative top-8 z-10">About 1XKING</h3>
-            <img src={headerGlow} alt="Header glow" className="w-1/2 object-cover opacity-60 mx-auto" />
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-2"></div>
-          </div>
-          <div className="grid grid-cols-2 gap-3 px-4 pb-4">
-            <div className="flex flex-col items-center">
-              <h4 className="text-white text-xs mb-2">Verified Certification</h4>
-              <div className="w-full rounded-lg overflow-hidden">
-                <img src={verifiedCertification} alt="Verified Certification" className="w-full object-contain" />
-              </div>
-            </div>
-            <div className="flex flex-col items-center">
-              <h4 className="text-white text-xs mb-2">Security Protection</h4>
-              <div className="w-full rounded-lg overflow-hidden">
-                <img src={securityProtection} alt="Security Protection" className="w-full object-contain" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Follow Us & Responsible Gaming */}
-        <div className="w-full rounded-xl mt-2 overflow-hidden">
-          <div className="grid grid-cols-2 gap-0">
-            <div className="flex flex-col items-center py-4">
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
-              <h4 className="text-white text-xs mb-3">Follow Us</h4>
-              <a href="https://t.me/+EM8kxuQpfMJmZTRl" target="_blank" rel="noopener noreferrer">
-                <img src={telegramPartner} alt="Telegram" className="w-16 h-14 rounded-sm object-contain" />
-              </a>
-            </div>
-            <div className="flex flex-col items-center py-4">
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-3"></div>
-              <h4 className="text-xs mb-3">Responsible Gaming Statement</h4>
-              <img src={responsibleGaming} alt="Responsible Gaming" className="w-4/5 object-contain" />
-            </div>
-          </div>
-        </div>
+{showBelowFold && <StaticSections />}
       </div>
     </PageLayout>
   );

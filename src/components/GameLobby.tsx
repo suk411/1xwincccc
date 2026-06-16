@@ -257,6 +257,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
                   <img
                     src={iconUrl}
                     alt={code}
+                    loading="lazy"
                     className="w-10 h-10 object-contain rounded"
                   />
                 </button>
@@ -287,6 +288,7 @@ const GameLobby = ({ activeTab, launchingGame, handleGameLaunch }: GameLobbyProp
                       <img
                         src={game.logo}
                         alt={game.name}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                       />
                     </div>

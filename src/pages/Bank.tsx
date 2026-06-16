@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback, memo } from "react";
 import { useLocation } from "react-router-dom";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
 
@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { GameDialog, GameDialogBody, GameDialogContent, GameDialogFooter } from "@/components/GameDialog";
 
 const BASE_DEPOSIT_AMOUNTS = [100, 200, 300, 500, 1000, 2000, 3000, 5000, 8000, 10000];
+const FORMATTED_BASE_DEPOSIT = BASE_DEPOSIT_AMOUNTS.map(a => ({ value: a, label: a.toLocaleString() }));
 
 const USDT_OPTIONS = [
   { deposit: 50, bonus: 0 },
@@ -31,7 +32,10 @@ const USDT_OPTIONS = [
   { deposit: 1000, bonus: 0 },
   { deposit: 2000, bonus: 0 },
 ];
+const FORMATTED_USDT = USDT_OPTIONS.map(o => ({ ...o, label: o.deposit.toLocaleString() }));
+
 const WITHDRAW_AMOUNTS = [110, 200, 500, 1000, 2000, 3000, 5000, 10000];
+const FORMATTED_WITHDRAW = WITHDRAW_AMOUNTS.map(a => ({ value: a, label: a.toLocaleString() }));
 
 const CACHE_KEY = "withdraw_info_cache";
 
@@ -49,12 +53,156 @@ const saveCache = (data: any) => {
   } catch {}
 };
 
+// --- Memoized Sub-Components ---
+
+interface DepositAmountGridProps {
+  depositAmounts: number[];
+  selectedAmount: number;
+  customAmount: string;
+  bonusOptIn: boolean;
+  getBonus: (amount: number) => number;
+  onSelect: (amount: number) => void;
+}
+
+const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, bonusOptIn, getBonus, onSelect }: DepositAmountGridProps) => {
+  const formattedAmounts = useMemo(() => {
+    return depositAmounts.map(amount => {
+      const pre = FORMATTED_BASE_DEPOSIT.find(f => f.value === amount);
+      return {
+        value: amount,
+        label: pre ? pre.label : amount.toLocaleString(),
+        bonus: getBonus(amount),
+      };
+    });
+  }, [depositAmounts, getBonus]);
+
+  return (
+    <div className="grid grid-cols-3 gap-1.5">
+      {formattedAmounts.map(({ value, label, bonus }) => {
+        const isActive = !customAmount && selectedAmount === value;
+      return (
+        <div
+          key={value}
+          onClick={() => onSelect(value)}
+          className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200"
+          style={{
+            background: isActive
+              ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
+              : "rgba(211, 54, 93, 0.2)",
+            border: isActive
+              ? "1.5px solid rgba(255, 180, 50, 0.6)"
+              : "1px solid rgba(255,255,255,0.1)",
+            boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
+          }}
+        >
+          <span className="text-sm text-center pt-2.5 pb-1 font-medium" style={{
+            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            color: "transparent",
+          }}>{label}</span>
+          {bonusOptIn && bonus > 0 && (
+            <div
+              className="text-center text-[10px] font-bold rounded-b-md py-0.5"
+              style={{
+                backgroundImage: isActive
+                  ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
+                  : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
+                color: "#5a2d0a"
+              }}
+            >
+              +{bonus}
+            </div>
+          )}
+        </div>
+      );
+    })}
+    </div>
+  );
+});
+
+interface PaymentChannelListProps {
+  channels: { id: string; label: string; icon?: string }[];
+  activeChannel: string;
+  activeMethod: string;
+  onSelect: (id: string) => void;
+  getLimit: (method: string, channel: string) => { min: number; max: number } | null;
+}
+
+const PaymentChannelList = memo(({ channels, activeChannel, activeMethod, onSelect, getLimit }: PaymentChannelListProps) => (
+  <div className="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar" style={{ scrollBehavior: "smooth" }}>
+    {channels.map((ch) => {
+      const isActive = activeChannel === ch.id;
+      const limit = getLimit(activeMethod, ch.id);
+      return (
+        <div
+          key={ch.id}
+          onClick={() => onSelect(ch.id)}
+          className="rounded-lg overflow-hidden cursor-pointer transition-all shrink-0"
+          style={{
+            background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.05)",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+            minWidth: "126px",
+          }}
+        >
+          <div className="flex flex-col px-2.5 py-1.5" style={{ color: "#fff" }}>
+            <div style={{ fontSize: "13px", fontWeight: 500, marginBottom: "2px", whiteSpace: "nowrap" }}>
+              {ch.label}
+            </div>
+            <div style={{ fontSize: "11px", opacity: 0.9, whiteSpace: "nowrap" }}>
+              {limit ? `₹${limit.min.toLocaleString()} - ₹${limit.max.toLocaleString()}` : ""}
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+));
+
+interface WithdrawAmountGridProps {
+  formattedAmounts: { value: number; label: string }[];
+  selectedAmount: number;
+  onSelect: (amount: number) => void;
+}
+
+const WithdrawAmountGrid = memo(({ formattedAmounts, selectedAmount, onSelect }: WithdrawAmountGridProps) => (
+  <div className="grid grid-cols-3 gap-1.5">
+    {formattedAmounts.map(({ value, label }) => {
+      const isActive = selectedAmount === value;
+      return (
+        <div
+          key={value}
+          onClick={() => onSelect(value)}
+          className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200 py-1.5"
+          style={{
+            background: isActive
+              ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
+              : "rgba(211, 54, 93, 0.2)",
+            border: isActive
+              ? "1.5px solid rgba(255, 180, 50, 0.6)"
+              : "1px solid rgba(255,255,255,0.1)",
+            boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
+          }}
+        >
+          <span className="text-sm text-center font-medium" style={{
+            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            color: "transparent",
+          }}>{label}</span>
+        </div>
+      );
+    })}
+  </div>
+));
+
 const Bank = () => {
   const { navigateWithTransition } = useTransitionNavigate();
   const location = useLocation();
   const { toast } = useToast();
   const { balance, refresh: refreshBalance } = useProfile();
-  const cached = loadCache();
   const [activeTab, setActiveTab] = useState<"deposit" | "withdraw">("deposit");
   const [selectedAmount, setSelectedAmount] = useState(100);
   const [customAmount, setCustomAmount] = useState("");
@@ -66,12 +214,13 @@ const Bank = () => {
   const [depositAmountInput, setDepositAmountInput] = useState("");
   const [showAddAccount, setShowAddAccount] = useState(false);
   const [showViewAccount, setShowViewAccount] = useState(false);
-  const [bindAccount, setBindAccount] = useState<BankAccount | null>(cached?.data?.bindAccount || null);
-  const [withdrawInfo, setWithdrawInfo] = useState<import("@/services/authService").WithdrawInfoResponse | null>(cached || null);
+  const [bindAccount, setBindAccount] = useState<BankAccount | null>(() => {
+    const cached = loadCache();
+    return cached?.data?.bindAccount || null;
+  });
+  const [withdrawInfo, setWithdrawInfo] = useState<import("@/services/authService").WithdrawInfoResponse | null>(() => loadCache());
 
-  const [bindingAccount, setBindingAccount] = useState(false);
-  const [paying, setPaying] = useState(false);
-  const [withdrawing, setWithdrawing] = useState(false);
+  const [loading, setLoading] = useState({ bindingAccount: false, paying: false, withdrawing: false });
   const [depositConfig, setDepositConfig] = useState<import("@/services/authService").DepositConfigItem[]>([]);
   const [depositConfigReady, setDepositConfigReady] = useState(false);
   const [depositBonusInfo, setDepositBonusInfo] = useState<import("@/services/authService").DepositBonusInfo | null>(null);
@@ -134,7 +283,7 @@ const Bank = () => {
   }, [activeMethod, activePaymentChannel, depositConfig]);
 
   const WITHDRAW_METHODS = [
-    { id: "bank_card", label: "BANK CARD", icon: bankLogo },
+    { id: "bank_card", label: "BANK", icon: bankLogo },
     { id: "upi", label: "UPI", icon: upiLogo },
     { id: "upay", label: "UPAY", icon: upayLogo },
   ];
@@ -200,8 +349,8 @@ const Bank = () => {
   }, [activeTab]);
 
   const handleBindAccount = async (account: BankAccount) => {
-    if (bindingAccount) return;
-    setBindingAccount(true);
+    if (loading.bindingAccount) return;
+    setLoading(prev => ({ ...prev, bindingAccount: true }));
     try {
       let res: any;
       if (activeWithdrawMethod === "upi") {
@@ -228,7 +377,7 @@ const Bank = () => {
     } catch (err: any) {
       toast({ description: err?.message || "Failed to add payment method", variant: "destructive" });
     } finally {
-      setBindingAccount(false);
+      setLoading(prev => ({ ...prev, bindingAccount: false }));
     }
   };
 
@@ -281,14 +430,15 @@ const Bank = () => {
   const withdrawReceivedAmount = selectedWithdrawAmount;
   
   const currentEffectiveAmount = customAmount ? parseInt(customAmount) || 0 : selectedAmount;
-  const getBonus = (amount: number) => {
-    if (!depositBonusInfo?.hasBonusAvailable || !depositBonusInfo?.nextBonusRate) return 0;
-    return Math.floor(amount * depositBonusInfo.nextBonusRate);
-  };
-  const selectedDepositBonus = getBonus(currentEffectiveAmount);
+  const { hasBonusAvailable, nextBonusRate } = depositBonusInfo ?? {};
+  const getBonus = useCallback((amount: number) => {
+    if (!hasBonusAvailable || !nextBonusRate) return 0;
+    return Math.floor(amount * nextBonusRate);
+  }, [hasBonusAvailable, nextBonusRate]);
+  const selectedDepositBonus = useMemo(() => getBonus(currentEffectiveAmount), [getBonus, currentEffectiveAmount]);
 
   const handlePay = async () => {
-    if (paying) return;
+    if (loading.paying) return;
     
     const depositAmount = customAmount ? parseInt(customAmount) : selectedAmount;
     const limit = getChannelLimit(activeMethod, activePaymentChannel);
@@ -312,7 +462,7 @@ const Bank = () => {
     }
 
     const payWindow = window.open("", "_blank");
-    setPaying(true);
+    setLoading(prev => ({ ...prev, paying: true }));
     try {
       const shouldOptIn = activeMethod !== "usdt" && bonusOptIn;
       const res = await authService.deposit(depositAmount, activePaymentChannel, shouldOptIn);
@@ -331,12 +481,12 @@ const Bank = () => {
       if (payWindow) payWindow.close();
       toast({ description: err.message || "Please try again or choose another payment method.", variant: "destructive" });
     } finally {
-      setPaying(false);
+      setLoading(prev => ({ ...prev, paying: false }));
     }
   };
 
   const handleWithdraw = async () => {
-    if (withdrawing) return;
+    if (loading.withdrawing) return;
     if (!hasPaymentMethod() && !bindAccount) {
       toast({ description: "Please add a payment method first", variant: "destructive" });
       return;
@@ -381,7 +531,7 @@ const Bank = () => {
 
     const apiType = activeWithdrawMethod === "bank_card" ? "BANK" : activeWithdrawMethod === "upay" ? "UPAY" : "UPI";
 
-    setWithdrawing(true);
+    setLoading(prev => ({ ...prev, withdrawing: true }));
     try {
       const res = await authService.requestWithdraw(selectedWithdrawAmount, apiType);
       if (res.status === "success") {
@@ -394,7 +544,7 @@ const Bank = () => {
     } catch (err: any) {
       toast({ description: err.message || "Withdrawal failed", variant: "destructive" });
     } finally {
-      setWithdrawing(false);
+      setLoading(prev => ({ ...prev, withdrawing: false }));
     }
   };
 
@@ -455,17 +605,15 @@ const Bank = () => {
                         const chs = channelOptions[method.id];
                         if (chs?.length) setActivePaymentChannel(chs[0].id);
                       }}
-                      className="flex flex-col justify-between items-center w-[31%] h-[72px] p-2 rounded-md cursor-pointer transition-all"
+                      className="flex flex-row items-center justify-center gap-1.5 w-[26%] h-[41px] rounded-md cursor-pointer transition-all"
                       style={{
                         background: isActive ? "rgb(177, 44, 73)" : "transparent",
                         boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
                         border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
                       }}
                     >
-                      <div className="flex justify-center items-center w-full h-[32px]">
-                        <img src={method.icon} alt={method.label} className="w-[32px] h-[32px] object-contain" />
-                      </div>
-                      <span className="text-xs font-medium" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.7)" }}>
+                      <img src={method.icon} alt={method.label} className="w-[31px] h-[24px] object-contain shrink-0" />
+                      <span className="text-xs font-bold" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.7)" }}>
                         {method.label}
                       </span>
                     </div>
@@ -476,33 +624,13 @@ const Bank = () => {
 
             <GameCard className="p-2 flex flex-col gap-1.5" style={{ backgroundColor: "transparent", boxShadow: "none" }}>
               <span className="text-white text-xs">Payment Channel</span>
-              <div className="flex gap-1.5 overflow-x-auto pb-1 hide-scrollbar" style={{ scrollBehavior: "smooth" }}>
-                {channelOptions[activeMethod]?.map((ch) => {
-                  const isActive = activePaymentChannel === ch.id;
-                  const limit = getChannelLimit(activeMethod, ch.id);
-                  return (
-                    <div
-                      key={ch.id}
-                      onClick={() => setActivePaymentChannel(ch.id)}
-                      className="rounded-lg overflow-hidden cursor-pointer transition-all shrink-0"
-                      style={{
-                        background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.05)",
-                        boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-                        minWidth: "126px",
-                      }}
-                    >
-                      <div className="flex flex-col px-2.5 py-1.5" style={{ color: "#fff" }}>
-                        <div style={{ fontSize: "13px", fontWeight: 500, marginBottom: "2px", whiteSpace: "nowrap" }}>
-                          {ch.label}
-                        </div>
-                        <div style={{ fontSize: "11px", opacity: 0.9, whiteSpace: "nowrap" }}>
-                          {limit ? `₹${limit.min.toLocaleString()} - ₹${limit.max.toLocaleString()}` : ""}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <PaymentChannelList
+                channels={channelOptions[activeMethod] || []}
+                activeChannel={activePaymentChannel}
+                activeMethod={activeMethod}
+                onSelect={setActivePaymentChannel}
+                getLimit={getChannelLimit}
+              />
             </GameCard>
 
             <GameCard className="p-2 flex flex-col gap-1.5">
@@ -510,12 +638,12 @@ const Bank = () => {
               {activeMethod === "usdt" ? (
                 <>
                   <div className="grid grid-cols-3 gap-1.5">
-                    {USDT_OPTIONS.map((opt) => {
-                      const isActive = !customAmount && selectedAmount === opt.deposit;
+                    {FORMATTED_USDT.map(({ deposit, bonus, label }) => {
+                      const isActive = !customAmount && selectedAmount === deposit;
                       return (
                         <div
-                          key={opt.deposit}
-                          onClick={() => { setSelectedAmount(opt.deposit); setCustomAmount(""); setDepositAmountInput(opt.deposit.toString()); }}
+                          key={deposit}
+                          onClick={() => { setSelectedAmount(deposit); setCustomAmount(""); setDepositAmountInput(deposit.toString()); }}
                           className="relative rounded-md overflow-hidden flex flex-col cursor-pointer border border-white/10"
                           style={{ backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)" }}
                         >
@@ -526,7 +654,7 @@ const Bank = () => {
                             backgroundClip: "text",
                             WebkitTextFillColor: "transparent",
                             color: "transparent",
-                          }}>{opt.deposit.toLocaleString()}</span>
+                          }}>{label}</span>
                           <div className="text-center text-[10px] pb-1 text-white/60">USDT</div>
                         </div>
                       );
@@ -559,49 +687,14 @@ const Bank = () => {
                 </>
               ) : (
                 <>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {depositAmounts.map((amount) => {
-                      const isActive = !customAmount && selectedAmount === amount;
-                      const bonus = getBonus(amount);
-                      return (
-                        <div
-                          key={amount}
-                          onClick={() => { setSelectedAmount(amount); setCustomAmount(""); setDepositAmountInput(amount.toString()); }}
-                          className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200"
-                          style={{
-                            background: isActive
-                              ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
-                              : "rgba(211, 54, 93, 0.2)",
-                            border: isActive
-                              ? "1.5px solid rgba(255, 180, 50, 0.6)"
-                              : "1px solid rgba(255,255,255,0.1)",
-                            boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
-                          }}
-                        >
-                          <span className="text-sm text-center pt-2.5 pb-1 font-medium" style={{
-                            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
-                            WebkitBackgroundClip: "text",
-                            backgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                            color: "transparent",
-                          }}>{amount.toLocaleString()}</span>
-                          {bonusOptIn && bonus > 0 && (
-                            <div
-                              className="text-center text-[10px] font-bold rounded-b-md py-0.5"
-                              style={{
-                                backgroundImage: isActive
-                                  ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
-                                  : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
-                                color: "#5a2d0a"
-                              }}
-                            >
-                              +{bonus}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <DepositAmountGrid
+                    depositAmounts={depositAmounts}
+                    selectedAmount={selectedAmount}
+                    customAmount={customAmount}
+                    bonusOptIn={bonusOptIn}
+                    getBonus={getBonus}
+                    onSelect={(amount) => { setSelectedAmount(amount); setCustomAmount(""); setDepositAmountInput(amount.toString()); }}
+                  />
                   <div
                     className="flex items-center rounded-[30px] h-10 pl-4 pr-4"
                     style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
@@ -762,16 +855,14 @@ const Bank = () => {
                   <div
                     key={method.id}
                     onClick={() => setActiveWithdrawMethod(method.id)}
-                    className="flex flex-col justify-between items-center w-[31%] h-[72px] p-2 rounded-md cursor-pointer transition-all border border-white/10"
+                    className="flex flex-row items-center justify-center gap-1.5 w-[26%] h-[41px] rounded-md cursor-pointer transition-all border border-white/10"
                     style={{
                       backgroundColor: isActive ? "rgb(177, 44, 73)" : "rgba(211, 54, 93, 0.2)",
                       color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
                     }}
                   >
-                    <div className="flex justify-center items-center w-full h-[32px]">
-                      <img src={method.icon} alt={method.label} className="w-[32px] h-[32px] object-contain" />
-                    </div>
-                    <span className="text-xs font-medium">{method.label}</span>
+                    <img src={method.icon} alt={method.label} className="w-[31px] h-[24px] object-contain shrink-0" />
+                    <span className="text-xs font-bold">{method.label}</span>
                   </div>
                 );
               })}
@@ -878,35 +969,11 @@ const Bank = () => {
             {/* Withdraw Amount Grid */}
             <GameCard className="p-2 flex flex-col gap-1.5">
               <span className="text-white text-xs">Choose Withdraw Amount</span>
-              <div className="grid grid-cols-3 gap-1.5">
-                {WITHDRAW_AMOUNTS.map((amount) => {
-                  const isActive = selectedWithdrawAmount === amount;
-                  return (
-                    <div
-                      key={amount}
-                      onClick={() => { setSelectedWithdrawAmount(amount); setWithdrawAmountInput(amount.toString()); }}
-                      className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200 py-1.5"
-                      style={{
-                        background: isActive
-                          ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
-                          : "rgba(211, 54, 93, 0.2)",
-                        border: isActive
-                          ? "1.5px solid rgba(255, 180, 50, 0.6)"
-                          : "1px solid rgba(255,255,255,0.1)",
-                        boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
-                      }}
-                    >
-                      <span className="text-sm text-center font-medium" style={{
-                        backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        color: "transparent",
-                      }}>{amount.toLocaleString()}</span>
-                    </div>
-                  );
-                })}
-              </div>
+              <WithdrawAmountGrid
+                formattedAmounts={FORMATTED_WITHDRAW}
+                selectedAmount={selectedWithdrawAmount}
+                onSelect={(amount) => { setSelectedWithdrawAmount(amount); setWithdrawAmountInput(amount.toString()); }}
+              />
             </GameCard>
 
             {/* Amount input section */}
@@ -1070,7 +1137,7 @@ const Bank = () => {
           )}
         </div>
         <GameButton
-          variant={paying || withdrawing || (activeTab === "deposit" && !depositConfigReady) ? "mute" : "gold"}
+          variant={loading.paying || loading.withdrawing || (activeTab === "deposit" && !depositConfigReady) ? "mute" : "gold"}
           style={{
             height: "34px",
             fontSize: "12px",
@@ -1079,9 +1146,9 @@ const Bank = () => {
             borderRadius: "17px",
           }}
           onClick={activeTab === "deposit" ? handlePay : handleWithdraw}
-          disabled={paying || withdrawing || (activeTab === "deposit" && !depositConfigReady)}
+          disabled={loading.paying || loading.withdrawing || (activeTab === "deposit" && !depositConfigReady)}
         >
-          {paying ? "Processing..." : withdrawing ? "Processing..." : activeTab === "deposit" ? "Pay" : "Withdraw"}
+          {loading.paying ? "Processing..." : loading.withdrawing ? "Processing..." : activeTab === "deposit" ? "Pay" : "Withdraw"}
         </GameButton>
       </div>
 

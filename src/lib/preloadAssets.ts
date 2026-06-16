@@ -7,7 +7,6 @@ const assets = [
   import("@/assets/icons/bank-inactive.png"),
   import("@/assets/icons/events-active.png"),
   import("@/assets/icons/events-inactive.png"),
-  import("@/assets/nav-bg.png"),
   import("@/assets/nav-center-platform.png"),
   import("@/assets/gift-box.png"),
 ];
