@@ -92,11 +92,11 @@ const AppContent = () => {
     <div className="mobile-app-shell">
       <VersionCheck />
       <PosterModal isOpen={isPosterOpen} onClose={() => setIsPosterOpen(false)} />
-      <div className="mobile-app-scroll flex flex-col" style={{ position: "relative" }}>
+      <div className="mobile-app-scroll flex flex-col">
         {isHomePage && <DownloadBanner />}
         {isHomePage && <Header />}
         
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
             <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
