@@ -62,6 +62,7 @@ export interface WingoBetRequest {
   issueNumber: string;
   betamount: number;
   selectType: string;
+  mode?: string;
 }
 
 export interface WingoBetResponse {
@@ -98,33 +99,37 @@ export interface WingoBetsResponse {
 }
 
 export const wingoService = {
-  async getCurrent(): Promise<WingoCurrentResponse> {
-    const res = await fetch(`${API_BASE}/api/wingo/current`);
+  async getCurrent(mode?: string): Promise<WingoCurrentResponse> {
+    const qs = mode ? `?mode=${mode}` : "";
+    const res = await fetch(`${API_BASE}/api/wingo/current${qs}`);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to sync current round"));
     return data;
   },
 
-  async getHistory(pageNo = 1): Promise<WingoHistoryResponse> {
-    const res = await fetch(`${API_BASE}/api/wingo/history?pageNo=${pageNo}`);
+  async getHistory(pageNo = 1, mode?: string): Promise<WingoHistoryResponse> {
+    const qs = mode ? `?pageNo=${pageNo}&mode=${mode}` : `?pageNo=${pageNo}`;
+    const res = await fetch(`${API_BASE}/api/wingo/history${qs}`);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch history"));
     return data;
   },
 
-  async getTrends(): Promise<WingoTrendsResponse> {
-    const res = await fetch(`${API_BASE}/api/wingo/trends`);
+  async getTrends(mode?: string): Promise<WingoTrendsResponse> {
+    const qs = mode ? `?mode=${mode}` : "";
+    const res = await fetch(`${API_BASE}/api/wingo/trends${qs}`);
     const data = await res.json();
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch trends"));
     return data;
   },
 
-  async getMyBets(params?: { page?: number; limit?: number; status?: string; issueNumber?: string }): Promise<WingoBetsResponse> {
+  async getMyBets(params?: { page?: number; limit?: number; status?: string; issueNumber?: string; mode?: string }): Promise<WingoBetsResponse> {
     const qs = new URLSearchParams();
     if (params?.page) qs.set("page", String(params.page));
     if (params?.limit) qs.set("limit", String(params.limit));
     if (params?.status) qs.set("status", params.status);
     if (params?.issueNumber) qs.set("issueNumber", params.issueNumber);
+    if (params?.mode) qs.set("mode", params.mode);
     const query = qs.toString();
 
     const res = await fetch(`${API_BASE}/api/wingo/bets${query ? `?${query}` : ""}`, {
@@ -136,8 +141,9 @@ export const wingoService = {
     return data;
   },
 
-  async checkWin(issue: string): Promise<{ status: string; issue: string; result: number; winamt: number[] }> {
-    const res = await fetch(`${API_BASE}/api/wingo/iswin?issue=${issue}`, {
+  async checkWin(issue: string, mode?: string): Promise<{ status: string; issue: string; result: number; winamt: number[] }> {
+    const qs = mode ? `?issue=${issue}&mode=${mode}` : `?issue=${issue}`;
+    const res = await fetch(`${API_BASE}/api/wingo/iswin${qs}`, {
       headers: authHeaders(),
     });
     handleUnauthorized(res);

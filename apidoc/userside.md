@@ -1,14 +1,27 @@
-# Deposit API - User Side
+# Wingo Game API - User Side
 
 ## Base URL
 
 ```
-https://backend-ledger-0ra6.onrender.com/api
+http://localhost:3000/api/wingo
 ```
+
+## Game Modes
+
+All endpoints support the following game modes via `?mode=` query parameter (defaults to `30s`):
+
+| Mode | Duration | Game Code | Periods/Day | Issue Example |
+|------|----------|-----------|-------------|---------------|
+| `30s` | 30 sec | `WinGo_30S` | 2880 | `202605100000001` |
+| `1m` | 1 min | `WinGo_1M` | 1440 | `1M_20260510000001` |
+| `3m` | 3 min | `WinGo_3M` | 480 | `3M_20260510000001` |
+| `5m` | 5 min | `WinGo_5M` | 288 | `5M_20260510000001` |
+
+---
 
 ## Authentication
 
-All endpoints require Bearer token:
+Betting endpoints require Bearer token:
 
 ```
 Authorization: Bearer <user_token>
@@ -16,184 +29,228 @@ Authorization: Bearer <user_token>
 
 ---
 
-## Deposit Page Config
-
-Get available deposit channels with their min/max limits and exchange rates. Frontend should call this on page load instead of hardcoding channels.
+## Get Current Round
 
 ```
-GET /account/deposit-config
+GET /api/wingo/current?mode=30s
 ```
+
+Returns current active round with previous/next timings. Frontend uses this for countdown.
+
+**Authentication:** None
+
+**Query Params:** `mode` (optional, default: `30s`)
 
 **Response:**
 
 ```json
 {
-  "status": "success",
-  "data": [
-    {
-      "channel": "simplypay",
-      "name": "SimplyPay",
-      "isActive": true,
-      "minAmount": 100,
-      "maxAmount": 100000,
-      "exchangeRate": 1,
-      "sortOrder": 0
-    },
-    {
-      "channel": "usdt",
-      "name": "USDT",
-      "isActive": true,
-      "minAmount": 1,
-      "maxAmount": 1000,
-      "exchangeRate": 90,
-      "sortOrder": 2
-    }
-  ]
-}
-```
-
-Only active channels (`isActive: true`) are returned.
-
-- For INR channels, `exchangeRate` is 1 (amount = received amount).
-- For USDT, `exchangeRate` is the current rate (e.g., 90). The frontend should show: *"You deposit X USDT → You receive Y INR"* where `Y = X * exchangeRate`.
-
----
-
-## Initiate Deposit
-
-```
-POST /api/payment/deposit
-```
-
-**Body:**
-
-```json
-{
-  "amount": 10,
-  "channel": "gspayusdt",
-  "bonusOptIn": true
-}
-```
-
-| Param | Type | Required | Description |
-|-------|------|---------|-------------|
-| amount | number | Yes | Deposit amount in the channel's denomination (USDT for USDT, INR for others) |
-| channel | string | Yes | Channel key from `/account/deposit-config` |
-| bonusOptIn | boolean | No | Set `true` to opt into deposit bonus (first 3 deposits only). Default: `false` |
-
-**Validation (server-enforced):**
-- Channel must exist and be `isActive: true`
-- Amount must be within `minAmount`–`maxAmount` range of the selected channel
-
-**Exchange Rate & receivedAmount:**
-- For USDT: `receivedAmount = amount × exchangeRate` (e.g., 10 USDT × 90 = 900 INR)
-- For INR channels: `receivedAmount = amount` (exchangeRate = 1)
-- The wallet is credited with `receivedAmount` in INR
-
-**Response (Success):**
-
-```json
-{
-  "status": "success",
-  "msg": "Redirect to paymentUrl",
-  "paymentUrl": "https://..."
-}
-```
-
-**Error (disabled channel):**
-
-```json
-{
-  "success": false,
-  "msg": "Channel is currently disabled",
-  "status": "failed"
-}
-```
-
-**Error (amount out of range):**
-
-```json
-{
-  "success": false,
-  "msg": "Minimum deposit for USDT is 1",
-  "status": "failed"
-}
-```
-
----
-
-## My Deposit Records
-
-```
-GET /account/my-deposits
-```
-
-**Query Params:** page, limit
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "items": [
-    {
-      "userId": 123456,
-      "type": "DEPOSIT",
-      "amount": 500.0,
-      "balanceAfter": 1500.0,
-      "status": "SUCCESS",
-      "orderId": "DEP123456",
-      "remark": "Deposit via Paysimply",
-      "createdAt": "2026-03-15T10:30:00.000Z"
-    }
-  ]
-}
-```
-
----
-
-## Deposit Bonus Info
-
-Shows available bonus rates and remaining bonus eligibility for the current user.
-
-```
-GET /account/deposit-bonus-info
-```
-
-**Response:**
-
-```json
-{
-  "status": "success",
-  "hasBonusAvailable": true,
-  "nextDepositCount": 2,
-  "nextBonusRate": 0.5,
-  "nextBonusExample": "Deposit ₹200 → get ₹100 bonus",
-  "turnoverMultiplier": 7,
-  "successfulDeposits": 1,
-  "allRates": [
-    { "depositCount": 1, "bonusRate": 1.0 },
-    { "depositCount": 2, "bonusRate": 0.5 },
-    { "depositCount": 3, "bonusRate": 0.3 }
-  ]
+  "gameCode": "WinGo_30S",
+  "intervalMinute": 0.5,
+  "state": 1,
+  "previous": {
+    "issueNumber": "202605100000001",
+    "startTime": 1777274760000,
+    "endTime": 1777274790000
+  },
+  "current": {
+    "issueNumber": "202605100000002",
+    "startTime": 1777274790000,
+    "endTime": 1777274820000
+  },
+  "next": {
+    "issueNumber": "202605100000003",
+    "startTime": 1777274820000,
+    "endTime": 1777274850000
+  }
 }
 ```
 
 | Field | Description |
 |-------|-------------|
-| `hasBonusAvailable` | Whether user can still claim a bonus (within first 3 deposits) |
-| `nextDepositCount` | Which deposit number the next bonus would apply to (1, 2, or 3) |
-| `nextBonusRate` | The bonus rate for the next eligible deposit |
-| `nextBonusExample` | Human-readable example of what the next bonus would be |
-| `turnoverMultiplier` | Current turnover multiplier for deposit bonus |
-| `successfulDeposits` | Number of successful deposits the user has made |
-| `allRates` | All configured bonus rates |
+| `gameCode` | Mode-specific: `WinGo_30S`, `WinGo_1M`, `WinGo_3M`, `WinGo_5M` |
+| `intervalMinute` | Round duration (0.5=30s, 1=1m, 3=3m, 5=5m) |
+| `state` | 1 = running |
+| `current.issueNumber` | Use this for placing bets |
+| `current.endTime` | Betting closes at this timestamp |
 
-### Deposit Status Values
+**1m example:** `GET /api/wingo/current?mode=1m`
 
-| Status | Description |
-|--------|-------------|
-| `PENDING` | Deposit initiated, awaiting payment |
-| `SUCCESS` | Payment successful, amount credited |
-| `FAILED` | Payment failed |
-| `EXPIRED` | Payment link expired |
+---
+
+## Place Bet
+
+```
+POST /api/wingo/bet
+```
+
+**Headers:** `Authorization: Bearer <user_token>`
+
+**Body:**
+
+```json
+{
+  "issueNumber": "202605100000002",
+  "betamount": 100,
+  "selectType": "green",
+  "mode": "30s"
+}
+```
+
+| Param | Type | Required | Description |
+|-------|------|---------|-------------|
+| issueNumber | string | Yes | Current round issue number |
+| betamount | number | Yes | Bet amount |
+| selectType | string | Yes | `red`, `green`, `violet`, `big`, `small`, or `0`-`9` |
+| mode | string | No | Game mode (`30s`, `1m`, `3m`, `5m`). Defaults to `30s`. |
+
+**Select Types:**
+
+| Type | Description | Example Win |
+|------|-------------|-------------|
+| `red` / `green` / `violet` | Color bet | Result color matches |
+| `big` (5-9) / `small` (0-4) | Size bet | Result number matches size |
+| `0`-`9` | Exact number | Result number matches exactly |
+
+**Response:**
+
+```json
+{
+  "status": "success"
+}
+```
+
+**1m example:**
+```json
+{
+  "issueNumber": "1M_20260510000001",
+  "betamount": 100,
+  "selectType": "green",
+  "mode": "1m"
+}
+```
+
+---
+
+## Get My Bets
+
+```
+GET /api/wingo/bets?page=1&limit=25&status=won&issueNumber=202605100000002
+```
+
+**Authentication:** Bearer token required
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "total": 50,
+  "page": 1,
+  "limit": 25,
+  "items": [
+    {
+      "issueNumber": "202605100000002",
+      "orderNumber": "WDGT202605100000002123456",
+      "betamount": 100,
+      "fee": 2,
+      "selectType": "green",
+      "result": {
+        "number": "5",
+        "profitAmount": 90
+      },
+      "realAmount": 98,
+      "status": "won",
+      "timestamp": "2026-05-10 10:00:00"
+    }
+  ]
+}
+```
+
+---
+
+## Check If I Won
+
+```
+GET /api/wingo/iswin?issue=202605100000002
+```
+
+**Authentication:** Bearer token required
+
+**Description:** Check if you won a specific round and see your profit amount.
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "issue": "202605100000002",
+  "result": 5,
+  "winamt": [90]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `result` | The winning number (0-9) |
+| `winamt` | Array of profit amounts won (one per bet) |
+
+---
+
+## Withdrawal Flow (Winnings)
+
+Wingo winnings are **automatically credited** to your main wallet when the round is settled. No separate withdrawal action is needed.
+
+1. **Round ends** → Result is declared
+2. **System settles** → Winning bets are calculated
+3. **Auto-credit** → Winning amount added to wallet balance
+4. **Ledger recorded** → Transaction with type `WIN` is created
+
+To withdraw your Wingo winnings, use the standard withdrawal flow:
+
+```
+POST /account/withdraw
+```
+
+---
+
+## Get Draw History
+
+```
+GET /api/wingo/history?pageNo=1&mode=30s
+```
+
+Returns paginated past round results for the specified game mode.
+
+**Query Params:** `pageNo` (default: 1), `mode` (default: `30s`)
+
+**Response:**
+
+```json
+{
+  "data": {
+    "list": [
+      { "issueNumber": "202605100000001", "number": 5 }
+    ],
+    "pageNo": 1,
+    "totalPage": 288,
+    "totalCount": 2880
+  },
+  "code": 0,
+  "msg": "Succeed",
+  "msgCode": 0,
+  "serviceTime": 1712345678901
+}
+```
+
+---
+
+## Get Trends
+
+```
+GET /api/wingo/trends?mode=30s
+```
+
+Returns hot/cold statistics for numbers 0-9 for the specified game mode.
+
+**Query Params:** `mode` (optional, default: `30s`)

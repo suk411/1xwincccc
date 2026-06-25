@@ -18,6 +18,7 @@ import { toast } from '@/hooks/use-toast'
 import { wingoService } from '@/services/wingoService'
 
 const GAMES = ['30s', '1Min', '3Min', '5Min']
+const MODE_MAP = { '30s': '30s', '1Min': '1m', '3Min': '3m', '5Min': '5m' }
 
 const POPUP_CFG = {
   green: { grad: 'grad-green', label: 'green', ac: 'rgb(71,186,124)', footBg: 'linear-gradient(90deg,rgb(63,170,112),rgb(71,186,124))' },
@@ -145,8 +146,12 @@ export default function WinGo() {
     }
   }
 
+  function getApiMode() {
+    return MODE_MAP[activeGame] || '30s'
+  }
+
   async function syncCurrent() {
-    const res = await wingoService.getCurrent()
+    const res = await wingoService.getCurrent(getApiMode())
     issueRef.current = res.current.issueNumber
     endTimeRef.current = res.current.endTime
     nextRef.current = res.next || null
@@ -155,7 +160,7 @@ export default function WinGo() {
   }
 
   async function loadHistory(page = 1) {
-    const res = await wingoService.getHistory(page)
+    const res = await wingoService.getHistory(page, getApiMode())
     const list = res?.data?.list || []
     setGameRecords(list)
     setTrendHistory(list.slice(0, 100))
@@ -165,7 +170,7 @@ export default function WinGo() {
   }
 
   async function loadTrends() {
-    const res = await wingoService.getTrends()
+    const res = await wingoService.getTrends(getApiMode())
     setTrendStats(res?.data || [])
   }
 
@@ -175,7 +180,7 @@ export default function WinGo() {
       setMyBetsTotal(0)
       return
     }
-    const res = await wingoService.getMyBets({ page, limit: 25 })
+    const res = await wingoService.getMyBets({ page, limit: 25, mode: getApiMode() })
     setMyBets(res?.items || [])
     if (res?.total) {
       setMyBetsTotal(Math.ceil(res.total / 25))
@@ -208,6 +213,7 @@ export default function WinGo() {
       issueNumber: issueRef.current,
       betamount: total,
       selectType,
+      mode: getApiMode(),
     }).then(() => {
       toast({ title: 'Bet Success' })
       const tasks = [refreshBalance()]
@@ -246,7 +252,7 @@ export default function WinGo() {
 
           if (betIssueRef.current && betIssueRef.current === finishedIssue) {
             betIssueRef.current = ''
-            wingoService.checkWin(finishedIssue).then(res => {
+            wingoService.checkWin(finishedIssue, getApiMode()).then(res => {
               if (res.winamt && res.winamt.length > 0) {
                 setWinData({ result: res.result, winamt: res.winamt, issue: res.issue })
                 setShowWinPopup(true)
