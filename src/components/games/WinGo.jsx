@@ -225,8 +225,11 @@ export default function WinGo() {
   }
 
   useEffect(() => {
-    Promise.allSettled([syncCurrent(), loadHistory(gamePage)]).catch(() => {})
-  }, [gamePage])
+    Promise.allSettled([syncCurrent(), loadHistory(gamePage), loadTrends()]).catch(() => {})
+    if (localStorage.getItem('auth_token')) {
+      loadMyBets(myBetsPage).catch(() => {})
+    }
+  }, [gamePage, activeGame])
 
   useEffect(() => {
     const interval = setInterval(() => {
