@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useReducer, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './WinGo.css'
 import timerAct from '@/assets/wingo/timer_act.png'
@@ -73,6 +73,173 @@ function getOriginDots(number) {
 const BALANCE_CHIPS = [1, 10, 100, 1000]
 const MULTIPLIER_CHIPS = ['X1', 'X5', 'X10', 'X20', 'X50', 'X100']
 
+const betReducer = (state, action) => {
+  switch (action.type) {
+    case 'OPEN_POPUP': {
+      const c = POPUP_CFG[action.key]
+      if (!c) return state
+      return { ...state, ...c, betType: action.key, selectedBalanceIdx: 0, showBetOverlay: true }
+    }
+    case 'SET_BALANCE_IDX': return { ...state, selectedBalanceIdx: action.idx }
+    case 'SET_MUL_IDX': return { ...state, selectedMulIdx: action.idx }
+    case 'SET_QTY': return { ...state, qty: Math.max(1, action.qty) }
+    case 'CHANGE_QTY': return { ...state, qty: Math.max(1, state.qty + action.d) }
+    case 'TOGGLE_AGREE': return { ...state, agreed: !state.agreed }
+    case 'CLOSE_BET': return { ...state, showBetOverlay: false }
+    default: return state
+  }
+}
+
+const initBet = {
+  showBetOverlay: false,
+  betType: 'green',
+  currentAc: 'rgb(71,186,124)',
+  currentFootBg: 'linear-gradient(90deg,rgb(63,170,112),rgb(71,186,124))',
+  currentGrad: 'grad-green',
+  selectedBalanceIdx: 0,
+  selectedMulIdx: 0,
+  qty: 1,
+  agreed: true,
+}
+
+const GameRecordRow = memo(({ item }) => {
+  const n = item.number
+  const bs = n >= 5 ? 'big' : 'small'
+  return (
+    <div className="van-row">
+      <div className="van-col--8">{item.issueNumber}</div>
+      <div className="van-col--5">
+        <div className={`GameRecord__C-body-num ${getNumberColor(n)}`}>{n}</div>
+      </div>
+      <div className="van-col--5">{bs}</div>
+      <div className="van-col--6">
+        <div className="GameRecord__C-origin">{getOriginDots(n)}</div>
+      </div>
+    </div>
+  )
+})
+
+const TrendRow = memo(({ item }) => {
+  const n = item.number
+  const bs = n >= 5 ? 'B' : 'S'
+  const numDivs = []
+  for (let j = 0; j < 10; j++) {
+    numDivs.push(
+      <div key={j} className={`Trend__C-body2-Num-item${j === n ? ` action${j}` : ''}`}>{j}</div>
+    )
+  }
+  return (
+    <div>
+      <div className="van-row">
+        <div className="van-col--8">{item.issueNumber}</div>
+        <div className="van-col--16">
+          <div className="Trend__C-body2-Num">{numDivs}</div>
+          <div className={`Trend__C-body2-Num-BS is${bs}`}>{bs}</div>
+        </div>
+      </div>
+    </div>
+  )
+})
+
+const MyBetItem = memo(({ bet, selectedBet, onSelect, onCopy }) => {
+  const s = String(bet.status || '').toLowerCase()
+  const isWon = s === 'won'
+  const isPending = s === 'pending'
+  const isLost = s === 'lost'
+  const profit = typeof bet?.result?.profitAmount === 'number' ? bet.result.profitAmount : 0
+  const amountText = isWon ? `+₹${profit.toFixed(2)}` : isPending ? `₹${Number(bet.realAmount || bet.betamount || 0).toFixed(2)}` : `-₹${Number(bet.betamount || 0).toFixed(2)}`
+  const selectType = String(bet.selectType || '').toLowerCase()
+  let leftClass = 'MyGameRecordList__C-item-l'
+  if (selectType === 'green') leftClass += ' MyGameRecordList__C-item-l-green'
+  else if (selectType === 'violet') leftClass += ' MyGameRecordList__C-item-l-violet'
+  else if (selectType === 'red') leftClass += ' MyGameRecordList__C-item-l-red'
+  else if (selectType === 'big') leftClass += ' MyGameRecordList__C-item-l-big'
+  else if (selectType === 'small') leftClass += ' MyGameRecordList__C-item-l-small'
+  else if (['0','1','2','3','4','5','6','7','8','9'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
+
+  let displayStatus = bet.status
+  if (isWon) displayStatus = 'success'
+  if (isLost) displayStatus = 'failed'
+
+  const isExpanded = selectedBet?.orderNumber === bet.orderNumber
+  return (
+    <div className={`MyGameRecordList__C-item${isExpanded ? ' expanded' : ''}`} onClick={() => onSelect(isExpanded ? null : bet)}>
+      <div className="MyGameRecordList__C-item-main">
+        <div className={leftClass}>{selectType}</div>
+        <div className="MyGameRecordList__C-item-m">
+          <div className="MyGameRecordList__C-item-m-top">{bet.issueNumber}</div>
+          <div className="MyGameRecordList__C-item-m-bottom">{bet.timestamp}</div>
+        </div>
+        {!isPending && (
+          <div className={`MyGameRecordList__C-item-r ${isWon ? 'success' : ''}`}>
+            <div className={isWon ? 'success' : ''}>{displayStatus}</div>
+            <span>{amountText}</span>
+          </div>
+        )}
+      </div>
+      {isExpanded && (
+        <div className="MyGameRecordList__C-detail">
+          <div className="MyGameRecordList__C-detail-text">details</div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>order number</span>
+            <div>{bet.orderNumber}<svg className="copy-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" onClick={(e) => { e.stopPropagation(); onCopy(bet.orderNumber) }} style={{ cursor: 'pointer' }}><path d="M16 1H9a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5zM9 5H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-5-5H9V5z"/></svg></div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>betting series</span><div>{bet.issueNumber}</div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>purchase price</span><div>₹{Number(bet.betamount || 0).toFixed(2)}</div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>Buy quantity</span><div>{Number(bet.betamount || 0).toFixed(0)}</div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>Amount after tax</span><div className={!isWon && !isPending ? 'red' : ''}>₹{Number(bet.realAmount || bet.betamount || 0).toFixed(2)}</div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>tax</span><div>₹{Number(bet.fee || 0).toFixed(2)}</div>
+          </div>
+          {bet?.result && (() => {
+            const n = parseInt(bet.result.number)
+            const isSmall = n >= 0 && n <= 4
+            const isBig = n >= 5 && n <= 9
+            return (
+              <div className="MyGameRecordList__C-detail-line">
+                <span>results</span>
+                <div>
+                  {bet.result.number != null && <span className="MyGameRecordList__C-inlineB">{bet.result.number}</span>}
+                  {(() => {
+                    const showViolet = n === 0 || n === 5
+                    const displayColour = showViolet ? 'violet' : bet.result.colour
+                    return displayColour && <span className="MyGameRecordList__C-inlineB purpleColor">{displayColour}</span>
+                  })()}
+                  {isSmall && <span className="MyGameRecordList__C-inlineB small">small</span>}
+                  {isBig && <span className="MyGameRecordList__C-inlineB big">big</span>}
+                </div>
+              </div>
+            )
+          })()}
+          <div className="MyGameRecordList__C-detail-line">
+            <span>choose</span><div>{bet.selectType}</div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>status</span><div className={isLost ? 'red' : isWon ? 'green' : ''}>{isWon ? 'success' : isLost ? 'failed' : bet.status}</div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>win lose</span>
+            <div className={isWon ? 'green' : isLost ? 'red' : ''}>
+              {isWon ? `+ ₹${Number(bet.result?.profitAmount || 0).toFixed(2)}` : isLost ? `- ₹${Number(bet.realAmount || bet.betamount || 0).toFixed(2)}` : '-'}
+            </div>
+          </div>
+          <div className="MyGameRecordList__C-detail-line">
+            <span>time of creation</span><div>{bet.timestamp}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+})
+
 export default function WinGo() {
   const { balance } = useProfile(false)
   const navigate = useNavigate()
@@ -80,16 +247,8 @@ export default function WinGo() {
   const [timeRemaining, setTimeRemaining] = useState(0)
   const [issueNumber, setIssueNumber] = useState('')
   const [recordTab, setRecordTab] = useState('game')
-  const [showBetOverlay, setShowBetOverlay] = useState(false)
-  const [betType, setBetType] = useState('green')
-  const [currentAc, setCurrentAc] = useState('rgb(71,186,124)')
-  const [currentFootBg, setCurrentFootBg] = useState('linear-gradient(90deg,rgb(63,170,112),rgb(71,186,124))')
-  const [currentGrad, setCurrentGrad] = useState('grad-green')
-  const [selectedBalanceIdx, setSelectedBalanceIdx] = useState(0)
-  const [selectedMulIdx, setSelectedMulIdx] = useState(0)
-  const [qty, setQty] = useState(1)
-  const [qtyInput, setQtyInput] = useState('1')
-  const [agreed, setAgreed] = useState(true)
+  const [betState, dispatch] = useReducer(betReducer, initBet)
+  const { showBetOverlay, betType, currentAc, currentFootBg, currentGrad, selectedBalanceIdx, selectedMulIdx, qty, agreed } = betState
   const [showHowTo, setShowHowTo] = useState(false)
   const [showPresale, setShowPresale] = useState(false)
   const [gameRecords, setGameRecords] = useState([])
@@ -113,6 +272,7 @@ export default function WinGo() {
   const endTimeRef = useRef(0)
   const issueRef = useRef('')
   const nextRef = useRef(null)
+  const activeGameRef = useRef(activeGame)
   const syncingRef = useRef(false)
   const lastSyncEndRef = useRef(0)
   const historyDelayRef = useRef(null)
@@ -127,7 +287,7 @@ export default function WinGo() {
   const winCloseCountdownRef = useRef(3)
   const [winCountdown, setWinCountdown] = useState(3)
 
-  const total = (selectedBalanceIdx >= 0 ? BALANCE_CHIPS[selectedBalanceIdx] : 1) * qty
+  const total = BALANCE_CHIPS[selectedBalanceIdx] * qty
 
   const handleRefreshBalance = async () => {
     const now = Date.now()
@@ -147,7 +307,7 @@ export default function WinGo() {
   }
 
   function getApiMode() {
-    return MODE_MAP[activeGame] || '30s'
+    return MODE_MAP[activeGameRef.current] || '30s'
   }
 
   async function syncCurrent() {
@@ -205,9 +365,9 @@ export default function WinGo() {
       return
     }
 
-    const selectType = typeof betType === 'number' ? String(betType) : String(betType)
+    const selectType = String(betType)
 
-    setShowBetOverlay(false)
+    dispatch({ type: 'CLOSE_BET' })
     betIssueRef.current = issueRef.current
     wingoService.placeBet({
       issueNumber: issueRef.current,
@@ -224,11 +384,10 @@ export default function WinGo() {
     })
   }
 
+  useEffect(() => { activeGameRef.current = activeGame }, [activeGame])
+
   useEffect(() => {
-    Promise.allSettled([syncCurrent(), loadHistory(gamePage), loadTrends()]).catch(() => {})
-    if (localStorage.getItem('auth_token')) {
-      loadMyBets(myBetsPage).catch(() => {})
-    }
+    Promise.allSettled([syncCurrent(), loadHistory(gamePage)]).catch(() => {})
   }, [gamePage, activeGame])
 
   useEffect(() => {
@@ -281,13 +440,10 @@ export default function WinGo() {
     if (recordTab === 'my') {
       loadMyBets(myBetsPage).catch(() => {})
     }
-    if (recordTab === 'game') {
-      loadHistory(gamePage).catch(() => {})
-    }
-    if (recordTab === 'trend' && trendStats.length === 0) {
+    if (recordTab === 'trend') {
       loadTrends().catch(() => {})
     }
-  }, [recordTab])
+  }, [recordTab, activeGame])
   
   useEffect(() => {
     if (recordTab === 'my') {
@@ -320,13 +476,13 @@ export default function WinGo() {
 
   useEffect(() => {
     if (showBetOverlay && timeRemaining <= 5 && timeRemaining >= 1) {
-      setShowBetOverlay(false)
+      dispatch({ type: 'CLOSE_BET' })
     }
   }, [timeRemaining, showBetOverlay])
 
   useEffect(() => {
-    if (recordTab !== 'trend') return
-    const timer = setTimeout(() => {
+    if (recordTab !== 'trend' || trendHistory.length === 0) return
+    const raf = requestAnimationFrame(() => {
       const path = pathRef.current
       const items = body2Ref.current?.querySelectorAll('.Trend__C-body2-Num-item')
       if (!path || !items) return
@@ -344,8 +500,8 @@ export default function WinGo() {
         d += index === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`
       })
       path.setAttribute('d', d)
-    }, 100)
-    return () => clearTimeout(timer)
+    })
+    return () => cancelAnimationFrame(raf)
   }, [recordTab, trendHistory])
 
   const minutes = Math.floor(Math.max(0, timeRemaining) / 60)
@@ -354,37 +510,24 @@ export default function WinGo() {
   const secStr = String(seconds).padStart(2, '0')
 
   function openPopup(key) {
-    const c = POPUP_CFG[key]
-    if (!c) return
-    setCurrentAc(c.ac)
-    setCurrentFootBg(c.footBg)
-    setCurrentGrad(c.grad)
-    setBetType(key)
-    setSelectedBalanceIdx(0)
-    setShowBetOverlay(true)
+    dispatch({ type: 'OPEN_POPUP', key })
   }
 
   function selectBalanceChip(idx) {
-    setSelectedBalanceIdx(idx)
+    dispatch({ type: 'SET_BALANCE_IDX', idx })
   }
 
   function selectMulChip(idx) {
-    setSelectedMulIdx(idx)
-    const val = parseInt(MULTIPLIER_CHIPS[idx].replace('X', ''))
-    setQty(val)
-    setQtyInput(String(val))
+    dispatch({ type: 'SET_MUL_IDX', idx })
+    dispatch({ type: 'SET_QTY', qty: parseInt(MULTIPLIER_CHIPS[idx].replace('X', '')) })
   }
 
   function changeQty(d) {
-    setQty(prev => {
-      const next = Math.max(1, prev + d)
-      setQtyInput(String(next))
-      return next
-    })
+    dispatch({ type: 'CHANGE_QTY', d })
   }
 
   function toggleAgree() {
-    setAgreed(prev => !prev)
+    dispatch({ type: 'TOGGLE_AGREE' })
   }
 
   const WIN_RESULT_MAP = {
@@ -626,316 +769,41 @@ export default function WinGo() {
           <div className={recordTab === 'my' ? 'active' : ''} data-tab="my" onClick={() => setRecordTab('my')}>My Bets</div>
         </div>
 
-        <div id="game" className={`GameRecord__C${recordTab === 'game' ? ' active' : ''}`}>
-          <div className="GameRecord__C-head">
-            <div className="van-row" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,200,55,0.15)' }}>
-              <div className="van-col--8">Period</div>
-              <div className="van-col--5">Number</div>
-              <div className="van-col--5">Size</div>
-              <div className="van-col--6">Color</div>
-            </div>
-          </div>
-
-          {gameRecords.length === 0 ? (
-            <div className="empty__container">
-              <img src={noDataImg} alt="No data" />
-              <p>No data</p>
-            </div>
-          ) : (
-            <div className="GameRecord__C-body">
-              {gameRecords.map((item, i) => {
-                const n = item.number
-                const bs = n >= 5 ? 'big' : 'small'
-                return (
-                  <div className="van-row" key={i}>
-                    <div className="van-col--8">{item.issueNumber}</div>
-                    <div className="van-col--5">
-                      <div className={`GameRecord__C-body-num ${getNumberColor(n)}`}>{n}</div>
-                    </div>
-                    <div className="van-col--5">{bs}</div>
-                    <div className="van-col--6">
-                      <div className="GameRecord__C-origin">
-                        {getOriginDots(n)}
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-
-          <div className="MyGameRecord__C-foot">
-            <button 
-              className={`back-btn${gamePage <= 1 ? ' disabled' : ''}`}
-              disabled={gamePage <= 1}
-              onClick={() => { if (gamePage > 1) setGamePage(p => p - 1) }}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <div className="MyGameRecord__C-foot-page">{gamePage}/{totalPage}</div>
-            <button 
-              className={`back-btn${gamePage >= totalPage ? ' disabled' : ''}`}
-              disabled={gamePage >= totalPage}
-              onClick={() => { if (gamePage < totalPage) setGamePage(p => p + 1) }}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
-                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div id="trend" className={`Trend__C${recordTab === 'trend' ? ' active' : ''}`}>
-          <div className="Trend__C-head">
-            <div className="van-row" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,200,55,0.15)' }}>
-              <div className="van-col--8">Issue</div>
-              <div className="van-col--16">Number</div>
-            </div>
-          </div>
-
-          {trendHistory.length === 0 && trendStats.length === 0 ? (
-            <div className="empty__container">
-              <img src={noDataImg} alt="No data" />
-              <p>No data</p>
-            </div>
-          ) : (
-            <>
-              <div className="Trend__C-body1">
-                <div className="Trend__C-body1-line">Betting Assistant (last 100 issues)</div>
-
-                <div className="Trend__C-body1-line lottery">
-                  <div>Winning numbers</div>
-                  <div className="Trend__C-body1-line-num">
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => <div key={n}>{n}</div>)}
-                  </div>
-                </div>
-                <div className="Trend__C-body1-line">
-                  <div>Missing</div>
-                  <div className="Trend__C-body1-line-num">
-                    {trendStats.map((s, i) => <div key={i}>{s.missingCount}</div>)}
-                  </div>
-                </div>
-                <div className="Trend__C-body1-line">
-                  <div>Avg Missing</div>
-                  <div className="Trend__C-body1-line-num">
-                    {trendStats.map((s, i) => <div key={i}>{s.avgMissing}</div>)}
-                  </div>
-                </div>
-                <div className="Trend__C-body1-line">
-                  <div>Frequency</div>
-                  <div className="Trend__C-body1-line-num">
-                    {trendStats.map((s, i) => <div key={i}>{s.openCount}</div>)}
-                  </div>
-                </div>
-                <div className="Trend__C-body1-line">
-                  <div>Max Continued</div>
-                  <div className="Trend__C-body1-line-num">
-                    {trendStats.map((s, i) => <div key={i}>{s.maxContinuous}</div>)}
-                  </div>
-                </div>
-              </div>
-
-              <div className="Trend__C-body2" ref={body2Ref}>
-                <svg className="line-overlay" ref={svgRef}>
-                  <path className="trend-path" ref={pathRef} d="" />
-                </svg>
-
-                {trendHistory.map((item, i) => {
-                  const n = item.number
-                  const bs = n >= 5 ? 'B' : 'S'
-                  let numsHtml = ''
-                  const numDivs = []
-                  for (let j = 0; j < 10; j++) {
-                    numDivs.push(
-                      <div key={j} className={`Trend__C-body2-Num-item${j === n ? ` action${j}` : ''}`}>{j}</div>
-                    )
-                  }
-                  return (
-                    <div key={i}>
-                      <div className="van-row">
-                        <div className="van-col--8">{item.issueNumber}</div>
-                        <div className="van-col--16">
-                          <div className="Trend__C-body2-Num">
-                            {numDivs}
-                          </div>
-                          <div className={`Trend__C-body2-Num-BS is${bs}`}>{bs}</div>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </>
-          )}
-
-          <div className="MyGameRecord__C-foot">
-            <button 
-              className={`back-btn${gamePage <= 1 ? ' disabled' : ''}`}
-              disabled={gamePage <= 1}
-              onClick={() => { if (gamePage > 1) setGamePage(p => p - 1) }}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <div className="MyGameRecord__C-foot-page">{gamePage}/{totalPage}</div>
-            <button 
-              className={`back-btn${gamePage >= totalPage ? ' disabled' : ''}`}
-              disabled={gamePage >= totalPage}
-              onClick={() => { if (gamePage < totalPage) setGamePage(p => p + 1) }}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
-                <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div id="my" className={`GameRecord__C${recordTab === 'my' ? ' active' : ''}`}>
-          <div className="MyGameRecord__C">
-            <div className="MyGameRecord__C-head">
-              <div className="MyGameRecord__C-head-moreB">more</div>
-            </div>
-            <div className="MyGameRecord__C-body">
-              <div className="MyGameRecordList__C">
-                {myBets.length === 0 ? (
-                  <div className="empty__container">
-                    <img src={noDataImg} alt="No data" />
-                    <p>No data</p>
-                  </div>
-                ) : (
-                  myBets.map((b) => {
-                    const s = String(b.status || '').toLowerCase()
-                    const isWon = s === 'won'
-                    const isPending = s === 'pending'
-                    const isLost = s === 'lost'
-                    const profit = typeof b?.result?.profitAmount === 'number' ? b.result.profitAmount : 0
-                    const amountText = isWon ? `+₹${profit.toFixed(2)}` : isPending ? `₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}` : `-₹${Number(b.betamount || 0).toFixed(2)}`
-                    const selectType = String(b.selectType || '').toLowerCase()
-                    
-                    let leftClass = 'MyGameRecordList__C-item-l'
-                    
-                    if (selectType === 'green') leftClass += ' MyGameRecordList__C-item-l-green'
-                    else if (selectType === 'violet') leftClass += ' MyGameRecordList__C-item-l-violet'
-                    else if (selectType === 'red') leftClass += ' MyGameRecordList__C-item-l-red'
-                    else if (selectType === 'big') leftClass += ' MyGameRecordList__C-item-l-big'
-                    else if (selectType === 'small') leftClass += ' MyGameRecordList__C-item-l-small'
-                    else if (['0','1','2','3','4','5','6','7','8','9'].includes(selectType)) leftClass += ` MyGameRecordList__C-item-l-${selectType}`
-
-                    let displayStatus = b.status
-                    if (isWon) displayStatus = 'success'
-                    if (isLost) displayStatus = 'failed'
-
-                    const isExpanded = selectedBet?.orderNumber === b.orderNumber
-                    return (
-                      <div className={`MyGameRecordList__C-item${isExpanded ? ' expanded' : ''}`} key={b.orderNumber} onClick={() => setSelectedBet(isExpanded ? null : b)}>
-                        <div className="MyGameRecordList__C-item-main">
-                          <div className={leftClass}>{selectType}</div>
-                          <div className="MyGameRecordList__C-item-m">
-                            <div className="MyGameRecordList__C-item-m-top">{b.issueNumber}</div>
-                            <div className="MyGameRecordList__C-item-m-bottom">{b.timestamp}</div>
-                          </div>
-                          {!isPending && (
-                            <div className={`MyGameRecordList__C-item-r ${isWon ? 'success' : ''}`}>
-                              <div className={isWon ? 'success' : ''}>{displayStatus}</div>
-                              <span>{amountText}</span>
-                            </div>
-                          )}
-                        </div>
-                        {isExpanded && (
-                          <div className="MyGameRecordList__C-detail">
-                            <div className="MyGameRecordList__C-detail-text">details</div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>order number</span>
-                              <div>{b.orderNumber}<svg className="copy-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(b.orderNumber).then(() => toast({ title: 'Copy success' })).catch(() => {}) }} style={{ cursor: 'pointer' }}><path d="M16 1H9a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5zM9 5H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-5-5H9V5z"/></svg></div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>betting series</span>
-                              <div>{b.issueNumber}</div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>purchase price</span>
-                              <div>₹{Number(b.betamount || 0).toFixed(2)}</div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>Buy quantity</span>
-                              <div>{Number(b.betamount || 0).toFixed(0)}</div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>Amount after tax</span>
-                              <div className={!isWon && !isPending ? 'red' : ''}>₹{Number(b.realAmount || b.betamount || 0).toFixed(2)}</div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>tax</span>
-                              <div>₹{Number(b.fee || 0).toFixed(2)}</div>
-                            </div>
-                            {b?.result && (() => {
-                              const n = parseInt(b.result.number)
-                              const isSmall = n >= 0 && n <= 4
-                              const isBig = n >= 5 && n <= 9
-                              return (
-                                <div className="MyGameRecordList__C-detail-line">
-                                  <span>results</span>
-                                  <div>
-                                    {b.result.number != null && <span className="MyGameRecordList__C-inlineB">{b.result.number}</span>}
-                                    {(() => {
-                                      const showViolet = n === 0 || n === 5
-                                      const displayColour = showViolet ? 'violet' : b.result.colour
-                                      return displayColour && <span className={`MyGameRecordList__C-inlineB purpleColor`}>{displayColour}</span>
-                                    })()}
-                                    {isSmall && <span className="MyGameRecordList__C-inlineB small">small</span>}
-                                    {isBig && <span className="MyGameRecordList__C-inlineB big">big</span>}
-                                  </div>
-                                </div>
-                              )
-                            })()}
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>choose</span>
-                              <div>{b.selectType}</div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>status</span>
-                              <div className={isLost ? 'red' : isWon ? 'green' : ''}>{isWon ? 'success' : isLost ? 'failed' : b.status}</div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>win lose</span>
-                              <div className={isWon ? 'green' : isLost ? 'red' : ''}>
-                                {isWon
-                                  ? `+ ₹${Number(b.result?.profitAmount || 0).toFixed(2)}`
-                                  : isLost
-                                    ? `- ₹${Number(b.realAmount || b.betamount || 0).toFixed(2)}`
-                                    : '-'}
-                              </div>
-                            </div>
-                            <div className="MyGameRecordList__C-detail-line">
-                              <span>time of creation</span>
-                              <div>{b.timestamp}</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })
-                )}
+        {recordTab === 'game' && (
+          <div id="game" className="GameRecord__C active">
+            <div className="GameRecord__C-head">
+              <div className="van-row" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,200,55,0.15)' }}>
+                <div className="van-col--8">Period</div>
+                <div className="van-col--5">Number</div>
+                <div className="van-col--5">Size</div>
+                <div className="van-col--6">Color</div>
               </div>
             </div>
+            {gameRecords.length === 0 ? (
+              <div className="empty__container">
+                <img src={noDataImg} alt="No data" />
+                <p>No data</p>
+              </div>
+            ) : (
+              <div className="GameRecord__C-body">
+                {gameRecords.map((item, i) => <GameRecordRow key={i} item={item} />)}
+              </div>
+            )}
             <div className="MyGameRecord__C-foot">
               <button 
-                className={`back-btn${myBetsPage <= 1 ? ' disabled' : ''}`}
-                disabled={myBetsPage <= 1}
-                onClick={() => { if (myBetsPage > 1) setMyBetsPage(p => p - 1) }}
+                className={`back-btn${gamePage <= 1 ? ' disabled' : ''}`}
+                disabled={gamePage <= 1}
+                onClick={() => { if (gamePage > 1) setGamePage(p => p - 1) }}
               >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <div className="MyGameRecord__C-foot-page">{myBetsPage}/{myBetsTotal || 1}</div>
+              <div className="MyGameRecord__C-foot-page">{gamePage}/{totalPage}</div>
               <button 
-                className={`back-btn${myBetsPage >= myBetsTotal ? ' disabled' : ''}`}
-                disabled={myBetsPage >= myBetsTotal}
-                onClick={() => { if (myBetsPage < myBetsTotal) setMyBetsPage(p => p + 1) }}
+                className={`back-btn${gamePage >= totalPage ? ' disabled' : ''}`}
+                disabled={gamePage >= totalPage}
+                onClick={() => { if (gamePage < totalPage) setGamePage(p => p + 1) }}
               >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}>
                   <path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -943,56 +811,172 @@ export default function WinGo() {
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      <div className={`how-to-overlay${showHowTo ? ' active' : ''}`} id="howToOverlay" onClick={() => setShowHowTo(false)}>
-        <div className="how-to-popup" onClick={e => e.stopPropagation()}>
-          <div className="how-to-head">How to play</div>
-          <div className="how-to-body">
-            <div>
-              <p><b>30 seconds per issue, 25 seconds to place an order, 5 seconds to draw a prize, open all day, total transaction volume 2880 issues.</b></p>
-              <p>If you spend 100 to trade, after deducting service fee 2%, contract amount: 98.</p>
-              <p>1. <b>Select green:</b> If the result shows 1, 3, 7, 9 you will get (98 * 2) = 196; If the result shows 5, you will get (98 * 1.5) = 147.</p>
-              <p>2. <b>Select red:</b> If the result shows 2, 4, 6, 8 you will get (98 * 2) = 196; If the result shows 0, you will get (98 * 1.5) = 147.</p>
-              <p>3. <b>Select violet:</b> If the result shows 0 or 5, you will get (98 * 4.5) = 441.</p>
-              <p>4. <b>Select number:</b> If the result is the same as the number you selected, you will get (98 * 9) = 882.</p>
-              <p>5. <b>Select big:</b> If the result shows 5, 6, 7, 8, 9 you will get (98 * 2) = 196.</p>
-              <p>6. <b>Select small:</b> If the result shows 0, 1, 2, 3, 4 you will get (98 * 2) = 196.</p>
+        {recordTab === 'trend' && (
+          <div id="trend" className="Trend__C active">
+            <div className="Trend__C-head">
+              <div className="van-row" style={{ background: 'transparent', borderBottom: '1px solid rgba(255,200,55,0.15)' }}>
+                <div className="van-col--8">Issue</div>
+                <div className="van-col--16">Number</div>
+              </div>
+            </div>
+            {trendHistory.length === 0 && trendStats.length === 0 ? (
+              <div className="empty__container">
+                <img src={noDataImg} alt="No data" />
+                <p>No data</p>
+              </div>
+            ) : (
+              <>
+                <div className="Trend__C-body1">
+                  <div className="Trend__C-body1-line">Betting Assistant (last 100 issues)</div>
+                  <div className="Trend__C-body1-line lottery">
+                    <div>Winning numbers</div>
+                    <div className="Trend__C-body1-line-num">
+                      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => <div key={n}>{n}</div>)}
+                    </div>
+                  </div>
+                  {trendStats.length > 0 && (
+                    <>
+                      <div className="Trend__C-body1-line">
+                        <div>Missing</div>
+                        <div className="Trend__C-body1-line-num">{trendStats.map((s, i) => <div key={i}>{s.missingCount}</div>)}</div>
+                      </div>
+                      <div className="Trend__C-body1-line">
+                        <div>Avg Missing</div>
+                        <div className="Trend__C-body1-line-num">{trendStats.map((s, i) => <div key={i}>{s.avgMissing}</div>)}</div>
+                      </div>
+                      <div className="Trend__C-body1-line">
+                        <div>Frequency</div>
+                        <div className="Trend__C-body1-line-num">{trendStats.map((s, i) => <div key={i}>{s.openCount}</div>)}</div>
+                      </div>
+                      <div className="Trend__C-body1-line">
+                        <div>Max Continued</div>
+                        <div className="Trend__C-body1-line-num">{trendStats.map((s, i) => <div key={i}>{s.maxContinuous}</div>)}</div>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div className="Trend__C-body2" ref={body2Ref}>
+                  <svg className="line-overlay" ref={svgRef}>
+                    <path className="trend-path" ref={pathRef} d="" />
+                  </svg>
+                  {trendHistory.map((item, i) => <TrendRow key={i} item={item} />)}
+                </div>
+              </>
+            )}
+            <div className="MyGameRecord__C-foot">
+              <button 
+                className={`back-btn${gamePage <= 1 ? ' disabled' : ''}`}
+                disabled={gamePage <= 1}
+                onClick={() => { if (gamePage > 1) setGamePage(p => p - 1) }}
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </button>
+              <div className="MyGameRecord__C-foot-page">{gamePage}/{totalPage}</div>
+              <button 
+                className={`back-btn${gamePage >= totalPage ? ' disabled' : ''}`}
+                disabled={gamePage >= totalPage}
+                onClick={() => { if (gamePage < totalPage) setGamePage(p => p + 1) }}
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}><path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </button>
             </div>
           </div>
-          <div className="how-to-foot">
-            <div className="how-to-foot-btn" onClick={() => setShowHowTo(false)}>closure</div>
+        )}
+
+        {recordTab === 'my' && (
+          <div id="my" className="GameRecord__C active">
+            <div className="MyGameRecord__C">
+              <div className="MyGameRecord__C-head">
+                <div className="MyGameRecord__C-head-moreB">more</div>
+              </div>
+              <div className="MyGameRecord__C-body">
+                <div className="MyGameRecordList__C">
+                  {myBets.length === 0 ? (
+                    <div className="empty__container">
+                      <img src={noDataImg} alt="No data" />
+                      <p>No data</p>
+                    </div>
+                  ) : (
+                    myBets.map(b => <MyBetItem key={b.orderNumber} bet={b} selectedBet={selectedBet} onSelect={setSelectedBet} onCopy={(orderNumber) => navigator.clipboard.writeText(orderNumber).then(() => toast({ title: 'Copy success' })).catch(() => {})} />)
+                  )}
+                </div>
+              </div>
+              <div className="MyGameRecord__C-foot">
+                <button 
+                  className={`back-btn${myBetsPage <= 1 ? ' disabled' : ''}`}
+                  disabled={myBetsPage <= 1}
+                  onClick={() => { if (myBetsPage > 1) setMyBetsPage(p => p - 1) }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+                <div className="MyGameRecord__C-foot-page">{myBetsPage}/{myBetsTotal || 1}</div>
+                <button 
+                  className={`back-btn${myBetsPage >= myBetsTotal ? ' disabled' : ''}`}
+                  disabled={myBetsPage >= myBetsTotal}
+                  onClick={() => { if (myBetsPage < myBetsTotal) setMyBetsPage(p => p + 1) }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ transform: 'rotate(180deg)' }}><path d="M11.25 3.75L5.25 9L11.25 14.25" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      <div className={`presale-overlay${showPresale ? ' active' : ''}`} id="presaleOverlay" onClick={() => setShowPresale(false)}>
-        <div className="presale-popup" onClick={e => e.stopPropagation()}>
-          <div className="presale-head">Pre-sale rules</div>
-          <div className="presale-body">
-            In order to protect the legitimate rights and interests of users participating in the pre-sale and maintain the
-            normal operation order of the pre-sale, these rules are formulated in accordance with relevant agreements and
-            national laws and regulations. Chapter 1 Definition 1.1 Pre-sale definition: refers to the merchants providing
-            products or services Plan, collect consumer orders through pre-sale product tools, and provide consumers with
-            goods and/or services according to prior agreement. Sales model 1.2
-            The pre-sale model is the "deposit" model. "Deposit" refers to pre-delivery at a fixed number of pre-sale items.
-            "Deposit" Scam Participate in mini games for a chance to win more deposits. Deposits can be exchanged directly
-            for merchandise. The deposit is not redeemable. 1.3
-            Pre-sale products: Refers to the products transferred by merchants using the pre-sale product tools. Only mark
-            the word pre-sale on the product name or product details page, and products that do not use the pre-sale product
-            tool are not pre-sale products.
-            1.4 Pre-sale system: refers to the system product tool that supports merchants to sell pre-sale models. 1.5
-            Pre-sale product price: refers to the sales price of pre-sale products. The price of pre-sale items consists of
-            two parts: deposit and final payment.
-          </div>
-          <div className="presale-foot">
-            <div className="presale-foot-btn" onClick={() => setShowPresale(false)}>I Know</div>
+      {showHowTo && (
+        <div className="how-to-overlay active" id="howToOverlay" onClick={() => setShowHowTo(false)}>
+          <div className="how-to-popup" onClick={e => e.stopPropagation()}>
+            <div className="how-to-head">How to play</div>
+            <div className="how-to-body">
+              <div>
+                <p><b>30 seconds per issue, 25 seconds to place an order, 5 seconds to draw a prize, open all day, total transaction volume 2880 issues.</b></p>
+                <p>If you spend 100 to trade, after deducting service fee 2%, contract amount: 98.</p>
+                <p>1. <b>Select green:</b> If the result shows 1, 3, 7, 9 you will get (98 * 2) = 196; If the result shows 5, you will get (98 * 1.5) = 147.</p>
+                <p>2. <b>Select red:</b> If the result shows 2, 4, 6, 8 you will get (98 * 2) = 196; If the result shows 0, you will get (98 * 1.5) = 147.</p>
+                <p>3. <b>Select violet:</b> If the result shows 0 or 5, you will get (98 * 4.5) = 441.</p>
+                <p>4. <b>Select number:</b> If the result is the same as the number you selected, you will get (98 * 9) = 882.</p>
+                <p>5. <b>Select big:</b> If the result shows 5, 6, 7, 8, 9 you will get (98 * 2) = 196.</p>
+                <p>6. <b>Select small:</b> If the result shows 0, 1, 2, 3, 4 you will get (98 * 2) = 196.</p>
+              </div>
+            </div>
+            <div className="how-to-foot">
+              <div className="how-to-foot-btn" onClick={() => setShowHowTo(false)}>closure</div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className={`bet-overlay${showBetOverlay ? ' active' : ''}`} id="betOverlay" onClick={() => setShowBetOverlay(false)}>
+      {showPresale && (
+        <div className="presale-overlay active" id="presaleOverlay" onClick={() => setShowPresale(false)}>
+          <div className="presale-popup" onClick={e => e.stopPropagation()}>
+            <div className="presale-head">Pre-sale rules</div>
+            <div className="presale-body">
+              In order to protect the legitimate rights and interests of users participating in the pre-sale and maintain the
+              normal operation order of the pre-sale, these rules are formulated in accordance with relevant agreements and
+              national laws and regulations. Chapter 1 Definition 1.1 Pre-sale definition: refers to the merchants providing
+              products or services Plan, collect consumer orders through pre-sale product tools, and provide consumers with
+              goods and/or services according to prior agreement. Sales model 1.2
+              The pre-sale model is the "deposit" model. "Deposit" refers to pre-delivery at a fixed number of pre-sale items.
+              "Deposit" Scam Participate in mini games for a chance to win more deposits. Deposits can be exchanged directly
+              for merchandise. The deposit is not redeemable. 1.3
+              Pre-sale products: Refers to the products transferred by merchants using the pre-sale product tools. Only mark
+              the word pre-sale on the product name or product details page, and products that do not use the pre-sale product
+              tool are not pre-sale products.
+              1.4 Pre-sale system: refers to the system product tool that supports merchants to sell pre-sale models. 1.5
+              Pre-sale product price: refers to the sales price of pre-sale products. The price of pre-sale items consists of
+              two parts: deposit and final payment.
+            </div>
+            <div className="presale-foot">
+              <div className="presale-foot-btn" onClick={() => setShowPresale(false)}>I Know</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showBetOverlay && (
+        <div className="bet-overlay active" id="betOverlay" onClick={() => dispatch({ type: 'CLOSE_BET' })}>
         <div className="bet-popup" onClick={e => e.stopPropagation()}>
           <div className={`popup-head ${currentGrad}`} id="popupHead">
             <div className="popup-head-title">Win Go {activeGame}</div>
@@ -1025,7 +1009,7 @@ export default function WinGo() {
               <span className="body-label">Quantity</span>
               <div className="qty-ctrl">
                 <button className="qty-btn" id="qtyMinus" style={{ background: currentAc }} onClick={() => changeQty(-1)}>−</button>
-                <input className="qty-input" type="number" id="qtyInput" value={qtyInput} min="1" onChange={e => setQtyInput(e.target.value)} onBlur={e => { const num = parseInt(e.target.value, 10); if (isNaN(num) || num < 1) { setQtyInput('1'); setQty(1) } else { const clamped = Math.max(1, num); setQtyInput(String(clamped)); setQty(clamped) } }} />
+                <input className="qty-input" type="number" id="qtyInput" value={qty} min="1" onChange={e => { const num = parseInt(e.target.value, 10); if (!isNaN(num) && num >= 1) setQty(num) }} />
                 <button className="qty-btn" id="qtyPlus" style={{ background: currentAc }} onClick={() => changeQty(1)}>+</button>
               </div>
             </div>
@@ -1057,47 +1041,50 @@ export default function WinGo() {
           </div>
 
           <div className="popup-foot">
-            <button className="foot-cancel" onClick={() => setShowBetOverlay(false)}>cancel</button>
+            <button className="foot-cancel" onClick={() => dispatch({ type: 'CLOSE_BET' })}>cancel</button>
             <button className="foot-submit" id="footSubmit" style={{ background: currentFootBg }} onClick={submitBet}>
               Total amount ₹{total.toFixed(2)}
             </button>
           </div>
         </div>
       </div>
+      )}
 
-      <div className={`winning${showWinPopup ? '' : ''}`} id="winPopup" style={{ display: showWinPopup ? 'flex' : 'none' }}>
-        <div className="winning-body isWin">
-          <div className="sprinkle-overlay"></div>
-          <div className="winning-main">
-            <div className="winning-wrap">
-              <div className="winning-wrap-l1">Congratulations</div>
-              <div className="winning-wrap-l2">
-                <div className="winner_box">
-                  <span>Lottery results</span>
-                  <div className="winner_result" id="winnerResult">
-                    <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultColor">{WIN_RESULT_MAP[winData.result]?.label || ''}</div>
-                    <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultNumber">{winData.result}</div>
-                    <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultType">{WIN_RESULT_MAP[winData.result]?.type || ''}</div>
+      {showWinPopup && (
+        <div className="winning active" id="winPopup">
+          <div className="winning-body isWin">
+            <div className="sprinkle-overlay"></div>
+            <div className="winning-main">
+              <div className="winning-wrap">
+                <div className="winning-wrap-l1">Congratulations</div>
+                <div className="winning-wrap-l2">
+                  <div className="winner_box">
+                    <span>Lottery results</span>
+                    <div className="winner_result" id="winnerResult">
+                      <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultColor">{WIN_RESULT_MAP[winData.result]?.label || ''}</div>
+                      <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultNumber">{winData.result}</div>
+                      <div className={`${WIN_RESULT_MAP[winData.result]?.cssClass || 'color_red'}`} id="resultType">{WIN_RESULT_MAP[winData.result]?.type || ''}</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="winning-wrap-l3">
+                  <div className="head">Bonus</div>
+                  <div className="bonus">₹{winData.winamt.reduce((a, b) => a + b, 0).toFixed(2)}</div>
+                  <div className="gameDetail">
+                    Period: WinGo 30sec
+                    <p>{winData.issue}</p>
                   </div>
                 </div>
               </div>
-              <div className="winning-wrap-l3">
-                <div className="head">Bonus</div>
-                <div className="bonus">₹{winData.winamt.reduce((a, b) => a + b, 0).toFixed(2)}</div>
-                <div className="gameDetail">
-                  Period: WinGo 30sec
-                  <p>{winData.issue}</p>
-                </div>
-              </div>
             </div>
+            <div className="winning-wrap-l4">
+              <div className={`acitveBtn${winAutoClose ? ' active' : ''}`} id="checkMark" onClick={toggleWinAutoClose}></div>
+              <span id="countdownText">{winCountdown} seconds auto close</span>
+            </div>
+            <div className="closeBtn" id="popupClose" onClick={closeWinPopup}></div>
           </div>
-          <div className="winning-wrap-l4">
-            <div className={`acitveBtn${winAutoClose ? ' active' : ''}`} id="checkMark" onClick={toggleWinAutoClose}></div>
-            <span id="countdownText">{winCountdown} seconds auto close</span>
-          </div>
-          <div className="closeBtn" id="popupClose" onClick={closeWinPopup}></div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
