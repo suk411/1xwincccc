@@ -166,6 +166,19 @@ const WithdrawalRecords = () => {
           0% { left: -100%; }
           50%, 100% { left: 200%; }
         }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .record-card {
+            animation: fadeIn 0.5s ease-out forwards !important;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+        }
       `}} />
       <div className="sticky top-0 z-50">
         <PageHeader title="Withdrawal Records" />
@@ -205,8 +218,10 @@ const WithdrawalRecords = () => {
               return (
                 <div
                   key={String(orderId) + idx}
-                  className="rounded-xl overflow-hidden w-full max-w-full"
+                  className="rounded-xl overflow-hidden w-full max-w-full record-card"
                   style={{ 
+                    animation: `fadeInUp 0.5s ease-out forwards`,
+                    animationDelay: `${idx * 0.08}s`,
                     background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
                     border: "1px solid rgba(255,180,50,0.25)",
                   }}
