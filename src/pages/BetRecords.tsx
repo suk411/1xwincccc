@@ -137,7 +137,7 @@ const BetRecords = () => {
         className="rounded-xl px-4 py-3 shadow-lg relative overflow-hidden record-card"
         style={{
           animation: `slideInbuttom 0.5s ease-out forwards`,
-          animationDelay: idx === 0 ? '0s' : '0.12s',
+          animationDelay: `${idx * 0.08}s`,
           background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
           border: "1px solid rgba(255,180,50,0.25)"
         }}
@@ -214,7 +214,7 @@ const BetRecords = () => {
         className="rounded-xl px-4 py-3 shadow-lg relative overflow-hidden record-card"
         style={{
           animation: `slideInbuttom 0.5s ease-out forwards`,
-          animationDelay: idx === 0 ? '0s' : '0.12s',
+          animationDelay: `${idx * 0.08}s`,
           background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
           border: "1px solid rgba(255,180,50,0.25)"
         }}
