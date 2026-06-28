@@ -88,10 +88,9 @@ const saveCache = (data: { items: WithdrawalRecord[]; total: number; page: numbe
 const WithdrawalRecords = () => {
   const { toast } = useToast();
   const { copyToClipboard } = useCopyToClipboard();
-  const cached = loadCache();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [items, setItems] = useState<WithdrawalRecord[]>(cached?.items || []);
-  const [loading, setLoading] = useState(!cached);
+  const [items, setItems] = useState<WithdrawalRecord[]>([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(cached?.page || 1);
   const [total, setTotal] = useState(cached?.total || 0);
   const limit = 25;
@@ -115,6 +114,7 @@ const WithdrawalRecords = () => {
   };
 
   useEffect(() => {
+    localStorage.removeItem(CACHE_KEY);
     fetchRecords();
   }, []);
 

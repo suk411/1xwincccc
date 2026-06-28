@@ -47,9 +47,8 @@ const StatusDot = () => (
 );
 
 const BetRecords = () => {
-  const cached = loadCache();
-  const [items, setItems] = useState<BetItem[]>(cached?.items || []);
-  const [loading, setLoading] = useState(!cached);
+  const [items, setItems] = useState<BetItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(cached?.page || 1);
   const [total, setTotal] = useState(cached?.total || 0);
   const [gameTab, setGameTab] = useState(0);
@@ -105,6 +104,7 @@ const BetRecords = () => {
   };
 
   useEffect(() => {
+    localStorage.removeItem(CACHE_KEY);
     fetchBets(page);
   }, [page]);
 

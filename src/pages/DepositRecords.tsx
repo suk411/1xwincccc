@@ -80,10 +80,9 @@ const saveCache = (data: { items: DepositOrder[]; total: number; page: number })
 const DepositRecords = () => {
   const { toast } = useToast();
   const { copyToClipboard } = useCopyToClipboard();
-  const cached = loadCache();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [orders, setOrders] = useState<DepositOrder[]>(cached?.items || []);
-  const [loading, setLoading] = useState(!cached);
+  const [orders, setOrders] = useState<DepositOrder[]>([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(cached?.page || 1);
   const [total, setTotal] = useState(cached?.total || 0);
 
@@ -106,6 +105,7 @@ const DepositRecords = () => {
   };
 
   useEffect(() => {
+    localStorage.removeItem(CACHE_KEY);
     fetchOrders();
   }, []);
 
