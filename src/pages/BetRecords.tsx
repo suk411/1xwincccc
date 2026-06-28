@@ -49,8 +49,8 @@ const StatusDot = () => (
 const BetRecords = () => {
   const [items, setItems] = useState<BetItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(cached?.page || 1);
-  const [total, setTotal] = useState(cached?.total || 0);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const [gameTab, setGameTab] = useState(0);
   const limit = 25;
 

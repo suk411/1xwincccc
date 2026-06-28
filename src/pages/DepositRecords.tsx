@@ -83,8 +83,8 @@ const DepositRecords = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [orders, setOrders] = useState<DepositOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(cached?.page || 1);
-  const [total, setTotal] = useState(cached?.total || 0);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const fetchOrders = async (p = 1) => {
     if (orders.length === 0) setLoading(true);

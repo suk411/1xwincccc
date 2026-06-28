@@ -91,8 +91,8 @@ const WithdrawalRecords = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [items, setItems] = useState<WithdrawalRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(cached?.page || 1);
-  const [total, setTotal] = useState(cached?.total || 0);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const limit = 25;
 
   const fetchRecords = async (p = 1) => {
