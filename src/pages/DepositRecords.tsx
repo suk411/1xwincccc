@@ -171,6 +171,19 @@ const DepositRecords = () => {
           0% { left: -100%; }
           50%, 100% { left: 200%; }
         }
+        @keyframes slideInbuttom {
+          from { opacity: 0; transform: translateX(-30px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .record-card {
+            animation: fadeOnly 0.5s ease-out forwards !important;
+          }
+          @keyframes fadeOnly {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+        }
       `}} />
       <div className="sticky top-0 z-50">
         <PageHeader title="Deposit Records" />
@@ -209,8 +222,10 @@ const DepositRecords = () => {
               return (
                 <div
                   key={orderId + idx}
-                  className="rounded-xl overflow-hidden w-full max-w-full"
+                  className="rounded-xl overflow-hidden w-full max-w-full record-card"
                   style={{ 
+                    animation: `slideInbuttom 0.5s ease-out forwards`,
+                    animationDelay: idx === 0 ? '0s' : '0.12s',
                     background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
                     border: "1px solid rgba(255,180,50,0.25)",
                   }}

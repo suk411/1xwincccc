@@ -121,7 +121,7 @@ const BetRecords = () => {
     return true;
   });
 
-  const renderWingoCard = (item: WingoUserBetItem) => {
+  const renderWingoCard = (item: WingoUserBetItem, idx: number) => {
     const isWin = item.status === "won";
     const isPending = item.status === "pending";
     const isLoss = item.status === "lost";
@@ -134,8 +134,13 @@ const BetRecords = () => {
     return (
       <div
         key={item.orderNumber}
-        className="rounded-xl px-4 py-3 shadow-lg relative overflow-hidden"
-        style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)", border: "1px solid rgba(255,180,50,0.25)" }}
+        className="rounded-xl px-4 py-3 shadow-lg relative overflow-hidden record-card"
+        style={{
+          animation: `slideInbuttom 0.5s ease-out forwards`,
+          animationDelay: idx === 0 ? '0s' : '0.12s',
+          background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+          border: "1px solid rgba(255,180,50,0.25)"
+        }}
       >
         <div className="flex items-start justify-between pb-3 border-b border-white/10">
           <div className="flex flex-col">
@@ -191,7 +196,7 @@ const BetRecords = () => {
     );
   };
 
-  const renderDefaultCard = (item: BetItem) => {
+  const renderDefaultCard = (item: BetItem, idx: number) => {
     const profit = (item.payout ?? 0) - item.bet;
     const hasPayout = item.payout !== undefined;
     const isWin = hasPayout && profit > 0;
@@ -206,8 +211,13 @@ const BetRecords = () => {
     return (
       <div
         key={item._id}
-        className="rounded-xl px-4 py-3 shadow-lg relative overflow-hidden"
-        style={{ background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)", border: "1px solid rgba(255,180,50,0.25)" }}
+        className="rounded-xl px-4 py-3 shadow-lg relative overflow-hidden record-card"
+        style={{
+          animation: `slideInbuttom 0.5s ease-out forwards`,
+          animationDelay: idx === 0 ? '0s' : '0.12s',
+          background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+          border: "1px solid rgba(255,180,50,0.25)"
+        }}
       >
         <div className="flex items-start justify-between">
           <div className="flex flex-col gap-1">
@@ -389,6 +399,19 @@ const BetRecords = () => {
           margin: 0;
           display: block;
         }
+        @keyframes slideInbuttom {
+          from { opacity: 0; transform: translateX(-30px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .record-card {
+            animation: fadeOnly 0.5s ease-out forwards !important;
+          }
+          @keyframes fadeOnly {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+        }
       `}</style>
 
       <div className="fun-tabs tabs">
@@ -421,7 +444,7 @@ const BetRecords = () => {
           <>
             {wingoItems.length > 0 && (
               <div className="space-y-3 mb-6">
-                {wingoItems.map(renderWingoCard)}
+                {wingoItems.map((item, idx) => renderWingoCard(item, idx))}
               </div>
             )}
             {!wingoLoading && wingoTotal > wingoLimit && (
@@ -449,7 +472,7 @@ const BetRecords = () => {
             )}
             {filteredItems.length > 0 && (
               <div className="space-y-3">
-                {filteredItems.map(renderDefaultCard)}
+                {filteredItems.map((item, idx) => renderDefaultCard(item, idx))}
               </div>
             )}
             {!loading && total > limit && (
@@ -479,7 +502,7 @@ const BetRecords = () => {
         ) : (
           <>
             <div className="space-y-3">
-              {filteredItems.map(renderDefaultCard)}
+              {filteredItems.map((item, idx) => renderDefaultCard(item, idx))}
             </div>
             {!loading && total > limit && (
               <div className="br-pagination-foot">
