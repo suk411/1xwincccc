@@ -172,7 +172,7 @@ const WithdrawalRecords = () => {
         }
         @media (prefers-reduced-motion: reduce) {
           .record-card {
-            animation: fadeOnly 0.5s ease-out forwards !important;
+            animation: fadeOnly 0.5s ease-out both !important;
           }
           @keyframes fadeOnly {
             from { opacity: 0; }
@@ -220,7 +220,7 @@ const WithdrawalRecords = () => {
                   key={String(orderId) + idx}
                   className="rounded-xl overflow-hidden w-full max-w-full record-card"
                   style={{ 
-                    animation: `slideInbuttom 0.5s ease-out forwards`,
+                    animation: `slideInbuttom 0.5s ease-out both`,
                     animationDelay: `${idx * 0.08}s`,
                     background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
                     border: "1px solid rgba(255,180,50,0.25)",
