@@ -8,7 +8,6 @@ import emptyBox from "@/assets/events/empty-box.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
 import { useState } from "react";
 import { Copy } from "lucide-react";
-import { GameButton } from "@/components/GameButton";
 import { useToast } from "@/hooks/use-toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { authService } from "@/services/authService";
@@ -140,14 +139,16 @@ const CommunityEvent = () => {
                 <Copy size={14} />
               </button>
             </div>
-            <GameButton 
-              variant="gold" 
-              size="lg" 
-              className="w-[120px] mt-2"
+            <button
               onClick={handleJoin}
+              className="w-[120px] mt-2 h-10 rounded-[20px] font-bold text-[#5a2d0a] text-sm relative overflow-hidden transition-transform active:scale-96"
+              style={{
+                backgroundImage: "linear-gradient(rgb(255, 246, 230) 1%, rgb(238, 210, 110) 44%, rgb(195, 132, 45) 75%, rgb(195, 132, 45) 86%, rgb(255, 205, 78) 100%)",
+                boxShadow: "rgba(228, 165, 58, 0.45) 0px 3px 12px 0px, rgba(255, 255, 255, 0.5) 0px 1px 2px 0px inset",
+              }}
             >
               Join Now
-            </GameButton>
+            </button>
           </div>
         </div>
 
