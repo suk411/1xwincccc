@@ -108,16 +108,15 @@ const CommunityEvent = () => {
             onChange={(e) => setCode(e.target.value)}
             className="w-full h-11 rounded-lg bg-[#541324] border border-[#7a2040] text-white placeholder:text-[#964850] px-4 text-base outline-none mb-3"
           />
-          <button
+          <GameButton
+            variant="gold"
+            buttonType="dialog"
             onClick={handleRedeem}
             disabled={loading}
-            className="w-full h-11 rounded-lg font-bold text-[#5a2d0a] text-base disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              backgroundImage: "linear-gradient(rgb(255, 246, 230) 1%, rgb(238, 210, 110) 44%, rgb(195, 132, 45) 75%, rgb(195, 132, 45) 86%, rgb(255, 205, 78) 100%)",
-            }}
+            className="disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Redeeming..." : "Redeem"}
-          </button>
+          </GameButton>
         </div>
 
         {/* Join Our Community */}
