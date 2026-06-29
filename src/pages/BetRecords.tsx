@@ -161,7 +161,7 @@ const BetRecords = () => {
               <StatusDot />
               <span className="text-white/70 text-sm">Type</span>
             </div>
-            <span className="text-white text-sm">Win Go 30s</span>
+            <span className="text-white text-sm">Win Go {item.gameMode}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

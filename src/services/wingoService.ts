@@ -72,6 +72,7 @@ export interface WingoBetResponse {
 
 export interface WingoUserBetItem {
   issueNumber: string;
+  gameMode: string;
   orderNumber: string;
   betamount: number;
   fee: number;
@@ -132,7 +133,7 @@ export const wingoService = {
     if (params?.mode) qs.set("mode", params.mode);
     const query = qs.toString();
 
-    const res = await fetch(`${API_BASE}/api/wingo/bets${query ? `?${query}` : ""}`, {
+    const res = await fetch(`${API_BASE}/api/wingo/my-bets${query ? `?${query}` : ""}`, {
       headers: authHeaders(),
     });
     handleUnauthorized(res);
