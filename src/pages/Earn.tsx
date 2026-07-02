@@ -5,6 +5,7 @@ import { authService } from "@/services/authService";
 import { useProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { Skeleton } from "@/components/ui/skeleton";
 import iconTeamPartner from "@/assets/earn/team_partner.svg";
 import iconCopyCode from "@/assets/earn/copy_Code.svg";
 import iconTeamPort from "@/assets/earn/team_port.svg";
@@ -1216,7 +1217,20 @@ const Earn = () => {
               </div>
             </div></div></div>
             <div className="x-page-list" style={{ padding: "10px" }}>
-              {agencyTeam.length === 0 ? (
+              {teamLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <div key={i} className="TeamReport__C-body-item">
+                    <div className="TeamReport__C-body-item-head">
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <div className="TeamReport__C-body-item-detail">
+                      <div><Skeleton className="h-3.5 w-32" /></div>
+                      <div><Skeleton className="h-3.5 w-28" /></div>
+                      <div><Skeleton className="h-3.5 w-36" /></div>
+                    </div>
+                  </div>
+                ))
+              ) : agencyTeam.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-center py-10">
                   <img src={noDataImg} alt="No data" className="w-[150px] h-[139px] object-contain block mb-3" />
                   <p style={{ color: "#acafc2", fontSize: "13px", margin: 0 }}>No data</p>
