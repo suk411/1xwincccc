@@ -99,7 +99,7 @@ const Earn = () => {
   const [dd, setDd] = useState(MAX_DD);
   const [rebateLevelTab, setRebateLevelTab] = useState(0);
   const [searchUid, setSearchUid] = useState("");
-  const [subDateOffset, setSubDateOffset] = useState(0);
+  const [subDateFilter, setSubDateFilter] = useState<"today" | "yesterday" | "month">("today");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showCommissionDetail, setShowCommissionDetail] = useState(false);
 
@@ -194,12 +194,23 @@ const Earn = () => {
   useEffect(() => {
     if (activeTab !== "subordinate") return;
     const d = new Date();
-    d.setDate(d.getDate() - subDateOffset);
-    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    let startStr: string, endStr: string;
+    if (subDateFilter === "today") {
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      startStr = endStr = dateStr;
+    } else if (subDateFilter === "yesterday") {
+      d.setDate(d.getDate() - 1);
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      startStr = endStr = dateStr;
+    } else {
+      const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
+      startStr = `${firstDay.getFullYear()}-${String(firstDay.getMonth() + 1).padStart(2, "0")}-${String(firstDay.getDate()).padStart(2, "0")}`;
+      endStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
     setLevelVal("All");
     setSearchUid("");
-    fetchAgencyNewSub(dateStr, dateStr);
-  }, [subDateOffset, activeTab, fetchAgencyNewSub]);
+    fetchAgencyNewSub(startStr, endStr);
+  }, [subDateFilter, activeTab, fetchAgencyNewSub]);
 
   const commHasMore = agencyCommissions.length < commTotal;
   const teamHasMore = agencyTeam.length < teamTotal;
@@ -1193,12 +1204,11 @@ const Earn = () => {
             <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setActiveTab("referral")}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">New subordinates</div></div><div className="navbar__content-right"></div></div></div></div>
             <div className="bet-container-sticky"><div className="van-sticky"><div>
               <div ref={scrollRef} className="flex gap-2 overflow-x-auto px-3 py-2 hide-scrollbar scroll-snap-x" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
-                {Array.from({ length: 90 }, (_, i) => {
-                  const d = new Date(); d.setDate(d.getDate() - i);
-                  const label = i === 0 ? "Today" : i === 1 ? "Yesterday" : `${d.getDate()}/${d.getMonth() + 1}`;
-                  const isActive = i === subDateOffset;
+                {(["today", "yesterday", "month"] as const).map((key) => {
+                  const label = key === "today" ? "Today" : key === "yesterday" ? "Yesterday" : "This Month";
+                  const isActive = key === subDateFilter;
                   return (
-                    <div key={i} onClick={() => { setSubDateOffset(i); }} className={`scroll-snap-item shrink-0 px-3 py-1.5 rounded-full text-xs cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white font-bold" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
+                    <div key={key} onClick={() => { setSubDateFilter(key); }} className={`scroll-snap-item shrink-0 px-3 py-1.5 rounded-full text-xs cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white font-bold" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
                       {label}
                     </div>
                   );
