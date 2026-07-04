@@ -1044,6 +1044,13 @@ const Earn = () => {
   .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .scroll-snap-x { scroll-snap-type: x mandatory; }
   .scroll-snap-item { scroll-snap-align: center; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in-card {
+    animation: fadeIn 0.4s ease-out both;
+  }
 `}</style>
         {activeTab === "referral" ? (
           showCommissionDetail ? (
@@ -1055,20 +1062,18 @@ const Earn = () => {
               ) : agencyCommissions.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>No commission records</div>
               ) : (
-                agencyCommissions.map((c) => (
-                  <div key={c._id} style={{ background: "rgba(255,255,255,0.06)", borderRadius: "8px", padding: "12px 14px", marginBottom: "8px", border: "1px solid rgba(255,180,50,0.1)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                      <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>{c.date?.slice(0, 10)}</span>
+                agencyCommissions.map((c, idx) => (
+                  <div key={c._id} className="TeamReport__C-body-item fade-in-card" style={{ animationDelay: `${idx * 0.05}s` }}>
+                    <div className="TeamReport__C-body-item-head" style={{ justifyContent: "space-between" }}>
+                      <span>{c.date?.slice(0, 10)}</span>
                       <span style={{ fontSize: "11px", color: c.status === "CREDITED" ? "#18b660" : "rgba(255,255,255,0.4)", background: c.status === "CREDITED" ? "rgba(24,182,96,0.15)" : "rgba(255,255,255,0.08)", padding: "2px 8px", borderRadius: "10px" }}>{c.status}</span>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                      <span style={{ color: "rgba(255,255,255,0.6)" }}>Level {c.rebateLevel}</span>
-                      <span style={{ color: "#feaa57", fontWeight: 600 }}>₹{c.totalAmount}</span>
-                    </div>
-                    <div style={{ display: "flex", gap: "12px", marginTop: "6px", fontSize: "11px", color: "rgba(255,255,255,0.4)" }}>
-                      <span>L1: ₹{c.l1Amount}</span>
-                      <span>L2: ₹{c.l2Amount}</span>
-                      <span>L3: ₹{c.l3Amount}</span>
+                    <div className="TeamReport__C-body-item-detail">
+                      <div>Level <span className="val-light">Level {c.rebateLevel}</span></div>
+                      <div>Amount <span className="val-orange">₹{c.totalAmount}</span></div>
+                      <div>L1 <span className="val-light">₹{c.l1Amount}</span></div>
+                      <div>L2 <span className="val-light">₹{c.l2Amount}</span></div>
+                      <div>L3 <span className="val-light">₹{c.l3Amount}</span></div>
                     </div>
                   </div>
                 ))
@@ -1237,8 +1242,8 @@ const Earn = () => {
                 </div>
               ) : (
                 <>
-                  {agencyTeam.map((member) => (
-                    <div key={member.userId} className="TeamReport__C-body-item">
+                  {agencyTeam.map((member, idx) => (
+                    <div key={member.userId} className="TeamReport__C-body-item fade-in-card" style={{ animationDelay: `${idx * 0.05}s` }}>
                       <div className="TeamReport__C-body-item-head">
                         <span>UID:{member.userId}</span>
                       </div>
@@ -1432,8 +1437,8 @@ const Earn = () => {
                 </div>
               ) : (
                 <>
-                  {agencyTeam.map((member) => (
-                    <div key={member.userId} className="TeamReport__C-body-item">
+                  {agencyTeam.map((member, idx) => (
+                    <div key={member.userId} className="TeamReport__C-body-item fade-in-card" style={{ animationDelay: `${idx * 0.05}s` }}>
                       <div className="TeamReport__C-body-item-head">
                         <span>UID:{member.userId}</span>
                       </div>
