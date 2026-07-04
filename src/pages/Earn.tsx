@@ -110,7 +110,7 @@ const Earn = () => {
   const effectiveUserId = userId || tokenUserId;
 
   // Generate invite URL from userId
-  const inviteUrl = effectiveUserId ? `https://1xking.vercel.app/register?ref=${effectiveUserId}` : "";
+  const inviteUrl = effectiveUserId ? `https://1xking.vercel.app/#/register?ref=${effectiveUserId}` : "";
 
   const fetchAgencyDaily = useCallback(async (date?: string) => {
     try {
