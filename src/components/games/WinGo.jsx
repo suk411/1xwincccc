@@ -1071,7 +1071,7 @@ export default function WinGo() {
                   <div className="head">Bonus</div>
                   <div className="bonus">₹{winData.winamt.reduce((a, b) => a + b, 0).toFixed(2)}</div>
                   <div className="gameDetail">
-                    Period: WinGo 30sec
+                    Period: WinGo {activeGameRef.current}
                     <p>{winData.issue}</p>
                   </div>
                 </div>
