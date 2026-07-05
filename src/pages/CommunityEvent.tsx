@@ -85,12 +85,7 @@ const CommunityEvent = () => {
           variant: "destructive",
         });
       }
-    } catch (err: any) {
-      toast({
-        description: err.message || "Failed to redeem code",
-        variant: "destructive",
-      });
-    } finally {
+    } catch (_) {} finally {
       setLoading(false);
     }
   };
