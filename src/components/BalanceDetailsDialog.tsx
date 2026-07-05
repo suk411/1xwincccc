@@ -78,7 +78,6 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
           background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
           border-radius: 10px;
           border: 1px solid rgba(255,180,50,0.1);
-          box-shadow: 0 0 14px rgba(255,180,50,0.12);
         }
       `}</style>
     <GameDialog open={isOpen} onOpenChange={onClose}>
