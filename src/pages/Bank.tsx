@@ -102,10 +102,12 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
             WebkitTextFillColor: "transparent",
             color: "transparent",
           }}>{label}</span>
-          {bonusOptIn && bonus > 0 && (
+          {(bonusOptIn || bonusFade === 'out') && bonus > 0 && (
             <div
               className="text-center text-[10px] font-bold rounded-b-md py-0.5"
               style={{
+                transition: 'opacity 0.3s ease-out',
+                opacity: bonusFade === 'out' ? 0 : 1,
                 backgroundImage: isActive
                   ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
                   : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
@@ -225,6 +227,7 @@ const Bank = () => {
   const [depositConfigReady, setDepositConfigReady] = useState(false);
   const [depositBonusInfo, setDepositBonusInfo] = useState<import("@/services/authService").DepositBonusInfo | null>(null);
   const [bonusOptIn, setBonusOptIn] = useState(false);
+  const [bonusFade, setBonusFade] = useState<'out' | null>(null);
   const [showBonusApply, setShowBonusApply] = useState(false);
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
@@ -758,7 +761,8 @@ const Bank = () => {
                     setBonusOptIn(true);
                     setShowBonusApply(false);
                   } else if (bonusOptIn) {
-                    setBonusOptIn(false);
+                    setBonusFade('out');
+                    setTimeout(() => { setBonusOptIn(false); setBonusFade(null); }, 300);
                     setShowBonusApply(true);
                   } else {
                     setShowBonusApply(true);
