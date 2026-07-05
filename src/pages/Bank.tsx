@@ -60,7 +60,7 @@ interface DepositAmountGridProps {
   selectedAmount: number;
   customAmount: string;
   bonusOptIn: boolean;
-  bonusFade: 'out' | null;
+  bonusFade: 'entering' | 'exiting' | null;
   getBonus: (amount: number) => number;
   onSelect: (amount: number) => void;
 }
@@ -103,12 +103,13 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
             WebkitTextFillColor: "transparent",
             color: "transparent",
           }}>{label}</span>
-          {(bonusOptIn || bonusFade === 'out') && bonus > 0 && (
+          {(bonusOptIn || bonusFade === 'entering') && bonus > 0 && (
             <div
               className="text-center text-[10px] font-bold rounded-b-md py-0.5"
               style={{
-                transition: 'opacity 0.3s ease-out',
-                opacity: bonusFade === 'out' ? 0 : 1,
+                animation: bonusFade === 'entering'
+                  ? 'slideDown 0.3s ease-out both'
+                  : (bonusFade === 'exiting' ? 'slideUp 0.3s ease-out forwards' : 'none'),
                 backgroundImage: isActive
                   ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
                   : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
@@ -228,7 +229,7 @@ const Bank = () => {
   const [depositConfigReady, setDepositConfigReady] = useState(false);
   const [depositBonusInfo, setDepositBonusInfo] = useState<import("@/services/authService").DepositBonusInfo | null>(null);
   const [bonusOptIn, setBonusOptIn] = useState(false);
-  const [bonusFade, setBonusFade] = useState<'out' | null>(null);
+  const [bonusFade, setBonusFade] = useState<'entering' | 'exiting' | null>(null);
   const [showBonusApply, setShowBonusApply] = useState(false);
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
@@ -554,7 +555,10 @@ const Bank = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-52 w-full">
-      <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }`}</style>
+      <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+@keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-100%); opacity: 0; } }
+`}</style>
       {/* Top Header with red bg */}
       <div className="relative w-full h-11 flex items-center justify-between px-3">
         <img src={headerBg} alt="" className="absolute inset-0 w-full h-full object-cover" />
@@ -760,12 +764,13 @@ const Bank = () => {
                 onClick={() => {
                   if (!depositBonusInfo?.hasBonusAvailable) return;
                   if (showBonusApply) {
-                    setBonusOptIn(true);
+                    setBonusFade('entering');
                     setShowBonusApply(false);
+                    setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 300);
                   } else if (bonusOptIn) {
-                    setBonusFade('out');
-                    setTimeout(() => { setBonusOptIn(false); setBonusFade(null); }, 300);
+                    setBonusFade('exiting');
                     setShowBonusApply(true);
+                    setTimeout(() => { setBonusOptIn(false); setBonusFade(null); }, 300);
                   } else {
                     setShowBonusApply(true);
                   }
@@ -785,8 +790,9 @@ const Bank = () => {
                           style={{ transform: "scale(0.7)", transformOrigin: "center" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setBonusOptIn(true);
+                            setBonusFade('entering');
                             setShowBonusApply(false);
+                            setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 300);
                           }}
                         >
                           Apply Bonus
