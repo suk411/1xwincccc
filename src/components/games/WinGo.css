@@ -136,9 +136,7 @@
       align-items: center;
       justify-content: center;
       width: auto;
-      max-width: 250px;
       height: 55px;
-      min-width: 135px;
     }
 
     .brand-logo-svg {
@@ -322,7 +320,6 @@
     .GameList__C {
         display: flex;
         width: 100%;
-        max-width: 350px;
         height: 90px;
         margin: 13px auto 0;
         background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
@@ -1093,7 +1090,7 @@
         display: flex;
         flex-direction: row;
         width: 100%;
-        max-width: 347.575px;
+        max-width: 100%;
         margin: 0 auto;
         height: 40.025px;
         line-height: 40.0215px;
