@@ -233,7 +233,7 @@ const GameStatistics = () => {
         </div>
       </div></div></div>
       <div className="x-page-list" style={{ padding: "10px" }}>
-        <div className="stats-card slide-in-left" style={{ animationDelay: "0s" }}>
+        <div className="stats-card slide-in-left" style={{ animationDelay: "0s", height: "87px" }}>
           <div className="stats-card-label">Total bet amount</div>
           <div className="stats-amount">₹{totalBet.toFixed(2)}</div>
         </div>
