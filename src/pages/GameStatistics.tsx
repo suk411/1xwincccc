@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
+import rupeeCoin from "@/assets/profile/coin-rupee.png";
 
 type DateFilter = "today" | "yesterday" | "week" | "month";
 
@@ -87,6 +88,29 @@ const GameStatistics = () => {
   .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .scroll-snap-x { scroll-snap-type: x mandatory; }
   .scroll-snap-item { scroll-snap-align: center; }
+  .stats-card {
+    background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+    border-radius: 10px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,180,50,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    font-size: 14px;
+  }
+  .stats-card-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stats-card-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 500;
+  }
 `}</style>
       <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => goBack()}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Game Statistics</div></div><div className="navbar__content-right"></div></div></div></div>
       <div className="bet-container-sticky"><div className="van-sticky"><div>
@@ -103,6 +127,15 @@ const GameStatistics = () => {
         </div>
       </div></div></div>
       <div className="x-page-list" style={{ padding: "10px" }}>
+        <div className="stats-card">
+          <div className="stats-card-left">
+            <span>Total bets</span>
+          </div>
+          <div className="stats-card-right">
+            <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
+            <span>0</span>
+          </div>
+        </div>
       </div>
     </div>
   );
