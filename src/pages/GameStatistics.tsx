@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
-import rupeeCoin from "@/assets/profile/coin-rupee.png";
 
 type DateFilter = "today" | "yesterday" | "week" | "month";
 
@@ -89,27 +88,56 @@ const GameStatistics = () => {
   .scroll-snap-x { scroll-snap-type: x mandatory; }
   .scroll-snap-item { scroll-snap-align: center; }
   .stats-card {
-    background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
-    border-radius: 10px;
-    padding: 10px 14px;
-    border: 1px solid rgba(255,180,50,0.1);
+    position: relative;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
+    width: 100%;
+    max-width: 351px;
+    height: 120px;
+    margin: 0 auto;
+    border-radius: 12px;
     color: #fff;
-    font-size: 14px;
+    background: linear-gradient(135deg, rgb(13, 5, 33) 0%, rgb(26, 10, 46) 25%, rgb(45, 27, 105) 60%, rgb(74, 45, 138) 100%);
+    box-shadow: 0 2px 8px rgba(74, 45, 138, 0.2), 0 6px 20px rgba(74, 45, 138, 0.15);
+    overflow: hidden;
   }
-  .stats-card-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .stats-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 100%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(168, 120, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
   }
-  .stats-card-right {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 16px;
-    font-weight: 500;
+  .stats-card::after {
+    content: "";
+    position: absolute;
+    bottom: -30%;
+    right: -10%;
+    width: 80%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(107, 66, 184, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+  }
+  .stats-card-label {
+    position: relative;
+    z-index: 1;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 4px;
+  }
+  .stats-card-amount {
+    position: relative;
+    z-index: 1;
+    font-family: "DINAlternate-Bold", "DIN Alternate", "Arial Black", sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: #fff;
   }
 `}</style>
       <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => goBack()}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Game Statistics</div></div><div className="navbar__content-right"></div></div></div></div>
@@ -128,13 +156,8 @@ const GameStatistics = () => {
       </div></div></div>
       <div className="x-page-list" style={{ padding: "10px" }}>
         <div className="stats-card">
-          <div className="stats-card-left">
-            <span>Total bets</span>
-          </div>
-          <div className="stats-card-right">
-            <img src={rupeeCoin} alt="₹" className="w-4 h-4 object-contain" />
-            <span>0</span>
-          </div>
+          <div className="stats-card-label">Total bet amount</div>
+          <div className="stats-card-amount">₹0.00</div>
         </div>
       </div>
     </div>
