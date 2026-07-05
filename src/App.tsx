@@ -20,6 +20,7 @@ import BetRecords from "./pages/BetRecords";
 import Vip from "./pages/Vip";
 import GameLobbyPage from "./pages/GameLobbyPage";
 import SupportChat from "./pages/SupportChat";
+import GameStatistics from "./pages/GameStatistics";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Terms from "./pages/Terms";
@@ -117,6 +118,7 @@ const AppContent = () => {
             <Route path="/vip" element={<PageTransition><ProtectedRoute><Vip /></ProtectedRoute></PageTransition>} />
             <Route path="/lobby" element={<PageTransition><ProtectedRoute><GameLobbyPage /></ProtectedRoute></PageTransition>} />
             <Route path="/support" element={<PageTransition><ProtectedRoute><SupportChat /></ProtectedRoute></PageTransition>} />
+            <Route path="/game-statistics" element={<PageTransition><ProtectedRoute><GameStatistics /></ProtectedRoute></PageTransition>} />
             <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
           </Routes>
         </AnimatePresence>

@@ -28,6 +28,7 @@ import gameIcon from "@/assets/profile/game-icon.png";
 import inviteIcon from "@/assets/profile/invite-icon.png";
 import accountIcon from "@/assets/profile/account.png";
 import languageIcon from "@/assets/profile/language-icon.png";
+import statsIcon from "@/assets/profile/stats-icon.png";
 
 import mailicon from "@/assets/profile/mail-icon.png";
 import backArrow from "@/assets/icons/back-arrow.png";
@@ -83,6 +84,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
       navigateWithTransition("/vip");
     } else if (label === "Game Records") {
       navigateWithTransition("/bet-records");
+    } else if (label === "Game Statistics") {
+      navigateWithTransition("/game-statistics");
     }
   };
 
@@ -169,6 +172,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
               { icon: historyIcon, label: "Deposit History" },
               { icon: historyIcon, label: "Withdrawal History" },
               { icon: gameIcon, label: "Game Records" },
+              { icon: statsIcon, label: "Game Statistics" },
               { icon: inviteIcon, label: "Invitation Records" },
               { icon: mailicon, label: "Mail" },
               { icon: languageIcon, label: "Language", value: "English" },
