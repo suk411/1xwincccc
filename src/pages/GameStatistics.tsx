@@ -87,64 +87,37 @@ const GameStatistics = () => {
   .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .scroll-snap-x { scroll-snap-type: x mandatory; }
   .scroll-snap-item { scroll-snap-align: center; }
-  .stats-card {
-    position: relative;
+  .TeamReport__C-body-item {
+    background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+    border-radius: 10px;
+    padding: 0 10px;
+    margin-bottom: 6px;
+    border: 1px solid rgba(255,180,50,0.1);
+  }
+  .TeamReport__C-body-item-head {
+    height: 30px;
+    padding-top: 3px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    width: 100%;
-    max-width: 351px;
-    height: 120px;
-    margin: 0 auto;
-    border-radius: 12px;
-    color: #fff;
-    background: linear-gradient(135deg, rgb(13, 5, 33) 0%, rgb(26, 10, 46) 25%, rgb(45, 27, 105) 60%, rgb(74, 45, 138) 100%);
-    box-shadow: 0 2px 8px rgba(74, 45, 138, 0.2), 0 6px 20px rgba(74, 45, 138, 0.15);
-    overflow: hidden;
+    justify-content: flex-start;
+    border-bottom: 0.8px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.9);
+    font-size: 16px;
   }
-  .stats-card::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -20%;
-    width: 100%;
-    height: 150%;
-    background: radial-gradient(circle, rgba(168, 120, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
-    pointer-events: none;
-  }
-  .stats-card::after {
-    content: "";
-    position: absolute;
-    bottom: -30%;
-    right: -10%;
-    width: 80%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(107, 66, 184, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
-    pointer-events: none;
-  }
-  .stats-card-label {
-    position: relative;
-    z-index: 1;
-    font-size: 13px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 4px;
-  }
-  .stats-card-amount {
-    position: relative;
-    z-index: 1;
-    font-family: "DINAlternate-Bold", "DIN Alternate", "Arial Black", sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    color: #fff;
+  .stats-amount {
+    font-size: 18px;
+    font-weight: 600;
+    background: linear-gradient(166deg, #ffe786 0%, #ffb753 68%, #ffa74a 98%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 `}</style>
       <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => goBack()}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Game Statistics</div></div><div className="navbar__content-right"></div></div></div></div>
       <div className="bet-container-sticky"><div className="van-sticky"><div>
         <div ref={scrollRef} className="flex gap-2 overflow-x-auto px-3 py-2 hide-scrollbar scroll-snap-x" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
-          {(["yesterday", "today", "week", "month"] as const).map((key) => {
-            const label = key === "yesterday" ? "Yesterday" : key === "today" ? "Today" : key === "week" ? "This Week" : "This Month";
+          {(["today", "yesterday", "week", "month"] as const).map((key) => {
+            const label = key === "today" ? "Today" : key === "yesterday" ? "Yesterday" : key === "week" ? "This Week" : "This Month";
             const isActive = key === dateFilter;
             return (
               <div key={key} onClick={() => setDateFilter(key)} className={`scroll-snap-item shrink-0 px-[14px] py-[7px] rounded-full text-[13px] cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
@@ -155,9 +128,11 @@ const GameStatistics = () => {
         </div>
       </div></div></div>
       <div className="x-page-list" style={{ padding: "10px" }}>
-        <div className="stats-card">
-          <div className="stats-card-label">Total bet amount</div>
-          <div className="stats-card-amount">₹0.00</div>
+        <div className="TeamReport__C-body-item">
+          <div className="TeamReport__C-body-item-head">Total bet amount</div>
+          <div style={{ padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span className="stats-amount">₹0.00</span>
+          </div>
         </div>
       </div>
     </div>
