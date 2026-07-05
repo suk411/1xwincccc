@@ -25,6 +25,10 @@ interface AgencyDailyLevel {
   regCount: number;
   depositCount: number;
   firstDepositCount: number;
+  bettorCount: number;
+  betAmount: number;
+  firstDepositAmount: number;
+  depositAmount: number;
 }
 
 interface AgencyDaily {
@@ -33,6 +37,14 @@ interface AgencyDaily {
   level1: AgencyDailyLevel;
   level2: AgencyDailyLevel;
   level3: AgencyDailyLevel;
+  yesterdayTotalCommission: number;
+  thisWeekCommission: number;
+  totalCommission: number;
+  totalRegister: {
+    level1: number;
+    level2: number;
+    level3: number;
+  };
 }
 
 interface AgencyCommissionItem {
@@ -150,7 +162,15 @@ const Earn = () => {
       setAgencyTeam(prev => append ? [...prev, ...data.items] : data.items);
       setTeamTotal(data.total || 0);
       setTeamPage(p);
-      if (!append) setTeamAggregation(data.aggregation?.total ?? null);
+      const agg = data.aggregation;
+      if (!append) setTeamAggregation(agg ? {
+        depositCount: (agg.level1?.depositCount ?? 0) + (agg.level2?.depositCount ?? 0) + (agg.level3?.depositCount ?? 0),
+        depositAmount: (agg.level1?.depositAmount ?? 0) + (agg.level2?.depositAmount ?? 0) + (agg.level3?.depositAmount ?? 0),
+        bettorCount: (agg.level1?.bettorCount ?? 0) + (agg.level2?.bettorCount ?? 0) + (agg.level3?.bettorCount ?? 0),
+        betAmount: (agg.level1?.betAmount ?? 0) + (agg.level2?.betAmount ?? 0) + (agg.level3?.betAmount ?? 0),
+        firstDepositCount: (agg.level1?.firstDepositCount ?? 0) + (agg.level2?.firstDepositCount ?? 0) + (agg.level3?.firstDepositCount ?? 0),
+        firstDepositAmount: (agg.level1?.firstDepositAmount ?? 0) + (agg.level2?.firstDepositAmount ?? 0) + (agg.level3?.firstDepositAmount ?? 0),
+      } : null);
     } catch (err: any) {
       if (!err.message?.includes("Session expired")) {
         toast({ description: err.message || "Something went wrong", variant: "destructive" });
@@ -1048,22 +1068,29 @@ const Earn = () => {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
   .fade-in-card {
     animation: fadeIn 0.4s ease-out both;
+  }
+  .slide-in-left {
+    animation: slideInLeft 0.4s ease-out both;
   }
 `}</style>
         {activeTab === "referral" ? (
           showCommissionDetail ? (
             <div className="x-page">
               <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setShowCommissionDetail(false)}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Commission detail</div></div><div className="navbar__content-right"></div></div></div></div>
-              <div className="x-page-list">
+               <div className="x-page-list" style={{ paddingTop: "58px" }}>
               {commLoading && agencyCommissions.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>Loading...</div>
               ) : agencyCommissions.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>No commission records</div>
               ) : (
                 agencyCommissions.map((c, idx) => (
-                  <div key={c._id} className="TeamReport__C-body-item fade-in-card" style={{ animationDelay: `${idx * 0.05}s` }}>
+                  <div key={c._id} className="TeamReport__C-body-item slide-in-left" style={{ animationDelay: `${idx * 0.05}s` }}>
                     <div className="TeamReport__C-body-item-head" style={{ justifyContent: "space-between" }}>
                       <span>{c.date?.slice(0, 10)}</span>
                       <span style={{ fontSize: "11px", color: c.status === "CREDITED" ? "#18b660" : "rgba(255,255,255,0.4)", background: c.status === "CREDITED" ? "rgba(24,182,96,0.15)" : "rgba(255,255,255,0.08)", padding: "2px 8px", borderRadius: "10px" }}>{c.status}</span>
@@ -1095,16 +1122,16 @@ const Earn = () => {
   <div className="info_content">
     <div className="info">
       <div className="head">Direct subordinates</div>
-      <div className="line1"><div>{agencyDaily?.level1?.regCount ?? 0}</div>number of register</div>
+      <div className="line1"><div>{agencyDaily?.totalRegister?.level1 ?? 0}</div>number of register</div>
       <div className="line2"><div>{agencyDaily?.level1?.depositCount ?? 0}</div>Deposit number</div>
-      <div className="line3"><div>{agencyDaily?.level1?.deposit ?? 0}</div>Deposit amount</div>
+      <div className="line3"><div>{agencyDaily?.level1?.depositAmount ?? 0}</div>Deposit amount</div>
       <div className="line1"><div>{agencyDaily?.level1?.firstDepositCount ?? 0}</div> Number of people making first deposit</div>
     </div>
     <div className="info">
       <div className="head u2">Team subordinates</div>
-      <div className="line1"><div>{((agencyDaily?.level2?.regCount ?? 0) + (agencyDaily?.level3?.regCount ?? 0))}</div>number of register</div>
+      <div className="line1"><div>{((agencyDaily?.totalRegister?.level2 ?? 0) + (agencyDaily?.totalRegister?.level3 ?? 0))}</div>number of register</div>
       <div className="line2"><div>{((agencyDaily?.level2?.depositCount ?? 0) + (agencyDaily?.level3?.depositCount ?? 0))}</div>Deposit number</div>
-      <div className="line3"><div>{((agencyDaily?.level2?.deposit ?? 0) + (agencyDaily?.level3?.deposit ?? 0))}</div>Deposit amount</div>
+      <div className="line3"><div>{((agencyDaily?.level2?.depositAmount ?? 0) + (agencyDaily?.level3?.depositAmount ?? 0))}</div>Deposit amount</div>
       <div className="line1"><div>{((agencyDaily?.level2?.firstDepositCount ?? 0) + (agencyDaily?.level3?.firstDepositCount ?? 0))}</div> Number of people making first deposit</div>
     </div>
   </div>
