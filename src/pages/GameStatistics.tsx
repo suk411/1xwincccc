@@ -1,7 +1,12 @@
+import { useState, useRef } from "react";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
+
+type DateFilter = "today" | "yesterday" | "week" | "month";
 
 const GameStatistics = () => {
   const { goBack } = useTransitionNavigate();
+  const [dateFilter, setDateFilter] = useState<DateFilter>("today");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="x-page">
@@ -78,8 +83,25 @@ const GameStatistics = () => {
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .scroll-snap-x { scroll-snap-type: x mandatory; }
+  .scroll-snap-item { scroll-snap-align: center; }
 `}</style>
       <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => goBack()}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">Game Statistics</div></div><div className="navbar__content-right"></div></div></div></div>
+      <div className="bet-container-sticky"><div className="van-sticky"><div>
+        <div ref={scrollRef} className="flex gap-2 overflow-x-auto px-3 py-2 hide-scrollbar scroll-snap-x" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
+          {(["today", "yesterday", "week", "month"] as const).map((key) => {
+            const label = key === "today" ? "Today" : key === "yesterday" ? "Yesterday" : key === "week" ? "This Week" : "This Month";
+            const isActive = key === dateFilter;
+            return (
+              <div key={key} onClick={() => setDateFilter(key)} className={`scroll-snap-item shrink-0 px-[13px] py-[7px] rounded-full text-[13px] cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white font-bold" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
+                {label}
+              </div>
+            );
+          })}
+        </div>
+      </div></div></div>
       <div className="x-page-list" style={{ padding: "10px" }}>
       </div>
     </div>
