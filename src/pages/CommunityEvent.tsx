@@ -6,7 +6,7 @@ import coins from "@/assets/events/coins.png";
 import giftBox from "@/assets/events/gift-box.png";
 import emptyBox from "@/assets/events/empty-box.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Copy } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
 import { useToast } from "@/hooks/use-toast";
@@ -20,6 +20,26 @@ const CommunityEvent = () => {
   const { toast } = useToast();
   const { copyToClipboard } = useCopyToClipboard();
   const { refresh: refreshProfile } = useProfile();
+  const [redemptions, setRedemptions] = useState<{ amt: number; createdAt: string }[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await authService.getGiftCodeRedemptions();
+        if (res.status === "success") setRedemptions(res.items || []);
+      } catch {} finally {
+        setLoadingHistory(false);
+      }
+    })();
+  }, []);
+
+  const formatDate = (d: string) => {
+    try {
+      const date = new Date(d);
+      return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch { return d; }
+  };
   const telegramLink = "https://t.me/+EM8kxuQpfMJmZTRl";
 
   const handleCopy = () => {
@@ -49,6 +69,11 @@ const CommunityEvent = () => {
         });
         setCode("");
         refreshProfile();
+        // refresh history
+        try {
+          const res = await authService.getGiftCodeRedemptions();
+          if (res.status === "success") setRedemptions(res.items || []);
+        } catch {}
       } else {
         let errorMsg = res.msg || "Failed to redeem code";
         if (res.msg === "Minimum deposit not met" && res.required) {
@@ -71,6 +96,12 @@ const CommunityEvent = () => {
 
   return (
     <main className="relative flex-1 flex flex-col pb-36 max-w-screen-lg mx-auto w-full">
+      <style>{`
+        @keyframes slideInbuttom {
+          from { opacity: 0; transform: translateX(-30px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
       <div className="mb-2">
         <PageHeader title="Community Event" />
       </div>
@@ -184,10 +215,44 @@ const CommunityEvent = () => {
           style={{ backgroundImage: `url(${cardBg})`, backgroundSize: "cover", backgroundPosition: "center" }}
         >
           <h3 className="text-white font-bold text-sm mb-4">Redemption History</h3>
-          <div className="flex flex-col items-center py-4">
-            <img src={emptyBox} alt="" className="w-20 h-20 object-contain opacity-40 mb-2" />
-            <span className="text-[#c4889a] text-sm">No records</span>
-          </div>
+          {loadingHistory ? (
+            <div className="flex flex-col items-center py-4">
+              <span className="text-[#c4889a] text-sm">Loading...</span>
+            </div>
+          ) : redemptions.length === 0 ? (
+            <div className="flex flex-col items-center py-4">
+              <img src={emptyBox} alt="" className="w-20 h-20 object-contain opacity-40 mb-2" />
+              <span className="text-[#c4889a] text-sm">No records</span>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {redemptions.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl overflow-hidden w-full"
+                  style={{
+                    animation: `slideInbuttom 0.5s ease-out both`,
+                    animationDelay: `${idx * 0.08}s`,
+                    background: "linear-gradient(180deg, #35030c 0%, #5b0116 100%)",
+                    border: "1px solid rgba(255,180,50,0.25)",
+                  }}
+                >
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="text-sm font-bold" style={{
+                      backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      color: "transparent",
+                    }}>
+                      ₹{item.amt.toLocaleString()}
+                    </span>
+                    <span className="text-white/70 text-xs">{formatDate(item.createdAt)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </main>

@@ -273,6 +273,19 @@ export interface RedeemGiftCodeResponse {
   deposited?: number;
 }
 
+export interface GiftCodeRedemptionItem {
+  amt: number;
+  createdAt: string;
+}
+
+export interface GiftCodeRedemptionsResponse {
+  status: string;
+  total: number;
+  page: number;
+  limit: number;
+  items: GiftCodeRedemptionItem[];
+}
+
 export interface GameStatItem {
   gameTypeName: string;
   betAmount: number;
@@ -778,6 +791,17 @@ export const authService = {
     const data = await res.json();
     checkAccountInactive(data);
     if (!res.ok) rejectWithError(data, "Failed to redeem gift code");
+    return data;
+  },
+
+  async getGiftCodeRedemptions(page = 1, limit = 25): Promise<GiftCodeRedemptionsResponse> {
+    const res = await fetch(`${API_BASE}/api/game/gift-codes/redemptions?page=${page}&limit=${limit}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    checkAccountInactive(data);
+    if (!res.ok) rejectWithError(data, "Failed to fetch gift code redemptions");
     return data;
   },
 
