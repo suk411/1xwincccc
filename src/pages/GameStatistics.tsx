@@ -147,7 +147,7 @@ const GameStatistics = () => {
             const label = key === "yesterday" ? "Yesterday" : key === "today" ? "Today" : key === "week" ? "This Week" : "This Month";
             const isActive = key === dateFilter;
             return (
-              <div key={key} onClick={() => setDateFilter(key)} className={`scroll-snap-item shrink-0 px-[14px] py-[7px] rounded-full text-[13px] cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white font-bold" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
+              <div key={key} onClick={() => setDateFilter(key)} className={`scroll-snap-item shrink-0 px-[14px] py-[7px] rounded-full text-[13px] cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
                 {label}
               </div>
             );
