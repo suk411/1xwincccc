@@ -60,11 +60,12 @@ interface DepositAmountGridProps {
   selectedAmount: number;
   customAmount: string;
   bonusOptIn: boolean;
+  bonusFade: 'out' | null;
   getBonus: (amount: number) => number;
   onSelect: (amount: number) => void;
 }
 
-const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, bonusOptIn, getBonus, onSelect }: DepositAmountGridProps) => {
+const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, bonusOptIn, bonusFade, getBonus, onSelect }: DepositAmountGridProps) => {
   const formattedAmounts = useMemo(() => {
     return depositAmounts.map(amount => {
       const pre = FORMATTED_BASE_DEPOSIT.find(f => f.value === amount);
@@ -695,6 +696,7 @@ const Bank = () => {
                     selectedAmount={selectedAmount}
                     customAmount={customAmount}
                     bonusOptIn={bonusOptIn}
+                    bonusFade={bonusFade}
                     getBonus={getBonus}
                     onSelect={(amount) => { setSelectedAmount(amount); setCustomAmount(""); setDepositAmountInput(amount.toString()); }}
                   />
