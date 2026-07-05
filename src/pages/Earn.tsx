@@ -1096,11 +1096,11 @@ const Earn = () => {
                       <span style={{ fontSize: "11px", color: c.status === "CREDITED" ? "#18b660" : "rgba(255,255,255,0.4)", background: c.status === "CREDITED" ? "rgba(24,182,96,0.15)" : "rgba(255,255,255,0.08)", padding: "2px 8px", borderRadius: "10px" }}>{c.status}</span>
                     </div>
                     <div className="TeamReport__C-body-item-detail">
-                      <div>Level <span className="val-light">Level {c.rebateLevel}</span></div>
+                      <div>Rebate Level <span className="val-light">Level {c.rebateLevel}</span></div>
                       <div>Amount <span className="val-orange">₹{c.totalAmount}</span></div>
-                      <div>L1 <span className="val-light">₹{c.l1Amount}</span></div>
-                      <div>L2 <span className="val-light">₹{c.l2Amount}</span></div>
-                      <div>L3 <span className="val-light">₹{c.l3Amount}</span></div>
+                      <div>Tier 1 <span className="val-light">₹{c.l1Amount}</span></div>
+                      <div>Tier 2 <span className="val-light">₹{c.l2Amount}</span></div>
+                      <div>Tier 3 <span className="val-light">₹{c.l3Amount}</span></div>
                     </div>
                   </div>
                 ))
