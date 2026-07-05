@@ -6,6 +6,7 @@ import coins from "@/assets/events/coins.png";
 import giftBox from "@/assets/events/gift-box.png";
 import emptyBox from "@/assets/events/empty-box.png";
 import telegramIcon from "@/assets/tabs/telegram-icon.png";
+import coinRupee from "@/assets/profile/coin-rupee.png";
 import { useState, useEffect } from "react";
 import { Copy } from "lucide-react";
 import { GameButton } from "@/components/GameButton";
@@ -238,7 +239,9 @@ const CommunityEvent = () => {
                   }}
                 >
                   <div className="flex items-center justify-between px-4 py-3">
-                    <span className="text-sm font-bold" style={{
+                    <div className="flex items-center gap-2">
+                      <img src={coinRupee} alt="" className="w-5 h-5 object-contain" />
+                      <span className="text-sm font-bold" style={{
                       backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
                       WebkitBackgroundClip: "text",
                       backgroundClip: "text",
@@ -247,6 +250,7 @@ const CommunityEvent = () => {
                     }}>
                       ₹{item.amt.toLocaleString()}
                     </span>
+                    </div>
                     <span className="text-white/70 text-xs">{formatDate(item.createdAt)}</span>
                   </div>
                 </div>
