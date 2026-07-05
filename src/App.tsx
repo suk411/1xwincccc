@@ -36,6 +36,8 @@ import { NavigationProvider } from "./providers/NavigationProvider";
 import bgMain from "@/assets/bg-main.jpg";
 import btnClickSound from "@/assets/btn-click.mp3";
 import { authService } from "./services/authService";
+import { toast } from "@/hooks/use-toast";
+import { API_ERROR_EVENT } from "./services/authService";
 
 const queryClient = new QueryClient();
 
@@ -88,6 +90,15 @@ const AppContent = () => {
       }
     }
   }, [location.pathname, isAuthPage]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { message } = (e as CustomEvent).detail;
+      toast({ description: message, variant: "destructive" });
+    };
+    window.addEventListener(API_ERROR_EVENT, handler);
+    return () => window.removeEventListener(API_ERROR_EVENT, handler);
+  }, []);
 
   return (
     <div className="mobile-app-shell">

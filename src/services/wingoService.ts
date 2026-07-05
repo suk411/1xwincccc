@@ -24,6 +24,12 @@ const extractErrorMessage = (data: any, fallback: string) => {
   return data.msg || data.message || data.error || fallback;
 };
 
+function rejectWithError(data: any, fallback: string): never {
+  const msg = extractErrorMessage(data, fallback);
+  window.dispatchEvent(new CustomEvent("apierror", { detail: { message: msg } }));
+  throw new Error(msg);
+}
+
 export interface WingoCurrentResponse {
   gameCode: string;
   intervalMinute: number;
@@ -104,7 +110,7 @@ export const wingoService = {
     const qs = mode ? `?mode=${mode}` : "";
     const res = await fetch(`${API_BASE}/api/wingo/current${qs}`);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to sync current round"));
+    if (!res.ok) rejectWithError(data, "Failed to sync current round");
     return data;
   },
 
@@ -112,7 +118,7 @@ export const wingoService = {
     const qs = mode ? `?pageNo=${pageNo}&mode=${mode}` : `?pageNo=${pageNo}`;
     const res = await fetch(`${API_BASE}/api/wingo/history${qs}`);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch history"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch history");
     return data;
   },
 
@@ -120,7 +126,7 @@ export const wingoService = {
     const qs = mode ? `?mode=${mode}` : "";
     const res = await fetch(`${API_BASE}/api/wingo/trends${qs}`);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch trends"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch trends");
     return data;
   },
 
@@ -138,7 +144,7 @@ export const wingoService = {
     });
     handleUnauthorized(res);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch my bets"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch my bets");
     return data;
   },
 
@@ -149,7 +155,7 @@ export const wingoService = {
     });
     handleUnauthorized(res);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to check win"));
+    if (!res.ok) rejectWithError(data, "Failed to check win");
     return data;
   },
 
@@ -161,8 +167,8 @@ export const wingoService = {
     });
     handleUnauthorized(res);
     const data = await res.json();
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to place bet"));
-    if (data?.status && data.status !== "success") throw new Error(extractErrorMessage(data, "Failed to place bet"));
+    if (!res.ok) rejectWithError(data, "Failed to place bet");
+    if (data?.status && data.status !== "success") rejectWithError(data, "Failed to place bet");
     return data;
   },
 };

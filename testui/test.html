@@ -3,117 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gullak Cash Section</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <style>
-        /* 1. Reset and Force Body Visibility */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #101219 !important; /* Force the dark background */
-        }
-
         body {
+            margin: 0;
+            height: 100vh;
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: flex-start;
-            font-family: 'Montserrat', sans-serif;
+            background-color: #f7f8fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, sans-serif;
         }
 
-        /* 2. The Main Section (uid: 2951) */
-        .main-container {
-            position: relative;
-            width: 100%;
-            max-width: 434px; /* Exact width from live site */
-            min-height: 455px; /* Forced minimum height to prevent black/empty screen */
-            aspect-ratio: 434 / 455;
-            background-color: #101218;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-        }
-
-        /* 3. The Image (uid: 2931) */
-        .bottle-image {
-            width: 100%;
-            height: auto;
-            display: block;
-            z-index: 1;
-        }
-
-        /* 4. Text Label Container (uid: 2933) */
-        .cash-anchor {
-            position: absolute;
-            top: 44%; /* Changed from vw to % for better stability */
-            left: 50%;
-            z-index: 10;
-        }
-
-        /* Outline Layer (uid: 2921) */
-        .text-outline {
-            position: absolute;
-            top: -0.7px;
-            left: 0;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 20px;
-            font-weight: 700;
-            color: #FFFFFF;
-            /* The critical border effect */
-            text-shadow: 
-                rgba(5, 16, 48, 0.7) -1.3px -1.3px 0px, 
-                rgba(5, 16, 48, 0.7)  1.3px -1.3px 0px, 
-                rgba(5, 16, 48, 0.7) -1.3px  1.3px 0px, 
-                rgba(5, 16, 48, 0.7)  1.3px  1.3px 0px;
-        }
-
-        /* Gradient Layer (uid: 2922) */
-        .text-fill {
-            position: absolute;
-            top: 0px;
-            left: 0;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 20px;
-            font-weight: 700;
-            /* Exact original gradient stops */
-            background-image: linear-gradient(0deg, 
-                rgb(70, 110, 208) 0%, 
-                rgb(64, 72, 179) 43.7%, 
-                rgb(97, 130, 237) 45%, 
-                rgb(101, 127, 231) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent;
-        }
-
-        /* 5. Amount (uid: 2934) */
-        .amount-display {
-            position: absolute;
-            top: 51%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 30px;
-            font-weight: 800;
-            color: #fff;
-            z-index: 10;
+        .toast-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 88px; /* Standard Vant width */
+            padding: 16px;
+            color: #ffffff;
+            font-size: 14px;
             text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .toast-icon {
+            /* EXACT SIZE MATCH: 36px */
+            width: 36px;
+            height: 36px;
+            fill: #ffffff;
+            display: block;
+        }
+
+        .toast-text {
+            margin-top: 8px;
+            line-height: 20px;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-      
-        <!-- Cash Label -->
-        <div class="cash-anchor">
-            <div class="text-outline">Gullak Cash</div>
-            <div class="text-fill">Gullak Cash</div>
-        </div>
-
-    
+    <div class="toast-container">
+        <!-- Exact 36px Checkmark (No Circle) -->
+        <svg class="toast-icon" viewBox="0 0 1024 1024">
+            <path d="M403.8 743.9L184.2 524.3c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l174.3 174.3L812.2 245c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L449.1 743.9c-12.5 12.5-32.8 12.5-45.3 0z"></path>
+        </svg>
+        <div class="toast-text">Refresh successfully</div>
     </div>
 
 </body>

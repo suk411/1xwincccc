@@ -287,6 +287,18 @@ export interface GameStatsResponse {
   };
 }
 
+export const API_ERROR_EVENT = "apierror";
+
+export function dispatchApiError(message: string) {
+  window.dispatchEvent(new CustomEvent(API_ERROR_EVENT, { detail: { message } }));
+}
+
+function rejectWithError(data: any, fallback: string): never {
+  const msg = extractErrorMessage(data, fallback);
+  dispatchApiError(msg);
+  throw new Error(msg);
+}
+
 const TOKEN_KEY = "auth_token";
 
 const extractErrorMessage = (data: any, fallback: string): string => {
@@ -416,7 +428,7 @@ export const authService = {
     });
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Registration failed"));
+    if (!res.ok) rejectWithError(data, "Registration failed");
     persistTokenIfPresent(data);
     return data;
   },
@@ -439,7 +451,7 @@ export const authService = {
     });
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Registration failed"));
+    if (!res.ok) rejectWithError(data, "Registration failed");
     persistTokenIfPresent(data);
     return data;
   },
@@ -452,7 +464,7 @@ export const authService = {
     });
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Login failed"));
+    if (!res.ok) rejectWithError(data, "Login failed");
     persistTokenIfPresent(data);
     return data;
   },
@@ -464,7 +476,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch balance"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch balance");
     return data;
   },
 
@@ -475,7 +487,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch VIP level"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch VIP level");
     return data;
   },
 
@@ -486,7 +498,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch VIP info"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch VIP info");
     return data;
   },
 
@@ -498,7 +510,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to claim weekly bonus"));
+    if (!res.ok) rejectWithError(data, "Failed to claim weekly bonus");
     return data;
   },
 
@@ -510,7 +522,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to claim upgrade bonus"));
+    if (!res.ok) rejectWithError(data, "Failed to claim upgrade bonus");
     return data;
   },
 
@@ -543,7 +555,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposits"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch deposits");
     return data;
   },
 
@@ -554,7 +566,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch ledger"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch ledger");
     return data;
   },
 
@@ -569,7 +581,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Withdrawal failed"));
+    if (!res.ok) rejectWithError(data, "Withdrawal failed");
     return data;
   },
 
@@ -580,7 +592,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch withdrawals"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch withdrawals");
     return data;
   },
 
@@ -591,7 +603,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch withdraw info"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch withdraw info");
     return data;
   },
 
@@ -604,7 +616,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to bind bank account"));
+    if (!res.ok) rejectWithError(data, "Failed to bind bank account");
     return data;
   },
 
@@ -617,7 +629,7 @@ export const authService = {
     handleUnauthorized(res);
     const result = await res.json();
     checkAccountInactive(result);
-    if (!res.ok) throw new Error(extractErrorMessage(result, "Failed to add payment method"));
+    if (!res.ok) rejectWithError(result, "Failed to add payment method");
     return result;
   },
 
@@ -628,7 +640,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch payment methods"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch payment methods");
     return data;
   },
 
@@ -640,7 +652,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to set default payment method"));
+    if (!res.ok) rejectWithError(data, "Failed to set default payment method");
     return data;
   },
 
@@ -651,7 +663,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposit config"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch deposit config");
     return data;
   },
 
@@ -662,7 +674,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch deposit bonus info"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch deposit bonus info");
     return data;
   },
 
@@ -675,7 +687,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Deposit failed"));
+    if (!res.ok) rejectWithError(data, "Deposit failed");
     return data;
   },
 
@@ -694,7 +706,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch new subscribers"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch new subscribers");
     return data;
   },
 
@@ -708,7 +720,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch daily stats"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch daily stats");
     return data;
   },
 
@@ -719,7 +731,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch commissions"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch commissions");
     return data;
   },
 
@@ -737,7 +749,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch team"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch team");
     return data;
   },
 
@@ -752,7 +764,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch game stats"));
+    if (!res.ok) rejectWithError(data, "Failed to fetch game stats");
     return data;
   },
 
@@ -765,7 +777,7 @@ export const authService = {
     handleUnauthorized(res);
     const data = await res.json();
     checkAccountInactive(data);
-    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to redeem gift code"));
+    if (!res.ok) rejectWithError(data, "Failed to redeem gift code");
     return data;
   },
 
