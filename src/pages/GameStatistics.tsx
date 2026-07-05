@@ -149,7 +149,7 @@ const GameStatistics = () => {
     padding: 0 10px;
     margin-bottom: 6px;
     border: 1px solid rgba(255,180,50,0.1);
-    height: 72px;
+    height: 87px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -235,7 +235,7 @@ const GameStatistics = () => {
       <div className="x-page-list" style={{ padding: "10px" }}>
         <div className="stats-card slide-in-left" style={{ animationDelay: "0s" }}>
           <div className="stats-card-label">Total bet amount</div>
-          <div className="stats-amount">{loading ? "..." : `₹${totalBet.toFixed(2)}`}</div>
+          <div className="stats-amount">₹{totalBet.toFixed(2)}</div>
         </div>
         {loading ? (
           <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.5)" }}>Loading...</div>
