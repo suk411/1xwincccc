@@ -94,7 +94,6 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
                 ? "1.5px solid rgba(255, 180, 50, 0.6)"
                 : "1px solid rgba(255,255,255,0.1)",
               boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
-              minHeight: bonus > 0 ? '48px' : undefined,
             }}
           >
             <span className="text-sm text-center pt-2.5 pb-1 font-medium" style={{
@@ -104,26 +103,29 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
               WebkitTextFillColor: "transparent",
               color: "transparent",
             }}>{label}</span>
-            {(bonusOptIn || bonusFade !== null) && bonus > 0 && (
+            {bonus > 0 && (
               <div style={{
-                maxHeight: bonusFade === 'exiting' ? '0px' : '30px',
-                transition: 'max-height 0.3s ease-out',
+                maxHeight: (bonusOptIn || bonusFade !== null) ? '30px' : '0px',
+                opacity: (bonusOptIn || bonusFade !== null) ? 1 : 0,
+                transition: 'max-height 0.3s ease-out, opacity 0.3s ease-out',
                 overflow: 'hidden',
               }}>
-                <div
-                  className="text-center text-[10px] font-bold rounded-b-md py-0.5"
-                  style={{
-                    animation: bonusFade === 'entering'
-                      ? 'slideDown 0.3s ease-out both'
-                      : (bonusFade === 'exiting' ? 'slideUp 0.3s ease-out forwards' : 'none'),
-                    backgroundImage: isActive
-                      ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
-                      : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
-                    color: "#5a2d0a"
-                  }}
-                >
-                  +{bonus}
-                </div>
+                {(bonusOptIn || bonusFade !== null) && (
+                  <div
+                    className="text-center text-[10px] font-bold rounded-b-md py-0.5"
+                    style={{
+                      animation: bonusFade === 'entering'
+                        ? 'slideDown 0.3s ease-out both'
+                        : (bonusFade === 'exiting' ? 'slideUp 0.3s ease-out forwards' : 'none'),
+                      backgroundImage: isActive
+                        ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
+                        : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
+                      color: "#5a2d0a"
+                    }}
+                  >
+                    +{bonus}
+                  </div>
+                )}
               </div>
             )}
           </div>
