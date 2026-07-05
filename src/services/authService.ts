@@ -273,6 +273,20 @@ export interface RedeemGiftCodeResponse {
   deposited?: number;
 }
 
+export interface GameStatItem {
+  gameTypeName: string;
+  betAmount: number;
+  betCount: number;
+  totalpayout: number;
+}
+
+export interface GameStatsResponse {
+  status: string;
+  data: {
+    gameStatis: GameStatItem[];
+  };
+}
+
 const TOKEN_KEY = "auth_token";
 
 const extractErrorMessage = (data: any, fallback: string): string => {
@@ -724,6 +738,21 @@ export const authService = {
     const data = await res.json();
     checkAccountInactive(data);
     if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch team"));
+    return data;
+  },
+
+  async getGameStats(dateFrom?: string, dateTo?: string): Promise<GameStatsResponse> {
+    const params = new URLSearchParams();
+    if (dateFrom) params.set("dateFrom", dateFrom);
+    if (dateTo) params.set("dateTo", dateTo);
+    const query = params.toString();
+    const res = await fetch(`${API_BASE}/api/game/stats${query ? `?${query}` : ""}`, {
+      headers: authHeaders(),
+    });
+    handleUnauthorized(res);
+    const data = await res.json();
+    checkAccountInactive(data);
+    if (!res.ok) throw new Error(extractErrorMessage(data, "Failed to fetch game stats"));
     return data;
   },
 

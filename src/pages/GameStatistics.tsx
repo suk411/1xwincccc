@@ -1,12 +1,63 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
+import { authService } from "@/services/authService";
 
 type DateFilter = "today" | "yesterday" | "week" | "month";
+
+function formatDate(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getDateRange(filter: DateFilter): { dateFrom: string; dateTo: string } {
+  const today = new Date();
+  const todayStr = formatDate(today);
+  if (filter === "today") return { dateFrom: todayStr, dateTo: todayStr };
+  if (filter === "yesterday") {
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = formatDate(yesterday);
+    return { dateFrom: yStr, dateTo: yStr };
+  }
+  if (filter === "week") {
+    const weekAgo = new Date(today);
+    weekAgo.setDate(weekAgo.getDate() - 6);
+    return { dateFrom: formatDate(weekAgo), dateTo: todayStr };
+  }
+  const monthAgo = new Date(today);
+  monthAgo.setDate(monthAgo.getDate() - 29);
+  return { dateFrom: formatDate(monthAgo), dateTo: todayStr };
+}
+
+interface GameStatItem {
+  gameTypeName: string;
+  betAmount: number;
+  betCount: number;
+  totalpayout: number;
+}
 
 const GameStatistics = () => {
   const { goBack } = useTransitionNavigate();
   const [dateFilter, setDateFilter] = useState<DateFilter>("today");
+  const [stats, setStats] = useState<GameStatItem[]>([]);
+  const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const { dateFrom, dateTo } = getDateRange(dateFilter);
+    setLoading(true);
+    authService.getGameStats(dateFrom, dateTo).then((res) => {
+      setStats(res.data?.gameStatis ?? []);
+    }).catch(() => {
+      setStats([]);
+    }).finally(() => {
+      setLoading(false);
+    });
+  }, [dateFilter]);
+
+  const totalBet = stats.reduce((sum, item) => sum + item.betAmount, 0);
 
   return (
     <div className="x-page">
@@ -129,7 +180,7 @@ const GameStatistics = () => {
       <div className="x-page-list" style={{ padding: "10px" }}>
         <div className="stats-card">
           <div className="stats-card-label">Total bet amount</div>
-          <div className="stats-amount">₹0.00</div>
+          <div className="stats-amount">{loading ? "..." : `₹${totalBet.toFixed(2)}`}</div>
         </div>
       </div>
     </div>
