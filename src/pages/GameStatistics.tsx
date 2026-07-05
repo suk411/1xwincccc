@@ -87,20 +87,19 @@ const GameStatistics = () => {
   .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .scroll-snap-x { scroll-snap-type: x mandatory; }
   .scroll-snap-item { scroll-snap-align: center; }
-  .TeamReport__C-body-item {
+  .stats-card {
     background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
     border-radius: 10px;
     padding: 0 10px;
     margin-bottom: 6px;
     border: 1px solid rgba(255,180,50,0.1);
-  }
-  .TeamReport__C-body-item-head {
-    height: 30px;
-    padding-top: 3px;
+    height: 72px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    border-bottom: 0.8px solid rgba(255,255,255,0.1);
+    justify-content: center;
+  }
+  .stats-card-label {
     color: rgba(255,255,255,0.9);
     font-size: 16px;
   }
@@ -128,11 +127,9 @@ const GameStatistics = () => {
         </div>
       </div></div></div>
       <div className="x-page-list" style={{ padding: "10px" }}>
-        <div className="TeamReport__C-body-item">
-          <div className="TeamReport__C-body-item-head">Total bet amount</div>
-          <div style={{ padding: "8px 0", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span className="stats-amount">₹0.00</span>
-          </div>
+        <div className="stats-card">
+          <div className="stats-card-label">Total bet amount</div>
+          <div className="stats-amount">₹0.00</div>
         </div>
       </div>
     </div>
