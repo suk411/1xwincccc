@@ -26,7 +26,6 @@ const extractErrorMessage = (data: any, fallback: string) => {
 
 function rejectWithError(data: any, fallback: string): never {
   const msg = extractErrorMessage(data, fallback);
-  window.dispatchEvent(new CustomEvent("apierror", { detail: { message: msg } }));
   throw new Error(msg);
 }
 

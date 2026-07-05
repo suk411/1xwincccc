@@ -300,15 +300,8 @@ export interface GameStatsResponse {
   };
 }
 
-export const API_ERROR_EVENT = "apierror";
-
-export function dispatchApiError(message: string) {
-  window.dispatchEvent(new CustomEvent(API_ERROR_EVENT, { detail: { message } }));
-}
-
 function rejectWithError(data: any, fallback: string): never {
   const msg = extractErrorMessage(data, fallback);
-  dispatchApiError(msg);
   throw new Error(msg);
 }
 
