@@ -82,44 +82,51 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
       {formattedAmounts.map(({ value, label, bonus }) => {
         const isActive = !customAmount && selectedAmount === value;
       return (
-        <div
-          key={value}
-          onClick={() => onSelect(value)}
-          className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200"
-          style={{
-            background: isActive
-              ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
-              : "rgba(211, 54, 93, 0.2)",
-            border: isActive
-              ? "1.5px solid rgba(255, 180, 50, 0.6)"
-              : "1px solid rgba(255,255,255,0.1)",
-            boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
-          }}
-        >
-          <span className="text-sm text-center pt-2.5 pb-1 font-medium" style={{
-            backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            color: "transparent",
-          }}>{label}</span>
-          {(bonusOptIn || bonusFade === 'entering') && bonus > 0 && (
-            <div
-              className="text-center text-[10px] font-bold rounded-b-md py-0.5"
-              style={{
-                animation: bonusFade === 'entering'
-                  ? 'slideDown 0.3s ease-out both'
-                  : (bonusFade === 'exiting' ? 'slideUp 0.3s ease-out forwards' : 'none'),
-                backgroundImage: isActive
-                  ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
-                  : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
-                color: "#5a2d0a"
-              }}
-            >
-              +{bonus}
-            </div>
-          )}
-        </div>
+          <div
+            key={value}
+            onClick={() => onSelect(value)}
+            className="relative rounded-lg overflow-hidden flex flex-col cursor-pointer transition-all duration-200"
+            style={{
+              background: isActive
+                ? "linear-gradient(180deg, #5b0116 0%, #35030c 100%)"
+                : "rgba(211, 54, 93, 0.2)",
+              border: isActive
+                ? "1.5px solid rgba(255, 180, 50, 0.6)"
+                : "1px solid rgba(255,255,255,0.1)",
+              boxShadow: isActive ? "0 0 8px rgba(255, 150, 30, 0.2)" : "none",
+              minHeight: bonus > 0 ? '48px' : undefined,
+            }}
+          >
+            <span className="text-sm text-center pt-2.5 pb-1 font-medium" style={{
+              backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+            }}>{label}</span>
+            {(bonusOptIn || bonusFade !== null) && bonus > 0 && (
+              <div style={{
+                maxHeight: bonusFade === 'exiting' ? '0px' : '30px',
+                transition: 'max-height 0.3s ease-out',
+                overflow: 'hidden',
+              }}>
+                <div
+                  className="text-center text-[10px] font-bold rounded-b-md py-0.5"
+                  style={{
+                    animation: bonusFade === 'entering'
+                      ? 'slideDown 0.3s ease-out both'
+                      : (bonusFade === 'exiting' ? 'slideUp 0.3s ease-out forwards' : 'none'),
+                    backgroundImage: isActive
+                      ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
+                      : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
+                    color: "#5a2d0a"
+                  }}
+                >
+                  +{bonus}
+                </div>
+              </div>
+            )}
+          </div>
       );
     })}
     </div>
