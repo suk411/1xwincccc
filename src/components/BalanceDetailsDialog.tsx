@@ -72,6 +72,15 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
   };
 
   return (
+    <>
+      <style>{`
+        .balance-card-highlight {
+          background: linear-gradient(180deg, #35030c 0%, #5b0116 100%);
+          border-radius: 10px;
+          border: 1px solid rgba(255,180,50,0.1);
+          box-shadow: 0 0 14px rgba(255,180,50,0.12);
+        }
+      `}</style>
     <GameDialog open={isOpen} onOpenChange={onClose}>
       <GameDialogContent title="Wallet">
         <GameDialogBody>
@@ -79,7 +88,11 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
             {Object.entries(balances).map(([code, amount]) => (
               <div 
                 key={code}
-                className="flex flex-col items-center justify-center p-2 rounded-xl bg-black/40 border border-white/5 gap-1"
+                className={`flex flex-col items-center justify-center p-2 rounded-xl gap-1 ${
+                  amount > 0
+                    ? "balance-card-highlight"
+                    : "bg-black/40 border border-white/5"
+                }`}
               >
                 <img 
                   src={PROVIDER_ICONS[code]} 
@@ -108,5 +121,6 @@ export const BalanceDetailsDialog = ({ isOpen, onClose, balances, onRefresh }: B
         </GameDialogFooter>
       </GameDialogContent>
     </GameDialog>
+    </>
   );
 };
