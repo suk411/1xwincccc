@@ -1237,8 +1237,8 @@ const Earn = () => {
             <div className="navbar"><div className="navbar-fixed"><div className="navbar__content"><div className="navbar__content-left" onClick={() => setActiveTab("referral")}><svg className="back-arrow" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div className="navbar__content-center"><div className="navbar__content-title">New subordinates</div></div><div className="navbar__content-right"></div></div></div></div>
             <div className="bet-container-sticky"><div className="van-sticky"><div>
               <div ref={scrollRef} className="flex gap-2 overflow-x-auto px-3 py-2 hide-scrollbar scroll-snap-x" style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}>
-                {(["today", "yesterday", "month"] as const).map((key) => {
-                  const label = key === "today" ? "Today" : key === "yesterday" ? "Yesterday" : "This Month";
+                {(["yesterday", "today", "month"] as const).map((key) => {
+                  const label = key === "yesterday" ? "Yesterday" : key === "today" ? "Today" : "This Month";
                   const isActive = key === subDateFilter;
                   return (
                     <div key={key} onClick={() => { setSubDateFilter(key); }} className={`scroll-snap-item shrink-0 px-[14px] py-[7px] rounded-full text-[13px] cursor-pointer transition-all whitespace-nowrap ${isActive ? "text-white font-bold" : "text-white/50"}`} style={{ background: isActive ? "rgb(177, 44, 73)" : "rgba(255,255,255,0.08)" }}>
