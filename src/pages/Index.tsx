@@ -129,14 +129,14 @@ const StaticSections = memo(function StaticSections() {
               alt="Promo"
               className="w-4/5 object-contain"
             />
-            <button className="w-3/4">
+            <button className="w-3/4" onClick={() => window.dispatchEvent(new CustomEvent("open-download-drawer"))}>
               <img
                 src={appStoreBadge}
                 alt="App Store"
                 className="w-full object-contain"
               />
             </button>
-            <button className="w-3/4">
+            <button className="w-3/4" onClick={() => window.dispatchEvent(new CustomEvent("open-download-drawer"))}>
               <img
                 src={googlePlayBadge}
                 alt="Google Play"

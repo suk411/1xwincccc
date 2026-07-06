@@ -29,6 +29,7 @@ import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
 import DownloadBanner from "./components/DownloadBanner";
+import DownloadDrawer from "./components/DownloadDrawer";
 import { VersionCheck } from "./components/VersionCheck";
 import PosterModal from "./components/PosterModal";
 import WinGo from "./components/games/WinGo";
@@ -48,6 +49,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AppContent = () => {
   const location = useLocation();
   const [isPosterOpen, setIsPosterOpen] = useState(false);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const isAuthPage = ["/login", "/register"].includes(location.pathname);
   const isHomePage = location.pathname === "/";
   const showBottomNav = ["/", "/earn", "/bank", "/promo", "/events"].includes(location.pathname);
@@ -82,10 +84,42 @@ const AppContent = () => {
       const ONE_HOUR = 60 * 60 * 1000;
 
       if (!lastShowTime || (now - parseInt(lastShowTime)) > ONE_HOUR) {
-        // Show poster if never shown before or last shown more than 1h ago
         setIsPosterOpen(true);
         localStorage.setItem("last_poster_show_time", now.toString());
       }
+    }
+  }, [location.pathname, isAuthPage]);
+
+  useEffect(() => {
+    const handler = () => setIsDownloadOpen(true);
+    window.addEventListener("open-download-drawer", handler);
+    return () => window.removeEventListener("open-download-drawer", handler);
+  }, []);
+
+  useEffect(() => {
+    if (isAuthPage) return;
+    const isLoggedIn = authService.isLoggedIn();
+    if (!isLoggedIn) return;
+
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+      || (window.navigator as any).standalone;
+    if (isStandalone) return;
+
+    const now = Date.now();
+
+    const showOnLogin = localStorage.getItem("show_download_on_login");
+    if (showOnLogin) {
+      localStorage.removeItem("show_download_on_login");
+      setIsDownloadOpen(true);
+      localStorage.setItem("download_drawer_shown", now.toString());
+      return;
+    }
+
+    const lastShown = localStorage.getItem("download_drawer_shown");
+    const TWO_HOURS = 2 * 60 * 60 * 1000;
+    if (!lastShown || now - parseInt(lastShown) > TWO_HOURS) {
+      setIsDownloadOpen(true);
+      localStorage.setItem("download_drawer_shown", now.toString());
     }
   }, [location.pathname, isAuthPage]);
 
@@ -93,8 +127,9 @@ const AppContent = () => {
     <div className="mobile-app-shell">
       <VersionCheck />
       <PosterModal isOpen={isPosterOpen} onClose={() => setIsPosterOpen(false)} />
+      <DownloadDrawer open={isDownloadOpen} onOpenChange={setIsDownloadOpen} />
       <div className="mobile-app-scroll flex flex-col">
-        {isHomePage && <DownloadBanner />}
+        {isHomePage && <DownloadBanner onDownloadClick={() => setIsDownloadOpen(true)} />}
         {isHomePage && <Header />}
         
         <AnimatePresence mode="wait">

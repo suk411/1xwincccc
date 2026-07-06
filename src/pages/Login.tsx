@@ -44,6 +44,7 @@ const Login = () => {
     setLoading(true);
     try {
       await authService.login(phone, password);
+      localStorage.setItem("show_download_on_login", Date.now().toString());
       toast({ description: "Login successful" });
       navigateWithTransition("/");
     } catch (err: any) {
