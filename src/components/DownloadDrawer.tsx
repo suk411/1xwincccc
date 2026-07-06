@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer";
 import { GameButton } from "@/components/GameButton";
 import logo from "@/assets/pwalogo.png";
-import downloadBtn from "@/assets/download-btn.gif";
 
 interface DownloadDrawerProps {
   open: boolean;
@@ -115,11 +114,22 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
             onClick={handleInstall}
             style={{ width: "305px" }}
           >
-            <img
-              src={downloadBtn}
-              alt=""
-              style={{ width: "24px", height: "24px", objectFit: "contain", marginRight: "10px" }}
-            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ marginRight: "10px" }}
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
             Install APP
           </GameButton>
         </div>
