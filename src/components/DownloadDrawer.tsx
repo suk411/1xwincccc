@@ -1,7 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer";
 import { GameButton } from "@/components/GameButton";
 import logo from "@/assets/pwalogo.png";
+
+let deferredPrompt: any = null;
+
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+}
 
 interface DownloadDrawerProps {
   open: boolean;
@@ -9,16 +18,37 @@ interface DownloadDrawerProps {
 }
 
 const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [promptReady, setPromptReady] = useState(!!deferredPrompt);
+  const promptedRef = useRef(false);
 
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      deferredPrompt = e;
+      setPromptReady(true);
     };
     window.addEventListener("beforeinstallprompt", handler);
+    setPromptReady(!!deferredPrompt);
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
+
+  useEffect(() => {
+    if (open && deferredPrompt && !promptedRef.current) {
+      promptedRef.current = true;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(({ outcome }: { outcome: string }) => {
+        if (outcome === "accepted") {
+          localStorage.setItem("pwa_installed", "true");
+        }
+        deferredPrompt = null;
+        setPromptReady(false);
+        onOpenChange(false);
+      });
+    }
+    if (!open) {
+      promptedRef.current = false;
+    }
+  }, [open, onOpenChange]);
 
   const handleInstall = useCallback(async () => {
     if (deferredPrompt) {
@@ -27,10 +57,11 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
       if (outcome === "accepted") {
         localStorage.setItem("pwa_installed", "true");
       }
-      setDeferredPrompt(null);
+      deferredPrompt = null;
+      setPromptReady(false);
     }
     onOpenChange(false);
-  }, [deferredPrompt, onOpenChange]);
+  }, [onOpenChange]);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -107,33 +138,13 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
           <span style={{ fontSize: "16px", fontWeight: "bold", color: "#fff" }}>1xKING</span>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "center", padding: "0 25px" }}>
-          <GameButton
-            variant="red"
-            buttonType="prompt"
-            onClick={handleInstall}
-            style={{ width: "305px" }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Install APP
-            </div>
-          </GameButton>
-        </div>
+        {!promptReady && (
+          <div style={{ textAlign: "center", padding: "0 25px" }}>
+            <span style={{ color: "#c4889a", fontSize: "13px" }}>
+              App is not yet installable. Please try again in a moment.
+            </span>
+          </div>
+        )}
       </DrawerContent>
     </Drawer>
   );
