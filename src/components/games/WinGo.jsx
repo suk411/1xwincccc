@@ -82,7 +82,7 @@ const betReducer = (state, action) => {
     }
     case 'SET_BALANCE_IDX': return { ...state, selectedBalanceIdx: action.idx }
     case 'SET_MUL_IDX': return { ...state, selectedMulIdx: action.idx }
-    case 'SET_QTY': return { ...state, qty: Math.max(1, action.qty) }
+    case 'SET_QTY': return { ...state, qty: action.qty }
     case 'CHANGE_QTY': return { ...state, qty: Math.max(1, state.qty + action.d) }
     case 'TOGGLE_AGREE': return { ...state, agreed: !state.agreed }
     case 'CLOSE_BET': return { ...state, showBetOverlay: false }
@@ -1009,7 +1009,7 @@ export default function WinGo() {
               <span className="body-label">Quantity</span>
               <div className="qty-ctrl">
                 <button className="qty-btn" id="qtyMinus" style={{ background: currentAc }} onClick={() => changeQty(-1)}>−</button>
-                <input className="qty-input" type="number" id="qtyInput" value={qty} min="1" onChange={e => { const val = e.target.value; if (val === '') return; const num = parseInt(val, 10); if (!isNaN(num) && num >= 1) dispatch({ type: 'SET_QTY', qty: num }) }} />
+                <input className="qty-input" type="number" id="qtyInput" value={qty} min="1" onChange={e => { const val = e.target.value; if (val === '') { dispatch({ type: 'SET_QTY', qty: 0 }); return; } const num = parseInt(val, 10); if (!isNaN(num) && num >= 1) dispatch({ type: 'SET_QTY', qty: num }) }} onBlur={() => { if (qty < 1) dispatch({ type: 'SET_QTY', qty: 1 }) }} />
                 <button className="qty-btn" id="qtyPlus" style={{ background: currentAc }} onClick={() => changeQty(1)}>+</button>
               </div>
             </div>
