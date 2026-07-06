@@ -1,12 +1,10 @@
-import { useEffect, useCallback, useState } from "react";
-import { toast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { GameButton } from "./GameButton";
 import { authService } from "@/services/authService";
 import { useProfile } from "@/hooks/useProfile";
-import profileBg from "@/assets/profile/profile-bg.png";
 import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
 import deposit from "@/assets/bank/deposit-icon.png";
@@ -19,7 +17,6 @@ import vipBadge5 from "@/assets/vip/vip-badge-5.png";
 
 import avatar from "@/assets/profile/avatar.png";
 import avatarChange from "@/assets/profile/avatar-change.png";
-import pencilIcon from "@/assets/profile/pencil-icon.png";
 
 // Menu icons
 import logout from "@/assets/profile/logout.png";
@@ -40,29 +37,18 @@ interface ProfileDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const VIP_THRESHOLDS = [0, 200, 400, 1000, 2000, 3000];
 const VIP_BADGES = [vipBadge1, vipBadge2, vipBadge3, vipBadge4, vipBadge5];
 const getVipBadge = (idx: number) => VIP_BADGES[Math.min(idx, VIP_BADGES.length - 1)];
 
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const { navigateWithTransition } = useTransitionNavigate();
-  const { balance, userId, refresh } = useProfile(false);
+  const { balance, userId, vipLevel, refresh } = useProfile(false);
   const { copyToClipboard } = useCopyToClipboard();
-  const [vipData, setVipData] = useState<import("@/services/authService").VipResponse | null>(null);
+  const vipLevelIndex = Math.min(vipLevel, VIP_BADGES.length - 1);
 
   useEffect(() => {
-    if (open) {
-      refresh();
-      authService.getVip().then(setVipData).catch(() => { });
-    }
+    if (open) refresh();
   }, [open]);
-
-  const vipLevelRaw = vipData?.vipLevel ?? 0;
-  const vipLevelStr = String(vipLevelRaw);
-  const isSvip = vipLevelStr.toUpperCase().startsWith("SVIP");
-  const vipLevelIndex = isSvip
-    ? VIP_THRESHOLDS.length - 1
-    : Math.min(VIP_THRESHOLDS.length - 1, Math.max(0, Number(vipLevelStr.replace(/\D/g, "")) || 0));
 
 
   const appVersion = localStorage.getItem('app_version') || '1.0.0';
@@ -98,7 +84,7 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
         {/* Top Profile Section */}
         <div
           className="relative p-1.5 pt-4 pl-3 flex-shrink-0"
-          style={{ backgroundImage: `url(${profileBg})`, backgroundSize: '140%', backgroundPosition: 'top left' }}
+          style={{ background: 'linear-gradient(135deg, #1a0005 0%, #3d0010 40%, #5c0018 70%, #800020 100%)' }}
         >
           {/* Close button */}
           <SheetClose className="absolute right-4 top-4 z-10" />
@@ -134,14 +120,12 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
             </div>
 
             {/* VIP badge - clickable to open VIP page */}
-            {vipData && (
-              <button
-                onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-                className="flex-shrink-0 cursor-pointer mr-9"
-              >
-                <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-[105px] h-[54px] object-contain" />
-              </button>
-            )}
+            <button
+              onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
+              className="flex-shrink-0 cursor-pointer mr-9"
+            >
+              <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-[105px] h-[54px] object-contain" />
+            </button>
           </div>
         </div>
 
