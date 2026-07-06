@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import logo from "@/assets/pwalogo.png";
 
 interface DownloadDrawerProps {
   open: boolean;
@@ -50,7 +51,7 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
         bottom: 0,
         left: 0,
         width: "100%",
-        background: "#fff",
+        background: "#1a030a",
         borderRadius: "22px 22px 0 0",
         zIndex: 10075,
         fontFamily: "Arial, sans-serif",
@@ -61,9 +62,7 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
         <div style={{
           width: "100%",
           height: "131px",
-          backgroundImage: "url(https://www.v3gamef.com/assets/download-title.76bd7f1f.png)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          background: "linear-gradient(135deg, #2a0008 0%, #4a0012 40%, #6d001a 70%, #8a0022 100%)",
           position: "relative"
         }}>
           <img
@@ -81,14 +80,14 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
           />
         </div>
 
-        <div style={{ textAlign: "center", fontSize: "20px", fontWeight: "bold", color: "#000", margin: "15px 0 10px" }}>
-          Download the app to get ₹13
+        <div style={{ textAlign: "center", fontSize: "20px", fontWeight: "bold", color: "#fff", margin: "15px 0 10px" }}>
+          Download the app to get ₹50
         </div>
 
         <div style={{
           textAlign: "center",
           fontSize: "13px",
-          color: "#4b4b4b",
+          color: "#c4889a",
           padding: "0 25px",
           marginBottom: "20px",
           lineHeight: 1.5
@@ -97,7 +96,7 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
         </div>
 
         <div style={{
-          background: "#f5f5f5",
+          background: "#2a0510",
           margin: "0 25px 20px",
           padding: "12px",
           borderRadius: "12px",
@@ -105,11 +104,11 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
           alignItems: "center"
         }}>
           <img
-            src="https://www.v3gamef.com/static/manifest/logo-192x192.png"
+            src={logo}
             alt="Logo"
             style={{ width: "45px", height: "45px", borderRadius: "10px", marginRight: "15px" }}
           />
-          <span style={{ fontSize: "16px", fontWeight: "bold", color: "#000" }}>V3GAME</span>
+          <span style={{ fontSize: "16px", fontWeight: "bold", color: "#fff" }}>1xKING</span>
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", padding: "0 25px" }}>
@@ -118,24 +117,21 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
             style={{
               width: "305px",
               height: "50px",
-              backgroundImage: "url(https://www.v3gamef.com/assets/download-btn.d57579e6.png)",
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              backgroundColor: "transparent",
+              background: "linear-gradient(180deg, #ffe066 0%, #f5c842 40%, #e6a800 70%, #d49400 100%)",
               border: "none",
+              borderRadius: "8px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              outline: "none"
+              outline: "none",
+              boxShadow: "0 2px 8px rgba(200,150,0,0.3)"
             }}
           >
             <span style={{
-              color: "#76000a",
+              color: "#5a0005",
               fontSize: "16px",
-              fontWeight: "bold",
-              marginLeft: "20px"
+              fontWeight: "bold"
             }}>Install APP</span>
           </button>
         </div>
