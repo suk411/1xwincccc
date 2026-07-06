@@ -9,11 +9,6 @@ import goldBar from "@/assets/profile/gold-bar.png";
 import rupeeCoin from "@/assets/profile/coin-rupee.png";
 import deposit from "@/assets/bank/deposit-icon.png";
 import withdraw from "@/assets/profile/withdrawal.png";
-import vipBadge1 from "@/assets/vip/vip-badge-1.png";
-import vipBadge2 from "@/assets/vip/vip-badge-2.png";
-import vipBadge3 from "@/assets/vip/vip-badge-3.png";
-import vipBadge4 from "@/assets/vip/vip-badge-4.png";
-import vipBadge5 from "@/assets/vip/vip-badge-5.png";
 
 import avatar from "@/assets/profile/avatar.png";
 import avatarChange from "@/assets/profile/avatar-change.png";
@@ -37,14 +32,10 @@ interface ProfileDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const VIP_BADGES = [vipBadge1, vipBadge2, vipBadge3, vipBadge4, vipBadge5];
-const getVipBadge = (idx: number) => VIP_BADGES[Math.min(idx, VIP_BADGES.length - 1)];
-
 const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
   const { navigateWithTransition } = useTransitionNavigate();
-  const { balance, userId, vipLevel, refresh } = useProfile(false);
+  const { balance, userId, refresh } = useProfile(false);
   const { copyToClipboard } = useCopyToClipboard();
-  const vipLevelIndex = Math.min(vipLevel, VIP_BADGES.length - 1);
 
   useEffect(() => {
     if (open) refresh();
@@ -117,16 +108,8 @@ const ProfileDrawer = ({ open, onOpenChange }: ProfileDrawerProps) => {
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
                 </button>
               </div>
+              </div>
             </div>
-
-            {/* VIP badge - clickable to open VIP page */}
-            <button
-              onClick={() => { onOpenChange(false); navigateWithTransition("/vip"); }}
-              className="flex-shrink-0 cursor-pointer mr-9"
-            >
-              <img src={getVipBadge(vipLevelIndex)} alt="VIP" className="w-[105px] h-[54px] object-contain" />
-            </button>
-          </div>
         </div>
 
         {/* Scrollable content area */}
