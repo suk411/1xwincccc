@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer";
+import { GameButton } from "@/components/GameButton";
 import logo from "@/assets/pwalogo.png";
+import downloadBtn from "@/assets/download-btn.gif";
 
 interface DownloadDrawerProps {
   open: boolean;
@@ -65,14 +67,24 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
           </DrawerClose>
         </div>
 
-        <div style={{ textAlign: "center", fontSize: "20px", fontWeight: "bold", color: "#fff", margin: "15px 0 10px" }}>
+        <div style={{
+          textAlign: "center",
+          fontSize: "20px",
+          fontWeight: "bold",
+          margin: "15px 0 10px",
+          backgroundImage: "linear-gradient(0deg, rgb(255, 200, 50) 0%, rgb(230, 160, 0) 43.7%, rgb(255, 220, 80) 45%, rgb(255, 185, 30) 100%)",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          color: "transparent",
+        }}>
           Download the app to get ₹50
         </div>
 
         <div style={{
           textAlign: "center",
           fontSize: "13px",
-          color: "#c4889a",
+          color: "#ffffff",
           padding: "0 25px",
           marginBottom: "20px",
           lineHeight: 1.5
@@ -97,31 +109,19 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", padding: "0 25px" }}>
-          <button
+          <GameButton
+            variant="red"
+            buttonType="prompt"
             onClick={handleInstall}
-            style={{
-              width: "305px",
-              height: "50px",
-              backgroundImage: "url(https://www.v3gamef.com/assets/download-btn.d57579e6.png)",
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              backgroundColor: "transparent",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              outline: "none"
-            }}
+            style={{ width: "305px" }}
           >
-            <span style={{
-              color: "#76000a",
-              fontSize: "16px",
-              fontWeight: "bold",
-              marginLeft: "20px"
-            }}>Install APP</span>
-          </button>
+            <img
+              src={downloadBtn}
+              alt=""
+              style={{ width: "24px", height: "24px", objectFit: "contain", marginRight: "10px" }}
+            />
+            Install APP
+          </GameButton>
         </div>
       </DrawerContent>
     </Drawer>
