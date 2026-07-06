@@ -45,8 +45,8 @@ const DownloadDrawer = ({ open, onOpenChange }: DownloadDrawerProps) => {
   }, [onOpenChange]);
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="border-none p-0 overflow-hidden" style={{
+    <Drawer open={open} onOpenChange={onOpenChange} shouldScaleBackground={false}>
+      <DrawerContent className="border-none p-0 overflow-hidden bg-[#1a030a]" style={{
         borderRadius: "22px 22px 0 0",
         zIndex: 10075,
         fontFamily: "Arial, sans-serif",

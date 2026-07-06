@@ -41,7 +41,7 @@ const DownloadBanner = ({ onDownloadClick }: DownloadBannerProps) => {
   if (!isVisible) return null;
 
   return (
-    <div className="relative z-[60] bg-[#1a0a10] border-b border-[#3d1f2a] px-3 py-2">
+    <div className="relative z-[10100] bg-[#1a0a10] border-b border-[#3d1f2a] px-3 py-2">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <img
