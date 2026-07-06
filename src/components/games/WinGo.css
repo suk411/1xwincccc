@@ -733,13 +733,13 @@
 
     .multiplier-items {
         display: flex;
-        gap: 4px;
+        gap: calc(4px * 1.05);
         flex: 1;
         justify-content: flex-end;
         overflow: hidden;
     }
     .multiplier-btn {
-        width: 32px;
+        width: calc(32px * 1.05);
         min-width: 0;
         height: 28px;
         flex-shrink: 1;
@@ -749,7 +749,7 @@
         background: rgba(255, 255, 255, 0.05);
         border-radius: 8px;
         color: rgba(255, 255, 255, 0.5);
-        font-size: 12px;
+        font-size: 13px;
         cursor: pointer;
         box-sizing: border-box;
     }

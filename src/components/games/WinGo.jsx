@@ -1009,7 +1009,7 @@ export default function WinGo() {
               <span className="body-label">Quantity</span>
               <div className="qty-ctrl">
                 <button className="qty-btn" id="qtyMinus" style={{ background: currentAc }} onClick={() => changeQty(-1)}>−</button>
-                <input className="qty-input" type="number" id="qtyInput" value={qty} min="1" onChange={e => { const num = parseInt(e.target.value, 10); if (!isNaN(num) && num >= 1) setQty(num) }} />
+                <input className="qty-input" type="number" id="qtyInput" value={qty} min="1" onChange={e => { const val = e.target.value; if (val === '') return; const num = parseInt(val, 10); if (!isNaN(num) && num >= 1) dispatch({ type: 'SET_QTY', qty: num }) }} />
                 <button className="qty-btn" id="qtyPlus" style={{ background: currentAc }} onClick={() => changeQty(1)}>+</button>
               </div>
             </div>
