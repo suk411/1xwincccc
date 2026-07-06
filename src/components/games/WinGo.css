@@ -735,7 +735,7 @@
         display: flex;
         gap: calc(4px * 1.05);
         flex: 1;
-        justify-content: center;
+        justify-content: flex-end;
         overflow: hidden;
     }
     .multiplier-btn {
