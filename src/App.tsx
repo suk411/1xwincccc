@@ -105,21 +105,11 @@ const AppContent = () => {
       || (window.navigator as any).standalone;
     if (isStandalone) return;
 
-    const now = Date.now();
-
     const showOnLogin = localStorage.getItem("show_download_on_login");
     if (showOnLogin) {
       localStorage.removeItem("show_download_on_login");
-      setIsDownloadOpen(true);
-      localStorage.setItem("download_drawer_shown", now.toString());
-      return;
-    }
-
-    const lastShown = localStorage.getItem("download_drawer_shown");
-    const TWO_HOURS = 2 * 60 * 60 * 1000;
-    if (!lastShown || now - parseInt(lastShown) > TWO_HOURS) {
-      setIsDownloadOpen(true);
-      localStorage.setItem("download_drawer_shown", now.toString());
+      const timer = setTimeout(() => setIsDownloadOpen(true), 5000);
+      return () => clearTimeout(timer);
     }
   }, [location.pathname, isAuthPage]);
 
