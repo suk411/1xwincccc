@@ -27,6 +27,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="1xKING" />
+  <link rel="manifest" href="/manifest.json" />
   
   <!-- Title and SEO -->
   <title>1xKING</title>
@@ -59,17 +60,6 @@
         })
         .catch(function() { /* Silent fail */ });
     })();
-  </script>
-
-  <!-- Unregister Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for(let registration of registrations) {
-          registration.unregister();
-        }
-      });
-    }
   </script>
 
   <!-- Open Graph -->
