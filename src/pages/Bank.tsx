@@ -78,7 +78,7 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
   }, [depositAmounts, getBonus]);
 
   return (
-    <div className="grid grid-cols-3 gap-1.5">
+    <div className="grid grid-cols-3 gap-1.5" style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }}>
       {formattedAmounts.map(({ value, label, bonus }) => {
         const isActive = !customAmount && selectedAmount === value;
       return (
@@ -650,7 +650,7 @@ const Bank = () => {
               />
             </GameCard>
 
-            <GameCard className="p-2 flex flex-col gap-1.5">
+            <GameCard className="p-2 flex flex-col gap-1.5" style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }}>
               <span className="text-white text-xs">Choose Deposit Amount</span>
               {activeMethod === "usdt" ? (
                 <>
