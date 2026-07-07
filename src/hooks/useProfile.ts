@@ -1,5 +1,6 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { authService } from "@/services/authService";
+import { toast } from "@/hooks/use-toast";
 
 const CACHE_KEY = "profile_cache";
 
@@ -54,8 +55,8 @@ const _refreshVipLevel = async () => {
       vipLevel,
     }));
     notify();
-  } catch {
-    // Silently fail
+  } catch (e: any) {
+    toast({ description: e?.message || "Failed to load VIP status", variant: "destructive" });
   }
   fetchingVip = false;
 };
@@ -75,7 +76,8 @@ const refreshBalanceOnly = async () => {
       userId: current.userId, 
       vipLevel: current.vipLevel 
     }));
-  } catch {
+  } catch (e: any) {
+    toast({ description: e?.message || "Failed to load profile", variant: "destructive" });
     const tokenUserId = authService.getUserIdFromToken();
     if (tokenUserId && !current.userId) {
       current = { ...current, userId: tokenUserId, loading: false };
@@ -119,8 +121,8 @@ const refresh = async (force = false) => {
             vipLevel = 5;
           }
         }
-      } catch (err) {
-        console.error("Failed to fetch VIP:", err);
+      } catch (e: any) {
+        toast({ description: e?.message || "Failed to load VIP info", variant: "destructive" });
       }
     }
     
@@ -130,7 +132,8 @@ const refresh = async (force = false) => {
       userId: current.userId, 
       vipLevel: current.vipLevel 
     }));
-  } catch {
+  } catch (e: any) {
+    toast({ description: e?.message || "Failed to load balance", variant: "destructive" });
     const tokenUserId = authService.getUserIdFromToken();
     if (tokenUserId && !current.userId) {
       current = { ...current, userId: tokenUserId, loading: false };

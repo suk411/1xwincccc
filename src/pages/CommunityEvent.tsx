@@ -29,7 +29,9 @@ const CommunityEvent = () => {
       try {
         const res = await authService.getGiftCodeRedemptions();
         if (res.status === "success") setRedemptions(res.items || []);
-      } catch {} finally {
+      } catch (e: any) {
+        toast({ description: e?.message || "Failed to load redemptions", variant: "destructive" });
+      } finally {
         setLoadingHistory(false);
       }
     })();
@@ -74,7 +76,9 @@ const CommunityEvent = () => {
         try {
           const res = await authService.getGiftCodeRedemptions();
           if (res.status === "success") setRedemptions(res.items || []);
-        } catch {}
+        } catch (e: any) {
+          toast({ description: e?.message || "Failed to refresh redemptions", variant: "destructive" });
+        }
       } else {
         let errorMsg = res.msg || "Failed to redeem code";
         if (res.msg === "Minimum deposit not met" && res.required) {
@@ -85,7 +89,9 @@ const CommunityEvent = () => {
           variant: "destructive",
         });
       }
-    } catch (_) {} finally {
+    } catch (e: any) {
+      toast({ description: e?.message || "Failed to redeem code", variant: "destructive" });
+    } finally {
       setLoading(false);
     }
   };

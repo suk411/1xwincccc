@@ -409,7 +409,7 @@ export default function WinGo() {
 
           if (historyDelayRef.current) clearTimeout(historyDelayRef.current)
           historyDelayRef.current = setTimeout(() => {
-            loadHistory().catch(() => {})
+            loadHistory().catch((e) => { toast({ description: e?.message || 'Failed to load history', variant: 'destructive' }) })
           }, 2000)
 
           if (betIssueRef.current && betIssueRef.current === finishedIssue) {
@@ -420,7 +420,7 @@ export default function WinGo() {
                 setShowWinPopup(true)
                 startWinCloseCountdown()
               }
-            }).catch(() => {})
+            }).catch((e) => { toast({ description: e?.message || 'Failed to check win', variant: 'destructive' }) })
           }
         }
 
@@ -438,16 +438,16 @@ export default function WinGo() {
 
   useEffect(() => {
     if (recordTab === 'my') {
-      loadMyBets(myBetsPage).catch(() => {})
+      loadMyBets(myBetsPage).catch((e) => { toast({ description: e?.message || 'Failed to load bets', variant: 'destructive' }) })
     }
     if (recordTab === 'trend') {
-      loadTrends().catch(() => {})
+      loadTrends().catch((e) => { toast({ description: e?.message || 'Failed to load trends', variant: 'destructive' }) })
     }
   }, [recordTab, activeGame])
   
   useEffect(() => {
     if (recordTab === 'my') {
-      loadMyBets(myBetsPage).catch(() => {})
+      loadMyBets(myBetsPage).catch((e) => { toast({ description: e?.message || 'Failed to load bets', variant: 'destructive' }) })
     }
   }, [myBetsPage])
 

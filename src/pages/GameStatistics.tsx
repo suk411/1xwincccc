@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useTransitionNavigate } from "@/providers/NavigationProvider";
 import { authService } from "@/services/authService";
+import { toast } from "@/hooks/use-toast";
 
 type DateFilter = "today" | "yesterday" | "week" | "month";
 
@@ -55,8 +56,9 @@ const GameStatistics = () => {
     setLoading(true);
     authService.getGameStats(dateFrom, dateTo).then((res) => {
       setStats(res.data?.gameStatis ?? []);
-    }).catch(() => {
+    }).catch((e) => {
       setStats([]);
+      toast({ description: e?.message || "Failed to load stats", variant: "destructive" });
     }).finally(() => {
       setLoading(false);
     });

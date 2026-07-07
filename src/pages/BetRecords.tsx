@@ -3,6 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import Loader from "@/components/Loader";
 import { GAME_LIST } from "@/services/gameService";
 import { wingoService, WingoUserBetItem } from "@/services/wingoService";
+import { toast } from "@/hooks/use-toast";
 import noDataImg from "@/assets/wingo/nodata.png";
 
 const API_BASE = "https://backend-ledger-0ra6.onrender.com";
@@ -66,8 +67,8 @@ const BetRecords = () => {
       const res = await wingoService.getMyBets({ page: p, limit: wingoLimit });
       setWingoItems(res.items || []);
       setWingoTotal(res.total || 0);
-    } catch {
-      // silent
+    } catch (e: any) {
+      toast({ description: e?.message || "Failed to load bets", variant: "destructive" });
     }
     setWingoLoading(false);
   };
@@ -97,8 +98,8 @@ const BetRecords = () => {
         setTotal(newTotal);
         saveCache({ items: newItems, total: newTotal, page: p });
       }
-    } catch {
-      // silent
+    } catch (e: any) {
+      toast({ description: e?.message || "Failed to load records", variant: "destructive" });
     }
     setLoading(false);
   };

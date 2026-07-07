@@ -130,7 +130,7 @@ const Earn = () => {
       setAgencyDaily(data);
     } catch (err: any) {
       if (!err.message?.includes("Session expired")) {
-        console.error("Agency daily error:", err);
+        toast({ description: err?.message || "Failed to load daily stats", variant: "destructive" });
       }
     }
   }, []);
@@ -144,7 +144,7 @@ const Earn = () => {
       setCommPage(p);
     } catch (err: any) {
       if (!err.message?.includes("Session expired")) {
-        console.error("Commissions error:", err);
+        toast({ description: err?.message || "Failed to load commissions", variant: "destructive" });
       }
     } finally {
       setCommLoading(false);
