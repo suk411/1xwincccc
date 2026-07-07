@@ -85,7 +85,7 @@ const betReducer = (state, action) => {
     case 'SET_QTY': return { ...state, qty: action.qty }
     case 'CHANGE_QTY': return { ...state, qty: Math.max(1, state.qty + action.d) }
     case 'TOGGLE_AGREE': return { ...state, agreed: !state.agreed }
-    case 'CLOSE_BET': return { ...state, showBetOverlay: false }
+    case 'CLOSE_BET': return { ...state, showBetOverlay: false, selectedMulIdx: 0, qty: 1 }
     default: return state
   }
 }
@@ -746,15 +746,13 @@ export default function WinGo() {
           </div>
 
           <div className="Betting__C-multiple">
-            <div className="random-btn">random bet</div>
-            <div className="multiplier-items">
-              <div className={`multiplier-btn${selectedMulIdx === 0 ? ' active' : ''}`} onClick={() => selectMulChip(0)}>X1</div>
-              <div className={`multiplier-btn${selectedMulIdx === 1 ? ' active' : ''}`} onClick={() => selectMulChip(1)}>X5</div>
-              <div className={`multiplier-btn${selectedMulIdx === 2 ? ' active' : ''}`} onClick={() => selectMulChip(2)}>X10</div>
-              <div className={`multiplier-btn${selectedMulIdx === 3 ? ' active' : ''}`} onClick={() => selectMulChip(3)}>X20</div>
-              <div className={`multiplier-btn${selectedMulIdx === 4 ? ' active' : ''}`} onClick={() => selectMulChip(4)}>X50</div>
-              <div className={`multiplier-btn${selectedMulIdx === 5 ? ' active' : ''}`} onClick={() => selectMulChip(5)}>X100</div>
-            </div>
+            <div className="Betting__C-multiple-l">random bet</div>
+            <div className={`Betting__C-multiple-r${selectedMulIdx === 0 ? ' active' : ''}`} onClick={() => selectMulChip(0)}>X1</div>
+            <div className={`Betting__C-multiple-r${selectedMulIdx === 1 ? ' active' : ''}`} onClick={() => selectMulChip(1)}>X5</div>
+            <div className={`Betting__C-multiple-r${selectedMulIdx === 2 ? ' active' : ''}`} onClick={() => selectMulChip(2)}>X10</div>
+            <div className={`Betting__C-multiple-r${selectedMulIdx === 3 ? ' active' : ''}`} onClick={() => selectMulChip(3)}>X20</div>
+            <div className={`Betting__C-multiple-r${selectedMulIdx === 4 ? ' active' : ''}`} onClick={() => selectMulChip(4)}>X50</div>
+            <div className={`Betting__C-multiple-r${selectedMulIdx === 5 ? ' active' : ''}`} onClick={() => selectMulChip(5)}>X100</div>
           </div>
 
           <div className="Betting__C-foot">
@@ -1009,7 +1007,7 @@ export default function WinGo() {
               <span className="body-label">Quantity</span>
               <div className="qty-ctrl">
                 <button className="qty-btn" id="qtyMinus" style={{ background: currentAc }} onClick={() => changeQty(-1)}>−</button>
-                <input className="qty-input" type="number" id="qtyInput" value={qty} min="1" onChange={e => { const val = e.target.value; if (val === '') { dispatch({ type: 'SET_QTY', qty: 0 }); return; } const num = parseInt(val, 10); if (!isNaN(num) && num >= 1) dispatch({ type: 'SET_QTY', qty: num }) }} onBlur={() => { if (qty < 1) dispatch({ type: 'SET_QTY', qty: 1 }) }} />
+                <input className="qty-input" type="number" id="qtyInput" value={qty || ''} min="1" onChange={e => { const val = e.target.value; if (val === '') { dispatch({ type: 'SET_QTY', qty: 0 }); return; } const num = parseInt(val, 10); if (!isNaN(num) && num >= 1) dispatch({ type: 'SET_QTY', qty: num }) }} onBlur={() => { if (qty < 1) dispatch({ type: 'SET_QTY', qty: 1 }) }} />
                 <button className="qty-btn" id="qtyPlus" style={{ background: currentAc }} onClick={() => changeQty(1)}>+</button>
               </div>
             </div>

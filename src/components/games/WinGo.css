@@ -53,6 +53,87 @@
         border-left: 1px solid rgba(255, 200, 55, 0.08);
         border-right: 1px solid rgba(255, 200, 55, 0.08);
       }
+
+      .winning-body.isWin {
+        padding-top: 153px;
+      }
+      .winning-main {
+        padding: 0 21px 15px;
+      }
+      .winning-wrap-l1 {
+        font-size: 29px;
+        height: 36px;
+        line-height: 36px;
+        margin-bottom: 21px;
+      }
+      .winner_box {
+        height: 61px;
+        padding-left: 19px;
+        font-size: 13px;
+      }
+      .winner_box > span {
+        margin-right: 15px;
+      }
+      .winner_result {
+        min-width: 164px;
+      }
+      .winner_result div {
+        border-radius: 6px;
+        min-width: 60px;
+        height: 27px;
+        font-size: 15px;
+        line-height: 27px;
+      }
+      .winner_result div:nth-child(2) {
+        width: 25px;
+        height: 25px;
+        min-width: 25px;
+      }
+      .winning-wrap-l3 {
+        height: 80px;
+        margin-top: 23px;
+      }
+      .winning-wrap-l3 .head {
+        height: 18px;
+        line-height: 18px;
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      .winning-wrap-l3 .bonus {
+        height: 29px;
+        line-height: 29px;
+        font-size: 25px;
+      }
+      .winning-wrap-l3 .gameDetail {
+        height: 17px;
+        line-height: 17px;
+        font-size: 13px;
+      }
+      .winning-wrap-l4 {
+        left: 34px;
+        bottom: 34px;
+        font-size: 15px;
+      }
+      .acitveBtn {
+        height: 26px;
+        width: 26px;
+        border: 1px solid #fff;
+        margin-right: 9px;
+      }
+      .acitveBtn.active::before {
+        height: 11px;
+        width: 15px;
+      }
+      .closeBtn {
+        width: 37px;
+        height: 37px;
+        bottom: -12px;
+      }
+      .sprinkle-overlay {
+        top: -46px;
+        width: 552px;
+        height: 414px;
+      }
     }
 
     .wingo-container .main-container {
@@ -703,7 +784,6 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
         padding: 0 8px;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
@@ -713,7 +793,7 @@
         overflow: hidden;
     }
 
-    .random-btn {
+    .Betting__C-multiple-l {
         width: auto;
         padding: 0 10px;
         height: 32px;
@@ -731,32 +811,27 @@
         box-sizing: border-box;
     }
 
-    .multiplier-items {
-        display: flex;
-        gap: calc(4px * 1.05);
-        flex: 1;
-        justify-content: flex-end;
-        overflow: hidden;
-    }
-    .multiplier-btn {
-        width: calc(32px * 1.10);
-        min-width: 0;
-        height: 32px;
+    .Betting__C-multiple-r {
+        width: 36.7px;
+        min-width: 36.7px;
+        max-width: 36.7px;
+        height: 28.8px;
         flex-shrink: 0;
+        flex-grow: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 8px;
         color: rgba(255, 255, 255, 0.5);
-        font-size: 13px;
+        font-size: 12px;
         cursor: pointer;
         box-sizing: border-box;
     }
-    .multiplier-btn.active {
+    .Betting__C-multiple-r.active {
         background: linear-gradient(135deg, #ffc837, #e8a820);
         color: #1a0a2e;
-        font-weight: 700;
+        font-weight: 500;
     }
 
     /* 5. Footer Buttons with Inset Highlight */
