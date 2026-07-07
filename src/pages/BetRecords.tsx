@@ -38,6 +38,13 @@ const getGameCategory = (gameId: string): string => {
   return gameObj?.category || "other";
 };
 
+const fmtIST = (iso: string) => {
+  const d = new Date(iso);
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit", hour: "numeric", minute: "2-digit", hour12: true }).formatToParts(d);
+  const g = (t: string) => parts.find(p => p.type === t)?.value || "";
+  return `${g("year")}-${g("month")}-${g("day")}  ${g("hour")}:${g("minute")} ${g("dayPeriod").toLowerCase()}`;
+};
+
 const gameTabs = ["Lottery", "Casino"];
 
 const StatusDot = () => (
@@ -128,8 +135,7 @@ const BetRecords = () => {
     const isWin = item.status === "won";
     const isPending = item.status === "pending";
     const isLoss = item.status === "lost";
-    const date = new Date(item.timestamp);
-    const dateStr = `${date.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })} ${date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+    const dateStr = fmtIST(item.timestamp);
 
     const statusText = isWin ? "Win" : isLoss ? "Lose" : "Pending";
     const statusColor = isWin ? "#22c55e" : isLoss ? "#3b82f6" : "#fbbf24";
@@ -204,8 +210,7 @@ const BetRecords = () => {
     const hasPayout = item.payout !== undefined;
     const isWin = hasPayout && profit > 0;
     const isLoss = hasPayout && profit < 0;
-    const date = new Date(item.betTime);
-    const dateStr = `${date.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })} ${date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+    const dateStr = fmtIST(item.betTime);
 
     const gameObj = GAME_LIST.find(g => String(g.game_id) === String(item.gameId));
     const gameName = gameObj ? gameObj.name : `Game ${item.gameId}`;
