@@ -29,6 +29,12 @@ function rejectWithError(data: any, fallback: string): never {
   throw new Error(msg);
 }
 
+const rejectIfFailed = (data: any, fallback: string) => {
+  if (data?.status === "failed") {
+    rejectWithError(data, fallback);
+  }
+};
+
 export interface WingoCurrentResponse {
   gameCode: string;
   intervalMinute: number;
@@ -109,6 +115,7 @@ export const wingoService = {
     const qs = mode ? `?mode=${mode}` : "";
     const res = await fetch(`${API_BASE}/api/wingo/current${qs}`);
     const data = await res.json();
+    rejectIfFailed(data, "Operation failed");
     if (!res.ok) rejectWithError(data, "Failed to sync current round");
     return data;
   },
@@ -117,6 +124,7 @@ export const wingoService = {
     const qs = mode ? `?pageNo=${pageNo}&mode=${mode}` : `?pageNo=${pageNo}`;
     const res = await fetch(`${API_BASE}/api/wingo/history${qs}`);
     const data = await res.json();
+    rejectIfFailed(data, "Operation failed");
     if (!res.ok) rejectWithError(data, "Failed to fetch history");
     return data;
   },
@@ -125,6 +133,7 @@ export const wingoService = {
     const qs = mode ? `?mode=${mode}` : "";
     const res = await fetch(`${API_BASE}/api/wingo/trends${qs}`);
     const data = await res.json();
+    rejectIfFailed(data, "Operation failed");
     if (!res.ok) rejectWithError(data, "Failed to fetch trends");
     return data;
   },
@@ -143,6 +152,7 @@ export const wingoService = {
     });
     handleUnauthorized(res);
     const data = await res.json();
+    rejectIfFailed(data, "Operation failed");
     if (!res.ok) rejectWithError(data, "Failed to fetch my bets");
     return data;
   },
@@ -154,6 +164,7 @@ export const wingoService = {
     });
     handleUnauthorized(res);
     const data = await res.json();
+    rejectIfFailed(data, "Operation failed");
     if (!res.ok) rejectWithError(data, "Failed to check win");
     return data;
   },
@@ -166,6 +177,7 @@ export const wingoService = {
     });
     handleUnauthorized(res);
     const data = await res.json();
+    rejectIfFailed(data, "Operation failed");
     if (!res.ok) rejectWithError(data, "Failed to place bet");
     if (data?.status && data.status !== "success") rejectWithError(data, "Failed to place bet");
     return data;
