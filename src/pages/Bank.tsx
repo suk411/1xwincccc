@@ -60,12 +60,11 @@ interface DepositAmountGridProps {
   selectedAmount: number;
   customAmount: string;
   bonusOptIn: boolean;
-  bonusFade: 'entering' | 'exiting' | null;
   getBonus: (amount: number) => number;
   onSelect: (amount: number) => void;
 }
 
-const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, bonusOptIn, bonusFade, getBonus, onSelect }: DepositAmountGridProps) => {
+const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, bonusOptIn, getBonus, onSelect }: DepositAmountGridProps) => {
   const formattedAmounts = useMemo(() => {
     return depositAmounts.map(amount => {
       const pre = FORMATTED_BASE_DEPOSIT.find(f => f.value === amount);
@@ -105,27 +104,22 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
             }}>{label}</span>
             {bonus > 0 && (
               <div style={{
-                maxHeight: (bonusOptIn || bonusFade !== null) ? '30px' : '0px',
-                opacity: (bonusOptIn || bonusFade !== null) ? 1 : 0,
+                maxHeight: bonusOptIn ? '30px' : '0px',
+                opacity: bonusOptIn ? 1 : 0,
                 transition: 'max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                 overflow: 'hidden',
               }}>
-                {(bonusOptIn || bonusFade !== null) && (
-                  <div
-                    className="text-center text-[10px] font-bold rounded-b-md py-0.5"
-                    style={{
-                      animation: bonusFade === 'entering'
-                        ? 'slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1) both'
-                        : (bonusFade === 'exiting' ? 'slideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards' : 'none'),
-                      backgroundImage: isActive
-                        ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
-                        : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
-                      color: "#5a2d0a"
-                    }}
-                  >
-                    +{bonus}
-                  </div>
-                )}
+                <div
+                  className="text-center text-[10px] font-bold rounded-b-md py-0.5"
+                  style={{
+                    backgroundImage: isActive
+                      ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
+                      : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
+                    color: "#5a2d0a"
+                  }}
+                >
+                  +{bonus}
+                </div>
               </div>
             )}
           </div>
@@ -238,7 +232,6 @@ const Bank = () => {
   const [depositConfigReady, setDepositConfigReady] = useState(false);
   const [depositBonusInfo, setDepositBonusInfo] = useState<import("@/services/authService").DepositBonusInfo | null>(null);
   const [bonusOptIn, setBonusOptIn] = useState(false);
-  const [bonusFade, setBonusFade] = useState<'entering' | 'exiting' | null>(null);
   const [showBonusApply, setShowBonusApply] = useState(false);
 
   const categorizeChannel = (ch: import("@/services/authService").DepositConfigItem): string => {
@@ -565,8 +558,6 @@ const Bank = () => {
   return (
     <main className="relative flex-1 flex flex-col pb-52 w-full">
       <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-@keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-100%); opacity: 0; } }
 `}</style>
       {/* Top Header with red bg */}
       <div className="relative w-full h-11 flex items-center justify-between px-3">
@@ -709,7 +700,6 @@ const Bank = () => {
                     selectedAmount={selectedAmount}
                     customAmount={customAmount}
                     bonusOptIn={bonusOptIn}
-                    bonusFade={bonusFade}
                     getBonus={getBonus}
                     onSelect={(amount) => { setSelectedAmount(amount); setCustomAmount(""); setDepositAmountInput(amount.toString()); }}
                   />
@@ -773,13 +763,11 @@ const Bank = () => {
                 onClick={() => {
                   if (!depositBonusInfo?.hasBonusAvailable) return;
                   if (showBonusApply) {
-                    setBonusFade('entering');
+                    setBonusOptIn(true);
                     setShowBonusApply(false);
-                    setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 200);
                   } else if (bonusOptIn) {
-                    setBonusFade('exiting');
+                    setBonusOptIn(false);
                     setShowBonusApply(true);
-                    setTimeout(() => { setBonusOptIn(false); setBonusFade(null); }, 200);
                   } else {
                     setShowBonusApply(true);
                   }
@@ -799,9 +787,8 @@ const Bank = () => {
                           style={{ transform: "scale(0.7)", transformOrigin: "center" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setBonusFade('entering');
+                            setBonusOptIn(true);
                             setShowBonusApply(false);
-                            setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 200);
                           }}
                         >
                           Apply Bonus
