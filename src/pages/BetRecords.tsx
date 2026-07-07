@@ -97,6 +97,8 @@ const BetRecords = () => {
         setItems(newItems);
         setTotal(newTotal);
         saveCache({ items: newItems, total: newTotal, page: p });
+      } else {
+        toast({ description: data.msg || data.message || "Failed to load records", variant: "destructive" });
       }
     } catch (e: any) {
       toast({ description: e?.message || "Failed to load records", variant: "destructive" });
