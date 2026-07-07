@@ -107,7 +107,7 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
               <div style={{
                 maxHeight: (bonusOptIn || bonusFade !== null) ? '30px' : '0px',
                 opacity: (bonusOptIn || bonusFade !== null) ? 1 : 0,
-                transition: 'max-height 0.3s ease-out, opacity 0.3s ease-out',
+                transition: 'max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                 overflow: 'hidden',
               }}>
                 {(bonusOptIn || bonusFade !== null) && (
@@ -115,8 +115,8 @@ const DepositAmountGrid = memo(({ depositAmounts, selectedAmount, customAmount, 
                     className="text-center text-[10px] font-bold rounded-b-md py-0.5"
                     style={{
                       animation: bonusFade === 'entering'
-                        ? 'slideDown 0.3s ease-out both'
-                        : (bonusFade === 'exiting' ? 'slideUp 0.3s ease-out forwards' : 'none'),
+                        ? 'slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1) both'
+                        : (bonusFade === 'exiting' ? 'slideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards' : 'none'),
                       backgroundImage: isActive
                         ? "linear-gradient(156deg, rgb(255, 180, 50) 0%, rgb(255, 140, 40) 100%)"
                         : "linear-gradient(156deg, rgb(255, 213, 103) 0%, rgb(255, 167, 74) 98%)",
@@ -654,7 +654,7 @@ const Bank = () => {
               <span className="text-white text-xs">Choose Deposit Amount</span>
               {activeMethod === "usdt" ? (
                 <>
-                  <div className="grid grid-cols-3 gap-1.5">
+    <div className="grid grid-cols-3 gap-1.5" style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }}>
                     {FORMATTED_USDT.map(({ deposit, bonus, label }) => {
                       const isActive = !customAmount && selectedAmount === deposit;
                       return (
@@ -765,7 +765,7 @@ const Bank = () => {
               </GameCard>
             )}
 
-            <GameCard className="p-2 flex flex-col gap-1.5">
+            <GameCard className="p-2 flex flex-col gap-1.5" style={{ transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' }}>
               <span className="text-white font-bold text-xs">Deposit Bonus</span>
               <div
                 className="relative rounded-lg flex items-center gap-2 px-2 py-2 cursor-pointer overflow-hidden"
@@ -775,11 +775,11 @@ const Bank = () => {
                   if (showBonusApply) {
                     setBonusFade('entering');
                     setShowBonusApply(false);
-                    setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 300);
+                    setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 200);
                   } else if (bonusOptIn) {
                     setBonusFade('exiting');
                     setShowBonusApply(true);
-                    setTimeout(() => { setBonusOptIn(false); setBonusFade(null); }, 300);
+                    setTimeout(() => { setBonusOptIn(false); setBonusFade(null); }, 200);
                   } else {
                     setShowBonusApply(true);
                   }
@@ -801,7 +801,7 @@ const Bank = () => {
                             e.stopPropagation();
                             setBonusFade('entering');
                             setShowBonusApply(false);
-                            setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 300);
+                            setTimeout(() => { setBonusOptIn(true); setBonusFade(null); }, 200);
                           }}
                         >
                           Apply Bonus
